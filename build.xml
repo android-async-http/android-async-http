@@ -1,0 +1,40 @@
+<project default="package">
+    <property name="version.num" value="1.0.0" />
+    <buildnumber file="build.num" />
+    <property name="lib.dir" value="/usr/local/android_sdk/platforms/android-7/" />
+    <property name="build.dir" value="./build"/>
+    <property name="classes.dir"  value="${build.dir}/classes"/>
+
+    <path id="classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar" />
+    </path>
+
+    <target name="compile">
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${classes.dir}" />
+        <javac srcdir="src" destdir="${classes.dir}" classpathref="classpath" includeantruntime="false">
+            <compilerarg value="-Xlint:unchecked"/>
+        </javac>
+    </target>
+
+    <target name="jar" depends="compile">
+        <delete file="async-http.jar" />
+        <delete file="MANIFEST.MF" />
+        <manifest file="MANIFEST.MF">
+            <attribute name="Built-By" value="${user.name}" />
+            <attribute name="Implementation-Version" value="${version.num}-b${build.number}"/> 
+        </manifest>
+
+        <jar destfile="async-http.jar" basedir="build/classes" includes="**/*.class" manifest="MANIFEST.MF" />
+    </target>
+
+    <target name="clean">
+        <delete dir="build" />
+        <delete>
+            <fileset dir="." includes="async-http.jar*"/>
+            <fileset file="MANIFEST.MF"/>
+        </delete>  
+    </target>
+
+    <target name="package" depends="compile,jar" />
+</project>
