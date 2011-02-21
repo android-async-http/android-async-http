@@ -36,7 +36,7 @@ import org.apache.http.protocol.SyncBasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
 public class AsyncHttpClient {
-    public static final int DEFAULT_MAX_CONNECTIONS = 4;
+    public static final int DEFAULT_MAX_CONNECTIONS = 10;
     public static final int DEFAULT_SOCKET_TIMEOUT = 30 * 1000;
     private static final String ENCODING = "UTF-8";    
     private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
@@ -48,6 +48,7 @@ public class AsyncHttpClient {
     private DefaultHttpClient httpClient;
     private HttpContext httpContext;
     private ExecutorService threadPool;
+    private PrefetchCache prefetchCache;
 
     public AsyncHttpClient(String userAgent) {
         BasicHttpParams httpParams = new BasicHttpParams();
@@ -98,11 +99,15 @@ public class AsyncHttpClient {
         httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
     }
 
-    public void get(String url, AsyncHttpRequest.OnResponseHandler responseHandler) {
+    public void setPrefetchCache(PrefetchCache cache) {
+        prefetchCache = cache;
+    }
+
+    public void get(String url, AsyncHttpResponseHandler responseHandler) {
         get(url, null, responseHandler);
     }
 
-    public void get(String url, AsyncHttpParams params, AsyncHttpRequest.OnResponseHandler responseHandler) {
+    public void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         // Build and append query string (utf8 url encoded)
         if(params != null) {
             String paramString = params.getParamString();
@@ -110,14 +115,14 @@ public class AsyncHttpClient {
         }
 
         // Fire up the request in a new thread
-        executeAsyncRequest(new HttpGet(url), responseHandler);
+        threadPool.execute(new AsyncHttpRequest(httpClient, httpContext, new HttpGet(url), responseHandler));
     }
 
-    public void post(String url, AsyncHttpRequest.OnResponseHandler responseHandler) {
+    public void post(String url, AsyncHttpResponseHandler responseHandler) {
         post(url, null, responseHandler);
     }
 
-    public void post(String url, AsyncHttpParams params, AsyncHttpRequest.OnResponseHandler responseHandler) {
+    public void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         // Build post object with params
         final HttpPost post = new HttpPost(url);
         if(params != null) {
@@ -128,11 +133,7 @@ public class AsyncHttpClient {
         }
 
         // Fire up the request in a new thread
-        executeAsyncRequest(post, responseHandler);
-    }
-
-    private void executeAsyncRequest(final HttpRequestBase request, final AsyncHttpRequest.OnResponseHandler responseHandler) {
-        threadPool.execute(new AsyncHttpRequest(httpClient, httpContext, request, responseHandler));
+        threadPool.execute(new AsyncHttpRequest(httpClient, httpContext, post, responseHandler));
     }
 
     private static class InflatingEntity extends HttpEntityWrapper {

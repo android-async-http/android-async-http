@@ -10,16 +10,16 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
-public class AsyncHttpParams {
+public class RequestParams {
     private static String ENCODING = "UTF-8";
 
     private ConcurrentHashMap<String,String> urlParams;
 
-    public AsyncHttpParams() {
+    public RequestParams() {
         init();
     }
 
-    public AsyncHttpParams(String key, String value) {
+    public RequestParams(String key, String value) {
         init();
         put(key, value);
     }

@@ -135,6 +135,8 @@ public class PersistentCookieStore implements CookieStore {
         return cookie;
     }
 
+    // Using some super basic byte array <-> hex conversions so we don't have
+    // to rely on any large Base64 libraries
     private static String byteArrayToHexString(byte[] b) {
         StringBuffer sb = new StringBuffer(b.length * 2);
         for(int i=0; i<b.length; i++) {
