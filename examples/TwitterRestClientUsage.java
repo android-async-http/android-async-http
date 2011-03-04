@@ -6,7 +6,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 class TwitterRestClientUsage {
     public void getPublicTimeline() {
-        ExampleRestClient.get("statuses/public_timeline.json", null, new JsonHttpResponseHandler() {
+        TwitterRestClient.get("statuses/public_timeline.json", null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(Object response) {
                 JSONArray timeline = (JSONArray)response;
