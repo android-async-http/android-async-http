@@ -48,7 +48,6 @@ public class AsyncHttpClient {
     private DefaultHttpClient httpClient;
     private HttpContext httpContext;
     private ExecutorService threadPool;
-    private PrefetchCache prefetchCache;
 
     public AsyncHttpClient(String userAgent) {
         BasicHttpParams httpParams = new BasicHttpParams();
@@ -97,10 +96,6 @@ public class AsyncHttpClient {
 
     public void setCookieStore(CookieStore cookieStore) {
         httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
-    }
-
-    public void setPrefetchCache(PrefetchCache cache) {
-        prefetchCache = cache;
     }
 
     public void get(String url, AsyncHttpResponseHandler responseHandler) {
