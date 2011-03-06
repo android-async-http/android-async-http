@@ -1,8 +1,5 @@
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.loopj.android.http.JsonHttpResponseHandler;
+import org.json.*;
+import com.loopj.android.http.*;
 
 class TwitterRestClientUsage {
     public void getPublicTimeline() {
@@ -15,6 +12,7 @@ class TwitterRestClientUsage {
                     JSONObject firstEvent = timeline.get(0);
                     String tweetText = firstEvent.getString("text");
 
+                    // Do something with the response
                     System.out.println(tweetText);
                 } catch(JSONException e) {
                     e.printStackTrace();

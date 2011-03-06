@@ -1,9 +1,6 @@
-import java.util.Locale;
+// Static wrapper library around AsyncHttpClient
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpRequest;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.*;
 
 public class TwitterRestClient {
     private static final String USER_AGENT = "Example Twitter Rest Client";
