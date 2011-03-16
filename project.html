@@ -1,0 +1,53 @@
+---
+layout: default
+---
+
+<div id="header">
+    <h1>{{ page.title }}</h1>
+    <h2>{{ page.tagline }}</h2>
+</div>
+
+<div id="share">
+    <ul class="group">
+        <!-- Facebook Like Button -->
+        <li>
+            <fb:like href="{{ site.url }}" layout="button_count" show_faces="false" font=""></fb:like>
+        </li>
+
+        <!-- Tweet Button -->
+        <li>
+            <a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="loopj">Tweet</a>
+        </li>
+
+        <!-- Fork Button -->
+        <li style="margin-top: -4px; margin-left: -18px;">
+            <a href="{{ page.github_url }}" class="gitforked-button gitforked-forks gitforked-watchers">Fork</a>
+        </li>
+    </ul>
+</div>
+
+<div id="project">
+    {% if page.download_url %}
+    <div id="download">
+        <div class="download-button">
+            <a href="{{ page.download_url }}">
+                Download
+                {% if page.version %}
+                <em>version {{ page.version }} (latest)</em>
+                {% else %}
+                <em>latest version</em>
+                {% endif %}
+            </a>
+        </div>
+
+        {% if page.github_url %}
+        <p id="github">or <a href="{{ page.github_url }}" target="_blank">fork me on github</a></p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {{ content }}
+</div>
+
+<div id="about">
+</div>
