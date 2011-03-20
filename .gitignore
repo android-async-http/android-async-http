@@ -1,1 +1,5 @@
 _site
+MANIFEST.MF
+*.jar
+build.num
+build
