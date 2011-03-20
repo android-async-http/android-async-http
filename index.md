@@ -4,7 +4,7 @@ title: Android Asynchronous Http Client
 tagline: A Callback-Based Http Client Library for Android
 version: 1.0
 github_url: https://github.com/loopj/android-async-http
-download_url: https://github.com/loopj/android-async-http/zipball/android-async-http-1.0
+download_url: https://github.com/downloads/loopj/android-async-http/android-async-http.jar
 ---
 
 
