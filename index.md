@@ -11,9 +11,10 @@ download_url: https://github.com/loopj/android-async-http/zipball/android-async-
 Overview
 --------
 An asynchronous callback-based Http client for Android built on top of Apache's
-HttpClient libraries. All requests are made outside of your app's main UI
-thread, but any callback logic will be executed on the same thread as the
-callback was created (using Android's `Handler`s).
+[HttpClient](http://hc.apache.org/httpcomponents-client-ga/) libraries.
+All requests are made outside of your app's main UI thread, but any callback
+logic will be executed on the same thread as the callback was created using
+Android's Handler message passing.
 
 
 Features
