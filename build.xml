@@ -18,20 +18,20 @@
     </target>
 
     <target name="jar" depends="compile">
-        <delete file="async-http.jar" />
+        <delete file="android-async-http.jar" />
         <delete file="MANIFEST.MF" />
         <manifest file="MANIFEST.MF">
             <attribute name="Built-By" value="${user.name}" />
             <attribute name="Implementation-Version" value="${version.num}-b${build.number}"/> 
         </manifest>
 
-        <jar destfile="async-http.jar" basedir="build/classes" includes="**/*.class" manifest="MANIFEST.MF" />
+        <jar destfile="android-async-http.jar" basedir="build/classes" includes="**/*.class" manifest="MANIFEST.MF" />
     </target>
 
     <target name="clean">
         <delete dir="build" />
         <delete>
-            <fileset dir="." includes="async-http.jar*"/>
+            <fileset dir="." includes="android-async-http.jar*"/>
             <fileset file="MANIFEST.MF"/>
         </delete>  
     </target>
