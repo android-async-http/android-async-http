@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:og="http://ogp.me/ns#">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+    <title>{{ page.title }}</title> 
+
+    <meta property="og:title" content="{{ page.title }}" />
+    <meta property="og:type" content="{{ page.type }}" />
+    <meta property="og:image" content="http://www.gravatar.com/avatar/20171a64471be602e50c8ba7662313af" />
+    <meta property="og:site_name" content="loopj - James Smith" />
+    <meta property="fb:admins" content="204500009" />
+    {% if page.url == "/index.html" %}
+    <meta property="og:url" content="{{ site.url }}" />
+    {% else %}
+    <meta property="og:url" content="{{ site.url }}{{ page.url }}" />
+    {% endif %}
+
+    <link rel="stylesheet" type="text/css" href="http://loopj.com/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="http://loopj.com/css/highlight.css" />
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+    <script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
+    <script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
+    <script src="http://gitforked.com/api/1.1/button.js" type="text/javascript"></script>
+
+    <script type="text/javascript"> 
+    $(document).ready(function() {
+        $(".highlight").each(function() {
+            var originalWidth = $(this).width();
+            var idealWidth = Math.max(originalWidth, $(this).find("pre").contents().width());
+            $(this).hover(function () {
+                $(this).animate({width: idealWidth});
+            }, function () {
+                $(this).animate({width: originalWidth});
+            });
+        });
+    });
+    </script>
+</head>
+
+<body>
+    <div id="site-header">
+        <h1><a href="/">James Smith • loopj.com</a></h1>
+    </div>
+
+    <div id="wrap">
+        {{ content }}
+    </div>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-22064348-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+</body>
+</html>
