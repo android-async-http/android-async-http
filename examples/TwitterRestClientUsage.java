@@ -9,7 +9,7 @@ class TwitterRestClientUsage {
                 JSONArray timeline = (JSONArray)response;
 
                 try {
-                    JSONObject firstEvent = timeline.get(0);
+                    JSONObject firstEvent = (JSONObject)timeline.get(0);
                     String tweetText = firstEvent.getString("text");
 
                     // Do something with the response
