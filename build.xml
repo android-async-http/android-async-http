@@ -1,40 +1,48 @@
 <project default="package">
+    <!-- Project properties -->
     <property name="version.num" value="1.0.0" />
-    <buildnumber file="build.num" />
+    <property name="project" value="android-async-http" />
+
+    <!-- Standard jar stuff -->
+    <property name="jarfile" value="${project}-${version.num}.jar" />
     <property name="lib.dir" value="/usr/local/android_sdk/platforms/android-7/" />
     <property name="build.dir" value="./build"/>
     <property name="classes.dir"  value="${build.dir}/classes"/>
+    <buildnumber file="build.num" />
 
+    <!-- Set up classpath -->
     <path id="classpath">
         <fileset dir="${lib.dir}" includes="**/*.jar" />
     </path>
 
+    <!-- Compile java files into classes -->
     <target name="compile">
         <mkdir dir="${build.dir}" />
         <mkdir dir="${classes.dir}" />
-        <javac srcdir="src" destdir="${classes.dir}" classpathref="classpath" includeantruntime="false">
-            <compilerarg value="-Xlint:unchecked"/>
-        </javac>
+        <javac srcdir="." destdir="${classes.dir}" classpathref="classpath" />
     </target>
 
+    <!-- Package a jar from compiled class files -->
     <target name="jar" depends="compile">
-        <delete file="android-async-http.jar" />
+        <delete file="${jarfile}" />
         <delete file="MANIFEST.MF" />
         <manifest file="MANIFEST.MF">
             <attribute name="Built-By" value="${user.name}" />
             <attribute name="Implementation-Version" value="${version.num}-b${build.number}"/> 
         </manifest>
 
-        <jar destfile="android-async-http.jar" basedir="build/classes" includes="**/*.class" manifest="MANIFEST.MF" />
+        <jar destfile="${jarfile}" basedir="build/classes" includes="**/*.class" manifest="MANIFEST.MF" />
     </target>
 
+    <!-- Clean out the build files -->
     <target name="clean">
         <delete dir="build" />
         <delete>
-            <fileset dir="." includes="android-async-http.jar*"/>
+            <fileset dir="." includes="${jarfile}"/>
             <fileset file="MANIFEST.MF"/>
-        </delete>  
+        </delete>
     </target>
 
+    <!-- Compile and package a jar -->
     <target name="package" depends="compile,jar" />
 </project>
