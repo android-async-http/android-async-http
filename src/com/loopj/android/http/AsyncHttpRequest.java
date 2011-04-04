@@ -19,19 +19,23 @@
 package com.loopj.android.http;
 
 import java.io.IOException;
+import java.net.ConnectException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 
 public class AsyncHttpRequest implements Runnable {
-    private HttpClient client;
+    private AbstractHttpClient client;
     private HttpContext context;
     private HttpUriRequest request;
     private AsyncHttpResponseHandler responseHandler;
+    private int executionCount;
 
-    public AsyncHttpRequest(HttpClient client, HttpContext context, HttpUriRequest request, AsyncHttpResponseHandler responseHandler) {
+    public AsyncHttpRequest(AbstractHttpClient client, HttpContext context, HttpUriRequest request, AsyncHttpResponseHandler responseHandler) {
         this.client = client;
         this.context = context;
         this.request = request;
@@ -44,10 +48,10 @@ public class AsyncHttpRequest implements Runnable {
                 responseHandler.sendStartMessage();
             }
 
-            HttpResponse response = client.execute(request, context);
+            makeRequestWithRetries();
+
             if(responseHandler != null) {
                 responseHandler.sendFinishMessage();
-                responseHandler.sendResponseMessage(response);
             }
         } catch (IOException e) {
             if(responseHandler != null) {
@@ -55,5 +59,40 @@ public class AsyncHttpRequest implements Runnable {
                 responseHandler.sendErrorMessage(e);
             }
         }
+    }
+
+    private void makeRequest() throws IOException {
+        HttpResponse response = client.execute(request, context);
+        if(responseHandler != null) {
+            responseHandler.sendResponseMessage(response);
+        }
+    }
+
+    private void makeRequestWithRetries() throws ConnectException {
+        // This is an additional layer of retry logic lifted from droid-fu
+        // See: https://github.com/kaeppler/droid-fu/blob/master/src/main/java/com/github/droidfu/http/BetterHttpRequestBase.java
+        boolean retry = true;
+        IOException cause = null;
+        HttpRequestRetryHandler retryHandler = client.getHttpRequestRetryHandler();
+        while (retry) {
+            try {
+                makeRequest();
+                return;
+            } catch (IOException e) {
+                cause = e;
+                retry = retryHandler.retryRequest(cause, ++executionCount, context);
+            } catch (NullPointerException e) {
+                // there's a bug in HttpClient 4.0.x that on some occasions causes
+                // DefaultRequestExecutor to throw an NPE, see
+                // http://code.google.com/p/android/issues/detail?id=5255
+                cause = new IOException("NPE in HttpClient" + e.getMessage());
+                retry = retryHandler.retryRequest(cause, ++executionCount, context);
+            }
+        }
+
+        // no retries left, crap out with exception
+        ConnectException ex = new ConnectException();
+        ex.initCause(cause);
+        throw ex;
     }
 }

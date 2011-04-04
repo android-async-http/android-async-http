@@ -20,6 +20,7 @@ package com.loopj.android.http;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.zip.GZIPInputStream;
@@ -56,6 +57,7 @@ import org.apache.http.protocol.HttpContext;
 public class AsyncHttpClient {
     public static final int DEFAULT_MAX_CONNECTIONS = 10;
     public static final int DEFAULT_SOCKET_TIMEOUT = 30 * 1000;
+    public static final int DEFAULT_MAX_RETRIES = 5;
     private static final String ENCODING = "UTF-8";    
     private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     private static final String ENCODING_GZIP = "gzip";
@@ -65,7 +67,7 @@ public class AsyncHttpClient {
 
     private DefaultHttpClient httpClient;
     private HttpContext httpContext;
-    private ExecutorService threadPool;
+    private Executor threadPool;
 
     public AsyncHttpClient(String userAgent) {
         BasicHttpParams httpParams = new BasicHttpParams();
@@ -110,10 +112,16 @@ public class AsyncHttpClient {
                 }
             }
         });
+
+        httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES));
     }
 
     public void setCookieStore(CookieStore cookieStore) {
         httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+    }
+
+    public void setThreadPool(Executor threadPool) {
+        this.threadPool = threadPool;
     }
 
     public void get(String url, AsyncHttpResponseHandler responseHandler) {

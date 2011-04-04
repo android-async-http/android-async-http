@@ -127,7 +127,7 @@ public class PersistentCookieStore implements CookieStore {
         return new ArrayList<Cookie>(cookies.values());
     }
 
-    private static String encodeCookie(SerializableCookie cookie) {
+    protected String encodeCookie(SerializableCookie cookie) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
             ObjectOutputStream outputStream = new ObjectOutputStream(os);
@@ -139,7 +139,7 @@ public class PersistentCookieStore implements CookieStore {
         return byteArrayToHexString(os.toByteArray());
     }
 
-    private static Cookie decodeCookie(String cookieStr) {
+    protected Cookie decodeCookie(String cookieStr) {
         byte[] bytes = hexStringToByteArray(cookieStr);
         ByteArrayInputStream is = new ByteArrayInputStream(bytes);
         Cookie cookie = null;
@@ -154,8 +154,8 @@ public class PersistentCookieStore implements CookieStore {
     }
 
     // Using some super basic byte array <-> hex conversions so we don't have
-    // to rely on any large Base64 libraries
-    private static String byteArrayToHexString(byte[] b) {
+    // to rely on any large Base64 libraries. Can be overridden if you like!
+    protected String byteArrayToHexString(byte[] b) {
         StringBuffer sb = new StringBuffer(b.length * 2);
         for(int i=0; i<b.length; i++) {
             int v = b[i] & 0xff;
@@ -167,7 +167,7 @@ public class PersistentCookieStore implements CookieStore {
         return sb.toString().toUpperCase();
     }
 
-    private static byte[] hexStringToByteArray(String s) {
+    protected byte[] hexStringToByteArray(String s) {
         int len = s.length();
         byte[] data = new byte[len / 2];
         for(int i=0; i<len; i+=2) {
