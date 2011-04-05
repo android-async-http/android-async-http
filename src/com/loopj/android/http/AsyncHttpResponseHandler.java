@@ -31,49 +31,75 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Looper;
 
-public class AsyncHttpResponseHandler extends Handler {
-    private static final int RESPONSE_MESSAGE = 0;
-    private static final int ERROR_MESSAGE = 1;
+public class AsyncHttpResponseHandler {
+    private static final int SUCCESS_MESSAGE = 0;
+    private static final int FAILURE_MESSAGE = 1;
     private static final int START_MESSAGE = 2;
     private static final int FINISH_MESSAGE = 3;
 
+    private Handler handler;
+
     public AsyncHttpResponseHandler() {
-        super(Looper.getMainLooper());
+        // Set up a handler to post events back to the correct thread if possible
+        if(Looper.myLooper() != null) {
+            handler = new Handler(){
+                public void handleMessage(Message msg){
+                    AsyncHttpResponseHandler.this.handleMessage(msg);
+                }
+            };
+        }
     }
 
-    public void sendStartMessage() {
-        sendMessage(obtainMessage(START_MESSAGE));
-    }
 
-    public void sendFinishMessage() {
-        sendMessage(obtainMessage(FINISH_MESSAGE));
-    }
-
+    // Pre-processing of messages (in background thread)
     public void sendResponseMessage(HttpResponse response) {
         StatusLine status = response.getStatusLine();
         if(status.getStatusCode() >= 300) {
-            sendErrorMessage(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()));
+            sendFailureMessage(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()));
         } else {
             try {
-                sendMessage(obtainMessage(RESPONSE_MESSAGE, getResponseBody(response)));
+                sendSuccessMessage(getResponseBody(response));
             } catch(IOException e) {
-                sendErrorMessage(e);
+                sendFailureMessage(e);
             }
         }
     }
 
-    public void sendErrorMessage(Throwable e) {
-        sendMessage(obtainMessage(ERROR_MESSAGE, e));
+    public void sendSuccessMessage(String responseBody) {
+        sendMessage(obtainMessage(SUCCESS_MESSAGE, responseBody));
     }
 
-    @Override
-    public void handleMessage(Message msg) {
+    public void sendFailureMessage(Throwable e) {
+        sendMessage(obtainMessage(FAILURE_MESSAGE, e));
+    }
+
+    public void sendStartMessage() {
+        sendMessage(obtainMessage(START_MESSAGE, null));
+    }
+
+    public void sendFinishMessage() {
+        sendMessage(obtainMessage(FINISH_MESSAGE, null));
+    }
+
+
+    // Pre-processing of messages (in original calling thread)
+    protected void handleSuccessMessage(String responseBody) {
+        onSuccess(responseBody);
+    }
+
+    protected void handleFailureMessage(Throwable e) {
+        onFailure(e);
+    }
+
+
+    // Utility functions
+    protected void handleMessage(Message msg) {
         switch(msg.what) {
-            case RESPONSE_MESSAGE:
-                handleResponseMessage((String)msg.obj);
+            case SUCCESS_MESSAGE:
+                handleSuccessMessage((String)msg.obj);
                 break;
-            case ERROR_MESSAGE:
-                handleErrorMessage((Throwable)msg.obj);
+            case FAILURE_MESSAGE:
+                handleFailureMessage((Throwable)msg.obj);
                 break;
             case START_MESSAGE:
                 onStart();
@@ -84,14 +110,6 @@ public class AsyncHttpResponseHandler extends Handler {
         }
     }
 
-    protected void handleResponseMessage(String responseBody) {
-        onSuccess(responseBody);
-    }
-
-    protected void handleErrorMessage(Throwable e) {
-        onFailure(e);
-    }
-
     protected String getResponseBody(HttpResponse response) throws IOException {
         HttpEntity entity = null;
         HttpEntity temp = response.getEntity();
@@ -100,6 +118,26 @@ public class AsyncHttpResponseHandler extends Handler {
         }
 
         return EntityUtils.toString(entity);
+    }
+
+    protected void sendMessage(Message msg) {
+        if(handler != null){
+            handler.sendMessage(msg);
+        } else {
+            handleMessage(msg);
+        }
+    }
+
+    protected Message obtainMessage(int responseMessage, Object response) {
+        Message msg = null;
+        if(handler != null){
+            msg = this.handler.obtainMessage(responseMessage, response);
+        }else{
+            msg = new Message();
+            msg.what = responseMessage;
+            msg.obj = response;
+        }
+        return msg;
     }
 
     // Public callbacks

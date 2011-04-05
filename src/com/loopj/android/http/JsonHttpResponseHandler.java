@@ -27,8 +27,8 @@ import org.json.JSONTokener;
 
 public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     @Override
-    protected void handleResponseMessage(String responseBody) {
-        super.handleResponseMessage(responseBody);
+    public void handleSuccessMessage(String responseBody) {
+        super.handleSuccessMessage(responseBody);
 
         try {
             Object jsonResponse = new JSONTokener(responseBody).nextValue();

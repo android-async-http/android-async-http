@@ -48,11 +48,14 @@ public class RequestParams {
 
     public RequestParams(String key, String value) {
         init();
+
         put(key, value);
     }
 
     public void put(String key, String value){
-        urlParams.put(key,value);
+        if(key != null && value != null) {
+            urlParams.put(key,value);
+        }
     }
 
     public void remove(String key){
