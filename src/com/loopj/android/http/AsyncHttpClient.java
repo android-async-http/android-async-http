@@ -20,9 +20,13 @@ package com.loopj.android.http;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
+import java.util.List;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.http.Header;
@@ -37,6 +41,7 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.params.ConnPerRouteBean;
@@ -54,9 +59,12 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.SyncBasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
+import android.content.Context;
+import android.util.Log;
+
 public class AsyncHttpClient {
     public static final int DEFAULT_MAX_CONNECTIONS = 10;
-    public static final int DEFAULT_SOCKET_TIMEOUT = 30 * 1000;
+    public static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
     public static final int DEFAULT_MAX_RETRIES = 5;
     private static final String ENCODING = "UTF-8";    
     private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
@@ -67,7 +75,8 @@ public class AsyncHttpClient {
 
     private DefaultHttpClient httpClient;
     private HttpContext httpContext;
-    private Executor threadPool;
+    private ThreadPoolExecutor threadPool;
+    private Map<Context, List<Future>> requestMap;
 
     public AsyncHttpClient(String userAgent) {
         BasicHttpParams httpParams = new BasicHttpParams();
@@ -114,22 +123,32 @@ public class AsyncHttpClient {
 
         httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES));
 
-        threadPool = Executors.newCachedThreadPool();
+        threadPool = (ThreadPoolExecutor)Executors.newCachedThreadPool();
+
+        requestMap = new WeakHashMap<Context, List<Future>>();
     }
 
     public void setCookieStore(CookieStore cookieStore) {
         httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
     }
 
-    public void setThreadPool(Executor threadPool) {
+    public void setThreadPool(ThreadPoolExecutor threadPool) {
         this.threadPool = threadPool;
     }
 
     public void get(String url, AsyncHttpResponseHandler responseHandler) {
-        get(url, null, responseHandler);
+        get(null, url, null, responseHandler);
+    }
+
+    public void get(Context context, String url, AsyncHttpResponseHandler responseHandler) {
+        get(context, url, null, responseHandler);
     }
 
     public void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        get(null, url, params, responseHandler);
+    }
+
+    public void get(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         // Build and append query string (utf8 url encoded)
         if(params != null) {
             String paramString = params.getParamString();
@@ -137,14 +156,22 @@ public class AsyncHttpClient {
         }
 
         // Fire up the request in a new thread
-        threadPool.execute(new AsyncHttpRequest(httpClient, httpContext, new HttpGet(url), responseHandler));
+        sendRequest(httpClient, httpContext, new HttpGet(url), responseHandler, context);
     }
 
     public void post(String url, AsyncHttpResponseHandler responseHandler) {
-        post(url, null, responseHandler);
+        post(null, url, null, responseHandler);
+    }
+
+    public void post(Context context, String url, AsyncHttpResponseHandler responseHandler) {
+        post(context, url, null, responseHandler);
     }
 
     public void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        post(null, url, params, responseHandler);
+    }
+
+    public void post(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         // Build post object with params
         final HttpPost post = new HttpPost(url);
         if(params != null) {
@@ -155,7 +182,31 @@ public class AsyncHttpClient {
         }
 
         // Fire up the request in a new thread
-        threadPool.execute(new AsyncHttpRequest(httpClient, httpContext, post, responseHandler));
+        sendRequest(httpClient, httpContext, post, responseHandler, context);
+    }
+
+    public void cancelRequests(Context context, boolean mayInterruptIfRunning) {
+        List<Future> requestList = requestMap.get(context);
+        if(requestList != null) {
+            for(Future request : requestList) {
+                request.cancel(mayInterruptIfRunning);
+            }
+        }
+        requestMap.remove(context);
+    }
+
+    private void sendRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, AsyncHttpResponseHandler responseHandler, Context context) {
+        Future request = threadPool.submit(new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler));
+
+        if(context != null) {
+            List<Future> requestList = requestMap.get(context);
+            if(requestList == null) {
+                requestList = new LinkedList<Future>();
+                requestMap.put(context, requestList);
+            }
+
+            requestList.add(request);
+        }
     }
 
     private static class InflatingEntity extends HttpEntityWrapper {

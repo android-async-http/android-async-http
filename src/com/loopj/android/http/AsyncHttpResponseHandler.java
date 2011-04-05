@@ -110,16 +110,6 @@ public class AsyncHttpResponseHandler {
         }
     }
 
-    protected String getResponseBody(HttpResponse response) throws IOException {
-        HttpEntity entity = null;
-        HttpEntity temp = response.getEntity();
-        if(temp != null) {
-            entity = new BufferedHttpEntity(temp);
-        }
-
-        return EntityUtils.toString(entity);
-    }
-
     protected void sendMessage(Message msg) {
         if(handler != null){
             handler.sendMessage(msg);
@@ -139,6 +129,17 @@ public class AsyncHttpResponseHandler {
         }
         return msg;
     }
+
+    protected String getResponseBody(HttpResponse response) throws IOException {
+        HttpEntity entity = null;
+        HttpEntity temp = response.getEntity();
+        if(temp != null) {
+            entity = new BufferedHttpEntity(temp);
+        }
+
+        return EntityUtils.toString(entity);
+    }
+
 
     // Public callbacks
     public void onStart() {}
