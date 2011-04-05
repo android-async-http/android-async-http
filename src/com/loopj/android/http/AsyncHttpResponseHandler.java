@@ -58,7 +58,13 @@ public class AsyncHttpResponseHandler {
             sendFailureMessage(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()));
         } else {
             try {
-                sendSuccessMessage(getResponseBody(response));
+                HttpEntity entity = null;
+                HttpEntity temp = response.getEntity();
+                if(temp != null) {
+                    entity = new BufferedHttpEntity(temp);
+                }
+
+                sendSuccessMessage(EntityUtils.toString(entity));
             } catch(IOException e) {
                 sendFailureMessage(e);
             }
@@ -128,16 +134,6 @@ public class AsyncHttpResponseHandler {
             msg.obj = response;
         }
         return msg;
-    }
-
-    protected String getResponseBody(HttpResponse response) throws IOException {
-        HttpEntity entity = null;
-        HttpEntity temp = response.getEntity();
-        if(temp != null) {
-            entity = new BufferedHttpEntity(temp);
-        }
-
-        return EntityUtils.toString(entity);
     }
 
 
