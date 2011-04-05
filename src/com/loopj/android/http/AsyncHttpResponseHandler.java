@@ -50,7 +50,16 @@ public class AsyncHttpResponseHandler extends Handler {
     }
 
     public void sendResponseMessage(HttpResponse response) {
-        sendMessage(obtainMessage(RESPONSE_MESSAGE, response));
+        StatusLine status = response.getStatusLine();
+        if(status.getStatusCode() >= 300) {
+            sendErrorMessage(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()));
+        } else {
+            try {
+                sendMessage(obtainMessage(RESPONSE_MESSAGE, getResponseBody(response)));
+            } catch(IOException e) {
+                sendErrorMessage(e);
+            }
+        }
     }
 
     public void sendErrorMessage(Throwable e) {
@@ -61,7 +70,7 @@ public class AsyncHttpResponseHandler extends Handler {
     public void handleMessage(Message msg) {
         switch(msg.what) {
             case RESPONSE_MESSAGE:
-                handleResponseMessage((HttpResponse)msg.obj);
+                handleResponseMessage((String)msg.obj);
                 break;
             case ERROR_MESSAGE:
                 handleErrorMessage((Throwable)msg.obj);
@@ -75,17 +84,8 @@ public class AsyncHttpResponseHandler extends Handler {
         }
     }
 
-    protected void handleResponseMessage(HttpResponse response) {
-        StatusLine status = response.getStatusLine();
-        if(status.getStatusCode() >= 300) {
-            onFailure(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()));
-        } else {
-            try {
-                onSuccess(getResponseBody(response));
-            } catch(IOException e) {
-                onFailure(e);
-            }
-        }
+    protected void handleResponseMessage(String responseBody) {
+        onSuccess(responseBody);
     }
 
     protected void handleErrorMessage(Throwable e) {

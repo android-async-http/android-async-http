@@ -21,6 +21,7 @@ package com.loopj.android.http;
 import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.http.HttpEntity;
@@ -35,6 +36,14 @@ public class RequestParams {
 
     public RequestParams() {
         init();
+    }
+
+    public RequestParams(Map<String, String> source) {
+        init();
+
+        for(Map.Entry<String, String> entry : source.entrySet()) {
+            put(entry.getKey(), entry.getValue());
+        }
     }
 
     public RequestParams(String key, String value) {

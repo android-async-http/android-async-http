@@ -5,9 +5,7 @@ class TwitterRestClientUsage {
     public void getPublicTimeline() {
         TwitterRestClient.get("statuses/public_timeline.json", null, new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(Object response) {
-                JSONArray timeline = (JSONArray)response;
-
+            public void onSuccess(JSONArray timeline) {
                 try {
                     JSONObject firstEvent = (JSONObject)timeline.get(0);
                     String tweetText = firstEvent.getString("text");

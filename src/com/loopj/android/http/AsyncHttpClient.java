@@ -87,7 +87,6 @@ public class AsyncHttpClient {
         schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
-        threadPool = Executors.newCachedThreadPool();
         httpContext = new SyncBasicHttpContext(new BasicHttpContext());
         httpClient = new DefaultHttpClient(cm, httpParams);
         httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
@@ -114,6 +113,8 @@ public class AsyncHttpClient {
         });
 
         httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES));
+
+        threadPool = Executors.newCachedThreadPool();
     }
 
     public void setCookieStore(CookieStore cookieStore) {

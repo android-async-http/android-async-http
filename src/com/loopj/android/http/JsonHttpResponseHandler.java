@@ -20,33 +20,29 @@ package com.loopj.android.http;
 
 import java.io.IOException;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpResponseException;
-
 public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
-    protected void handleResponseMessage(HttpResponse response) {
-        StatusLine status = response.getStatusLine();
-        if(status.getStatusCode() >= 300) {
-            onFailure(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()));
-        } else {
-            try {
-                String responseBody = getResponseBody(response);
-                onSuccess(responseBody);
+    @Override
+    protected void handleResponseMessage(String responseBody) {
+        super.handleResponseMessage(responseBody);
 
-                Object jsonResponse = new JSONTokener(responseBody).nextValue();
-                onSuccess(jsonResponse);
-            } catch(JSONException e) {
-                onFailure(e);
-            } catch(IOException e) {
-                onFailure(e);
+        try {
+            Object jsonResponse = new JSONTokener(responseBody).nextValue();
+            if(jsonResponse instanceof JSONObject) {
+                onSuccess((JSONObject)jsonResponse);
+            } else if(jsonResponse instanceof JSONArray) {
+                onSuccess((JSONArray)jsonResponse);
             }
+        } catch(JSONException e) {
+            onFailure(e);
         }
     }
 
     // Public callbacks
-    public void onSuccess(Object response) {}
+    public void onSuccess(JSONObject response) {}
+    public void onSuccess(JSONArray response) {}
 }

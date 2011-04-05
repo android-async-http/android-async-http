@@ -8,6 +8,7 @@ Features
 * Make asynchronous HTTP requests, handle responses in callbacks
 * HTTP requests do not happen in the android UI thread
 * Requests use a threadpool to cap concurrent resource usage
+* Retry requests to help with bad connectivity
 * GET/POST params builder (RequestParams)
 * Optional built-in response parsing into JSON (JsonHttpResponseHandler)
 * Optional persistent cookie store, saves cookies into your app's SharedPreferences
