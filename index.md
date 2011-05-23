@@ -2,9 +2,9 @@
 layout: project
 title: Android Asynchronous Http Client
 tagline: A Callback-Based Http Client Library for Android
-version: 1.0
+version: 1.2.0
 github_url: https://github.com/loopj/android-async-http
-download_url: https://github.com/downloads/loopj/android-async-http/android-async-http.jar
+download_url: https://github.com/downloads/loopj/android-async-http/android-async-http-1.2.0.jar
 ---
 
 
@@ -27,8 +27,8 @@ Features
 - Optional persistent cookie store, saves cookies into your app's SharedPreferences
 
 
-Installation & Setup
---------------------
+Installation & Basic Usage
+--------------------------
 Download the latest .jar file from github and place it in your Android app's
 `lib/` folder.
 
@@ -50,6 +50,56 @@ client.get("http://www.google.com", new AsyncHttpResponseHandler() {
 });
 {% endhighlight %}
 
+
+Recommended Usage: Make a Static Http Client
+--------------------------------------------
+In this example, we'll make a http client class with static accessors to make
+it easy to communicate with Twitter's API.
+
+{% highlight java %}
+import com.loopj.android.http.*;
+
+public class TwitterRestClient {
+  private static final String USER_AGENT = "Example Twitter Rest Client";
+  private static final String BASE_URL = "http://api.twitter.com/1/";
+
+  private static AsyncHttpClient client = new AsyncHttpClient(USER_AGENT);
+
+  public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+      client.get(getAbsoluteUrl(url), params, responseHandler);
+  }
+
+  public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+      client.get(getAbsoluteUrl(url), params, responseHandler);
+  }
+
+  private static String getAbsoluteUrl(String relativeUrl) {
+      return BASE_URL + relativeUrl;
+  }
+}
+{% endhighlight %}
+
+This then makes it very easy to work with the Twitter API in your code:
+{% highlight java %}
+import org.json.*;
+import com.loopj.android.http.*;
+
+class TwitterRestClientUsage {
+    public void getPublicTimeline() throws JSONException {
+        TwitterRestClient.get("statuses/public_timeline.json", null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(JSONArray response) {
+                // Pull out the first event on the public timeline
+                JSONObject firstEvent = timeline.get(0);
+                String tweetText = firstEvent.getString("text");
+
+                // Do something with the response
+                System.out.println(tweetText);
+            }
+        });
+    }
+}
+{% endhighlight %}
 
 Building from Source
 --------------------
