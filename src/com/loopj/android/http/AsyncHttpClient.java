@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.lang.ref.WeakReference;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -76,7 +77,7 @@ public class AsyncHttpClient {
     private DefaultHttpClient httpClient;
     private HttpContext httpContext;
     private ThreadPoolExecutor threadPool;
-    private Map<Context, List<Future>> requestMap;
+    private Map<Context, List<WeakReference<Future>>> requestMap;
 
     public AsyncHttpClient(String userAgent) {
         BasicHttpParams httpParams = new BasicHttpParams();
@@ -125,7 +126,7 @@ public class AsyncHttpClient {
 
         threadPool = (ThreadPoolExecutor)Executors.newCachedThreadPool();
 
-        requestMap = new WeakHashMap<Context, List<Future>>();
+        requestMap = new WeakHashMap<Context, List<WeakReference<Future>>>();
     }
 
     public void setCookieStore(CookieStore cookieStore) {
@@ -186,10 +187,13 @@ public class AsyncHttpClient {
     }
 
     public void cancelRequests(Context context, boolean mayInterruptIfRunning) {
-        List<Future> requestList = requestMap.get(context);
+        List<WeakReference<Future>> requestList = requestMap.get(context);
         if(requestList != null) {
-            for(Future request : requestList) {
-                request.cancel(mayInterruptIfRunning);
+            for(WeakReference<Future> requestRef : requestList) {
+                Future request = requestRef.get();
+                if(request != null) {
+                    request.cancel(mayInterruptIfRunning);
+                }
             }
         }
         requestMap.remove(context);
@@ -199,13 +203,16 @@ public class AsyncHttpClient {
         Future request = threadPool.submit(new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler));
 
         if(context != null) {
-            List<Future> requestList = requestMap.get(context);
+            // Add request to request map
+            List<WeakReference<Future>> requestList = requestMap.get(context);
             if(requestList == null) {
-                requestList = new LinkedList<Future>();
+                requestList = new LinkedList<WeakReference<Future>>();
                 requestMap.put(context, requestList);
             }
 
-            requestList.add(request);
+            requestList.add(new WeakReference<Future>(request));
+
+            // TODO: Remove dead weakrefs from requestLists?
         }
     }
 
