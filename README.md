@@ -54,26 +54,21 @@ How to Build a Basic Twitter Rest Client
         }
     }
 
+
     // Use the TwitterRestClient in your app
     import org.json.*;
     import com.loopj.android.http.*;
 
     class TwitterRestClientUsage {
-        public void getPublicTimeline() {
+        public void getPublicTimeline() throws JSONException {
             TwitterRestClient.get("statuses/public_timeline.json", null, new JsonHttpResponseHandler() {
                 @Override
-                public void onSuccess(Object response) {
-                    JSONArray timeline = (JSONArray)response;
+                public void onSuccess(JSONArray response) {
+                    JSONObject firstEvent = timeline.get(0);
+                    String tweetText = firstEvent.getString("text");
 
-                    try {
-                        JSONObject firstEvent = timeline.get(0);
-                        String tweetText = firstEvent.getString("text");
-
-                        // Do something with the response
-                        System.out.println(tweetText);
-                    } catch(JSONException e) {
-                        e.printStackTrace();
-                    }
+                    // Do something with the response
+                    System.out.println(tweetText);
                 }
             });
         }
