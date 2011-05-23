@@ -32,7 +32,7 @@ import org.apache.http.message.BasicNameValuePair;
 public class RequestParams {
     private static String ENCODING = "UTF-8";
 
-    private ConcurrentHashMap<String,String> urlParams;
+    protected ConcurrentHashMap<String,String> urlParams;
 
     public RequestParams() {
         init();
