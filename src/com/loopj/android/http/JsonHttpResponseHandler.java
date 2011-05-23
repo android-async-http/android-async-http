@@ -18,8 +18,6 @@
 
 package com.loopj.android.http;
 
-import java.io.IOException;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +29,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
         super.handleSuccessMessage(responseBody);
 
         try {
-            Object jsonResponse = new JSONTokener(responseBody).nextValue();
+            Object jsonResponse = parseResponse(responseBody);
             if(jsonResponse instanceof JSONObject) {
                 onSuccess((JSONObject)jsonResponse);
             } else if(jsonResponse instanceof JSONArray) {
@@ -41,7 +39,11 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
             onFailure(e);
         }
     }
-
+    
+    protected Object parseResponse(String responseBody) throws JSONException {
+        return new JSONTokener(responseBody).nextValue();
+    }
+    
     // Public callbacks
     public void onSuccess(JSONObject response) {}
     public void onSuccess(JSONArray response) {}
