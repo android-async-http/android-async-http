@@ -23,6 +23,7 @@ Features
 - HTTP requests happen **outside the UI thread**
 - Requests use a **threadpool** to cap concurrent resource usage
 - GET/POST **params builder** (RequestParams)
+- Automatic smart **request retries** optimized for spotty mobile connections
 - Automatic **gzip** response decoding support for super-fast requests
 - Optional built-in response parsing into **JSON** (JsonHttpResponseHandler)
 - Optional **persistent cookie store**, saves cookies into your app's SharedPreferences
@@ -138,6 +139,31 @@ newCookie.setVersion(1);
 newCookie.setDomain("mydomain.com");
 newCookie.setPath("/");
 myCookieStore.addCookie(newCookie);
+{% endhighlight %}
+
+
+Using `RequestParams` to Build GET/POST Parameters
+--------------------------------------------------
+The `RequestParams` class is used to add optional GET or POST parameters to
+your requests. `RequestParams` can be built and constructed in various ways:
+
+Create empty `RequestParams` and immediately add some parameters:
+{% highlight java %}
+RequestParams params = new RequestParams();
+params.put("key", "value");
+params.put("more", "data");
+{% endhighlight %}
+
+Create `RequestParams` for a single parameter:
+{% highlight java %}
+RequestParams params = new RequestParams("single", "value");
+{% endhighlight %}
+
+Create `RequestParams` from an existing Map of key/value strings:
+{% highlight java %}
+HashMap<String, String> paramMap = new HashMap<String, String>();
+paramMap.put("key", "value");
+RequestParams params = new RequestParams(paramMap);
 {% endhighlight %}
 
 
