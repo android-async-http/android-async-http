@@ -32,7 +32,7 @@ Features
 Who is Using It?
 ----------------
 [Heyzap for Android](https://market.android.com/details?id=com.heyzap.android)
-:   Social game discovery app with 800,000 installs
+:   Social game discovery app with 800,000+ installs
 
 Send me a message to let me know if you are using this library in a released
 android application!
