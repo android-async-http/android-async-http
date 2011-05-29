@@ -19,12 +19,13 @@ Android's Handler message passing.
 
 Features
 --------
-- Make asynchronous HTTP requests, handle responses in callbacks
-- HTTP requests do not happen in the android UI thread
-- Requests use a threadpool to cap concurrent resource usage
-- GET/POST params builder (RequestParams)
-- Optional built-in response parsing into JSON (JsonHttpResponseHandler)
-- Optional persistent cookie store, saves cookies into your app's SharedPreferences
+- Make *asynchronous* HTTP requests, handle responses in *callbacks*
+- HTTP requests happen *outside the UI thread*
+- Requests use a *threadpool* to cap concurrent resource usage
+- GET/POST *params builder* (RequestParams)
+- Automatic *gzip* response decoding support for super-fast requests
+- Optional built-in response parsing into *JSON* (JsonHttpResponseHandler)
+- Optional *persistent cookie store*, saves cookies into your app's SharedPreferences
 
 
 Installation & Basic Usage
@@ -99,6 +100,44 @@ class TwitterRestClientUsage {
         });
     }
 }
+{% endhighlight %}
+
+
+Persistent Cookie Storage
+-------------------------
+This library also includes a `PersistentCookieStore` which is an implementation
+of the Apache HttpClient `CookieStore` interface that automatically saves
+cookies to the user's `SharedPreferences`.
+
+This is extremely useful if you want to use cookies to manage authentication
+sessions, since the user will remain logged in even after closing and
+re-opening your app.
+
+First, create an instance of `AsyncHttpClient`:
+{% highlight java %}
+AsyncHttpClient myClient = new AsyncHttpClient("Awesome User Agent");
+{% endhighlight %}
+
+Now set this client's cookie store to be a new instance of
+`PersistentCookieStore`, constructed with an activity or application context
+(usually `this` will suffice):
+{% highlight java %}
+PersistentCookieStore myCookieStore = new PersistentCookieStore(this);
+myClient.setCookieStore(myCookieStore);
+{% endhighlight %}
+
+Any cookies received from servers will now be stored in the persistent cookie
+store.
+
+To add your own cookies to the store, simply construct a new cookie and
+call `addCookie`:
+
+{% highlight java %}
+BasicClientCookie newCookie = new BasicClientCookie("cookiesare", "awesome");
+newCookie.setVersion(1);
+newCookie.setDomain("mydomain.com");
+newCookie.setPath("/");
+myCookieStore.addCookie(newCookie);
 {% endhighlight %}
 
 
