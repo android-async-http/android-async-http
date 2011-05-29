@@ -187,6 +187,13 @@ project here:
 <https://github.com/loopj/android-async-http/issues>
 
 
+Credits & Contributors
+----------------------
+James Smith <http://github.com/loopj> - Creator and Maintainer
+Micah Fivecoate <http://github.com/m5> - Major Contributor, RequestParams support
+The Droid Fu Project <https://github.com/kaeppler/droid-fu> - Inspiration and code for better retries
+
+
 License
 -------
 The Android Asynchronous Http Client is released under the Android-friendly
