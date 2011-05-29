@@ -16,6 +16,11 @@
     limitations under the License.
 */
 
+/*
+    Some of the retry logic in this class is heavily borrowed from the
+    fantastic droid-fu project: https://github.com/donnfelker/droid-fu
+*/
+
 package com.loopj.android.http;
 
 import java.io.IOException;
