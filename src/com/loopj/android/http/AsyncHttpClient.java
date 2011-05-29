@@ -61,7 +61,6 @@ import org.apache.http.protocol.SyncBasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
 import android.content.Context;
-import android.util.Log;
 
 public class AsyncHttpClient {
     public static final int DEFAULT_MAX_CONNECTIONS = 10;

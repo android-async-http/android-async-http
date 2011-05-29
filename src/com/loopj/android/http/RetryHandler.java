@@ -33,7 +33,6 @@ import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 
 import android.os.SystemClock;
-import android.util.Log;
 
 public class RetryHandler implements HttpRequestRetryHandler {
     private static final int RETRY_SLEEP_TIME_MILLIS = 1500;
