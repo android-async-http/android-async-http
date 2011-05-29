@@ -189,13 +189,13 @@ project here:
 
 Credits & Contributors
 ----------------------
-James Smith <http://github.com/loopj>
+James Smith (<http://github.com/loopj>)
 :   Creator and Maintainer
 
-Micah Fivecoate <http://github.com/m5>
+Micah Fivecoate (<http://github.com/m5>)
 :   Major Contributor, including RequestParams support
 
-The Droid Fu Project <https://github.com/kaeppler/droid-fu>
+The Droid Fu Project (<https://github.com/kaeppler/droid-fu>)
 :   Inspiration and code for better http retries
 
 
