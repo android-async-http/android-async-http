@@ -108,7 +108,7 @@ Persistent Cookie Storage with `PersistentCookieStore`
 ------------------------------------------------------
 This library also includes a `PersistentCookieStore` which is an implementation
 of the Apache HttpClient `CookieStore` interface that automatically saves
-cookies to the user's `SharedPreferences`.
+cookies to `SharedPreferences` storage on the Android device.
 
 This is extremely useful if you want to use cookies to manage authentication
 sessions, since the user will remain logged in even after closing and
