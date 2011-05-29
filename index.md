@@ -32,7 +32,7 @@ Features
 Installation & Basic Usage
 --------------------------
 Download the latest .jar file from github and place it in your Android app's
-`lib/` folder.
+`libs/` folder.
 
 Import the http package in your app's main Activity.
 
@@ -104,8 +104,8 @@ class TwitterRestClientUsage {
 {% endhighlight %}
 
 
-Persistent Cookie Storage
--------------------------
+Persistent Cookie Storage with `PersistentCookieStore`
+------------------------------------------------------
 This library also includes a `PersistentCookieStore` which is an implementation
 of the Apache HttpClient `CookieStore` interface that automatically saves
 cookies to the user's `SharedPreferences`.
@@ -142,8 +142,8 @@ myCookieStore.addCookie(newCookie);
 {% endhighlight %}
 
 
-Using `RequestParams` to Build GET/POST Parameters
---------------------------------------------------
+Adding GET/POST Parameters with `RequestParams`
+-----------------------------------------------
 The `RequestParams` class is used to add optional GET or POST parameters to
 your requests. `RequestParams` can be built and constructed in various ways:
 
