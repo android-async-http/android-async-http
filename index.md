@@ -19,13 +19,13 @@ Android's Handler message passing.
 
 Features
 --------
-- Make *asynchronous* HTTP requests, handle responses in *callbacks*
-- HTTP requests happen *outside the UI thread*
-- Requests use a *threadpool* to cap concurrent resource usage
-- GET/POST *params builder* (RequestParams)
-- Automatic *gzip* response decoding support for super-fast requests
-- Optional built-in response parsing into *JSON* (JsonHttpResponseHandler)
-- Optional *persistent cookie store*, saves cookies into your app's SharedPreferences
+- Make **asynchronous** HTTP requests, handle responses in **anonymous callbacks**
+- HTTP requests happen **outside the UI thread**
+- Requests use a **threadpool** to cap concurrent resource usage
+- GET/POST **params builder** (RequestParams)
+- Automatic **gzip** response decoding support for super-fast requests
+- Optional built-in response parsing into **JSON** (JsonHttpResponseHandler)
+- Optional **persistent cookie store**, saves cookies into your app's SharedPreferences
 
 
 Installation & Basic Usage
