@@ -172,13 +172,24 @@ public class AsyncHttpClient {
     }
 
     public void post(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        HttpEntity entity = null;
+        if(params != null) {
+            entity = params.getEntity();
+        }
+
+        post(context, url, entity, null, responseHandler);
+    }
+
+    public void post(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
         // Build post object with params
         final HttpPost post = new HttpPost(url);
-        if(params != null) {
-            HttpEntity entity = params.getEntity();
-            if(entity != null){
-                post.setEntity(entity);
-            }
+
+        if(entity != null){
+            post.setEntity(entity);
+        }
+
+        if(contentType != null) {
+            post.addHeader("Content-Type", contentType);
         }
 
         // Fire up the request in a new thread

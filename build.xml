@@ -1,6 +1,6 @@
 <project default="package">
     <!-- Project properties -->
-    <property name="version.num" value="1.2.0" />
+    <property name="version.num" value="1.2.1" />
     <property name="project" value="android-async-http" />
 
     <!-- Standard jar stuff -->
