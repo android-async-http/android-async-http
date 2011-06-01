@@ -81,6 +81,10 @@ public class AsyncHttpClient {
     private ThreadPoolExecutor threadPool;
     private Map<Context, List<WeakReference<Future>>> requestMap;
 
+    /**
+     * Creates a new AsyncHttpClient which will identify itself with the user agent userAgent
+     * @param userAgent The identifier to use in the User-Agent header in requests
+     */
     public AsyncHttpClient(String userAgent) {
         BasicHttpParams httpParams = new BasicHttpParams();
 

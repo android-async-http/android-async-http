@@ -2,12 +2,13 @@
     <property file="local.properties"/>
     <property file="default.properties"/>
 
-    <!-- Project properties -->
-    <property name="version.num" value="1.2.1" />
-    <property name="project" value="android-async-http" />
+    <!-- Package properties -->
+    <property name="package.name" value="android-async-http" />
+    <property name="package.version" value="1.2.1" />
+    <property name="package.packagename" value="com.loopj.android.http" />
 
     <!-- Standard jar stuff -->
-    <property name="jarfile" value="${project}-${version.num}.jar" />
+    <property name="jarfile" value="${package.name}-${package.version}.jar" />
     <property name="lib.dir" value="${sdk.dir}platforms/${target}" />
     <property name="build.dir" value="./build"/>
     <property name="classes.dir"  value="${build.dir}/classes"/>
@@ -17,6 +18,19 @@
     <path id="classpath">
         <fileset dir="${lib.dir}" includes="**/*.jar" />
     </path>
+
+    <!-- Build javadoc -->
+    <target name="doc">
+        <javadoc 
+            classpathref="classpath"
+            sourcepath="gen:src"
+            destdir="doc"
+            packagenames="${package.packagename}"
+            linkoffline="http://d.android.com/reference ${sdk.dir}docs/reference" 
+            stylesheetfile="${sdk.dir}docs/assets/android-developer-docs.css"
+            additionalparam="-author  -version"
+            />
+    </target>
 
     <!-- Compile java files into classes -->
     <target name="compile">
