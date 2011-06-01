@@ -1,11 +1,14 @@
 <project default="package">
+    <property file="local.properties"/>
+    <property file="default.properties"/>
+
     <!-- Project properties -->
     <property name="version.num" value="1.2.1" />
     <property name="project" value="android-async-http" />
 
     <!-- Standard jar stuff -->
     <property name="jarfile" value="${project}-${version.num}.jar" />
-    <property name="lib.dir" value="/usr/local/android_sdk/platforms/android-7/" />
+    <property name="lib.dir" value="${sdk.dir}platforms/${target}" />
     <property name="build.dir" value="./build"/>
     <property name="classes.dir"  value="${build.dir}/classes"/>
     <buildnumber file="build.num" />

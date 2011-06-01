@@ -69,7 +69,7 @@ public class RequestParams {
         put(key, filedata, filename, null);
     }
 
-    public void put(String key, ByteArrayInputStream filedata, String filename, String contentType){
+    public void put(String key, ByteArrayInputStream filedata, String filename, String contentType) {
         if(key != null && filedata != null) {
             fileParams.put(key, new FileWrapper(filedata, filename, contentType));
         }
