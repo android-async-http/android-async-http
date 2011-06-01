@@ -41,8 +41,11 @@ import org.apache.http.HttpVersion;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.params.ConnPerRouteBean;
@@ -136,66 +139,6 @@ public class AsyncHttpClient {
         this.threadPool = threadPool;
     }
 
-    public void get(String url, AsyncHttpResponseHandler responseHandler) {
-        get(null, url, null, responseHandler);
-    }
-
-    public void get(Context context, String url, AsyncHttpResponseHandler responseHandler) {
-        get(context, url, null, responseHandler);
-    }
-
-    public void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        get(null, url, params, responseHandler);
-    }
-
-    public void get(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        // Build and append query string (utf8 url encoded)
-        if(params != null) {
-            String paramString = params.getParamString();
-            url += "?" + paramString;
-        }
-
-        // Fire up the request in a new thread
-        sendRequest(httpClient, httpContext, new HttpGet(url), responseHandler, context);
-    }
-
-    public void post(String url, AsyncHttpResponseHandler responseHandler) {
-        post(null, url, null, responseHandler);
-    }
-
-    public void post(Context context, String url, AsyncHttpResponseHandler responseHandler) {
-        post(context, url, null, responseHandler);
-    }
-
-    public void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        post(null, url, params, responseHandler);
-    }
-
-    public void post(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        HttpEntity entity = null;
-        if(params != null) {
-            entity = params.getEntity();
-        }
-
-        post(context, url, entity, null, responseHandler);
-    }
-
-    public void post(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
-        // Build post object with params
-        final HttpPost post = new HttpPost(url);
-
-        if(entity != null){
-            post.setEntity(entity);
-        }
-
-        if(contentType != null) {
-            post.addHeader("Content-Type", contentType);
-        }
-
-        // Fire up the request in a new thread
-        sendRequest(httpClient, httpContext, post, responseHandler, context);
-    }
-
     public void cancelRequests(Context context, boolean mayInterruptIfRunning) {
         List<WeakReference<Future>> requestList = requestMap.get(context);
         if(requestList != null) {
@@ -209,7 +152,86 @@ public class AsyncHttpClient {
         requestMap.remove(context);
     }
 
-    private void sendRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, AsyncHttpResponseHandler responseHandler, Context context) {
+
+    // Http GET Requests
+    public void get(String url, AsyncHttpResponseHandler responseHandler) {
+        get(null, url, null, responseHandler);
+    }
+
+    public void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        get(null, url, params, responseHandler);
+    }
+
+    public void get(Context context, String url, AsyncHttpResponseHandler responseHandler) {
+        get(context, url, null, responseHandler);
+    }
+
+    public void get(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        sendRequest(httpClient, httpContext, new HttpGet(getUrlWithQueryString(url, params)), null, responseHandler, context);
+    }
+
+
+    // Http POST Requests
+    public void post(String url, AsyncHttpResponseHandler responseHandler) {
+        post(null, url, null, responseHandler);
+    }
+
+    public void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        post(null, url, params, responseHandler);
+    }
+
+    public void post(Context context, String url, AsyncHttpResponseHandler responseHandler) {
+        post(context, url, null, responseHandler);
+    }
+
+    public void post(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        post(context, url, paramsToEntity(params), null, responseHandler);
+    }
+
+    public void post(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
+        sendRequest(httpClient, httpContext, addEntityToRequestBase(new HttpPost(url), entity), contentType, responseHandler, context);
+    }
+
+
+    // Http PUT Requests
+    public void put(String url, AsyncHttpResponseHandler responseHandler) {
+        put(null, url, null, responseHandler);
+    }
+
+    public void put(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        put(null, params, responseHandler);
+    }
+
+    public void put(Context context, String url, AsyncHttpResponseHandler responseHandler) {
+        put(context, url, null, responseHandler);
+    }
+
+    public void put(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        put(context, url, paramsToEntity(params), null, responseHandler);
+    }
+
+    public void put(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
+        sendRequest(httpClient, httpContext, addEntityToRequestBase(new HttpPut(url), entity), contentType, responseHandler, context);
+    }
+
+
+    // Http DELETE Requests
+    public void delete(String url, AsyncHttpResponseHandler responseHandler) {
+        delete(null, url, responseHandler);
+    }
+
+    public void delete(Context context, String url, AsyncHttpResponseHandler responseHandler) {
+        final HttpDelete delete = new HttpDelete(url);
+        sendRequest(httpClient, httpContext, delete, null, responseHandler, context);
+    }
+
+
+    // Private stuf
+    private void sendRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, AsyncHttpResponseHandler responseHandler, Context context) {
+        if(contentType != null) {
+            uriRequest.addHeader("Content-Type", contentType);
+        }
+
         Future request = threadPool.submit(new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler));
 
         if(context != null) {
@@ -224,6 +246,33 @@ public class AsyncHttpClient {
 
             // TODO: Remove dead weakrefs from requestLists?
         }
+    }
+
+    private String getUrlWithQueryString(String url, RequestParams params) {
+        if(params != null) {
+            String paramString = params.getParamString();
+            url += "?" + paramString;
+        }
+
+        return url;
+    }
+
+    private HttpEntity paramsToEntity(RequestParams params) {
+        HttpEntity entity = null;
+
+        if(params != null) {
+            entity = params.getEntity();
+        }
+
+        return entity;
+    }
+
+    private HttpEntityEnclosingRequestBase addEntityToRequestBase(HttpEntityEnclosingRequestBase requestBase, HttpEntity entity) {
+        if(entity != null){
+            requestBase.setEntity(entity);
+        }
+
+        return requestBase;
     }
 
     private static class InflatingEntity extends HttpEntityWrapper {
