@@ -31,6 +31,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Looper;
 
+/**
+ * Used to intercept and handle the responses from requests made using 
+ * {@link AsyncHttpClient}.
+ * <p>
+ * This class is designed to be passed to get, post, put and delete requests
+ * with the {@link #onSuccess(String)} method anonymously overridden.
+ * <p>
+ * Optionally, you can also override the {@link #onFailure(Throwable)},
+ * {@link #onStart()}, and {@link #onFinish()} methods as required.
+ */
 public class AsyncHttpResponseHandler {
     private static final int SUCCESS_MESSAGE = 0;
     private static final int FAILURE_MESSAGE = 1;

@@ -28,7 +28,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 
-public class AsyncHttpRequest implements Runnable {
+class AsyncHttpRequest implements Runnable {
     private AbstractHttpClient client;
     private HttpContext context;
     private HttpUriRequest request;
