@@ -31,16 +31,28 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
+/**
+ * A collection of string request parameters or files to send along with HTTP
+ * GET, POST or PUT requests made with {@link AsyncHttpClient}.
+ */
 public class RequestParams {
     private static String ENCODING = "UTF-8";
 
-    protected ConcurrentHashMap<String, String> stringParams;
+    protected ConcurrentHashMap<String, String> urlParams;
     protected ConcurrentHashMap<String, FileWrapper> fileParams;
 
+    /**
+     * Constructs a new empty <code>RequestParams</code> instance.
+     */
     public RequestParams() {
         init();
     }
 
+    /**
+     * Constructs a new RequestParams instance containing the key/value
+     * string params from the specified map.
+     * @param source the source key/value string map to add.
+     */
     public RequestParams(Map<String, String> source) {
         init();
 
@@ -49,38 +61,95 @@ public class RequestParams {
         }
     }
 
+    /**
+     * Constructs a new RequestParams instance and populate it with a single
+     * initial key/value string param.
+     * @param key the key name for the intial param.
+     * @param value the value string for the initial param.
+     */
     public RequestParams(String key, String value) {
         init();
 
         put(key, value);
     }
 
+    /**
+     * Adds a key/value string pair to the request.
+     * @param key the key name for the new param.
+     * @param value the value string for the new param.
+     */
     public void put(String key, String value){
         if(key != null && value != null) {
-            stringParams.put(key, value);
+            urlParams.put(key, value);
         }
     }
 
+    /**
+     * Adds a file to the request.
+     * @param key the key name for the new param.
+     * @param filedata the file contents to add.
+     */
     public void put(String key, ByteArrayInputStream filedata) {
         put(key, filedata, null, null);
     }
 
+    /**
+     * Adds a file to the request.
+     * @param key the key name for the new param.
+     * @param filedata the file contents to add.
+     * @param filename the name of the file.
+     */
     public void put(String key, ByteArrayInputStream filedata, String filename) {
         put(key, filedata, filename, null);
     }
 
+    /**
+     * Adds a file to the request.
+     * @param key the key name for the new param.
+     * @param filedata the file contents to add.
+     * @param filename the name of the file.
+     * @param contentType the content type of the file, eg. application/json
+     */
     public void put(String key, ByteArrayInputStream filedata, String filename, String contentType) {
         if(key != null && filedata != null) {
             fileParams.put(key, new FileWrapper(filedata, filename, contentType));
         }
     }
 
+    /**
+     * Removes a parameter from the request.
+     * @param key the key name for the parameter to remove.
+     */
     public void remove(String key){
-        stringParams.remove(key);
+        urlParams.remove(key);
         fileParams.remove(key);
     }
 
-    public String getParamString() {
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        for(ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
+            if(result.length() > 0)
+                result.append("&");
+
+            result.append(entry.getKey());
+            result.append("=");
+            result.append(entry.getValue());
+        }
+
+        for(ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
+            if(result.length() > 0)
+                result.append("&");
+
+            result.append(entry.getKey());
+            result.append("=");
+            result.append("FILE");
+        }
+
+        return result.toString();
+    }
+
+    String getParamString() {
         if(!fileParams.isEmpty()) {
             throw new RuntimeException("Uploading files is not supported with Http GET requests.");
         }
@@ -88,14 +157,14 @@ public class RequestParams {
         return URLEncodedUtils.format(getParamsList(), ENCODING);
     }
 
-    public HttpEntity getEntity() {
+    HttpEntity getEntity() {
         HttpEntity entity = null;
 
         if(!fileParams.isEmpty()) {
             SimpleMultipartEntity multipartEntity = new SimpleMultipartEntity();
 
             // Add string params
-            for(ConcurrentHashMap.Entry<String, String> entry : stringParams.entrySet()) {
+            for(ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
                 multipartEntity.addPart(entry.getKey(), entry.getValue());
             }
 
@@ -129,42 +198,18 @@ public class RequestParams {
     }
 
     private void init(){
-        stringParams = new ConcurrentHashMap<String, String>();
+        urlParams = new ConcurrentHashMap<String, String>();
         fileParams = new ConcurrentHashMap<String, FileWrapper>();
     }
 
     private List<BasicNameValuePair> getParamsList() {
         List<BasicNameValuePair> lparams = new LinkedList<BasicNameValuePair>();
 
-        for(ConcurrentHashMap.Entry<String, String> entry : stringParams.entrySet()) {
+        for(ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
             lparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
         }
 
         return lparams;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder();
-        for(ConcurrentHashMap.Entry<String, String> entry : stringParams.entrySet()) {
-            if(result.length() > 0)
-                result.append("&");
-
-            result.append(entry.getKey());
-            result.append("=");
-            result.append(entry.getValue());
-        }
-
-        for(ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
-            if(result.length() > 0)
-                result.append("&");
-
-            result.append(entry.getKey());
-            result.append("=");
-            result.append("FILE");
-        }
-
-        return result.toString();
     }
 
     private static class FileWrapper {

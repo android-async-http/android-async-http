@@ -49,6 +49,9 @@ public class AsyncHttpResponseHandler {
 
     private Handler handler;
 
+    /**
+     * Creates a new AsyncHttpResponseHandler
+     */
     public AsyncHttpResponseHandler() {
         // Set up a handler to post events back to the correct thread if possible
         if(Looper.myLooper() != null) {
@@ -61,44 +64,58 @@ public class AsyncHttpResponseHandler {
     }
 
 
-    // Pre-processing of messages (in background thread)
-    public void sendResponseMessage(HttpResponse response) {
-        StatusLine status = response.getStatusLine();
-        if(status.getStatusCode() >= 300) {
-            sendFailureMessage(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()));
-        } else {
-            try {
-                HttpEntity entity = null;
-                HttpEntity temp = response.getEntity();
-                if(temp != null) {
-                    entity = new BufferedHttpEntity(temp);
-                }
+    //
+    // Callbacks to be overridden, typically anonymously
+    //
 
-                sendSuccessMessage(EntityUtils.toString(entity));
-            } catch(IOException e) {
-                sendFailureMessage(e);
-            }
-        }
-    }
+    /**
+     * Fired when the request is started, override to handle in your own code
+     */
+    public void onStart() {}
 
-    public void sendSuccessMessage(String responseBody) {
+    /**
+     * Fired in all cases when the request is finished, after both success and failure, override to handle in your own code
+     */
+    public void onFinish() {}
+
+    /**
+     * Fired when a request returns successfully, override to handle in your own code
+     * @param content the body of the HTTP response from the server
+     */
+    public void onSuccess(String content) {}
+
+    /**
+     * Fired when a request fails to complete, override to handle in your own code
+     * @param error the underlying cause of the failure
+     */
+    public void onFailure(Throwable error) {}
+
+
+    //
+    // Pre-processing of messages (executes in background threadpool thread)
+    //
+
+    protected void sendSuccessMessage(String responseBody) {
         sendMessage(obtainMessage(SUCCESS_MESSAGE, responseBody));
     }
 
-    public void sendFailureMessage(Throwable e) {
+    protected void sendFailureMessage(Throwable e) {
         sendMessage(obtainMessage(FAILURE_MESSAGE, e));
     }
 
-    public void sendStartMessage() {
+    protected void sendStartMessage() {
         sendMessage(obtainMessage(START_MESSAGE, null));
     }
 
-    public void sendFinishMessage() {
+    protected void sendFinishMessage() {
         sendMessage(obtainMessage(FINISH_MESSAGE, null));
     }
 
 
-    // Pre-processing of messages (in original calling thread)
+    //
+    // Pre-processing of messages (in original calling thread, typically the UI thread)
+    //
+
     protected void handleSuccessMessage(String responseBody) {
         onSuccess(responseBody);
     }
@@ -108,7 +125,8 @@ public class AsyncHttpResponseHandler {
     }
 
 
-    // Utility functions
+
+    // Methods which emulate android's Handler and Message methods
     protected void handleMessage(Message msg) {
         switch(msg.what) {
             case SUCCESS_MESSAGE:
@@ -147,9 +165,23 @@ public class AsyncHttpResponseHandler {
     }
 
 
-    // Public callbacks
-    public void onStart() {}
-    public void onFinish() {}
-    public void onSuccess(String content) {}
-    public void onFailure(Throwable error) {}
+    // Interface to AsyncHttpRequest
+    void sendResponseMessage(HttpResponse response) {
+        StatusLine status = response.getStatusLine();
+        if(status.getStatusCode() >= 300) {
+            sendFailureMessage(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()));
+        } else {
+            try {
+                HttpEntity entity = null;
+                HttpEntity temp = response.getEntity();
+                if(temp != null) {
+                    entity = new BufferedHttpEntity(temp);
+                }
+
+                sendSuccessMessage(EntityUtils.toString(entity));
+            } catch(IOException e) {
+                sendFailureMessage(e);
+            }
+        }
+    }
 }

@@ -37,7 +37,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.message.BasicHeader;
 
-public class SimpleMultipartEntity implements HttpEntity {
+class SimpleMultipartEntity implements HttpEntity {
     private final static char[] MULTIPART_CHARS = "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
     private String boundary = null;

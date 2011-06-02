@@ -39,7 +39,7 @@ import org.apache.http.protocol.HttpContext;
 
 import android.os.SystemClock;
 
-public class RetryHandler implements HttpRequestRetryHandler {
+class RetryHandler implements HttpRequestRetryHandler {
     private static final int RETRY_SLEEP_TIME_MILLIS = 1500;
     private static HashSet<Class<?>> exceptionWhitelist = new HashSet<Class<?>>();
     private static HashSet<Class<?>> exceptionBlacklist = new HashSet<Class<?>>();

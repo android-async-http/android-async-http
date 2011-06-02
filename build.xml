@@ -54,6 +54,7 @@
     <!-- Clean out the build files -->
     <target name="clean">
         <delete dir="build" />
+        <delete dir="doc" />
         <delete>
             <fileset dir="." includes="${jarfile}"/>
             <fileset file="MANIFEST.MF"/>

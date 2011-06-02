@@ -34,6 +34,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+/**
+ * A persistent cookie store which implements the Apache HttpClient
+ * {@link CookieStore} interface. Cookies are stored and will persist on the
+ * user's device between application sessions since they are serialized and
+ * stored in {@link SharedPreferences}.
+ * <p>
+ * Instances of this class are designed to be used with
+ * {@link AsyncHttpClient#setCookieStore}, but can also be used with a 
+ * regular old apache HttpClient/HttpContext if you prefer.
+ */
 public class PersistentCookieStore implements CookieStore {
     private static final String COOKIE_PREFS = "CookiePrefsFile";
     private static final String COOKIE_NAME_STORE = "names";
@@ -42,6 +52,9 @@ public class PersistentCookieStore implements CookieStore {
     private ConcurrentHashMap<String, Cookie> cookies;
     private SharedPreferences cookiePrefs;
 
+    /**
+     * Construct a persistent cookie store.
+     */
     public PersistentCookieStore(Context context) {
         cookiePrefs = context.getSharedPreferences(COOKIE_PREFS, 0);
         cookies = new ConcurrentHashMap<String, Cookie>();
@@ -65,6 +78,7 @@ public class PersistentCookieStore implements CookieStore {
         }
     }
 
+    @Override
     public void addCookie(Cookie cookie) {
         String name = cookie.getName();
 
@@ -78,6 +92,7 @@ public class PersistentCookieStore implements CookieStore {
         prefsWriter.commit();
     }
 
+    @Override
     public void clear() {
         // Clear cookies from local store
         cookies.clear();
@@ -91,6 +106,7 @@ public class PersistentCookieStore implements CookieStore {
         prefsWriter.commit();
     }
 
+    @Override
     public boolean clearExpired(Date date) {
         boolean clearedAny = false;
         SharedPreferences.Editor prefsWriter = cookiePrefs.edit();
@@ -119,13 +135,15 @@ public class PersistentCookieStore implements CookieStore {
         return clearedAny;
     }
 
-    public Cookie getCookie(String name) {
-        return cookies.get(name);
-    }
-
+    @Override
     public List<Cookie> getCookies() {
         return new ArrayList<Cookie>(cookies.values());
     }
+
+
+    //
+    // Cookie serialization/deserialization
+    //
 
     protected String encodeCookie(SerializableCookie cookie) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
