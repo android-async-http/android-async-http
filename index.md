@@ -183,20 +183,17 @@ Uploading Files with `RequestParams`
 The `RequestParams` class additionally supports multipart file uploads as
 follows:
 
-Create empty `RequestParams`:
-{% highlight java %}
-RequestParams params = new RequestParams();
-{% endhighlight %}
-
 Add an `InputStream` to the `RequestParams` to upload:
 {% highlight java %}
 InputStream myInputStream = blah;
+RequestParams params = new RequestParams();
 params.put("secret_passwords", myInputStream, "passwords.txt");
 {% endhighlight %}
 
-Add a java `File` object to the `RequestParams` to upload:
+Add a `File` object to the `RequestParams` to upload:
 {% highlight java %}
 File myFile = new File("/path/to/file.png");
+RequestParams params = new RequestParams();
 try {
     params.put("profile_picture", myFile);
 } catch(FileNotFoundException e) {}
@@ -205,14 +202,12 @@ try {
 Add a byte array to the `RequestParams` to upload:
 {% highlight java %}
 byte[] myByteArray = blah;
+RequestParams params = new RequestParams();
 params.put("soundtrack", new ByteArrayInputStream(myByteArray), "she-wolf.mp3");
 {% endhighlight %}
 
-
-Boring Javadoc Generated Documentation
---------------------------------------
-
-<http://loopj.com/android-async-http/doc/com/loopj/android/http/package-summary.html>
+See the (RequestParams Javadoc)[http://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html]
+for more information.
 
 
 Building from Source
