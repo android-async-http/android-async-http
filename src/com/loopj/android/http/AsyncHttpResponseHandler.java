@@ -33,13 +33,38 @@ import android.os.Looper;
 
 /**
  * Used to intercept and handle the responses from requests made using 
- * {@link AsyncHttpClient}.
+ * {@link AsyncHttpClient}. The {@link #onSuccess(String)} method is 
+ * designed to be anonymously overridden with your own response handling code.
  * <p>
- * This class is designed to be passed to get, post, put and delete requests
- * with the {@link #onSuccess(String)} method anonymously overridden.
- * <p>
- * Optionally, you can also override the {@link #onFailure(Throwable)},
+ * Additionally, you can override the {@link #onFailure(Throwable)},
  * {@link #onStart()}, and {@link #onFinish()} methods as required.
+ * <p>
+ * For example:
+ * <p>
+ * <pre>
+ * AsyncHttpClient client = new AsyncHttpClient("My User Agent");
+ * client.get("http://www.google.com", new AsyncHttpResponseHandler() {
+ *     &#064;Override
+ *     public void onStart() {
+ *         // Initiated the request
+ *     }
+ *
+ *     &#064;Override
+ *     public void onSuccess(String response) {
+ *         // Successfully got a response
+ *     }
+ * 
+ *     &#064;Override
+ *     public void onFailure(Throwable e) {
+ *         // Response failed :(
+ *     }
+ *
+ *     &#064;Override
+ *     public void onFinish() {
+ *         // Completed the request (either success or failure)
+ *     }
+ * });
+ * </pre>
  */
 public class AsyncHttpResponseHandler {
     private static final int SUCCESS_MESSAGE = 0;

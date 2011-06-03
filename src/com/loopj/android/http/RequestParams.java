@@ -34,8 +34,23 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 /**
- * A collection of string request parameters or files to send along with HTTP
- * GET, POST or PUT requests made with {@link AsyncHttpClient}.
+ * A collection of string request parameters or files to send along with
+ * requests made from an {@link AsyncHttpClient} instance.
+ * <p>
+ * For example:
+ * <p>
+ * <pre>
+ * RequestParams params = new RequestParams();
+ * params.put("username", "james");
+ * params.put("password", "123456");
+ * params.put("email", "my&#064;email.com");
+ * params.put("profile_picture", new File("pic.jpg")); // Upload a File
+ * params.put("profile_picture2", someInputStream); // Upload an InputStream
+ * params.put("profile_picture3", new ByteArrayInputStream(someBytes)); // Upload some bytes
+ *
+ * AsyncHttpClient client = new AsyncHttpClient("My User Agent");
+ * client.post("http://myendpoint.com", params, responseHandler);
+ * </pre>
  */
 public class RequestParams {
     private static String ENCODING = "UTF-8";
