@@ -206,7 +206,7 @@ RequestParams params = new RequestParams();
 params.put("soundtrack", new ByteArrayInputStream(myByteArray), "she-wolf.mp3");
 {% endhighlight %}
 
-See the (RequestParams Javadoc)[http://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html]
+See the [RequestParams Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html)
 for more information.
 
 
