@@ -105,7 +105,7 @@ public class RequestParams {
     }
 
     /**
-     * Adds a file to the request.
+     * Adds an input stream to the request.
      * @param key the key name for the new param.
      * @param stream the input stream to add.
      * @param fileName the name of the file.
@@ -115,7 +115,7 @@ public class RequestParams {
     }
 
     /**
-     * Adds a file to the request.
+     * Adds an input stream to the request.
      * @param key the key name for the new param.
      * @param stream the input stream to add.
      * @param fileName the name of the file.
