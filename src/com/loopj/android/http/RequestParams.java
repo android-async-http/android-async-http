@@ -20,6 +20,8 @@ package com.loopj.android.http;
 
 import java.io.InputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,30 +91,39 @@ public class RequestParams {
      * @param key the key name for the new param.
      * @param filedata the file contents to add.
      */
-    public void put(String key, InputStream filedata) {
-        put(key, filedata, null, null);
+    public void put(String key, File file) throws FileNotFoundException {
+        put(key, new FileInputStream(file), file.getName());
     }
 
     /**
-     * Adds a file to the request.
+     * Adds an input stream to the request.
      * @param key the key name for the new param.
-     * @param filedata the file contents to add.
-     * @param filename the name of the file.
+     * @param stream the input stream to add.
      */
-    public void put(String key, InputStream filedata, String filename) {
-        put(key, filedata, filename, null);
+    public void put(String key, InputStream stream) {
+        put(key, stream, null);
     }
 
     /**
      * Adds a file to the request.
      * @param key the key name for the new param.
-     * @param filedata the file contents to add.
-     * @param filename the name of the file.
+     * @param stream the input stream to add.
+     * @param fileName the name of the file.
+     */
+    public void put(String key, InputStream stream, String fileName) {
+        put(key, stream, fileName, null);
+    }
+
+    /**
+     * Adds a file to the request.
+     * @param key the key name for the new param.
+     * @param stream the input stream to add.
+     * @param fileName the name of the file.
      * @param contentType the content type of the file, eg. application/json
      */
-    public void put(String key, InputStream filedata, String filename, String contentType) {
-        if(key != null && filedata != null) {
-            fileParams.put(key, new FileWrapper(filedata, filename, contentType));
+    public void put(String key, InputStream stream, String fileName, String contentType) {
+        if(key != null && stream != null) {
+            fileParams.put(key, new FileWrapper(stream, fileName, contentType));
         }
     }
 
