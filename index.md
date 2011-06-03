@@ -178,6 +178,12 @@ RequestParams params = new RequestParams(paramMap);
 {% endhighlight %}
 
 
+Javadoc Generated Documentation
+-------------------------------
+
+<http://loopj.com/android-async-http/doc/com/loopj/android/http/package-summary.html>
+
+
 Building from Source
 --------------------
 To build a `.jar` file from source, make a clone of the android-async-http
