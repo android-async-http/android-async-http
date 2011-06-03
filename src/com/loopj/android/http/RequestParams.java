@@ -89,7 +89,7 @@ public class RequestParams {
     /**
      * Adds a file to the request.
      * @param key the key name for the new param.
-     * @param filedata the file contents to add.
+     * @param file the file to add.
      */
     public void put(String key, File file) throws FileNotFoundException {
         put(key, new FileInputStream(file), file.getName());

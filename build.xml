@@ -27,7 +27,6 @@
             destdir="doc"
             packagenames="${package.packagename}"
             linkoffline="http://d.android.com/reference ${sdk.dir}docs/reference" 
-            stylesheetfile="${sdk.dir}docs/assets/android-developer-docs.css"
             additionalparam="-author  -version"
             />
     </target>
