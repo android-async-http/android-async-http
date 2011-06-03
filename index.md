@@ -253,7 +253,7 @@ Micah Fivecoate (<http://github.com/m5>)
 The Droid Fu Project (<https://github.com/kaeppler/droid-fu>)
 :   Inspiration and code for better http retries
 
-Rafael Sanches (< http://blog.rafaelsanches.com>)
+Rafael Sanches (<http://blog.rafaelsanches.com>)
 :   Original `SimpleMultipartEntity` code
 
 
