@@ -114,6 +114,12 @@ class TwitterRestClientUsage {
 }
 {% endhighlight %}
 
+Check out the
+[AsyncHttpClient](http://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpClient.html),
+[RequestParams](http://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html) and
+[AsyncHttpResponseHandler](http://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpResponseHandler.html)
+Javadocs for more details.
+
 
 Persistent Cookie Storage with `PersistentCookieStore`
 ------------------------------------------------------
@@ -152,6 +158,9 @@ newCookie.setPath("/");
 myCookieStore.addCookie(newCookie);
 {% endhighlight %}
 
+See the [PersistentCookieStore Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/PersistentCookieStore.html)
+for more information.
+
 
 Adding GET/POST Parameters with `RequestParams`
 -----------------------------------------------
@@ -176,6 +185,9 @@ HashMap<String, String> paramMap = new HashMap<String, String>();
 paramMap.put("key", "value");
 RequestParams params = new RequestParams(paramMap);
 {% endhighlight %}
+
+See the [RequestParams Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html)
+for more information.
 
 
 Uploading Files with `RequestParams`
