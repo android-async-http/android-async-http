@@ -18,7 +18,7 @@
 
 package com.loopj.android.http;
 
-import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
@@ -89,7 +89,7 @@ public class RequestParams {
      * @param key the key name for the new param.
      * @param filedata the file contents to add.
      */
-    public void put(String key, ByteArrayInputStream filedata) {
+    public void put(String key, InputStream filedata) {
         put(key, filedata, null, null);
     }
 
@@ -99,7 +99,7 @@ public class RequestParams {
      * @param filedata the file contents to add.
      * @param filename the name of the file.
      */
-    public void put(String key, ByteArrayInputStream filedata, String filename) {
+    public void put(String key, InputStream filedata, String filename) {
         put(key, filedata, filename, null);
     }
 
@@ -110,7 +110,7 @@ public class RequestParams {
      * @param filename the name of the file.
      * @param contentType the content type of the file, eg. application/json
      */
-    public void put(String key, ByteArrayInputStream filedata, String filename, String contentType) {
+    public void put(String key, InputStream filedata, String filename, String contentType) {
         if(key != null && filedata != null) {
             fileParams.put(key, new FileWrapper(filedata, filename, contentType));
         }
@@ -171,16 +171,11 @@ public class RequestParams {
             // Add file params
             for(ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
                 FileWrapper file = entry.getValue();
-                if(file.bytes != null) {
-                    String filename = file.filename;
-                    if(filename == null) {
-                        filename = "nofilename";
-                    }
-
+                if(file.inputStream != null) {
                     if(file.contentType != null) {
-                        multipartEntity.addPart(entry.getKey(), filename, file.bytes, file.contentType);
+                        multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream, file.contentType);
                     } else {
-                        multipartEntity.addPart(entry.getKey(), filename, file.bytes);
+                        multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream);
                     }
                 }
             }
@@ -213,14 +208,22 @@ public class RequestParams {
     }
 
     private static class FileWrapper {
-        public ByteArrayInputStream bytes;
-        public String filename;
+        public InputStream inputStream;
+        public String fileName;
         public String contentType;
 
-        public FileWrapper(ByteArrayInputStream bytes, String filename, String contentType) {
-            this.bytes = bytes;
-            this.filename = filename;
+        public FileWrapper(InputStream inputStream, String fileName, String contentType) {
+            this.inputStream = inputStream;
+            this.fileName = fileName;
             this.contentType = contentType;
+        }
+
+        public String getFileName() {
+            if(fileName != null) {
+                return fileName;
+            } else {
+                return "nofilename";
+            }
         }
     }
 }
