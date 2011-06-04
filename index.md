@@ -24,7 +24,7 @@ Features
 - Requests use a **threadpool** to cap concurrent resource usage
 - GET/POST **params builder** (RequestParams)
 - **Multipart file uploads** with no additional third party libraries
-- Tiny size overhead to your application, only **22kb** for everything
+- Tiny size overhead to your application, only **19kb** for everything
 - Automatic smart **request retries** optimized for spotty mobile connections
 - Automatic **gzip** response decoding support for super-fast requests
 - Optional built-in response parsing into **JSON** (JsonHttpResponseHandler)
@@ -53,8 +53,7 @@ import com.loopj.android.http.*;
 
 Create a new `AsyncHttpClient` instance and make a request:
 {% highlight java %}
-AsyncHttpClient client = new AsyncHttpClient("My User Agent");
-
+AsyncHttpClient client = new AsyncHttpClient();
 client.get("http://www.google.com", new AsyncHttpResponseHandler() {
     @Override
     public void onSuccess(String response) {
@@ -73,10 +72,9 @@ it easy to communicate with Twitter's API.
 import com.loopj.android.http.*;
 
 public class TwitterRestClient {
-  private static final String USER_AGENT = "Example Twitter Rest Client";
   private static final String BASE_URL = "http://api.twitter.com/1/";
 
-  private static AsyncHttpClient client = new AsyncHttpClient(USER_AGENT);
+  private static AsyncHttpClient client = new AsyncHttpClient();
 
   public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
       client.get(getAbsoluteUrl(url), params, responseHandler);
@@ -133,7 +131,7 @@ re-opening your app.
 
 First, create an instance of `AsyncHttpClient`:
 {% highlight java %}
-AsyncHttpClient myClient = new AsyncHttpClient("Awesome User Agent");
+AsyncHttpClient myClient = new AsyncHttpClient();
 {% endhighlight %}
 
 Now set this client's cookie store to be a new instance of
