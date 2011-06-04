@@ -2,7 +2,7 @@ import com.loopj.android.http.*;
 
 public class ExampleUsage {
     public static void makeRequest() {
-        AsyncHttpClient client = new AsyncHttpClient("My User Agent");
+        AsyncHttpClient client = new AsyncHttpClient();
 
         client.get("http://www.google.com", new AsyncHttpResponseHandler() {
             @Override

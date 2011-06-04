@@ -4,7 +4,7 @@
 
     <!-- Package properties -->
     <property name="package.name" value="android-async-http" />
-    <property name="package.version" value="1.2.1" />
+    <property name="package.version" value="1.3.1" />
     <property name="package.packagename" value="com.loopj.android.http" />
 
     <!-- Standard jar stuff -->
@@ -35,7 +35,7 @@
     <target name="compile">
         <mkdir dir="${build.dir}" />
         <mkdir dir="${classes.dir}" />
-        <javac srcdir="." destdir="${classes.dir}" classpathref="classpath" />
+        <javac srcdir="src" destdir="${classes.dir}" classpathref="classpath" />
     </target>
 
     <!-- Package a jar from compiled class files -->

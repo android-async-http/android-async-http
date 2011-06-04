@@ -39,6 +39,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.CookieStore;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -76,7 +77,7 @@ import android.content.Context;
  * For example:
  * <p>
  * <pre>
- * AsyncHttpClient client = new AsyncHttpClient("My User Agent");
+ * AsyncHttpClient client = new AsyncHttpClient();
  * client.get("http://www.google.com", new AsyncHttpResponseHandler() {
  *     &#064;Override
  *     public void onSuccess(String response) {
@@ -86,10 +87,12 @@ import android.content.Context;
  * </pre>
  */
 public class AsyncHttpClient {
+    private static final String VERSION = "1.3.1";
+
     private static final int DEFAULT_MAX_CONNECTIONS = 10;
     private static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
     private static final int DEFAULT_MAX_RETRIES = 5;
-    private static final String ENCODING = "UTF-8";    
+    private static final String ENCODING = "UTF-8";
     private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     private static final String ENCODING_GZIP = "gzip";
 
@@ -101,11 +104,11 @@ public class AsyncHttpClient {
     private ThreadPoolExecutor threadPool;
     private Map<Context, List<WeakReference<Future>>> requestMap;
 
+
     /**
-     * Creates a new AsyncHttpClient which will identify itself with the user agent userAgent
-     * @param userAgent the identifier to use in the User-Agent header in requests
+     * Creates a new AsyncHttpClient.
      */
-    public AsyncHttpClient(String userAgent) {
+    public AsyncHttpClient() {
         BasicHttpParams httpParams = new BasicHttpParams();
 
         ConnManagerParams.setTimeout(httpParams, socketTimeout);
@@ -116,7 +119,7 @@ public class AsyncHttpClient {
         HttpConnectionParams.setTcpNoDelay(httpParams, true);
 
         HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setUserAgent(httpParams, userAgent);
+        HttpProtocolParams.setUserAgent(httpParams, String.format("android-async-http/%s (http://loopj.com/android-async-http)", VERSION));
 
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
@@ -156,6 +159,15 @@ public class AsyncHttpClient {
     }
 
     /**
+     * Get the underlying HttpClient instance. This is useful for setting
+     * additional fine-grained settings for requests by accessing the
+     * client's ConnectionManager, HttpParams and SchemeRegistry.
+     */
+    public HttpClient getHttpClient() {
+        return this.httpClient;
+    }
+
+    /**
      * Sets an optional CookieStore to use when making requests
      * @param cookieStore The CookieStore implementation to use, usually an instance of {@link PersistentCookieStore}
      */
@@ -170,6 +182,24 @@ public class AsyncHttpClient {
      */
     public void setThreadPool(ThreadPoolExecutor threadPool) {
         this.threadPool = threadPool;
+    }
+
+    /**
+     * Sets the User-Agent header to be sent with each request. By default,
+     * "Android Asynchronous Http Client/VERSION (http://loopj.com/android-async-http/)" is used.
+     * @param userAgent the string to use in the User-Agent header.
+     */
+    public void setUserAgent(String userAgent) {
+        HttpProtocolParams.setUserAgent(this.httpClient.getParams(), userAgent);
+    }
+
+    /**
+     * Sets the SSLSocketFactory to user when making requests. By default,
+     * a new, default SSLSocketFactory is used.
+     * @param sslSocketFactory the socket factory to use for https requests.
+     */
+    public void setSSLSocketFactory(SSLSocketFactory sslSocketFactory) {
+        this.httpClient.getConnectionManager().getSchemeRegistry().register(new Scheme("https", sslSocketFactory, 443));
     }
 
     /**

@@ -48,7 +48,7 @@ import org.apache.http.message.BasicNameValuePair;
  * params.put("profile_picture2", someInputStream); // Upload an InputStream
  * params.put("profile_picture3", new ByteArrayInputStream(someBytes)); // Upload some bytes
  *
- * AsyncHttpClient client = new AsyncHttpClient("My User Agent");
+ * AsyncHttpClient client = new AsyncHttpClient();
  * client.post("http://myendpoint.com", params, responseHandler);
  * </pre>
  */

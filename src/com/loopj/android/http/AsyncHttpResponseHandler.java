@@ -42,7 +42,7 @@ import android.os.Looper;
  * For example:
  * <p>
  * <pre>
- * AsyncHttpClient client = new AsyncHttpClient("My User Agent");
+ * AsyncHttpClient client = new AsyncHttpClient();
  * client.get("http://www.google.com", new AsyncHttpResponseHandler() {
  *     &#064;Override
  *     public void onStart() {

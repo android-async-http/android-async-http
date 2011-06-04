@@ -3,10 +3,9 @@
 import com.loopj.android.http.*;
 
 public class TwitterRestClient {
-    private static final String USER_AGENT = "Example Twitter Rest Client";
     private static final String BASE_URL = "http://api.twitter.com/1/";
 
-    private static AsyncHttpClient client = new AsyncHttpClient(USER_AGENT);
+    private static AsyncHttpClient client = new AsyncHttpClient();
 
     public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         client.get(getAbsoluteUrl(url), params, responseHandler);
