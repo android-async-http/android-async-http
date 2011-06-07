@@ -175,14 +175,6 @@ public class RequestParams {
         return result.toString();
     }
 
-    String getParamString() {
-        if(!fileParams.isEmpty()) {
-            throw new RuntimeException("Uploading files is not supported with Http GET requests.");
-        }
-
-        return URLEncodedUtils.format(getParamsList(), ENCODING);
-    }
-
     HttpEntity getEntity() {
         HttpEntity entity = null;
 
@@ -231,6 +223,10 @@ public class RequestParams {
         }
 
         return lparams;
+    }
+
+    protected String getParamString() {
+        return URLEncodedUtils.format(getParamsList(), ENCODING);
     }
 
     private static class FileWrapper {
