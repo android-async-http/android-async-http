@@ -223,7 +223,7 @@ public class RequestParams {
         fileParams = new ConcurrentHashMap<String, FileWrapper>();
     }
 
-    private List<BasicNameValuePair> getParamsList() {
+    protected List<BasicNameValuePair> getParamsList() {
         List<BasicNameValuePair> lparams = new LinkedList<BasicNameValuePair>();
 
         for(ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
