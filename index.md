@@ -222,14 +222,16 @@ for more information.
 
 Building from Source
 --------------------
-To build a `.jar` file from source, make a clone of the android-async-http
-github repository and run:
+To build a `.jar` file from source, first make a clone of the 
+android-async-http github repository. You'll then need to copy the 
+`local.properties.dist` file to `local.properties` and edit the `sdk.dir` 
+setting to point to where you have the android sdk installed. You can then run:
 
 {% highlight bash %}
 ant package
 {% endhighlight %}
 
-This will generate a file named `android-async-http.jar`.
+This will generate a file named `android-async-http-version.jar`.
 
 
 Reporting Bugs or Feature Requests
