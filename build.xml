@@ -46,7 +46,7 @@
 
     <!-- Package a jar from compiled class files -->
     <target name="jar" depends="compile">
-        <delete file="${jarfile}" />
+        <delete dir="." includes="**/*.jar" />
         <delete file="MANIFEST.MF" />
         <manifest file="MANIFEST.MF">
             <attribute name="Built-By" value="${user.name}" />
