@@ -340,7 +340,7 @@ public class AsyncHttpClient {
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void put(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        put(null, params, responseHandler);
+        put(null, url, params, responseHandler);
     }
 
     /**
