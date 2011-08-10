@@ -20,11 +20,12 @@ package com.loopj.android.http;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.lang.ref.WeakReference;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -40,13 +41,12 @@ import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.params.ConnPerRouteBean;
@@ -61,8 +61,8 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.SyncBasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.SyncBasicHttpContext;
 
 import android.content.Context;
 
@@ -103,6 +103,7 @@ public class AsyncHttpClient {
     private HttpContext httpContext;
     private ThreadPoolExecutor threadPool;
     private Map<Context, List<WeakReference<Future>>> requestMap;
+    private Map<String, String>headerMap;
 
 
     /**
@@ -133,6 +134,9 @@ public class AsyncHttpClient {
                 if (!request.containsHeader(HEADER_ACCEPT_ENCODING)) {
                     request.addHeader(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
                 }
+                for (String header : headerMap.keySet()) {
+                	request.addHeader(header, headerMap.get(header));
+                }
             }
         });
 
@@ -156,6 +160,7 @@ public class AsyncHttpClient {
         threadPool = (ThreadPoolExecutor)Executors.newCachedThreadPool();
 
         requestMap = new WeakHashMap<Context, List<WeakReference<Future>>>();
+        headerMap = new HashMap<String, String>();
     }
 
     /**
@@ -200,6 +205,13 @@ public class AsyncHttpClient {
      */
     public void setSSLSocketFactory(SSLSocketFactory sslSocketFactory) {
         this.httpClient.getConnectionManager().getSchemeRegistry().register(new Scheme("https", sslSocketFactory, 443));
+    }
+    
+    /**
+     * Sets headers that will get added when the request is intercepted (before sending).
+     */
+    public void addHeader(String header, String value) {
+    	headerMap.put(header, value);
     }
 
     /**
