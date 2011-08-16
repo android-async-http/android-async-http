@@ -103,7 +103,7 @@ public class AsyncHttpClient {
     private HttpContext httpContext;
     private ThreadPoolExecutor threadPool;
     private Map<Context, List<WeakReference<Future>>> requestMap;
-    private Map<String, String>headerMap;
+    private Map<String, String> clientHeaderMap;
 
 
     /**
@@ -134,8 +134,8 @@ public class AsyncHttpClient {
                 if (!request.containsHeader(HEADER_ACCEPT_ENCODING)) {
                     request.addHeader(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
                 }
-                for (String header : headerMap.keySet()) {
-                	request.addHeader(header, headerMap.get(header));
+                for (String header : clientHeaderMap.keySet()) {
+                	request.addHeader(header, clientHeaderMap.get(header));
                 }
             }
         });
@@ -160,7 +160,7 @@ public class AsyncHttpClient {
         threadPool = (ThreadPoolExecutor)Executors.newCachedThreadPool();
 
         requestMap = new WeakHashMap<Context, List<WeakReference<Future>>>();
-        headerMap = new HashMap<String, String>();
+        clientHeaderMap = new HashMap<String, String>();
     }
 
     /**
@@ -208,10 +208,12 @@ public class AsyncHttpClient {
     }
     
     /**
-     * Sets headers that will get added when the request is intercepted (before sending).
+     * Sets headers that will be added to all requests this client makes (before sending).
+     * @param header the name of the header
+     * @param value the contents of the header
      */
     public void addHeader(String header, String value) {
-    	headerMap.put(header, value);
+    	clientHeaderMap.put(header, value);
     }
 
     /**
