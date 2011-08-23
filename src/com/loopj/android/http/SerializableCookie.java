@@ -34,7 +34,7 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 public class SerializableCookie implements Serializable {
     private static final long serialVersionUID = 6374381828722046732L;
 
-    private transient Cookie cookie;
+    private transient final Cookie cookie;
     private transient BasicClientCookie clientCookie;
 
     public SerializableCookie(Cookie cookie) {
