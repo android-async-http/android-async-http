@@ -58,7 +58,7 @@ class RetryHandler implements HttpRequestRetryHandler {
         exceptionBlacklist.add(SSLHandshakeException.class);
     }
 
-    private int maxRetries;
+    private final int maxRetries;
 
     public RetryHandler(int maxRetries) {
         this.maxRetries = maxRetries;

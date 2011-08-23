@@ -22,17 +22,16 @@ import java.io.IOException;
 import java.net.ConnectException;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 
 class AsyncHttpRequest implements Runnable {
-    private AbstractHttpClient client;
-    private HttpContext context;
-    private HttpUriRequest request;
-    private AsyncHttpResponseHandler responseHandler;
+    private final AbstractHttpClient client;
+    private final HttpContext context;
+    private final HttpUriRequest request;
+    private final AsyncHttpResponseHandler responseHandler;
     private int executionCount;
 
     public AsyncHttpRequest(AbstractHttpClient client, HttpContext context, HttpUriRequest request, AsyncHttpResponseHandler responseHandler) {

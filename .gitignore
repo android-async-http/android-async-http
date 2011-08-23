@@ -4,3 +4,6 @@ MANIFEST.MF
 build.num
 build
 local.properties
+bin/
+gen/
+
