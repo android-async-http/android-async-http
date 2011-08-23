@@ -45,7 +45,7 @@ Installation & Basic Usage
 Download the latest .jar file from github and place it in your Android app's
 `libs/` folder.
 
-Import the http package in your app's main Activity.
+Import the http package.
 
 {% highlight java %}
 import com.loopj.android.http.*;
