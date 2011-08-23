@@ -49,8 +49,8 @@ public class PersistentCookieStore implements CookieStore {
     private static final String COOKIE_NAME_STORE = "names";
     private static final String COOKIE_NAME_PREFIX = "cookie_";
 
-    private ConcurrentHashMap<String, Cookie> cookies;
-    private SharedPreferences cookiePrefs;
+    private final ConcurrentHashMap<String, Cookie> cookies;
+    private final SharedPreferences cookiePrefs;
 
     /**
      * Construct a persistent cookie store.
@@ -175,8 +175,8 @@ public class PersistentCookieStore implements CookieStore {
     // to rely on any large Base64 libraries. Can be overridden if you like!
     protected String byteArrayToHexString(byte[] b) {
         StringBuffer sb = new StringBuffer(b.length * 2);
-        for(int i=0; i<b.length; i++) {
-            int v = b[i] & 0xff;
+        for (byte element : b) {
+            int v = element & 0xff;
             if(v < 16) {
                 sb.append('0');
             }
