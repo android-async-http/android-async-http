@@ -18,7 +18,6 @@
 
 package com.loopj.android.http;
 
-import android.widget.MultiAutoCompleteTextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
