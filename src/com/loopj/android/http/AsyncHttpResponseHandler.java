@@ -24,11 +24,11 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.http.util.EntityUtils;
 
 import android.os.Handler;
 import android.os.Message;
 import android.os.Looper;
-import org.apache.http.util.EntityUtils;
 
 /**
  * Used to intercept and handle the responses from requests made using 
