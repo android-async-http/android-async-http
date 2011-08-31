@@ -23,13 +23,12 @@ import java.io.IOException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
-import org.apache.http.client.HttpResponseException;
 import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.util.EntityUtils;
 
 import android.os.Handler;
 import android.os.Message;
 import android.os.Looper;
+import org.apache.http.util.EntityUtils;
 
 /**
  * Used to intercept and handle the responses from requests made using 
@@ -193,20 +192,24 @@ public class AsyncHttpResponseHandler {
     // Interface to AsyncHttpRequest
     void sendResponseMessage(HttpResponse response) {
         StatusLine status = response.getStatusLine();
-        if(status.getStatusCode() >= 300) {
-            sendFailureMessage(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()));
-        } else {
-            try {
-                HttpEntity entity = null;
-                HttpEntity temp = response.getEntity();
-                if(temp != null) {
-                    entity = new BufferedHttpEntity(temp);
-                }
-
-                sendSuccessMessage(EntityUtils.toString(entity));
-            } catch(IOException e) {
-                sendFailureMessage(e);
+        String responseBody = null;
+        try {
+            HttpEntity entity = null;
+            HttpEntity temp = response.getEntity();
+            if(temp != null) {
+                entity = new BufferedHttpEntity(temp);
             }
+            responseBody = EntityUtils.toString(entity);
+        } catch(IOException e) {
+            sendFailureMessage(e);
+        }
+
+        if(status.getStatusCode() >= 300) {
+            sendFailureMessage(new HttpResponseException(status.getStatusCode(),
+                                                         status.getReasonPhrase(),
+                                                         responseBody));
+        } else {
+            sendSuccessMessage(responseBody);
         }
     }
 }
