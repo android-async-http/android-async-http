@@ -19,8 +19,8 @@
 package com.loopj.android.http;
 
 /**
- * Custom exception class, that inherits from HttpResponseException, but includes
- * HTTP response body.
+ * Custom exception class, that inherits from
+ * org.apache.http.client.HttpResponseException, but includes HTTP response body.
  */
 public class HttpResponseException extends org.apache.http.client.HttpResponseException {
     private String responseBody = null;
