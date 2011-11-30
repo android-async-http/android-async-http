@@ -82,6 +82,13 @@ public class PersistentCookieStore implements CookieStore {
     public void addCookie(Cookie cookie) {
         String name = cookie.getName();
 
+        // Save cookie into local store, or remove if expired
+        if(!cookie.isExpired(new Date())) {
+            cookies.put(name, cookie);
+        } else {
+            cookies.remove(name);
+        }
+
         // Save cookie into local store
         cookies.put(name, cookie);
 
