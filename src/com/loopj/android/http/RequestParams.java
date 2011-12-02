@@ -187,15 +187,19 @@ public class RequestParams {
             }
 
             // Add file params
+            int currentIndex = 0;
+            int lastIndex = fileParams.entrySet().size() - 1;
             for(ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
                 FileWrapper file = entry.getValue();
                 if(file.inputStream != null) {
+                	boolean isLast = currentIndex == lastIndex;
                     if(file.contentType != null) {
-                        multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream, file.contentType);
+                        multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream, file.contentType, isLast);
                     } else {
-                        multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream);
+                        multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream, isLast);
                     }
                 }
+                currentIndex++;
             }
 
             entity = multipartEntity;
