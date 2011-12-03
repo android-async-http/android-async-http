@@ -89,9 +89,6 @@ public class PersistentCookieStore implements CookieStore {
             cookies.remove(name);
         }
 
-        // Save cookie into local store
-        cookies.put(name, cookie);
-
         // Save cookie into persistent store
         SharedPreferences.Editor prefsWriter = cookiePrefs.edit();
         prefsWriter.putString(COOKIE_NAME_STORE, TextUtils.join(",", cookies.keySet()));
