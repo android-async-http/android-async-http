@@ -33,8 +33,11 @@ Features
 
 Who is Using It?
 ----------------
-[Heyzap for Android](https://market.android.com/details?id=com.heyzap.android)
-:   Social game discovery app with 800,000+ installs
+[Heyzap](https://market.android.com/details?id=com.heyzap.android)
+:   Social game discovery app with millions of users
+
+[Pose](https://market.android.com/details?id=com.pose)
+:   Pose is the #1 fashion app for sharing and discovering new styles
 
 Send me a [message](https://github.com/inbox/new?to=loopj) on github to let me
 know if you are using this library in a released android application!
