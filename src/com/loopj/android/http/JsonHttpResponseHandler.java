@@ -71,7 +71,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                 onSuccess((JSONArray)jsonResponse);
             }
         } catch(JSONException e) {
-            onFailure(e);
+            onFailure(e, responseBody);
         }
     }
 
