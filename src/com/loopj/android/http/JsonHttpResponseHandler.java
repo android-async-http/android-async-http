@@ -57,6 +57,21 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
      */
     public void onSuccess(JSONArray response) {}
 
+    /**
+     * Fired when a request fails to complete but valid JSON response body was
+     * returned by server, override to handle in your own code.
+     * @param error the underlying cause of the failure
+     * @param response response the parsed json object found in the server response (if any)
+     */
+    public void onFailure(Throwable error, JSONObject response) {}
+
+    /**
+     * Fired when a request fails to complete but valid JSON response body was
+     * returned by server, override to handle in your own code.
+     * @param error the underlying cause of the failure
+     * @param response response the parsed json array found in the server response (if any)
+     */
+    public void onFailure(Throwable error, JSONArray response) {}
 
     // Utility methods
     @Override
@@ -73,6 +88,25 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
         } catch(JSONException e) {
             onFailure(e);
         }
+    }
+
+    // Utility methods
+    protected void handleFailureMessage(Throwable e) {
+        super.handleFailureMessage(e);
+
+        if (e.getClass() == com.loopj.android.http.HttpResponseException.class) {
+            try {
+                Object jsonResponse = parseResponse(((HttpResponseException) e).getResponseBody());
+                if(jsonResponse instanceof JSONObject) {
+                    onFailure(e, (JSONObject)jsonResponse);
+                } else if(jsonResponse instanceof JSONArray) {
+                    onFailure(e, (JSONArray)jsonResponse);
+                }
+            } catch(JSONException je) {
+                onFailure(je);
+            }
+        }
+        onFailure(e);
     }
 
     protected Object parseResponse(String responseBody) throws JSONException {
