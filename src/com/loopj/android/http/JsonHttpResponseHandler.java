@@ -35,7 +35,7 @@ import org.json.JSONTokener;
  * Additionally, you can override the other event methods from the 
  * parent class.
  */
-public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
+public abstract class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     //
     // Callbacks to be overridden, typically anonymously
     //
@@ -60,11 +60,9 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
 
     // Utility methods
     @Override
-    protected void handleSuccessMessage(String responseBody) {
-        super.handleSuccessMessage(responseBody);
-
+    public final void onSuccess(String responseBody) {
         try {
-            Object jsonResponse = parseResponse(responseBody);
+            Object jsonResponse = new JSONTokener(responseBody).nextValue();
             if(jsonResponse instanceof JSONObject) {
                 onSuccess((JSONObject)jsonResponse);
             } else if(jsonResponse instanceof JSONArray) {
@@ -75,9 +73,5 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
         } catch(JSONException e) {
             onFailure(e, responseBody);
         }
-    }
-
-    protected Object parseResponse(String responseBody) throws JSONException {
-        return new JSONTokener(responseBody).nextValue();
     }
 }
