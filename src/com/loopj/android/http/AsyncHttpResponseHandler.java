@@ -131,7 +131,7 @@ public class AsyncHttpResponseHandler {
     // Pre-processing of messages (executes in background threadpool thread)
     //
 
-    protected void sendSuccessMessage(String responseBody) {
+    protected void sendSuccessMessage(int httpStatus, String responseBody) {
         sendMessage(obtainMessage(SUCCESS_MESSAGE, responseBody));
     }
 
@@ -194,7 +194,7 @@ public class AsyncHttpResponseHandler {
         if(handler != null){
             msg = this.handler.obtainMessage(responseMessage, response);
         }else{
-            msg = new Message();
+            msg = Message.obtain(); // The preferred way to get a new Message.
             msg.what = responseMessage;
             msg.obj = response;
         }
@@ -217,10 +217,14 @@ public class AsyncHttpResponseHandler {
             sendFailureMessage(e, null);
         }
 
-        if(status.getStatusCode() >= 300) {
+        /* According to http://developer.android.com/reference/org/apache/http/client/HttpResponseException.html
+         * This exception should be thrown for non HTTP 2** responses.
+         */
+        int httpStatus = status.getStatusCode();
+        if(httpStatus < 200 || 300 <= httpStatus) {
             sendFailureMessage(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()), responseBody);
         } else {
-            sendSuccessMessage(responseBody);
+            sendSuccessMessage(httpStatus, responseBody);
         }
     }
 }
