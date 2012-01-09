@@ -65,6 +65,7 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.SyncBasicHttpContext;
 
 import android.content.Context;
+import android.util.Base64;
 
 
 /**
@@ -215,6 +216,20 @@ public class AsyncHttpClient {
      */
     public void addHeader(String header, String value) {
     	clientHeaderMap.put(header, value);
+    }
+    
+    /**
+     * Sets basic auth credentials
+     */
+    public void setBasicAuthCredientidals(String user, String pass) {
+    	final String authKey = "Authorization";
+    	
+    	if (user == null) user = "";
+    	if (pass == null) pass = "";
+    	clientHeaderMap.remove(authKey);
+    	String credentialText = String.format("%s:%s", user, pass);
+    	String credentialB64 = Base64.encodeToString(credentialText.getBytes(), 0);
+    	clientHeaderMap.put(authKey, String.format("Basic %s", credentialB64));
     }
 
     /**
