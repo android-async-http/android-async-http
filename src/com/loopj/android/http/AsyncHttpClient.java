@@ -223,13 +223,21 @@ public class AsyncHttpClient {
      */
     public void setBasicAuthCredientidals(String user, String pass) {
     	final String authKey = "Authorization";
+
+    	clientHeaderMap.remove(authKey);
+    	if (user == null && pass == null) return;
     	
     	if (user == null) user = "";
-    	if (pass == null) pass = "";
-    	clientHeaderMap.remove(authKey);
-    	String credentialText = String.format("%s:%s", user, pass);
-    	String credentialB64 = Base64.encodeToString(credentialText.getBytes(), 0);
-    	clientHeaderMap.put(authKey, String.format("Basic %s", credentialB64));
+    	String credentialText;
+    	if (pass != null) {
+    		credentialText = String.format("%s:%s", user, pass);
+    	}
+    	else {
+    		credentialText = user;
+    	}
+    	String credentialB64 = Base64.encodeToString(credentialText.getBytes(), Base64.NO_WRAP);
+    	String authToken =  String.format("Basic %s", credentialB64);
+    	clientHeaderMap.put(authKey, authToken);
     }
 
     /**
