@@ -117,6 +117,7 @@ public class AsyncHttpClient {
         ConnManagerParams.setMaxTotalConnections(httpParams, DEFAULT_MAX_CONNECTIONS);
 
         HttpConnectionParams.setSoTimeout(httpParams, socketTimeout);
+        HttpConnectionParams.setConnectionTimeout(httpParams, socketTimout);
         HttpConnectionParams.setTcpNoDelay(httpParams, true);
         HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
 
