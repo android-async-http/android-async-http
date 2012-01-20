@@ -221,7 +221,7 @@ public class AsyncHttpClient {
     /**
      * Sets basic auth credentials
      */
-    public void setBasicAuthCredientidals(String user, String pass) {
+    public void setBasicAuthCredentials(String user, String pass) {
     	final String authKey = "Authorization";
 
     	clientHeaderMap.remove(authKey);
