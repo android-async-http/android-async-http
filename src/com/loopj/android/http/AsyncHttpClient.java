@@ -133,9 +133,9 @@ public class AsyncHttpClient {
         httpClient = new DefaultHttpClient(cm, httpParams);
         httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
             public void process(HttpRequest request, HttpContext context) {
-                if (!request.containsHeader(HEADER_ACCEPT_ENCODING)) {
-                    request.addHeader(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
-                }
+//                if (!request.containsHeader(HEADER_ACCEPT_ENCODING)) {
+//                    request.addHeader(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
+//                }
                 for (String header : clientHeaderMap.keySet()) {
                 	request.addHeader(header, clientHeaderMap.get(header));
                 }
@@ -481,15 +481,33 @@ public class AsyncHttpClient {
     }
 
     private static class InflatingEntity extends HttpEntityWrapper {
+    	GZIPInputStream inputStream;
+    	
         public InflatingEntity(HttpEntity wrapped) {
             super(wrapped);
         }
 
         @Override
-        public InputStream getContent() throws IOException {
-            return new GZIPInputStream(wrappedEntity.getContent());
+		public InputStream getContent() throws IOException {
+        	if (inputStream == null) {
+        		inputStream = new GZIPInputStream(wrappedEntity.getContent());
+        	}
+            return inputStream;
         }
 
+        /* TODO: we might think that implementing this method would solve our leaking closable,
+         * but this is never called.
+         * 
+         * @see org.apache.http.entity.HttpEntityWrapper#consumeContent()
+         */
+        @Override
+        public void consumeContent() throws IOException {
+        	// TODO: see the doc note that this method name is misleading and will be renamed finish()
+        	inputStream.close();
+        	inputStream = null;
+        	super.consumeContent();
+        }
+        
         @Override
         public long getContentLength() {
             return -1;
