@@ -92,7 +92,7 @@ public class AsyncHttpClient {
 
     private static final int DEFAULT_MAX_CONNECTIONS = 10;
     private static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
-    private static final int DEFAULT_MAX_RETRIES = 5;
+    private static final int DEFAULT_MAX_RETRIES = 2;
     private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;
     static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     private static final String ENCODING_GZIP = "gzip";
