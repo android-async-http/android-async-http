@@ -20,6 +20,7 @@ package com.loopj.android.http;
 
 import java.io.IOException;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -34,7 +35,7 @@ import android.os.Looper;
 /**
  * Used to intercept and handle the responses from requests made using 
  * {@link AsyncHttpClient}, with automatic handling of png/jpg image data
- * (e.g. checks Content-type, Content-length). Receives response body as
+ * (e.g. checks Content-Type against allowed list, Content-length). Receives response body as
  * byte array.
  * <p>
  * Additionally, you can override the {@link #onFailure(Throwable, String)},
@@ -73,6 +74,9 @@ public class ImageHttpResponseHandler {
     private static final int START_MESSAGE = 2;
     private static final int FINISH_MESSAGE = 3;
 
+    private static String[] mAllowedContentTypes = new String[] { "image/jpeg",
+    															  "image/png" };
+    
     private Handler handler;
 
     /**
@@ -87,6 +91,15 @@ public class ImageHttpResponseHandler {
                 }
             };
         }
+    }
+    
+    /**
+     * Creates a new AsyncHttpResponseHandler, and overrides the default allowed image
+     * content types with passed String array (hopefully) of image content types.
+     */
+    public ImageHttpResponseHandler(String[] allowedContentTypes) {
+    	this();
+    	mAllowedContentTypes = allowedContentTypes;
     }
 
 
@@ -206,7 +219,25 @@ public class ImageHttpResponseHandler {
     // Interface to AsyncHttpRequest
     void sendResponseMessage(HttpResponse response) {
         StatusLine status = response.getStatusLine();
+        Header[] contentTypeHeaders = response.getHeaders("Content-Type");
         byte[] responseBody = null;
+        if(contentTypeHeaders.length != 1) {
+        	//malformed/ambiguous HTTP Header, ABORT!
+        	sendFailureMessage(new HttpResponseException(status.getStatusCode(), "None, or more than one, Content-Type Header found!"), responseBody);
+        	return;
+        }
+        Header contentTypeHeader = contentTypeHeaders[0];
+        boolean foundAllowedContentType = false;
+        for(String anAllowedContentType : mAllowedContentTypes) {
+        	if(anAllowedContentType.equals(contentTypeHeader.getValue())) {
+        		foundAllowedContentType = true;
+        	}
+        }
+        if(!foundAllowedContentType) {
+        	//Content-Type not in allowed list, ABORT!
+        	sendFailureMessage(new HttpResponseException(status.getStatusCode(), "Content-Type not allowed!"), responseBody);
+        	return;
+        }
         try {
             HttpEntity entity = null;
             HttpEntity temp = response.getEntity();
