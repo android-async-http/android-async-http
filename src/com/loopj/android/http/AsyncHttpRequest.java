@@ -32,6 +32,7 @@ class AsyncHttpRequest implements Runnable {
     private final HttpContext context;
     private final HttpUriRequest request;
     private final AsyncHttpResponseHandler responseHandler;
+    private boolean isImageResponseHandler;
     private int executionCount;
 
     public AsyncHttpRequest(AbstractHttpClient client, HttpContext context, HttpUriRequest request, AsyncHttpResponseHandler responseHandler) {
@@ -39,6 +40,9 @@ class AsyncHttpRequest implements Runnable {
         this.context = context;
         this.request = request;
         this.responseHandler = responseHandler;
+        if(responseHandler instanceof ImageHttpResponseHandler) {
+        	this.isImageResponseHandler = true;
+        }
     }
 
     public void run() {
@@ -55,7 +59,11 @@ class AsyncHttpRequest implements Runnable {
         } catch (IOException e) {
             if(responseHandler != null) {
                 responseHandler.sendFinishMessage();
-                responseHandler.sendFailureMessage(e, null);
+                if(this.isImageResponseHandler) {
+                	responseHandler.sendFailureMessage(e, (byte[]) null);
+                } else {
+                	responseHandler.sendFailureMessage(e, (String) null);
+                }
             }
         }
     }

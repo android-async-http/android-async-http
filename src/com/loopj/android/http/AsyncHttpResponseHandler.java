@@ -138,6 +138,10 @@ public class AsyncHttpResponseHandler {
     protected void sendFailureMessage(Throwable e, String responseBody) {
         sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{e, responseBody}));
     }
+    
+    protected void sendFailureMessage(Throwable e, byte[] responseBody) {
+        sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{e, responseBody}));
+    }
 
     protected void sendStartMessage() {
         sendMessage(obtainMessage(START_MESSAGE, null));

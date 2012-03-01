@@ -68,7 +68,7 @@ import android.os.Looper;
  * });
  * </pre>
  */
-public class ImageHttpResponseHandler {
+public class ImageHttpResponseHandler extends AsyncHttpResponseHandler {
     private static final int SUCCESS_MESSAGE = 0;
     private static final int FAILURE_MESSAGE = 1;
     private static final int START_MESSAGE = 2;
@@ -144,7 +144,7 @@ public class ImageHttpResponseHandler {
     //
     // Pre-processing of messages (executes in background threadpool thread)
     //
-
+    
     protected void sendSuccessMessage(byte[] responseBody) {
         sendMessage(obtainMessage(SUCCESS_MESSAGE, responseBody));
     }
@@ -246,7 +246,7 @@ public class ImageHttpResponseHandler {
             }
             responseBody = EntityUtils.toByteArray(entity);
         } catch(IOException e) {
-            sendFailureMessage(e, null);
+            sendFailureMessage(e, (byte[]) null);
         }
 
         if(status.getStatusCode() >= 300) {
