@@ -174,8 +174,11 @@ public class RequestParams {
 
         return result.toString();
     }
-
-    HttpEntity getEntity() {
+ 
+   /**
+     * Returns an HttpEntity containing all request parameters
+     */
+    public HttpEntity getEntity() {
         HttpEntity entity = null;
 
         if(!fileParams.isEmpty()) {
