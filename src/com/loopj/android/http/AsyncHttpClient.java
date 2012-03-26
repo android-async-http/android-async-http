@@ -201,6 +201,17 @@ public class AsyncHttpClient {
     }
 
     /**
+     * Sets the connection time oout. By default, 10 seconds
+     * @param timeout the connect/socket timeout in milliseconds
+     */
+    public void setTimeout(int timeout){
+        final BasicHttpParams httpParams = this.httpClient.getParams();
+        ConnManagerParams.setTimeout(httpParams, timeout);
+        HttpConnectionParams.setSoTimeout(httpParams, timeout);
+        HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
+    }
+
+    /**
      * Sets the SSLSocketFactory to user when making requests. By default,
      * a new, default SSLSocketFactory is used.
      * @param sslSocketFactory the socket factory to use for https requests.
