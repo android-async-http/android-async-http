@@ -36,6 +36,9 @@ Who is Using It?
 [Heyzap](https://market.android.com/details?id=com.heyzap.android)
 :   Social game discovery app with millions of users
 
+[DoubanFM](https://market.android.com/details?id=com.douban.radio)
+:   Popular personal online music radio service
+
 [Pose](https://market.android.com/details?id=com.pose)
 :   Pose is the #1 fashion app for sharing and discovering new styles
 
