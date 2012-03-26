@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.loopj.android.http"
-	android:versionName="1.3.1"
+	android:versionName="1.3.2"
 	android:versionCode="1">
 	<application
 		android:name="android_async_http">
