@@ -69,6 +69,8 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                 onSuccess((JSONObject)jsonResponse);
             } else if(jsonResponse instanceof JSONArray) {
                 onSuccess((JSONArray)jsonResponse);
+            } else {
+                throw new JSONException("Unexpected type " + jsonResponse.getClass().getName());
             }
         } catch(JSONException e) {
             onFailure(e, responseBody);

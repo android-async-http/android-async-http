@@ -1,6 +1,6 @@
 <project default="package">
     <property file="local.properties"/>
-    <property file="default.properties"/>
+    <property file="project.properties"/>
 
     <!-- Package properties -->
     <property name="package.name" value="android-async-http" />
