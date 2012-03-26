@@ -66,6 +66,7 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.SyncBasicHttpContext;
 
 import android.content.Context;
+import android.util.Base64;
 
 
 /**
@@ -92,9 +93,9 @@ public class AsyncHttpClient {
 
     private static final int DEFAULT_MAX_CONNECTIONS = 10;
     private static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
-    private static final int DEFAULT_MAX_RETRIES = 5;
+    private static final int DEFAULT_MAX_RETRIES = 2;
     private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;
-    private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
+    static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     private static final String ENCODING_GZIP = "gzip";
 
     private static int maxConnections = DEFAULT_MAX_CONNECTIONS;
@@ -134,9 +135,9 @@ public class AsyncHttpClient {
         httpClient = new DefaultHttpClient(cm, httpParams);
         httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
             public void process(HttpRequest request, HttpContext context) {
-                if (!request.containsHeader(HEADER_ACCEPT_ENCODING)) {
-                    request.addHeader(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
-                }
+//                if (!request.containsHeader(HEADER_ACCEPT_ENCODING)) {
+//                    request.addHeader(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
+//                }
                 for (String header : clientHeaderMap.keySet()) {
                 	request.addHeader(header, clientHeaderMap.get(header));
                 }
@@ -228,6 +229,28 @@ public class AsyncHttpClient {
      */
     public void addHeader(String header, String value) {
     	clientHeaderMap.put(header, value);
+    }
+    
+    /**
+     * Sets basic auth credentials
+     */
+    public void setBasicAuthCredentials(String user, String pass) {
+    	final String authKey = "Authorization";
+
+    	clientHeaderMap.remove(authKey);
+    	if (user == null && pass == null) return;
+    	
+    	if (user == null) user = "";
+    	String credentialText;
+    	if (pass != null) {
+    		credentialText = String.format("%s:%s", user, pass);
+    	}
+    	else {
+    		credentialText = user;
+    	}
+    	String credentialB64 = Base64.encodeToString(credentialText.getBytes(), Base64.NO_WRAP);
+    	String authToken =  String.format("Basic %s", credentialB64);
+    	clientHeaderMap.put(authKey, authToken);
     }
 
     /**
@@ -539,15 +562,33 @@ public class AsyncHttpClient {
     }
 
     private static class InflatingEntity extends HttpEntityWrapper {
+    	GZIPInputStream inputStream;
+    	
         public InflatingEntity(HttpEntity wrapped) {
             super(wrapped);
         }
 
         @Override
-        public InputStream getContent() throws IOException {
-            return new GZIPInputStream(wrappedEntity.getContent());
+		public InputStream getContent() throws IOException {
+        	if (inputStream == null) {
+        		inputStream = new GZIPInputStream(wrappedEntity.getContent());
+        	}
+            return inputStream;
         }
 
+        /* TODO: we might think that implementing this method would solve our leaking closable,
+         * but this is never called.
+         * 
+         * @see org.apache.http.entity.HttpEntityWrapper#consumeContent()
+         */
+        @Override
+        public void consumeContent() throws IOException {
+        	// TODO: see the doc note that this method name is misleading and will be renamed finish()
+        	inputStream.close();
+        	inputStream = null;
+        	super.consumeContent();
+        }
+        
         @Override
         public long getContentLength() {
             return -1;

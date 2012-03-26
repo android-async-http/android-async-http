@@ -27,7 +27,11 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 
+import android.util.Log;
+
 class AsyncHttpRequest implements Runnable {
+	final static String TAG = "AsyncHttpRequest";
+	
     private final AbstractHttpClient client;
     private final HttpContext context;
     private final HttpUriRequest request;
@@ -85,12 +89,14 @@ class AsyncHttpRequest implements Runnable {
                 return;
             } catch (IOException e) {
                 cause = e;
+                Log.w(TAG, "problem making request... retrying: ", e);
                 retry = retryHandler.retryRequest(cause, ++executionCount, context);
-            } catch (NullPointerException e) {
+            } 
+            catch (NullPointerException e) {
                 // there's a bug in HttpClient 4.0.x that on some occasions causes
                 // DefaultRequestExecutor to throw an NPE, see
                 // http://code.google.com/p/android/issues/detail?id=5255
-                cause = new IOException("NPE in HttpClient" + e.getMessage());
+                cause = new IOException("NPE in HttpClient " + e.getMessage());
                 retry = retryHandler.retryRequest(cause, ++executionCount, context);
             } 
         }
