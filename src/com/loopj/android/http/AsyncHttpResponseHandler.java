@@ -66,7 +66,7 @@ import android.os.Looper;
  * });
  * </pre>
  */
-public class AsyncHttpResponseHandler {
+public abstract class AsyncHttpResponseHandler {
     private static final int SUCCESS_MESSAGE = 0;
     private static final int FAILURE_MESSAGE = 1;
     private static final int START_MESSAGE = 2;
@@ -148,29 +148,15 @@ public class AsyncHttpResponseHandler {
     }
 
 
-    //
-    // Pre-processing of messages (in original calling thread, typically the UI thread)
-    //
-
-    protected void handleSuccessMessage(String responseBody) {
-        onSuccess(responseBody);
-    }
-
-    protected void handleFailureMessage(Throwable e, String responseBody) {
-        onFailure(e, responseBody);
-    }
-
-
-
     // Methods which emulate android's Handler and Message methods
     protected void handleMessage(Message msg) {
         switch(msg.what) {
             case SUCCESS_MESSAGE:
-                handleSuccessMessage((String)msg.obj);
+                onSuccess((String)msg.obj);
                 break;
             case FAILURE_MESSAGE:
                 Object[] repsonse = (Object[])msg.obj;
-                handleFailureMessage((Throwable)repsonse[0], (String)repsonse[1]);
+                onFailure((Throwable)repsonse[0], (String)repsonse[1]);
                 break;
             case START_MESSAGE:
                 onStart();
@@ -181,7 +167,7 @@ public class AsyncHttpResponseHandler {
         }
     }
 
-    protected void sendMessage(Message msg) {
+    protected final void sendMessage(Message msg) {
         if(handler != null){
             handler.sendMessage(msg);
         } else {
@@ -189,7 +175,7 @@ public class AsyncHttpResponseHandler {
         }
     }
 
-    protected Message obtainMessage(int responseMessage, Object response) {
+    protected final Message obtainMessage(int responseMessage, Object response) {
         Message msg = null;
         if(handler != null){
             msg = this.handler.obtainMessage(responseMessage, response);
@@ -203,7 +189,7 @@ public class AsyncHttpResponseHandler {
 
 
     // Interface to AsyncHttpRequest
-    void sendResponseMessage(HttpResponse response) {
+    final void sendResponseMessage(HttpResponse response) {
         StatusLine status = response.getStatusLine();
         String responseBody = null;
         try {
