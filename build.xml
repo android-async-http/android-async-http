@@ -54,6 +54,7 @@
         <mkdir dir="${classes.dir}" />
 
         <javac
+			includeantruntime="false"
             srcdir="."
             destdir="${classes.dir}"
             classpathref="classpath"
