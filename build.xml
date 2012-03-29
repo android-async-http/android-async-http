@@ -5,25 +5,25 @@
     <!-- Package properties -->
     <property name="package.name" value="android-async-http" />
     <property name="package.packagename" value="com.loopj.android.http" />
-	
-	<!-- Get git commit -->
-	<available file=".git" type="dir" property="git.present"/>
+    
+    <!-- Get git commit -->
+    <available file=".git" type="dir" property="git.present"/>
 
-	<target name="git-details">
-		<exec executable="git" outputproperty="git.status">
-			<arg value="status" />
-		</exec>
-		<echo message="${git.status}"/>
-		
-		<exec executable="git" outputproperty="package.versionname">
-		  <arg value="describe"/>
-		  <arg value='--match=${package.name}-*'/>
-		  <arg value="--tags"/>
-		  <arg value="--dirty"/>
-		  <arg value="--always"/>
-		</exec>
-		<echo message="${package.versionname}" />
-	</target>
+    <target name="git-details">
+        <exec executable="git" outputproperty="git.status">
+            <arg value="status" />
+        </exec>
+        <echo message="${git.status}"/>
+        
+        <exec executable="git" outputproperty="package.versionname">
+          <arg value="describe"/>
+          <arg value='--match=${package.name}-*'/>
+          <arg value="--tags"/>
+          <arg value="--dirty"/>
+          <arg value="--always"/>
+        </exec>
+        <echo message="${package.versionname}" />
+    </target>
 
     <!-- Standard jar stuff -->
     <property name="lib.dir" value="${sdk.dir}/platforms/${target}" />
@@ -54,7 +54,7 @@
         <mkdir dir="${classes.dir}" />
 
         <javac
-			includeantruntime="false"
+            includeantruntime="false"
             srcdir="."
             destdir="${classes.dir}"
             classpathref="classpath"
