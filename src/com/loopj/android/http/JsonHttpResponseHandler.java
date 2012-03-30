@@ -80,4 +80,29 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     protected Object parseResponse(String responseBody) throws JSONException {
         return new JSONTokener(responseBody).nextValue();
     }
+
+    /**
+     * Handle cases where a failure is returned as JSON
+     */
+    public void onFailure(Throwable e, JSONObject errorResponse) {}
+    public void onFailure(Throwable e, JSONArray errorResponse) {}
+    
+    @Override 
+    protected void handleFailureMessage(Throwable e, String responseBody) {
+        super.handleFailureMessage(e, responseBody);
+        if (responseBody != null) try {
+            Object jsonResponse = parseResponse(responseBody);
+            if(jsonResponse instanceof JSONObject) {
+                onFailure(e, (JSONObject)jsonResponse);
+            } else if(jsonResponse instanceof JSONArray) {
+                onFailure(e, (JSONArray)jsonResponse);
+            }
+        } 
+        catch(JSONException ex) {
+            onFailure(e, responseBody);
+        }
+        else {
+        	onFailure(e, "");
+        }
+    }
 }
