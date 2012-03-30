@@ -4,12 +4,29 @@
 
     <!-- Package properties -->
     <property name="package.name" value="android-async-http" />
-    <property name="package.version" value="1.3.2" />
     <property name="package.packagename" value="com.loopj.android.http" />
+    
+    <!-- Get git commit -->
+    <available file=".git" type="dir" property="git.present"/>
+
+    <target name="git-details">
+        <exec executable="git" outputproperty="git.status">
+            <arg value="status" />
+        </exec>
+        <echo message="${git.status}"/>
+        
+        <exec executable="git" outputproperty="package.versionname">
+          <arg value="describe"/>
+          <arg value='--match=${package.name}-*'/>
+          <arg value="--tags"/>
+          <arg value="--dirty"/>
+          <arg value="--always"/>
+        </exec>
+        <echo message="${package.versionname}" />
+    </target>
 
     <!-- Standard jar stuff -->
-    <property name="jarfile" value="${package.name}-${package.version}.jar" />
-    <property name="lib.dir" value="${sdk.dir}platforms/${target}" />
+    <property name="lib.dir" value="${sdk.dir}/platforms/${target}" />
     <property name="build.dir" value="./build"/>
     <property name="classes.dir"  value="${build.dir}/classes"/>
     <buildnumber file="build.num" />
@@ -26,7 +43,7 @@
             sourcepath="gen:src"
             destdir="doc"
             packagenames="${package.packagename}"
-            linkoffline="http://d.android.com/reference ${sdk.dir}docs/reference" 
+            linkoffline="http://d.android.com/reference ${sdk.dir}/docs/reference" 
             additionalparam="-author  -version"
             />
     </target>
@@ -37,6 +54,7 @@
         <mkdir dir="${classes.dir}" />
 
         <javac
+            includeantruntime="false"
             srcdir="."
             destdir="${classes.dir}"
             classpathref="classpath"
@@ -45,15 +63,15 @@
     </target>
 
     <!-- Package a jar from compiled class files -->
-    <target name="jar" depends="compile">
+    <target name="jar" depends="git-details,compile">
         <delete dir="." includes="**/*.jar" />
         <delete file="MANIFEST.MF" />
         <manifest file="MANIFEST.MF">
             <attribute name="Built-By" value="${user.name}" />
-            <attribute name="Implementation-Version" value="${version.num}-b${build.number}"/> 
+            <attribute name="Implementation-Version" value="${package.versionname}"/> 
         </manifest>
 
-        <jar destfile="${jarfile}" basedir="build/classes" includes="com/loopj/android/http/**/*.class" manifest="MANIFEST.MF" />
+        <jar destfile="${package.versionname}.jar" basedir="build/classes" includes="com/loopj/android/http/**/*.class" manifest="MANIFEST.MF" />
     </target>
 
     <!-- Clean out the build files -->
