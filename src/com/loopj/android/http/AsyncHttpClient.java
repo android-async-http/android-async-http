@@ -231,6 +231,23 @@ public class AsyncHttpClient {
     }
 
     /**
+     * Sets the "Authorization" HTTP header set in the request objects made by 
+     * the HTTP client to a token-based authentication value, such as an OAuth access token. 
+     * This overwrites any existing value for this header.
+     * @param token The authentication token
+     */
+    public void setAuthorizationHeader(String token){
+    	clientHeaderMap.put("Authorization", String.format("Token token=\"%s\"", token));
+    }
+    
+    /**
+     * Clears any existing value for the "Authorization" HTTP header.
+     */
+    public void clearAuthorizationHeader(){
+    	clientHeaderMap.remove("Authorization");
+    }
+
+    /**
      * Cancels any pending (or potentially active) requests associated with the
      * passed Context.
      * <p>
