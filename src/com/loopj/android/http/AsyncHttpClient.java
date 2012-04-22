@@ -146,6 +146,9 @@ public class AsyncHttpClient {
         httpClient.addResponseInterceptor(new HttpResponseInterceptor() {
             public void process(HttpResponse response, HttpContext context) {
                 final HttpEntity entity = response.getEntity();
+                if (entity == null) {
+                    return;
+                }
                 final Header encoding = entity.getContentEncoding();
                 if (encoding != null) {
                     for (HeaderElement element : encoding.getElements()) {
