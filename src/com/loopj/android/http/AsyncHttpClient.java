@@ -179,6 +179,15 @@ public class AsyncHttpClient {
     }
 
     /**
+     * Get the underlying HttpContext instance. This is useful for getting 
+     * and setting fine-grained settings for requests by accessing the
+     * context's attributes such as the CookieStore.
+     */
+    public HttpContext getHttpContext() {
+        return this.httpContext;
+    }
+
+    /**
      * Sets an optional CookieStore to use when making requests
      * @param cookieStore The CookieStore implementation to use, usually an instance of {@link PersistentCookieStore}
      */
