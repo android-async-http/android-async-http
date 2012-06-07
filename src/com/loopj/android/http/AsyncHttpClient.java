@@ -243,6 +243,30 @@ public class AsyncHttpClient {
     }
 
     /**
+     * Sets basic authentication for the request. Uses AuthScope.ANY. This is the same as
+	 * setBasicAuth('username','password',AuthScope.ANY) 
+     * @param username
+     * @param password
+     */
+    public void setBasicAuth(String user, String pass){
+    	AuthScope scope = AuthScope.ANY;
+    	setBasicAuth(user, pass, scope);
+    }
+    
+   /**
+     * Sets basic authentication for the request. You should pass in your AuthScope for security. It should be like this
+	 * setBasicAuth("username","password", new AuthScope("host",port,AuthScope.ANY_REALM))
+     * @param username
+     * @param password
+	 * @param scope - an AuthScope object
+	 *
+     */
+    public void setBasicAuth( String user, String pass, AuthScope scope){
+    	UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(user,pass);
+    	this.httpClient.getCredentialsProvider().setCredentials(scope, credentials);
+    }
+
+    /**
      * Cancels any pending (or potentially active) requests associated with the
      * passed Context.
      * <p>
