@@ -42,6 +42,9 @@ Who is Using It?
 [Pose](https://market.android.com/details?id=com.pose)
 :   Pose is the #1 fashion app for sharing and discovering new styles
 
+[Pocket Salsa](https://play.google.com/store/apps/details?id=com.addicted2salsa.pocketsalsa&hl=en)
+:   Pocket Salsa is the easiest way to learn how to dance salsa.
+
 Send me a [message](https://github.com/inbox/new?to=loopj) on github to let me
 know if you are using this library in a released android application!
 
@@ -193,6 +196,27 @@ RequestParams params = new RequestParams(paramMap);
 See the [RequestParams Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html)
 for more information.
 
+Adding HTTP Basic Auth credentials
+------------------------------------
+Some requests may need username/password credentials when dealing with API services that use HTTP Basic Access Authentication requests. 
+You can use the method `setBasicAuth()` to provide your credentials.
+
+Set username/password for any host and realm for a particular request. By default the Authentication Scope is for any host, port and realm.
+{% highlight java %}
+AsyncHttpClient client = new AsyncHttpClient();
+client.setBasicAuth("username","password/token");
+client.get("http://example.com".....); //etc.
+{% endhighlight %}
+
+You can also provide a more specific Authentication Scope (recommended) 
+{% highlight java %}
+AsyncHttpClient client = new AsyncHttpClient();
+client.setBasicAuth("username","password", new AuthScope("example.com",80, AuthScope.ANY_REALM));
+client.get("http://example.com".....); //etc.
+{% endhighlight %}
+
+See the [RequestParams Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpClient.html)
+for more information.
 
 Uploading Files with `RequestParams`
 ------------------------------------
@@ -262,6 +286,8 @@ The Droid Fu Project (<https://github.com/kaeppler/droid-fu>)
 Rafael Sanches (<http://blog.rafaelsanches.com>)
 :   Original `SimpleMultipartEntity` code
 
+Anthony Persaud (<http://github.com/apersaud>)
+:   Added support for HTTP Basic Authentication requests.
 
 License
 -------
