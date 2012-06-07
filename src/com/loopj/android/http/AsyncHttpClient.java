@@ -138,7 +138,7 @@ public class AsyncHttpClient {
                     request.addHeader(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
                 }
                 for (String header : clientHeaderMap.keySet()) {
-                	request.addHeader(header, clientHeaderMap.get(header));
+                    request.addHeader(header, clientHeaderMap.get(header));
                 }
             }
         });
@@ -239,31 +239,31 @@ public class AsyncHttpClient {
      * @param value the contents of the header
      */
     public void addHeader(String header, String value) {
-    	clientHeaderMap.put(header, value);
+        clientHeaderMap.put(header, value);
     }
 
     /**
      * Sets basic authentication for the request. Uses AuthScope.ANY. This is the same as
-	 * setBasicAuth('username','password',AuthScope.ANY) 
+     * setBasicAuth('username','password',AuthScope.ANY) 
      * @param username
      * @param password
      */
     public void setBasicAuth(String user, String pass){
-    	AuthScope scope = AuthScope.ANY;
-    	setBasicAuth(user, pass, scope);
+        AuthScope scope = AuthScope.ANY;
+        setBasicAuth(user, pass, scope);
     }
     
    /**
      * Sets basic authentication for the request. You should pass in your AuthScope for security. It should be like this
-	 * setBasicAuth("username","password", new AuthScope("host",port,AuthScope.ANY_REALM))
+     * setBasicAuth("username","password", new AuthScope("host",port,AuthScope.ANY_REALM))
      * @param username
      * @param password
-	 * @param scope - an AuthScope object
-	 *
+     * @param scope - an AuthScope object
+     *
      */
     public void setBasicAuth( String user, String pass, AuthScope scope){
-    	UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(user,pass);
-    	this.httpClient.getCredentialsProvider().setCredentials(scope, credentials);
+        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(user,pass);
+        this.httpClient.getCredentialsProvider().setCredentials(scope, credentials);
     }
 
     /**
