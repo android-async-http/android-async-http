@@ -2,9 +2,9 @@
 layout: project
 title: Android Asynchronous Http Client
 tagline: A Callback-Based Http Client Library for Android
-version: 1.3.2
+version: 1.4.0
 github_url: https://github.com/loopj/android-async-http
-download_url: https://github.com/downloads/loopj/android-async-http/android-async-http-1.3.2.jar
+download_url: https://github.com/downloads/loopj/android-async-http/android-async-http-1.4.0.jar
 ---
 
 
@@ -24,11 +24,12 @@ Features
 - Requests use a **threadpool** to cap concurrent resource usage
 - GET/POST **params builder** (RequestParams)
 - **Multipart file uploads** with no additional third party libraries
-- Tiny size overhead to your application, only **19kb** for everything
+- Tiny size overhead to your application, only **25kb** for everything
 - Automatic smart **request retries** optimized for spotty mobile connections
 - Automatic **gzip** response decoding support for super-fast requests
-- Optional built-in response parsing into **JSON** (JsonHttpResponseHandler)
-- Optional **persistent cookie store**, saves cookies into your app's SharedPreferences
+- Binary file (images etc) downloading with `BinaryHttpResponseHandler`
+- Built-in response parsing into **JSON**  with `JsonHttpResponseHandler`
+- **Persistent cookie store**, saves cookies into your app's SharedPreferences
 
 
 Who is Using It?
@@ -249,6 +250,21 @@ params.put("soundtrack", new ByteArrayInputStream(myByteArray), "she-wolf.mp3");
 See the [RequestParams Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html)
 for more information.
 
+Downloading Binary Data with `BinaryHttpResponseHandler`
+--------------------------------------------------------
+The `BinaryHttpResponseHandler` class can be used to fetch binary data such
+as images and other files. For example:
+
+{% highlight java %}
+AsyncHttpClient client = new AsyncHttpClient();
+String[] allowedContentTypes = new String[] { "image/png", "image/jpeg" };
+client.get("http://example.com/file.png", new BinaryHttpResponseHandler(allowedContentTypes) {
+    @Override
+    public void onSuccess(byte[] fileData) {
+        // Do something with the file
+    }
+});
+{% endhighlight %}
 
 Building from Source
 --------------------
