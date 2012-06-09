@@ -187,7 +187,7 @@ Create `RequestParams` for a single parameter:
 RequestParams params = new RequestParams("single", "value");
 {% endhighlight %}
 
-Create `RequestParams` from an existing Map of key/value strings:
+Create `RequestParams` from an existing `Map` of key/value strings:
 {% highlight java %}
 HashMap<String, String> paramMap = new HashMap<String, String>();
 paramMap.put("key", "value");
