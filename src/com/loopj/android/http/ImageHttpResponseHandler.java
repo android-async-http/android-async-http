@@ -20,6 +20,7 @@ package com.loopj.android.http;
 
 import java.io.IOException;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -33,8 +34,9 @@ import android.os.Looper;
 
 /**
  * Used to intercept and handle the responses from requests made using 
- * {@link AsyncHttpClient}. The {@link #onSuccess(String)} method is 
- * designed to be anonymously overridden with your own response handling code.
+ * {@link AsyncHttpClient}, with automatic handling of png/jpg image data
+ * (e.g. checks Content-Type against allowed list, Content-length). Receives response body as
+ * byte array.
  * <p>
  * Additionally, you can override the {@link #onFailure(Throwable, String)},
  * {@link #onStart()}, and {@link #onFinish()} methods as required.
@@ -66,26 +68,31 @@ import android.os.Looper;
  * });
  * </pre>
  */
-public class AsyncHttpResponseHandler {
+public class ImageHttpResponseHandler extends AsyncHttpResponseHandler {
     private static final int SUCCESS_MESSAGE = 0;
     private static final int FAILURE_MESSAGE = 1;
     private static final int START_MESSAGE = 2;
     private static final int FINISH_MESSAGE = 3;
 
+    private static String[] mAllowedContentTypes = new String[] { "image/jpeg",
+    															  "image/png" };
+    
     private Handler handler;
 
     /**
      * Creates a new AsyncHttpResponseHandler
      */
-    public AsyncHttpResponseHandler() {
-        // Set up a handler to post events back to the correct thread if possible
-        if(Looper.myLooper() != null) {
-            handler = new Handler(){
-                public void handleMessage(Message msg){
-                    AsyncHttpResponseHandler.this.handleMessage(msg);
-                }
-            };
-        }
+    public ImageHttpResponseHandler() {
+        super();
+    }
+    
+    /**
+     * Creates a new AsyncHttpResponseHandler, and overrides the default allowed image
+     * content types with passed String array (hopefully) of image content types.
+     */
+    public ImageHttpResponseHandler(String[] allowedContentTypes) {
+    	this();
+    	mAllowedContentTypes = allowedContentTypes;
     }
 
 
@@ -94,20 +101,10 @@ public class AsyncHttpResponseHandler {
     //
 
     /**
-     * Fired when the request is started, override to handle in your own code
-     */
-    public void onStart() {}
-
-    /**
-     * Fired in all cases when the request is finished, after both success and failure, override to handle in your own code
-     */
-    public void onFinish() {}
-
-    /**
      * Fired when a request returns successfully, override to handle in your own code
      * @param content the body of the HTTP response from the server
      */
-    public void onSuccess(String content) {}
+    public void onSuccess(byte[] imageData) {}
 
     /**
      * Fired when a request fails to complete, override to handle in your own code
@@ -121,7 +118,7 @@ public class AsyncHttpResponseHandler {
      * @param error the underlying cause of the failure
      * @param content the response body, if any
      */
-    public void onFailure(Throwable error, String content) {
+    public void onFailure(Throwable error, byte[] imageData) {
         // By default, call the deprecated onFailure(Throwable) for compatibility
         onFailure(error);
     }
@@ -130,37 +127,24 @@ public class AsyncHttpResponseHandler {
     //
     // Pre-processing of messages (executes in background threadpool thread)
     //
-
-    protected void sendSuccessMessage(String responseBody) {
+    
+    protected void sendSuccessMessage(byte[] responseBody) {
         sendMessage(obtainMessage(SUCCESS_MESSAGE, responseBody));
     }
 
-    protected void sendFailureMessage(Throwable e, String responseBody) {
-        sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{e, responseBody}));
-    }
-    
     protected void sendFailureMessage(Throwable e, byte[] responseBody) {
         sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{e, responseBody}));
     }
-
-    protected void sendStartMessage() {
-        sendMessage(obtainMessage(START_MESSAGE, null));
-    }
-
-    protected void sendFinishMessage() {
-        sendMessage(obtainMessage(FINISH_MESSAGE, null));
-    }
-
 
     //
     // Pre-processing of messages (in original calling thread, typically the UI thread)
     //
 
-    protected void handleSuccessMessage(String responseBody) {
+    protected void handleSuccessMessage(byte[] responseBody) {
         onSuccess(responseBody);
     }
 
-    protected void handleFailureMessage(Throwable e, String responseBody) {
+    protected void handleFailureMessage(Throwable e, byte[] responseBody) {
         onFailure(e, responseBody);
     }
 
@@ -170,11 +154,11 @@ public class AsyncHttpResponseHandler {
     protected void handleMessage(Message msg) {
         switch(msg.what) {
             case SUCCESS_MESSAGE:
-                handleSuccessMessage((String)msg.obj);
+                handleSuccessMessage((byte[])msg.obj);
                 break;
             case FAILURE_MESSAGE:
-                Object[] repsonse = (Object[])msg.obj;
-                handleFailureMessage((Throwable)repsonse[0], (String)repsonse[1]);
+                Object[] response = (Object[])msg.obj;
+                handleFailureMessage((Throwable)response[0], (byte[])response[1]);
                 break;
             case START_MESSAGE:
                 onStart();
@@ -185,40 +169,37 @@ public class AsyncHttpResponseHandler {
         }
     }
 
-    protected void sendMessage(Message msg) {
-        if(handler != null){
-            handler.sendMessage(msg);
-        } else {
-            handleMessage(msg);
-        }
-    }
-
-    protected Message obtainMessage(int responseMessage, Object response) {
-        Message msg = null;
-        if(handler != null){
-            msg = this.handler.obtainMessage(responseMessage, response);
-        }else{
-            msg = new Message();
-            msg.what = responseMessage;
-            msg.obj = response;
-        }
-        return msg;
-    }
-
-
     // Interface to AsyncHttpRequest
     void sendResponseMessage(HttpResponse response) {
         StatusLine status = response.getStatusLine();
-        String responseBody = null;
+        Header[] contentTypeHeaders = response.getHeaders("Content-Type");
+        byte[] responseBody = null;
+        if(contentTypeHeaders.length != 1) {
+        	//malformed/ambiguous HTTP Header, ABORT!
+        	sendFailureMessage(new HttpResponseException(status.getStatusCode(), "None, or more than one, Content-Type Header found!"), responseBody);
+        	return;
+        }
+        Header contentTypeHeader = contentTypeHeaders[0];
+        boolean foundAllowedContentType = false;
+        for(String anAllowedContentType : mAllowedContentTypes) {
+        	if(anAllowedContentType.equals(contentTypeHeader.getValue())) {
+        		foundAllowedContentType = true;
+        	}
+        }
+        if(!foundAllowedContentType) {
+        	//Content-Type not in allowed list, ABORT!
+        	sendFailureMessage(new HttpResponseException(status.getStatusCode(), "Content-Type not allowed!"), responseBody);
+        	return;
+        }
         try {
             HttpEntity entity = null;
             HttpEntity temp = response.getEntity();
             if(temp != null) {
                 entity = new BufferedHttpEntity(temp);
-                responseBody = EntityUtils.toString(entity, "UTF-8");
             }
+            responseBody = EntityUtils.toByteArray(entity);
         } catch(IOException e) {
-            sendFailureMessage(e, (String) null);
+            sendFailureMessage(e, (byte[]) null);
         }
 
         if(status.getStatusCode() >= 300) {
