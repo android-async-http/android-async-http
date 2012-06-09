@@ -24,7 +24,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 /**
- * Used to intercept and handle the responses from requests made using 
+ * Used to intercept and handle the responses from requests made using
  * {@link AsyncHttpClient}, with automatic parsing into a {@link JSONObject}
  * or {@link JSONArray}.
  * <p>
@@ -32,7 +32,7 @@ import org.json.JSONTokener;
  * with the {@link #onSuccess(JSONObject)} or {@link #onSuccess(JSONArray)}
  * methods anonymously overridden.
  * <p>
- * Additionally, you can override the other event methods from the 
+ * Additionally, you can override the other event methods from the
  * parent class.
  */
 public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
@@ -86,8 +86,8 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
      */
     public void onFailure(Throwable e, JSONObject errorResponse) {}
     public void onFailure(Throwable e, JSONArray errorResponse) {}
-    
-    @Override 
+
+    @Override
     protected void handleFailureMessage(Throwable e, String responseBody) {
         super.handleFailureMessage(e, responseBody);
         if (responseBody != null) try {
@@ -97,12 +97,12 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
             } else if(jsonResponse instanceof JSONArray) {
                 onFailure(e, (JSONArray)jsonResponse);
             }
-        } 
+        }
         catch(JSONException ex) {
             onFailure(e, responseBody);
         }
         else {
-        	onFailure(e, "");
+            onFailure(e, "");
         }
     }
 }

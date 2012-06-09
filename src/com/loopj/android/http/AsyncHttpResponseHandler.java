@@ -67,10 +67,10 @@ import android.os.Looper;
  * </pre>
  */
 public class AsyncHttpResponseHandler {
-    private static final int SUCCESS_MESSAGE = 0;
-    private static final int FAILURE_MESSAGE = 1;
-    private static final int START_MESSAGE = 2;
-    private static final int FINISH_MESSAGE = 3;
+    protected static final int SUCCESS_MESSAGE = 0;
+    protected static final int FAILURE_MESSAGE = 1;
+    protected static final int START_MESSAGE = 2;
+    protected static final int FINISH_MESSAGE = 3;
 
     private Handler handler;
 

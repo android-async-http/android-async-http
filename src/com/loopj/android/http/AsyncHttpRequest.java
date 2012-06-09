@@ -32,7 +32,7 @@ class AsyncHttpRequest implements Runnable {
     private final HttpContext context;
     private final HttpUriRequest request;
     private final AsyncHttpResponseHandler responseHandler;
-    private boolean isImageResponseHandler;
+    private boolean isBinaryRequest;
     private int executionCount;
 
     public AsyncHttpRequest(AbstractHttpClient client, HttpContext context, HttpUriRequest request, AsyncHttpResponseHandler responseHandler) {
@@ -40,8 +40,8 @@ class AsyncHttpRequest implements Runnable {
         this.context = context;
         this.request = request;
         this.responseHandler = responseHandler;
-        if(responseHandler instanceof ImageHttpResponseHandler) {
-        	this.isImageResponseHandler = true;
+        if(responseHandler instanceof BinaryHttpResponseHandler) {
+            this.isBinaryRequest = true;
         }
     }
 
@@ -59,26 +59,26 @@ class AsyncHttpRequest implements Runnable {
         } catch (IOException e) {
             if(responseHandler != null) {
                 responseHandler.sendFinishMessage();
-                if(this.isImageResponseHandler) {
-                	responseHandler.sendFailureMessage(e, (byte[]) null);
+                if(this.isBinaryRequest) {
+                    responseHandler.sendFailureMessage(e, (byte[]) null);
                 } else {
-                	responseHandler.sendFailureMessage(e, (String) null);
+                    responseHandler.sendFailureMessage(e, (String) null);
                 }
             }
         }
     }
-    
+
     private void makeRequest() throws IOException {
-    	if(!Thread.currentThread().isInterrupted()) {
-    		HttpResponse response = client.execute(request, context);
-    		if(!Thread.currentThread().isInterrupted()) {
-    			if(responseHandler != null) {
-    				responseHandler.sendResponseMessage(response);
-    			}
-    		} else{
-    			//TODO: should raise InterruptedException? this block is reached whenever the request is cancelled before its response is received
-    		}
-    	}
+        if(!Thread.currentThread().isInterrupted()) {
+            HttpResponse response = client.execute(request, context);
+            if(!Thread.currentThread().isInterrupted()) {
+                if(responseHandler != null) {
+                    responseHandler.sendResponseMessage(response);
+                }
+            } else{
+                //TODO: should raise InterruptedException? this block is reached whenever the request is cancelled before its response is received
+            }
+        }
     }
 
     private void makeRequestWithRetries() throws ConnectException {
@@ -100,7 +100,7 @@ class AsyncHttpRequest implements Runnable {
                 // http://code.google.com/p/android/issues/detail?id=5255
                 cause = new IOException("NPE in HttpClient" + e.getMessage());
                 retry = retryHandler.retryRequest(cause, ++executionCount, context);
-            } 
+            }
         }
 
         // no retries left, crap out with exception

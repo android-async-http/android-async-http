@@ -174,7 +174,7 @@ public class RequestParams {
 
         return result.toString();
     }
- 
+
    /**
      * Returns an HttpEntity containing all request parameters
      */
@@ -195,7 +195,7 @@ public class RequestParams {
             for(ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
                 FileWrapper file = entry.getValue();
                 if(file.inputStream != null) {
-                	boolean isLast = currentIndex == lastIndex;
+                    boolean isLast = currentIndex == lastIndex;
                     if(file.contentType != null) {
                         multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream, file.contentType, isLast);
                     } else {

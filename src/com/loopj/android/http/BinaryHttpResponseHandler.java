@@ -33,66 +33,50 @@ import android.os.Message;
 import android.os.Looper;
 
 /**
- * Used to intercept and handle the responses from requests made using 
- * {@link AsyncHttpClient}, with automatic handling of png/jpg image data
- * (e.g. checks Content-Type against allowed list, Content-length). Receives response body as
- * byte array.
- * <p>
- * Additionally, you can override the {@link #onFailure(Throwable, String)},
- * {@link #onStart()}, and {@link #onFinish()} methods as required.
+ * Used to intercept and handle the responses from requests made using
+ * {@link AsyncHttpClient}. Receives response body as byte array with a 
+ * content-type whitelist. (e.g. checks Content-Type against allowed list, 
+ * Content-length).
  * <p>
  * For example:
  * <p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
- * client.get("http://www.google.com", new AsyncHttpResponseHandler() {
+ * String[] allowedTypes = new String[] { "image/png" };
+ * client.get("http://www.example.com/image.png", new BinaryHttpResponseHandler(allowedTypes) {
  *     &#064;Override
- *     public void onStart() {
- *         // Initiated the request
- *     }
- *
- *     &#064;Override
- *     public void onSuccess(String response) {
+ *     public void onSuccess(byte[] imageData) {
  *         // Successfully got a response
  *     }
- * 
- *     &#064;Override
- *     public void onFailure(Throwable e, String response) {
- *         // Response failed :(
- *     }
  *
  *     &#064;Override
- *     public void onFinish() {
- *         // Completed the request (either success or failure)
+ *     public void onFailure(Throwable e, byte[] imageData) {
+ *         // Response failed :(
  *     }
  * });
  * </pre>
  */
-public class ImageHttpResponseHandler extends AsyncHttpResponseHandler {
-    private static final int SUCCESS_MESSAGE = 0;
-    private static final int FAILURE_MESSAGE = 1;
-    private static final int START_MESSAGE = 2;
-    private static final int FINISH_MESSAGE = 3;
-
-    private static String[] mAllowedContentTypes = new String[] { "image/jpeg",
-    															  "image/png" };
-    
-    private Handler handler;
+public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
+    // Allow images by default
+    private static String[] mAllowedContentTypes = new String[] {
+        "image/jpeg",
+        "image/png"
+    };
 
     /**
-     * Creates a new AsyncHttpResponseHandler
+     * Creates a new BinaryHttpResponseHandler
      */
-    public ImageHttpResponseHandler() {
+    public BinaryHttpResponseHandler() {
         super();
     }
-    
+
     /**
-     * Creates a new AsyncHttpResponseHandler, and overrides the default allowed image
-     * content types with passed String array (hopefully) of image content types.
+     * Creates a new BinaryHttpResponseHandler, and overrides the default allowed
+     * content types with passed String array (hopefully) of content types.
      */
-    public ImageHttpResponseHandler(String[] allowedContentTypes) {
-    	this();
-    	mAllowedContentTypes = allowedContentTypes;
+    public BinaryHttpResponseHandler(String[] allowedContentTypes) {
+        this();
+        mAllowedContentTypes = allowedContentTypes;
     }
 
 
@@ -104,21 +88,14 @@ public class ImageHttpResponseHandler extends AsyncHttpResponseHandler {
      * Fired when a request returns successfully, override to handle in your own code
      * @param content the body of the HTTP response from the server
      */
-    public void onSuccess(byte[] imageData) {}
-
-    /**
-     * Fired when a request fails to complete, override to handle in your own code
-     * @param error the underlying cause of the failure
-     * @deprecated use {@link #onFailure(Throwable, String)}
-     */
-    public void onFailure(Throwable error) {}
+    public void onSuccess(byte[] binaryData) {}
 
     /**
      * Fired when a request fails to complete, override to handle in your own code
      * @param error the underlying cause of the failure
      * @param content the response body, if any
      */
-    public void onFailure(Throwable error, byte[] imageData) {
+    public void onFailure(Throwable error, byte[] binaryData) {
         // By default, call the deprecated onFailure(Throwable) for compatibility
         onFailure(error);
     }
@@ -127,7 +104,7 @@ public class ImageHttpResponseHandler extends AsyncHttpResponseHandler {
     //
     // Pre-processing of messages (executes in background threadpool thread)
     //
-    
+
     protected void sendSuccessMessage(byte[] responseBody) {
         sendMessage(obtainMessage(SUCCESS_MESSAGE, responseBody));
     }
@@ -148,8 +125,6 @@ public class ImageHttpResponseHandler extends AsyncHttpResponseHandler {
         onFailure(e, responseBody);
     }
 
-
-
     // Methods which emulate android's Handler and Message methods
     protected void handleMessage(Message msg) {
         switch(msg.what) {
@@ -160,11 +135,8 @@ public class ImageHttpResponseHandler extends AsyncHttpResponseHandler {
                 Object[] response = (Object[])msg.obj;
                 handleFailureMessage((Throwable)response[0], (byte[])response[1]);
                 break;
-            case START_MESSAGE:
-                onStart();
-                break;
-            case FINISH_MESSAGE:
-                onFinish();
+            default:
+                super.handleMessage(msg);
                 break;
         }
     }
@@ -175,21 +147,21 @@ public class ImageHttpResponseHandler extends AsyncHttpResponseHandler {
         Header[] contentTypeHeaders = response.getHeaders("Content-Type");
         byte[] responseBody = null;
         if(contentTypeHeaders.length != 1) {
-        	//malformed/ambiguous HTTP Header, ABORT!
-        	sendFailureMessage(new HttpResponseException(status.getStatusCode(), "None, or more than one, Content-Type Header found!"), responseBody);
-        	return;
+            //malformed/ambiguous HTTP Header, ABORT!
+            sendFailureMessage(new HttpResponseException(status.getStatusCode(), "None, or more than one, Content-Type Header found!"), responseBody);
+            return;
         }
         Header contentTypeHeader = contentTypeHeaders[0];
         boolean foundAllowedContentType = false;
         for(String anAllowedContentType : mAllowedContentTypes) {
-        	if(anAllowedContentType.equals(contentTypeHeader.getValue())) {
-        		foundAllowedContentType = true;
-        	}
+            if(anAllowedContentType.equals(contentTypeHeader.getValue())) {
+                foundAllowedContentType = true;
+            }
         }
         if(!foundAllowedContentType) {
-        	//Content-Type not in allowed list, ABORT!
-        	sendFailureMessage(new HttpResponseException(status.getStatusCode(), "Content-Type not allowed!"), responseBody);
-        	return;
+            //Content-Type not in allowed list, ABORT!
+            sendFailureMessage(new HttpResponseException(status.getStatusCode(), "Content-Type not allowed!"), responseBody);
+            return;
         }
         try {
             HttpEntity entity = null;
