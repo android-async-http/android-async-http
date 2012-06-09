@@ -256,14 +256,14 @@ Set username/password for any host and realm for a particular request. By defaul
 {% highlight java %}
 AsyncHttpClient client = new AsyncHttpClient();
 client.setBasicAuth("username","password/token");
-client.get("http://example.com".....); //etc.
+client.get("http://example.com");
 {% endhighlight %}
 
 You can also provide a more specific Authentication Scope (recommended) 
 {% highlight java %}
 AsyncHttpClient client = new AsyncHttpClient();
-client.setBasicAuth("username","password", new AuthScope("example.com",80, AuthScope.ANY_REALM));
-client.get("http://example.com".....); //etc.
+client.setBasicAuth("username","password", new AuthScope("example.com", 80, AuthScope.ANY_REALM));
+client.get("http://example.com");
 {% endhighlight %}
 
 See the [RequestParams Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpClient.html)
