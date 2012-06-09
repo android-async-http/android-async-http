@@ -266,6 +266,9 @@ client.get("http://example.com/file.png", new BinaryHttpResponseHandler(allowedC
 });
 {% endhighlight %}
 
+See the [BinaryHttpResponseHandler Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/BinaryHttpResponseHandler.html)
+for more information.
+
 Building from Source
 --------------------
 To build a `.jar` file from source, first make a clone of the 
