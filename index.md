@@ -197,28 +197,6 @@ RequestParams params = new RequestParams(paramMap);
 See the [RequestParams Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html)
 for more information.
 
-Adding HTTP Basic Auth credentials
-------------------------------------
-Some requests may need username/password credentials when dealing with API services that use HTTP Basic Access Authentication requests. 
-You can use the method `setBasicAuth()` to provide your credentials.
-
-Set username/password for any host and realm for a particular request. By default the Authentication Scope is for any host, port and realm.
-{% highlight java %}
-AsyncHttpClient client = new AsyncHttpClient();
-client.setBasicAuth("username","password/token");
-client.get("http://example.com".....); //etc.
-{% endhighlight %}
-
-You can also provide a more specific Authentication Scope (recommended) 
-{% highlight java %}
-AsyncHttpClient client = new AsyncHttpClient();
-client.setBasicAuth("username","password", new AuthScope("example.com",80, AuthScope.ANY_REALM));
-client.get("http://example.com".....); //etc.
-{% endhighlight %}
-
-See the [RequestParams Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpClient.html)
-for more information.
-
 Uploading Files with `RequestParams`
 ------------------------------------
 The `RequestParams` class additionally supports multipart file uploads as
@@ -267,6 +245,28 @@ client.get("http://example.com/file.png", new BinaryHttpResponseHandler(allowedC
 {% endhighlight %}
 
 See the [BinaryHttpResponseHandler Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/BinaryHttpResponseHandler.html)
+for more information.
+
+Adding HTTP Basic Auth credentials
+------------------------------------
+Some requests may need username/password credentials when dealing with API services that use HTTP Basic Access Authentication requests. 
+You can use the method `setBasicAuth()` to provide your credentials.
+
+Set username/password for any host and realm for a particular request. By default the Authentication Scope is for any host, port and realm.
+{% highlight java %}
+AsyncHttpClient client = new AsyncHttpClient();
+client.setBasicAuth("username","password/token");
+client.get("http://example.com".....); //etc.
+{% endhighlight %}
+
+You can also provide a more specific Authentication Scope (recommended) 
+{% highlight java %}
+AsyncHttpClient client = new AsyncHttpClient();
+client.setBasicAuth("username","password", new AuthScope("example.com",80, AuthScope.ANY_REALM));
+client.get("http://example.com".....); //etc.
+{% endhighlight %}
+
+See the [RequestParams Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpClient.html)
 for more information.
 
 Building from Source
