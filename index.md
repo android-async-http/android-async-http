@@ -308,6 +308,9 @@ Rafael Sanches (<http://blog.rafaelsanches.com>)
 Anthony Persaud (<http://github.com/apersaud>)
 :   Added support for HTTP Basic Authentication requests.
 
+Linden Darling (<http://github.com/coreform>)
+:   Added support for binary/image responses
+
 License
 -------
 The Android Asynchronous Http Client is released under the Android-friendly
