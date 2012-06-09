@@ -83,14 +83,7 @@ public class ImageHttpResponseHandler extends AsyncHttpResponseHandler {
      * Creates a new AsyncHttpResponseHandler
      */
     public ImageHttpResponseHandler() {
-        // Set up a handler to post events back to the correct thread if possible
-        if(Looper.myLooper() != null) {
-            handler = new Handler(){
-                public void handleMessage(Message msg){
-                    ImageHttpResponseHandler.this.handleMessage(msg);
-                }
-            };
-        }
+        super();
     }
     
     /**
@@ -106,16 +99,6 @@ public class ImageHttpResponseHandler extends AsyncHttpResponseHandler {
     //
     // Callbacks to be overridden, typically anonymously
     //
-
-    /**
-     * Fired when the request is started, override to handle in your own code
-     */
-    public void onStart() {}
-
-    /**
-     * Fired in all cases when the request is finished, after both success and failure, override to handle in your own code
-     */
-    public void onFinish() {}
 
     /**
      * Fired when a request returns successfully, override to handle in your own code
@@ -153,15 +136,6 @@ public class ImageHttpResponseHandler extends AsyncHttpResponseHandler {
         sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{e, responseBody}));
     }
 
-    protected void sendStartMessage() {
-        sendMessage(obtainMessage(START_MESSAGE, null));
-    }
-
-    protected void sendFinishMessage() {
-        sendMessage(obtainMessage(FINISH_MESSAGE, null));
-    }
-
-
     //
     // Pre-processing of messages (in original calling thread, typically the UI thread)
     //
@@ -194,27 +168,6 @@ public class ImageHttpResponseHandler extends AsyncHttpResponseHandler {
                 break;
         }
     }
-
-    protected void sendMessage(Message msg) {
-        if(handler != null){
-            handler.sendMessage(msg);
-        } else {
-            handleMessage(msg);
-        }
-    }
-
-    protected Message obtainMessage(int responseMessage, Object response) {
-        Message msg = null;
-        if(handler != null){
-            msg = this.handler.obtainMessage(responseMessage, response);
-        }else{
-            msg = new Message();
-            msg.what = responseMessage;
-            msg.obj = response;
-        }
-        return msg;
-    }
-
 
     // Interface to AsyncHttpRequest
     void sendResponseMessage(HttpResponse response) {
