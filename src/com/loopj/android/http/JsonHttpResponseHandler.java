@@ -89,7 +89,6 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
 
     @Override
     protected void handleFailureMessage(Throwable e, String responseBody) {
-        super.handleFailureMessage(e, responseBody);
         if (responseBody != null) try {
             Object jsonResponse = parseResponse(responseBody);
             if(jsonResponse instanceof JSONObject) {
