@@ -161,6 +161,7 @@ public class RequestParams {
      */
     public void remove(String key){
         urlParams.remove(key);
+        urlArrayParams.remove(key);
         fileParams.remove(key);
     }
 
