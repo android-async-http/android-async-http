@@ -113,6 +113,13 @@ public class AsyncHttpClient {
      * Creates a new AsyncHttpClient.
      */
     public AsyncHttpClient() {
+    	this(String.format("android-async-http/%s (http://loopj.com/android-async-http)", VERSION));
+    }
+    
+    /**
+     * Creates a new AsyncHttpClient with given agent.
+     */
+    public AsyncHttpClient(String agent) {
         BasicHttpParams httpParams = new BasicHttpParams();
 
         ConnManagerParams.setTimeout(httpParams, socketTimeout);
@@ -125,7 +132,7 @@ public class AsyncHttpClient {
         HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
 
         HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setUserAgent(httpParams, String.format("android-async-http/%s (http://loopj.com/android-async-http)", VERSION));
+        HttpProtocolParams.setUserAgent(httpParams, agent);
 
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));

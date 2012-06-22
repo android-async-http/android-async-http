@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,7 @@ public class RequestParams {
     private static String ENCODING = "UTF-8";
 
     protected ConcurrentHashMap<String, String> urlParams;
+    protected ConcurrentHashMap<String, ArrayList<String>> urlArrayParams;
     protected ConcurrentHashMap<String, FileWrapper> fileParams;
 
     /**
@@ -98,6 +100,17 @@ public class RequestParams {
     public void put(String key, String value){
         if(key != null && value != null) {
             urlParams.put(key, value);
+        }
+    }
+    
+    /**
+     * Adds a key/value array string pair to the request.
+     * @param key the key name for the new param. "[]" will be appended.
+     * @param values the values array string for the new param.
+     */
+    public void put(String key, ArrayList<String> values){
+        if(key != null && values != null) {
+            urlArrayParams.put(key + "[]", values);
         }
     }
 
@@ -162,6 +175,17 @@ public class RequestParams {
             result.append("=");
             result.append(entry.getValue());
         }
+        
+        for(ConcurrentHashMap.Entry<String, ArrayList<String>> entry : urlArrayParams.entrySet()) {
+            if(result.length() > 0)
+                result.append("&");
+
+            for(String value : entry.getValue()) {
+            	result.append(entry.getKey());
+            	result.append("=");
+            	result.append(value);            	
+            }
+        }
 
         for(ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
             if(result.length() > 0)
@@ -187,6 +211,14 @@ public class RequestParams {
             // Add string params
             for(ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
                 multipartEntity.addPart(entry.getKey(), entry.getValue());
+            }
+            
+            // Add array string params
+            for(ConcurrentHashMap.Entry<String, ArrayList<String>> entry : urlArrayParams.entrySet()) {
+            	String key = entry.getKey();
+            	for(String value : entry.getValue()) {
+            		multipartEntity.addPart(key, value);
+            	}
             }
 
             // Add file params
@@ -217,16 +249,26 @@ public class RequestParams {
         return entity;
     }
 
-    private void init(){
+    private void init() {
         urlParams = new ConcurrentHashMap<String, String>();
+        urlArrayParams = new ConcurrentHashMap<String, ArrayList<String>>();
         fileParams = new ConcurrentHashMap<String, FileWrapper>();
     }
 
     protected List<BasicNameValuePair> getParamsList() {
         List<BasicNameValuePair> lparams = new LinkedList<BasicNameValuePair>();
 
+        // Add string params
         for(ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
             lparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+        }
+        
+        // Add array string params
+        for(ConcurrentHashMap.Entry<String, ArrayList<String>> entry : urlArrayParams.entrySet()) {
+        	String key = entry.getKey();
+        	for(String value : entry.getValue()) {
+        		lparams.add(new BasicNameValuePair(key, value));
+        	}
         }
 
         return lparams;
