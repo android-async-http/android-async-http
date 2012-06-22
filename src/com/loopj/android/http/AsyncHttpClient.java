@@ -113,7 +113,7 @@ public class AsyncHttpClient {
      * Creates a new AsyncHttpClient.
      */
     public AsyncHttpClient() {
-    	this(String.format("android-async-http/%s (http://loopj.com/android-async-http)", VERSION));
+        this(String.format("android-async-http/%s (http://loopj.com/android-async-http)", VERSION));
     }
     
     /**
