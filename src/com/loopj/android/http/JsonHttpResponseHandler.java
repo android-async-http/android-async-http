@@ -61,8 +61,29 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
      */
     public void onSuccess(JSONArray response) {}
 
+    public void onFailure(Throwable e, JSONObject errorResponse) {}
+    public void onFailure(Throwable e, JSONArray errorResponse) {}
 
-    // Utility methods
+
+    //
+    // Pre-processing of messages (executes in background threadpool thread)
+    //
+
+    @Override
+    protected void sendSuccessMessage(String responseBody) {
+        try {
+            Object jsonResponse = parseResponse(responseBody);
+            sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, jsonResponse));
+        } catch(JSONException e) {
+            sendFailureMessage(e, responseBody);
+        }
+    }
+
+
+    //
+    // Pre-processing of messages (in original calling thread, typically the UI thread)
+    //
+
     @Override
     protected void handleMessage(Message msg) {
         switch(msg.what){
@@ -84,25 +105,9 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
         }
     }
 
-    @Override
-    protected void sendSuccessMessage(String responseBody) {
-        try {
-            Object jsonResponse = parseResponse(responseBody);
-            sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, jsonResponse));
-        } catch(JSONException e) {
-            sendFailureMessage(e, responseBody);
-        }
-    }
-
     protected Object parseResponse(String responseBody) throws JSONException {
         return new JSONTokener(responseBody).nextValue();
     }
-
-    /**
-     * Handle cases where a failure is returned as JSON
-     */
-    public void onFailure(Throwable e, JSONObject errorResponse) {}
-    public void onFailure(Throwable e, JSONArray errorResponse) {}
 
     @Override
     protected void handleFailureMessage(Throwable e, String responseBody) {
