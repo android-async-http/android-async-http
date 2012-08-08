@@ -34,6 +34,9 @@ Features
 
 Who is Using It?
 ----------------
+[Instagram](https://play.google.com/store/apps/details?id=com.instagram.android)
+:   #1 photo app on android, over 10million users
+
 [Heyzap](https://market.android.com/details?id=com.heyzap.android)
 :   Social game discovery app with millions of users
 
