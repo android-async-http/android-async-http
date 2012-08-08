@@ -23,6 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import android.os.Message;
+
 /**
  * Used to intercept and handle the responses from requests made using
  * {@link AsyncHttpClient}, with automatic parsing into a {@link JSONObject}
@@ -36,6 +38,8 @@ import org.json.JSONTokener;
  * parent class.
  */
 public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
+    protected static final int SUCCESS_JSON_MESSAGE = 100;
+
     //
     // Callbacks to be overridden, typically anonymously
     //
@@ -60,20 +64,33 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
 
     // Utility methods
     @Override
-    protected void handleSuccessMessage(String responseBody) {
-        super.handleSuccessMessage(responseBody);
+    protected void handleMessage(Message msg) {
+        switch(msg.what){
+            case SUCCESS_JSON_MESSAGE:
+                handleSuccessJsonMessage(msg.obj);
+                break;
+            default:
+                super.handleMessage(msg);
+        }
+    }
 
+    protected void handleSuccessJsonMessage(Object jsonResponse) {
+        if(jsonResponse instanceof JSONObject) {
+            onSuccess((JSONObject)jsonResponse);
+        } else if(jsonResponse instanceof JSONArray) {
+            onSuccess((JSONArray)jsonResponse);
+        } else {
+            onFailure(new JSONException("Unexpected type " + jsonResponse.getClass().getName()));
+        }
+    }
+
+    @Override
+    protected void sendSuccessMessage(String responseBody) {
         try {
             Object jsonResponse = parseResponse(responseBody);
-            if(jsonResponse instanceof JSONObject) {
-                onSuccess((JSONObject)jsonResponse);
-            } else if(jsonResponse instanceof JSONArray) {
-                onSuccess((JSONArray)jsonResponse);
-            } else {
-                throw new JSONException("Unexpected type " + jsonResponse.getClass().getName());
-            }
+            sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, jsonResponse));
         } catch(JSONException e) {
-            onFailure(e, responseBody);
+            sendFailureMessage(e, responseBody);
         }
     }
 
