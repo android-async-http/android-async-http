@@ -106,24 +106,32 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     protected Object parseResponse(String responseBody) throws JSONException {
-        return new JSONTokener(responseBody).nextValue();
+        Object result = null;
+        //trim the string to prevent start with blank, and test if the string is valid JSON, because the parser don't do this :(. If Json is not valid this will return null
+	responseBody = responseBody.trim();
+	if(responseBody.startsWith("{") || responseBody.startsWith("[")) {
+	    result = new JSONTokener(responseBody).nextValue();
+	}
+	return result;
     }
 
     @Override
     protected void handleFailureMessage(Throwable e, String responseBody) {
-        if (responseBody != null) try {
-            Object jsonResponse = parseResponse(responseBody);
-            if(jsonResponse instanceof JSONObject) {
-                onFailure(e, (JSONObject)jsonResponse);
-            } else if(jsonResponse instanceof JSONArray) {
-                onFailure(e, (JSONArray)jsonResponse);
+        try {
+            if (responseBody != null) {
+                Object jsonResponse = parseResponse(responseBody);
+                if(jsonResponse instanceof JSONObject) {
+                    onFailure(e, (JSONObject)jsonResponse);
+                } else if(jsonResponse instanceof JSONArray) {
+                    onFailure(e, (JSONArray)jsonResponse);
+                } else {
+                    onFailure(e, responseBody);
+                }
+            }else {
+                onFailure(e, "");
             }
-        }
-        catch(JSONException ex) {
+        }catch(JSONException ex) {
             onFailure(e, responseBody);
-        }
-        else {
-            onFailure(e, "");
         }
     }
 }

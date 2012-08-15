@@ -20,6 +20,7 @@ package com.loopj.android.http;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.UnknownHostException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpRequestRetryHandler;
@@ -91,6 +92,11 @@ class AsyncHttpRequest implements Runnable {
             try {
                 makeRequest();
                 return;
+	    } catch (UnknownHostException e) {
+	        if(responseHandler != null) {
+	            responseHandler.sendFailureMessage(e, "can't resolve host");
+		}
+		return;
             } catch (IOException e) {
                 cause = e;
                 retry = retryHandler.retryRequest(cause, ++executionCount, context);
