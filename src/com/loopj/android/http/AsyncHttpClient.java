@@ -216,7 +216,7 @@ public class AsyncHttpClient {
     }
 
     /**
-     * Sets the connection time oout. By default, 10 seconds
+     * Set the connection timeout. By default, 10 seconds.
      * @param timeout the connect/socket timeout in milliseconds
      */
     public void setTimeout(int timeout){
