@@ -18,8 +18,7 @@
 
 package com.loopj.android.http;
 
-import java.io.IOException;
-
+import android.os.Message;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -28,9 +27,7 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.util.EntityUtils;
 
-import android.os.Handler;
-import android.os.Message;
-import android.os.Looper;
+import java.io.IOException;
 
 /**
  * Used to intercept and handle the responses from requests made using
@@ -86,14 +83,23 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
 
     /**
      * Fired when a request returns successfully, override to handle in your own code
-     * @param content the body of the HTTP response from the server
+     * @param binaryData the body of the HTTP response from the server
      */
     public void onSuccess(byte[] binaryData) {}
 
     /**
+     * Fired when a request returns successfully, override to handle in your own code
+     * @param statusCode the status code of the response
+     * @param binaryData the body of the HTTP response from the server
+     */
+    public void onSuccess(int statusCode, byte[] binaryData) {
+        onSuccess(binaryData);
+    }
+
+    /**
      * Fired when a request fails to complete, override to handle in your own code
      * @param error the underlying cause of the failure
-     * @param content the response body, if any
+     * @param binaryData the response body, if any
      */
     public void onFailure(Throwable error, byte[] binaryData) {
         // By default, call the deprecated onFailure(Throwable) for compatibility
@@ -105,8 +111,8 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     // Pre-processing of messages (executes in background threadpool thread)
     //
 
-    protected void sendSuccessMessage(byte[] responseBody) {
-        sendMessage(obtainMessage(SUCCESS_MESSAGE, responseBody));
+    protected void sendSuccessMessage(int statusCode, byte[] responseBody) {
+        sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{statusCode, responseBody}));
     }
 
     protected void sendFailureMessage(Throwable e, byte[] responseBody) {
@@ -117,8 +123,8 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     // Pre-processing of messages (in original calling thread, typically the UI thread)
     //
 
-    protected void handleSuccessMessage(byte[] responseBody) {
-        onSuccess(responseBody);
+    protected void handleSuccessMessage(int statusCode, byte[] responseBody) {
+        onSuccess(statusCode, responseBody);
     }
 
     protected void handleFailureMessage(Throwable e, byte[] responseBody) {
@@ -127,12 +133,14 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
 
     // Methods which emulate android's Handler and Message methods
     protected void handleMessage(Message msg) {
+        Object[] response;
         switch(msg.what) {
             case SUCCESS_MESSAGE:
-                handleSuccessMessage((byte[])msg.obj);
+                response = (Object[])msg.obj;
+                handleSuccessMessage(((Integer) response[0]).intValue() , (byte[]) response[1]);
                 break;
             case FAILURE_MESSAGE:
-                Object[] response = (Object[])msg.obj;
+                response = (Object[])msg.obj;
                 handleFailureMessage((Throwable)response[0], (byte[])response[1]);
                 break;
             default:
@@ -177,7 +185,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
         if(status.getStatusCode() >= 300) {
             sendFailureMessage(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()), responseBody);
         } else {
-            sendSuccessMessage(responseBody);
+            sendSuccessMessage(status.getStatusCode(), responseBody);
         }
     }
 }
