@@ -65,7 +65,7 @@ class RetryHandler implements HttpRequestRetryHandler {
     }
 
     public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
-        boolean retry;
+        boolean retry = true;
 
         Boolean b = (Boolean) context.getAttribute(ExecutionContext.HTTP_REQ_SENT);
         boolean sent = (b != null && b.booleanValue());
@@ -82,16 +82,13 @@ class RetryHandler implements HttpRequestRetryHandler {
         } else if (!sent) {
             // for most other errors, retry only if request hasn't been fully sent yet
             retry = true;
-        } else {
+        }
+
+        if(retry) {
             // resend all idempotent requests
-            HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
+            HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute( ExecutionContext.HTTP_REQUEST );
             String requestType = currentReq.getMethod();
-            if(!requestType.equals("POST")) {
-                retry = true;
-            } else {
-                // otherwise do not retry
-                retry = false;
-            }
+            retry = !requestType.equals("POST");
         }
 
         if(retry) {
