@@ -17,7 +17,6 @@
         
         <exec executable="git" outputproperty="package.versionname">
           <arg value="describe"/>
-          <arg value='--match=${package.name}-*'/>
           <arg value="--tags"/>
           <arg value="--dirty"/>
           <arg value="--always"/>
