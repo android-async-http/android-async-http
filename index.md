@@ -112,7 +112,7 @@ class TwitterRestClientUsage {
     public void getPublicTimeline() throws JSONException {
         TwitterRestClient.get("statuses/public_timeline.json", null, new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(JSONArray response) {
+            public void onSuccess(JSONArray timeline) {
                 // Pull out the first event on the public timeline
                 JSONObject firstEvent = timeline.get(0);
                 String tweetText = firstEvent.getString("text");
