@@ -18,8 +18,9 @@
 
 package com.loopj.android.http;
 
-import java.io.IOException;
-
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -27,9 +28,7 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.util.EntityUtils;
 
-import android.os.Handler;
-import android.os.Message;
-import android.os.Looper;
+import java.io.IOException;
 
 /**
  * Used to intercept and handle the responses from requests made using 
@@ -110,6 +109,15 @@ public class AsyncHttpResponseHandler {
     public void onSuccess(String content) {}
 
     /**
+     * Fired when a request returns successfully, override to handle in your own code
+     * @param statusCode the status code of the response
+     * @param content the body of the HTTP response from the server
+     */
+    public void onSuccess(int statusCode, String content) {
+        onSuccess(content);
+    }
+
+    /**
      * Fired when a request fails to complete, override to handle in your own code
      * @param error the underlying cause of the failure
      * @deprecated use {@link #onFailure(Throwable, String)}
@@ -131,8 +139,8 @@ public class AsyncHttpResponseHandler {
     // Pre-processing of messages (executes in background threadpool thread)
     //
 
-    protected void sendSuccessMessage(String responseBody) {
-        sendMessage(obtainMessage(SUCCESS_MESSAGE, responseBody));
+    protected void sendSuccessMessage(int statusCode, String responseBody) {
+        sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{new Integer(statusCode), responseBody}));
     }
 
     protected void sendFailureMessage(Throwable e, String responseBody) {
@@ -156,8 +164,8 @@ public class AsyncHttpResponseHandler {
     // Pre-processing of messages (in original calling thread, typically the UI thread)
     //
 
-    protected void handleSuccessMessage(String responseBody) {
-        onSuccess(responseBody);
+    protected void handleSuccessMessage(int statusCode, String responseBody) {
+        onSuccess(statusCode, responseBody);
     }
 
     protected void handleFailureMessage(Throwable e, String responseBody) {
@@ -168,13 +176,16 @@ public class AsyncHttpResponseHandler {
 
     // Methods which emulate android's Handler and Message methods
     protected void handleMessage(Message msg) {
+        Object[] response;
+
         switch(msg.what) {
             case SUCCESS_MESSAGE:
-                handleSuccessMessage((String)msg.obj);
+                response = (Object[])msg.obj;
+                handleSuccessMessage(((Integer) response[0]).intValue(), (String) response[1]);
                 break;
             case FAILURE_MESSAGE:
-                Object[] repsonse = (Object[])msg.obj;
-                handleFailureMessage((Throwable)repsonse[0], (String)repsonse[1]);
+                response = (Object[])msg.obj;
+                handleFailureMessage((Throwable)response[0], (String)response[1]);
                 break;
             case START_MESSAGE:
                 onStart();
@@ -205,7 +216,6 @@ public class AsyncHttpResponseHandler {
         return msg;
     }
 
-
     // Interface to AsyncHttpRequest
     void sendResponseMessage(HttpResponse response) {
         StatusLine status = response.getStatusLine();
@@ -224,7 +234,7 @@ public class AsyncHttpResponseHandler {
         if(status.getStatusCode() >= 300) {
             sendFailureMessage(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()), responseBody);
         } else {
-            sendSuccessMessage(responseBody);
+            sendSuccessMessage(status.getStatusCode(), responseBody);
         }
     }
 }
