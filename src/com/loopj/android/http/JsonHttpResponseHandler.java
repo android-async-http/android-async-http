@@ -61,6 +61,29 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
      */
     public void onSuccess(JSONArray response) {}
 
+    /**
+     * Fired when a request returns successfully and contains a json object
+     * at the base of the response string. Override to handle in your
+     * own code.
+     * @param statusCode the status code of the response
+     * @param response the parsed json object found in the server response (if any)
+     */
+    public void onSuccess(int statusCode, JSONObject response) {
+        onSuccess(response);
+    }
+
+
+    /**
+     * Fired when a request returns successfully and contains a json array
+     * at the base of the response string. Override to handle in your
+     * own code.
+     * @param statusCode the status code of the response
+     * @param response the parsed json array found in the server response (if any)
+     */
+    public void onSuccess(int statusCode, JSONArray response) {
+        onSuccess(response);
+    }
+
     public void onFailure(Throwable e, JSONObject errorResponse) {}
     public void onFailure(Throwable e, JSONArray errorResponse) {}
 
@@ -70,10 +93,10 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     //
 
     @Override
-    protected void sendSuccessMessage(String responseBody) {
+    protected void sendSuccessMessage(int statusCode, String responseBody) {
         try {
             Object jsonResponse = parseResponse(responseBody);
-            sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, jsonResponse));
+            sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, jsonResponse}));
         } catch(JSONException e) {
             sendFailureMessage(e, responseBody);
         }
@@ -88,18 +111,19 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     protected void handleMessage(Message msg) {
         switch(msg.what){
             case SUCCESS_JSON_MESSAGE:
-                handleSuccessJsonMessage(msg.obj);
+                Object[] response = (Object[]) msg.obj;
+                handleSuccessJsonMessage(((Integer) response[0]).intValue(), response[1]);
                 break;
             default:
                 super.handleMessage(msg);
         }
     }
 
-    protected void handleSuccessJsonMessage(Object jsonResponse) {
+    protected void handleSuccessJsonMessage(int statusCode, Object jsonResponse) {
         if(jsonResponse instanceof JSONObject) {
-            onSuccess((JSONObject)jsonResponse);
+            onSuccess(statusCode, (JSONObject)jsonResponse);
         } else if(jsonResponse instanceof JSONArray) {
-            onSuccess((JSONArray)jsonResponse);
+            onSuccess(statusCode, (JSONArray)jsonResponse);
         } else {
             onFailure(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (JSONObject)null);
         }
