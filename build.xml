@@ -17,7 +17,6 @@
         
         <exec executable="git" outputproperty="package.versionname">
           <arg value="describe"/>
-          <arg value='--match=${package.name}-*'/>
           <arg value="--tags"/>
           <arg value="--dirty"/>
           <arg value="--always"/>
@@ -26,7 +25,19 @@
     </target>
 
     <!-- Standard jar stuff -->
-    <property name="lib.dir" value="${sdk.dir}/platforms/${target}" />
+    <property environment="env"/>
+    <condition property="android.base" value="${sdk.dir}" else="${env.ANDROID_HOME}">
+      <isset property="sdk.dir" />
+    </condition>
+    <fail message="Please set either the sdk.dir property or the ANDROID_HOME environment variable to point to your Android SDK installation.">
+      <condition>
+        <not>
+          <available file="${android.base}" type="dir"/>
+        </not>
+      </condition>
+    </fail>
+
+    <property name="lib.dir" value="${android.base}/platforms/${target}" />
     <property name="build.dir" value="./build"/>
     <property name="classes.dir"  value="${build.dir}/classes"/>
     <buildnumber file="build.num" />
@@ -43,7 +54,7 @@
             sourcepath="gen:src"
             destdir="doc"
             packagenames="${package.packagename}"
-            linkoffline="http://d.android.com/reference ${sdk.dir}/docs/reference" 
+            linkoffline="http://d.android.com/reference ${android.base}/docs/reference" 
             additionalparam="-author  -version"
             />
     </target>
