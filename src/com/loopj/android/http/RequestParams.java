@@ -98,6 +98,7 @@ public class RequestParams {
      * @throws IllegalArgumentException if the number of arguments isn't even.
      */
     public RequestParams(Object... keysAndValues) {
+      init();
       int len = keysAndValues.length;
       if (len % 2 != 0)
         throw new IllegalArgumentException("Supplied arguments must be even");
