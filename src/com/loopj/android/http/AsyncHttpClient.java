@@ -108,7 +108,10 @@ public class AsyncHttpClient {
     private final Map<Context, List<WeakReference<Future<?>>>> requestMap;
     private final Map<String, String> clientHeaderMap;
 
-
+    private static String _userAgent;
+    public void setDefaultUserAgent(String ua) {
+        _userAgent = ua;	
+    }
     /**
      * Creates a new AsyncHttpClient.
      */
@@ -125,7 +128,12 @@ public class AsyncHttpClient {
         HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
 
         HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setUserAgent(httpParams, String.format("android-async-http/%s (http://loopj.com/android-async-http)", VERSION));
+
+        if (_userAgent!=null) {
+            HttpProtocolParams.setUserAgent(httpParams, _userAgent);
+        } else {
+        	HttpProtocolParams.setUserAgent(httpParams, String.format("android-async-http/%s (http://loopj.com/android-async-http)", VERSION));
+        }
 
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
