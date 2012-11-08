@@ -18,6 +18,8 @@
 
 package com.loopj.android.http;
 
+import java.io.UnsupportedEncodingException;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -93,12 +95,12 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     //
 
     @Override
-    protected void sendSuccessMessage(int statusCode, String responseBody) {
+    protected void sendSuccessMessage(int statusCode, byte[] responseBody) {
         try {
             Object jsonResponse = parseResponse(responseBody);
-            sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, jsonResponse}));
-        } catch(JSONException e) {
-            sendFailureMessage(e, responseBody);
+            sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[] { statusCode, jsonResponse }));
+        } catch (JSONException e) {
+            sendFailureMessage(0, responseBody,e);
         }
     }
 
@@ -129,36 +131,45 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
         }
     }
 
-    protected Object parseResponse(String responseBody) throws JSONException {
+    protected Object parseResponse(byte[] responseBody) throws JSONException {
         Object result = null;
-        //trim the string to prevent start with blank, and test if the string is valid JSON, because the parser don't do this :(. If Json is not valid this will return null
-		responseBody = responseBody.trim();
-		if(responseBody.startsWith("{") || responseBody.startsWith("[")) {
-			result = new JSONTokener(responseBody).nextValue();
-		}
-		if (result == null) {
-			result = responseBody;
-		}
-		return result;
+        String responseBodyText = null;
+        try {
+            responseBodyText = new String(responseBody, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new JSONException("Unable to convert response to UTF-8 string");
+        }
+        
+        // trim the string to prevent start with blank, and test if the string
+        // is valid JSON, because the parser don't do this :(. If Json is not
+        // valid this will return null
+        responseBodyText = responseBodyText.trim();
+        if (responseBodyText.startsWith("{") || responseBodyText.startsWith("[")) {
+            result = new JSONTokener(responseBodyText).nextValue();
+        }
+        if (result == null) {
+            result = responseBodyText;
+        }
+        return result;
     }
 
     @Override
-    protected void handleFailureMessage(Throwable e, String responseBody) {
+    protected void handleFailureMessage(int statusCode, byte[] responseBody, Throwable e) {
         try {
             if (responseBody != null) {
                 Object jsonResponse = parseResponse(responseBody);
-                if(jsonResponse instanceof JSONObject) {
-                    onFailure(e, (JSONObject)jsonResponse);
-                } else if(jsonResponse instanceof JSONArray) {
-                    onFailure(e, (JSONArray)jsonResponse);
+                if (jsonResponse instanceof JSONObject) {
+                    onFailure(e, (JSONObject) jsonResponse);
+                } else if (jsonResponse instanceof JSONArray) {
+                    onFailure(e, (JSONArray) jsonResponse);
                 } else {
-                    onFailure(e, responseBody);
+                    onFailure(0, responseBody,e);
                 }
-            }else {
-                onFailure(e, "");
+            } else {
+                onFailure(0, null, e);
             }
-        }catch(JSONException ex) {
-            onFailure(e, responseBody);
+        } catch (JSONException ex) {
+            onFailure(0, responseBody, e);
         }
     }
 }

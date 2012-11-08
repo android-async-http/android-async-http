@@ -81,10 +81,10 @@ import android.content.Context;
  * <p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
- * client.get("http://www.google.com", new AsyncHttpResponseHandler() {
+ * client.get("http://www.google.com", new TextHttpResponseHandler() {
  *     &#064;Override
- *     public void onSuccess(String response) {
- *         System.out.println(response);
+ *     public void onSuccess(String responseBody) {
+ *         System.out.println(responseBody);
  *     }
  * });
  * </pre>
@@ -95,6 +95,7 @@ public class AsyncHttpClient {
     private static final int DEFAULT_MAX_CONNECTIONS = 10;
     private static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
     private static final int DEFAULT_MAX_RETRIES = 5;
+    private static final int DEFAULT_RETRY_SLEEP_TIME_MILLIS = 1500;
     private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;
     private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     private static final String ENCODING_GZIP = "gzip";
@@ -113,6 +114,14 @@ public class AsyncHttpClient {
      * Creates a new AsyncHttpClient.
      */
     public AsyncHttpClient() {
+        this(DEFAULT_MAX_RETRIES, DEFAULT_RETRY_SLEEP_TIME_MILLIS);
+    }
+
+    public AsyncHttpClient(int maxRetries) {
+      this(maxRetries, DEFAULT_RETRY_SLEEP_TIME_MILLIS);
+  	}
+
+    public AsyncHttpClient(int maxRetries, int retrySleepTimeMS) {
         BasicHttpParams httpParams = new BasicHttpParams();
 
         ConnManagerParams.setTimeout(httpParams, socketTimeout);
@@ -163,7 +172,9 @@ public class AsyncHttpClient {
             }
         });
 
-        httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES));
+        if(maxRetries < 0) maxRetries = DEFAULT_MAX_RETRIES;
+        if(retrySleepTimeMS <0) retrySleepTimeMS = DEFAULT_RETRY_SLEEP_TIME_MILLIS;
+        httpClient.setHttpRequestRetryHandler(new RetryHandler(maxRetries, retrySleepTimeMS));
 
         threadPool = (ThreadPoolExecutor)Executors.newCachedThreadPool();
 
