@@ -18,11 +18,13 @@
 
 package com.loopj.android.http;
 
-import java.io.InputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +43,9 @@ import org.apache.http.message.BasicNameValuePair;
  * <p>
  * <pre>
  * RequestParams params = new RequestParams();
- * params.put("username", "james");
- * params.put("password", "123456");
- * params.put("email", "my&#064;email.com");
+ * params.add("username", "james");
+ * params.add("password", "123456");
+ * params.add("email", "my&#064;email.com");
  * params.put("profile_picture", new File("pic.jpg")); // Upload a File
  * params.put("profile_picture2", someInputStream); // Upload an InputStream
  * params.put("profile_picture3", new ByteArrayInputStream(someBytes)); // Upload some bytes
@@ -55,7 +57,7 @@ import org.apache.http.message.BasicNameValuePair;
 public class RequestParams {
     private static String ENCODING = "UTF-8";
 
-    protected ConcurrentHashMap<String, String> urlParams;
+    protected List<BasicNameValuePair> urlParams;
     protected ConcurrentHashMap<String, FileWrapper> fileParams;
 
     /**
@@ -74,7 +76,7 @@ public class RequestParams {
         init();
 
         for(Map.Entry<String, String> entry : source.entrySet()) {
-            put(entry.getKey(), entry.getValue());
+            add(entry.getKey(), entry.getValue());
         }
     }
 
@@ -87,7 +89,7 @@ public class RequestParams {
     public RequestParams(String key, String value) {
         init();
 
-        put(key, value);
+        add(key, value);
     }
 
     /**
@@ -105,7 +107,7 @@ public class RequestParams {
       for (int i = 0; i < len; i += 2) {
         String key = String.valueOf(keysAndValues[i]);
         String val = String.valueOf(keysAndValues[i + 1]);
-        put(key, val);
+        add(key, val);
       }
     }
 
@@ -114,9 +116,9 @@ public class RequestParams {
      * @param key the key name for the new param.
      * @param value the value string for the new param.
      */
-    public void put(String key, String value){
+    public void add(String key, String value){
         if(key != null && value != null) {
-            urlParams.put(key, value);
+            urlParams.add(new BasicNameValuePair(key, value));
         }
     }
 
@@ -173,13 +175,13 @@ public class RequestParams {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        for(ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
+        for(BasicNameValuePair pair : urlParams) {
             if(result.length() > 0)
                 result.append("&");
 
-            result.append(entry.getKey());
+            result.append(pair.getName());
             result.append("=");
-            result.append(entry.getValue());
+            result.append(pair.getValue());
         }
 
         for(ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
@@ -204,8 +206,8 @@ public class RequestParams {
             SimpleMultipartEntity multipartEntity = new SimpleMultipartEntity();
 
             // Add string params
-            for(ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
-                multipartEntity.addPart(entry.getKey(), entry.getValue());
+            for(BasicNameValuePair pair : urlParams) {
+                multipartEntity.addPart(pair.getName(), pair.getValue());
             }
 
             // Add file params
@@ -237,15 +239,15 @@ public class RequestParams {
     }
 
     private void init(){
-        urlParams = new ConcurrentHashMap<String, String>();
+        urlParams = Collections.synchronizedList(new ArrayList<BasicNameValuePair>());
         fileParams = new ConcurrentHashMap<String, FileWrapper>();
     }
 
     protected List<BasicNameValuePair> getParamsList() {
         List<BasicNameValuePair> lparams = new LinkedList<BasicNameValuePair>();
 
-        for(ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
-            lparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+        for(BasicNameValuePair pair : urlParams) {
+            lparams.add(pair);
         }
 
         return lparams;
