@@ -275,19 +275,24 @@ public class AsyncHttpResponseHandler {
                 if (contentLength < 0) {
                     contentLength = BUFFER_SIZE;
                 }
-                ByteArrayBuffer buffer = new ByteArrayBuffer((int) contentLength);
-                try {
-                    byte[] tmp = new byte[BUFFER_SIZE];
-                    int l;
-                    // do not send messages if request has been cancelled
-                    while ((l = instream.read(tmp)) != -1 && !Thread.currentThread().isInterrupted()) {
-                        buffer.append(tmp, 0, l);
-                        sendProgressMessage(buffer.length(), (int) contentLength);
+                try{
+                    ByteArrayBuffer buffer = new ByteArrayBuffer((int) contentLength);
+                    try {
+                        byte[] tmp = new byte[BUFFER_SIZE];
+                        int l;
+                        // do not send messages if request has been cancelled
+                        while ((l = instream.read(tmp)) != -1 && !Thread.currentThread().isInterrupted()) {
+                            buffer.append(tmp, 0, l);
+                            sendProgressMessage(buffer.length(), (int) contentLength);
+                        }
+                    } finally {
+                        instream.close();
                     }
-                } finally {
-                    instream.close();
+                    responseBody = buffer.buffer();
+                } catch( OutOfMemoryError e ) {
+                    System.gc();
+                    throw new IOException("File too large to fit into available memory");
                 }
-                responseBody = buffer.toByteArray();
             }
         }
         return (responseBody);
