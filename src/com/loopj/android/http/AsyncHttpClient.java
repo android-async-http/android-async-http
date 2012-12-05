@@ -72,11 +72,11 @@ import android.content.Context;
 
 
 /**
- * The AsyncHttpClient can be used to make asynchronous GET, POST, PUT and 
- * DELETE HTTP requests in your Android applications. Requests can be made
- * with additional parameters by passing a {@link RequestParams} instance,
- * and responses can be handled by passing an anonymously overridden 
- * {@link AsyncHttpResponseHandler} instance.
+ * The AsyncHttpClient can be used to make asynchronous GET, POST, PUT, 
+ * PATCH and DELETE HTTP requests in your Android applications. Requests can
+ * be made with additional parameters by passing a {@link RequestParams}
+ * instance, and responses can be handled by passing an anonymously 
+ * overridden {@link AsyncHttpResponseHandler} instance.
  * <p>
  * For example:
  * <p>
@@ -530,7 +530,7 @@ public class AsyncHttpClient {
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void patch(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        post(null, url, params, responseHandler);
+    	patch(null, url, params, responseHandler);
     }
 
     /**
@@ -541,7 +541,7 @@ public class AsyncHttpClient {
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void patch(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        post(context, url, paramsToEntity(params), null, responseHandler);
+    	patch(context, url, paramsToEntity(params), null, responseHandler);
     }
 
     /**
