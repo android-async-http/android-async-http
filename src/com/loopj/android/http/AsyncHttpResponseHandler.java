@@ -94,7 +94,7 @@ public class AsyncHttpResponseHandler {
                   service.handleMessage(msg);
              }
         }
-    } 
+    }
     
     /**
      * Creates a new AsyncHttpResponseHandler
@@ -279,11 +279,12 @@ public class AsyncHttpResponseHandler {
                     ByteArrayBuffer buffer = new ByteArrayBuffer((int) contentLength);
                     try {
                         byte[] tmp = new byte[BUFFER_SIZE];
-                        int l;
+                        int l, count = 0;
                         // do not send messages if request has been cancelled
                         while ((l = instream.read(tmp)) != -1 && !Thread.currentThread().isInterrupted()) {
+                            count += l;
                             buffer.append(tmp, 0, l);
-                            sendProgressMessage(buffer.length(), (int) contentLength);
+                            sendProgressMessage(count, (int) contentLength);
                         }
                     } finally {
                         instream.close();
