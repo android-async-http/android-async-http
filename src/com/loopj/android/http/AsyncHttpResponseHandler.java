@@ -21,6 +21,7 @@ package com.loopj.android.http;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -113,7 +114,7 @@ public class AsyncHttpResponseHandler {
      * @param statusCode the status code of the response
      * @param content the body of the HTTP response from the server
      */
-    public void onSuccess(int statusCode, String content) {
+    public void onSuccess(int statusCode,Header[] headers,String content) {
         onSuccess(content);
     }
 
@@ -139,8 +140,8 @@ public class AsyncHttpResponseHandler {
     // Pre-processing of messages (executes in background threadpool thread)
     //
 
-    protected void sendSuccessMessage(int statusCode, String responseBody) {
-        sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{new Integer(statusCode), responseBody}));
+    protected void sendSuccessMessage(int statusCode, Header[] headers, String responseBody) {
+        sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{new Integer(statusCode),headers, responseBody}));
     }
 
     protected void sendFailureMessage(Throwable e, String responseBody) {
@@ -164,8 +165,8 @@ public class AsyncHttpResponseHandler {
     // Pre-processing of messages (in original calling thread, typically the UI thread)
     //
 
-    protected void handleSuccessMessage(int statusCode, String responseBody) {
-        onSuccess(statusCode, responseBody);
+    protected void handleSuccessMessage(int statusCode, Header[] headers, String responseBody) {
+        onSuccess(statusCode, headers, responseBody);
     }
 
     protected void handleFailureMessage(Throwable e, String responseBody) {
@@ -181,7 +182,7 @@ public class AsyncHttpResponseHandler {
         switch(msg.what) {
             case SUCCESS_MESSAGE:
                 response = (Object[])msg.obj;
-                handleSuccessMessage(((Integer) response[0]).intValue(), (String) response[1]);
+                handleSuccessMessage(((Integer) response[0]).intValue(),(Header[]) response[1], (String) response[2]);
                 break;
             case FAILURE_MESSAGE:
                 response = (Object[])msg.obj;
@@ -234,7 +235,7 @@ public class AsyncHttpResponseHandler {
         if(status.getStatusCode() >= 300) {
             sendFailureMessage(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()), responseBody);
         } else {
-            sendSuccessMessage(status.getStatusCode(), responseBody);
+            sendSuccessMessage(status.getStatusCode(),response.getAllHeaders(), responseBody);
         }
     }
 }
