@@ -112,9 +112,20 @@ public class AsyncHttpResponseHandler {
     /**
      * Fired when a request returns successfully, override to handle in your own code
      * @param statusCode the status code of the response
+     * @param headers the headers of the HTTP response
      * @param content the body of the HTTP response from the server
      */
-    public void onSuccess(int statusCode,Header[] headers,String content) {
+    public void onSuccess(int statusCode, Header[] headers, String content) {
+        onSuccess(statusCode, content);
+    }
+
+    /**
+     * Fired when a request returns successfully, override to handle in your own code
+     * @param statusCode the status code of the response
+     * @param content the body of the HTTP response from the server
+     */
+    public void onSuccess(int statusCode, String content)
+    {
         onSuccess(content);
     }
 
@@ -141,7 +152,7 @@ public class AsyncHttpResponseHandler {
     //
 
     protected void sendSuccessMessage(int statusCode, Header[] headers, String responseBody) {
-        sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{new Integer(statusCode),headers, responseBody}));
+        sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{new Integer(statusCode), headers, responseBody}));
     }
 
     protected void sendFailureMessage(Throwable e, String responseBody) {
@@ -182,7 +193,7 @@ public class AsyncHttpResponseHandler {
         switch(msg.what) {
             case SUCCESS_MESSAGE:
                 response = (Object[])msg.obj;
-                handleSuccessMessage(((Integer) response[0]).intValue(),(Header[]) response[1], (String) response[2]);
+                handleSuccessMessage(((Integer) response[0]).intValue(), (Header[]) response[1], (String) response[2]);
                 break;
             case FAILURE_MESSAGE:
                 response = (Object[])msg.obj;
