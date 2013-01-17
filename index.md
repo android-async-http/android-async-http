@@ -32,25 +32,25 @@ Features
 - **Persistent cookie store**, saves cookies into your app's SharedPreferences
 
 
-Who is Using It?
-----------------
+Used in Production By Top Apps and Developers
+---------------------------------------------
 [Instagram](https://play.google.com/store/apps/details?id=com.instagram.android)
 :   Instagram is the #1 photo app on android, with over 10million users
+
+[Pinterest](https://play.google.com/store/apps/details?id=com.pinterest)
+:   Popular online pinboard. Organize and share things you love.
+
+[Frontline Commando (Glu Games)](https://play.google.com/store/apps/details?id=com.glu.modwarsniper)
+:   \#1 first person shooting game on Android, by Glu Games.
 
 [Heyzap](https://market.android.com/details?id=com.heyzap.android)
 :   Social game discovery app with millions of users
 
-[DoubanFM](https://market.android.com/details?id=com.douban.radio)
-:   Popular personal online music radio service
-
 [Pose](https://market.android.com/details?id=com.pose)
 :   Pose is the #1 fashion app for sharing and discovering new styles
 
-[Pocket Salsa](https://play.google.com/store/apps/details?id=com.addicted2salsa.pocketsalsa&hl=en)
-:   Pocket Salsa is the easiest way to learn how to dance salsa.
-
-Send me a [message](https://github.com/inbox/new?to=loopj) on github to let me
-know if you are using this library in a released android application!
+[Thousands more apps...](http://www.appbrain.com/stats/libraries/details/loopj_asynchttpclient/android-asynchronous-http-client)
+:   Async HTTP is used in production by thousands of top apps.
 
 
 Installation & Basic Usage
