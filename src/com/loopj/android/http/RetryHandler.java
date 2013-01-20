@@ -40,7 +40,6 @@ import org.apache.http.protocol.HttpContext;
 import android.os.SystemClock;
 
 class RetryHandler implements HttpRequestRetryHandler {
-    private static final int RETRY_SLEEP_TIME_MILLIS = 1500;
     private static HashSet<Class<?>> exceptionWhitelist = new HashSet<Class<?>>();
     private static HashSet<Class<?>> exceptionBlacklist = new HashSet<Class<?>>();
 
@@ -59,9 +58,11 @@ class RetryHandler implements HttpRequestRetryHandler {
     }
 
     private final int maxRetries;
+    private final int retrySleepTimeMS;
 
-    public RetryHandler(int maxRetries) {
+    public RetryHandler(int maxRetries, int retrySleepTimeMS) {
         this.maxRetries = maxRetries;
+        this.retrySleepTimeMS = retrySleepTimeMS;
     }
 
     public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
@@ -91,8 +92,8 @@ class RetryHandler implements HttpRequestRetryHandler {
             retry = !requestType.equals("POST");
         }
 
-        if(retry) {
-            SystemClock.sleep(RETRY_SLEEP_TIME_MILLIS);
+        if (retry) {
+            SystemClock.sleep(retrySleepTimeMS);
         } else {
             exception.printStackTrace();
         }
