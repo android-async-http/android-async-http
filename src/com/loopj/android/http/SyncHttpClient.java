@@ -1,5 +1,7 @@
 package com.loopj.android.http;
 
+import java.io.IOException;
+
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
@@ -15,9 +17,9 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 	 * field to be accessible
 	 */
 	private String result;
-	AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
+	AsyncHttpResponseHandler responseHandler = new TextHttpResponseHandler() {
 
-		void sendResponseMessage(org.apache.http.HttpResponse response) {
+		void sendResponseMessage(org.apache.http.HttpResponse response) throws IOException {
 			responseCode = response.getStatusLine().getStatusCode();
 			super.sendResponseMessage(response);
 		};
@@ -37,7 +39,7 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 		}
 
 		@Override
-		public void onFailure(Throwable error, String content) {
+		public void onFailure(String content, Throwable error) {
 			result = onRequestFailed(error, content);
 		}
 	};
