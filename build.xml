@@ -80,7 +80,7 @@
             <attribute name="Implementation-Version" value="${package.versionname}"/> 
         </manifest>
 
-        <jar destfile="${package.versionname}.jar" basedir="build/classes" includes="com/loopj/android/http/**/*.class" manifest="MANIFEST.MF" />
+        <jar destfile="${package.name}-${package.versionname}.jar" basedir="build/classes" includes="com/loopj/android/http/**/*.class" manifest="MANIFEST.MF" />
     </target>
 
     <!-- Clean out the build files -->
