@@ -90,7 +90,6 @@
         <delete dir="build" />
         <delete dir="doc" />
         <delete>
-            <fileset dir="." includes="*.jar"/>
             <fileset file="MANIFEST.MF"/>
         </delete>
     </target>
