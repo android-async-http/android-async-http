@@ -75,8 +75,6 @@
 
     <!-- Package a jar from compiled class files -->
     <target name="jar" depends="git-details,compile">
-        <delete dir="." includes="**/*.jar" />
-        <delete file="MANIFEST.MF" />
         <manifest file="MANIFEST.MF">
             <attribute name="Built-By" value="${user.name}" />
             <attribute name="Implementation-Version" value="${package.versionname}"/> 
@@ -90,6 +88,7 @@
         <delete dir="build" />
         <delete dir="doc" />
         <delete>
+            <fileset dir="." includes="*.jar"/>
             <fileset file="MANIFEST.MF"/>
         </delete>
     </target>
