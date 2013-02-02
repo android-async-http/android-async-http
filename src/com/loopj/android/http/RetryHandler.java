@@ -30,7 +30,7 @@ import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLException;
 
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.HttpRequestRetryHandler;
@@ -56,7 +56,7 @@ class RetryHandler implements HttpRequestRetryHandler {
         // never retry timeouts
         exceptionBlacklist.add(InterruptedIOException.class);
         // never retry SSL handshake failures
-        exceptionBlacklist.add(SSLHandshakeException.class);
+        exceptionBlacklist.add(SSLException.class);
     }
 
     private final int maxRetries;
