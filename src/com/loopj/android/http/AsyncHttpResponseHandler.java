@@ -209,7 +209,7 @@ public class AsyncHttpResponseHandler {
         if(handler != null){
             msg = this.handler.obtainMessage(responseMessage, response);
         }else{
-            msg = new Message();
+            msg = Message.obtain();
             msg.what = responseMessage;
             msg.obj = response;
         }
