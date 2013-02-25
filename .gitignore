@@ -9,3 +9,6 @@ gen/
 _layouts
 .DS_Store
 gh-pages
+ant.properties
+proguard-project.txt
+res/
