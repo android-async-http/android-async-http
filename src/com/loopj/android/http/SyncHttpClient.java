@@ -1,7 +1,6 @@
 package com.loopj.android.http;
 
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
 
 import android.content.Context;
@@ -51,7 +50,7 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 	}
 
 	// Private stuff
-	protected void sendRequest(DefaultHttpClient client,
+	protected void sendRequest(NoRedirectHttpClient client,
 			HttpContext httpContext, HttpUriRequest uriRequest,
 			String contentType, AsyncHttpResponseHandler responseHandler,
 			Context context) {

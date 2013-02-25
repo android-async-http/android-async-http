@@ -57,7 +57,6 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.HttpEntityWrapper;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
@@ -102,7 +101,7 @@ public class AsyncHttpClient {
     private static int maxConnections = DEFAULT_MAX_CONNECTIONS;
     private static int socketTimeout = DEFAULT_SOCKET_TIMEOUT;
 
-    private final DefaultHttpClient httpClient;
+    private final NoRedirectHttpClient httpClient;
     private final HttpContext httpContext;
     private ThreadPoolExecutor threadPool;
     private final Map<Context, List<WeakReference<Future<?>>>> requestMap;
@@ -133,7 +132,7 @@ public class AsyncHttpClient {
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
         httpContext = new SyncBasicHttpContext(new BasicHttpContext());
-        httpClient = new DefaultHttpClient(cm, httpParams);
+        httpClient = new NoRedirectHttpClient(cm, httpParams);
         httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
             public void process(HttpRequest request, HttpContext context) {
                 if (!request.containsHeader(HEADER_ACCEPT_ENCODING)) {
@@ -548,7 +547,7 @@ public class AsyncHttpClient {
 
 
     // Private stuff
-    protected void sendRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, AsyncHttpResponseHandler responseHandler, Context context) {
+    protected void sendRequest(NoRedirectHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, AsyncHttpResponseHandler responseHandler, Context context) {
         if(contentType != null) {
             uriRequest.addHeader("Content-Type", contentType);
         }
