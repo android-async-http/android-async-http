@@ -48,6 +48,7 @@ import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.params.ConnManagerParams;
@@ -71,11 +72,11 @@ import android.content.Context;
 
 
 /**
- * The AsyncHttpClient can be used to make asynchronous GET, POST, PUT and 
- * DELETE HTTP requests in your Android applications. Requests can be made
- * with additional parameters by passing a {@link RequestParams} instance,
- * and responses can be handled by passing an anonymously overridden 
- * {@link AsyncHttpResponseHandler} instance.
+ * The AsyncHttpClient can be used to make asynchronous GET, POST, PUT, 
+ * PATCH and DELETE HTTP requests in your Android applications. Requests can
+ * be made with additional parameters by passing a {@link RequestParams}
+ * instance, and responses can be handled by passing an anonymously 
+ * overridden {@link AsyncHttpResponseHandler} instance.
  * <p>
  * For example:
  * <p>
@@ -505,6 +506,96 @@ public class AsyncHttpClient {
      */
     public void put(Context context, String url,Header[] headers, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
         HttpEntityEnclosingRequestBase request = addEntityToRequestBase(new HttpPut(url), entity);
+        if(headers != null) request.setHeaders(headers);
+        sendRequest(httpClient, httpContext, request, contentType, responseHandler, context);
+    }
+    
+    //
+    // HTTP PATCH Requests
+    //
+
+    /**
+     * Perform a HTTP PATCH request, without any parameters.
+     * @param url the URL to send the request to.
+     * @param responseHandler the response handler instance that should handle the response.
+     */
+    public void patch(String url, AsyncHttpResponseHandler responseHandler) {
+    	patch(null, url, null, responseHandler);
+    }
+
+    /**
+     * Perform a HTTP PATCH request with parameters.
+     * @param url the URL to send the request to.
+     * @param params additional PATCH parameters or files to send with the request.
+     * @param responseHandler the response handler instance that should handle the response.
+     */
+    public void patch(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+    	patch(null, url, params, responseHandler);
+    }
+
+    /**
+     * Perform a HTTP PATCH request and track the Android Context which initiated the request.
+     * @param context the Android Context which initiated the request.
+     * @param url the URL to send the request to.
+     * @param params additional PATCH parameters or files to send with the request.
+     * @param responseHandler the response handler instance that should handle the response.
+     */
+    public void patch(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+    	patch(context, url, paramsToEntity(params), null, responseHandler);
+    }
+
+    /**
+     * Perform a HTTP PATCH request and track the Android Context which initiated the request.
+     * @param context the Android Context which initiated the request.
+     * @param url the URL to send the request to.
+     * @param entity a raw {@link HttpEntity} to send with the request, for example, use this to send string/json/xml payloads to a server by passing a {@link org.apache.http.entity.StringEntity}.
+     * @param contentType the content type of the payload you are sending, for example application/json if sending a json payload.
+     * @param responseHandler the response handler instance that should handle the response.
+     */
+    public void patch(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
+        sendRequest(httpClient, httpContext, addEntityToRequestBase(new HttpPatch(url), entity), contentType, responseHandler, context);
+    }
+
+    /**
+     * Perform a HTTP PATCH request and track the Android Context which initiated
+     * the request. Set headers only for this request
+     * 
+     * @param context the Android Context which initiated the request.
+     * @param url the URL to send the request to.
+     * @param headers set headers only for this request
+     * @param params additional PATCH parameters to send with the request.
+     * @param contentType the content type of the payload you are sending, for
+     *        example application/json if sending a json payload.
+     * @param responseHandler the response handler instance that should handle
+     *        the response.
+     */
+    public void patch(Context context, String url, Header[] headers, RequestParams params, String contentType,
+            AsyncHttpResponseHandler responseHandler) {
+        HttpEntityEnclosingRequestBase request = new HttpPatch(url);
+        if(params != null) request.setEntity(paramsToEntity(params));
+        if(headers != null) request.setHeaders(headers);
+        sendRequest(httpClient, httpContext, request, contentType,
+                responseHandler, context);
+    }
+
+    /**
+     * Perform a HTTP PATCH request and track the Android Context which initiated
+     * the request. Set headers only for this request
+     *
+     * @param context the Android Context which initiated the request.
+     * @param url the URL to send the request to.
+     * @param headers set headers only for this request
+     * @param entity a raw {@link HttpEntity} to send with the request, for
+     *        example, use this to send string/json/xml payloads to a server by
+     *        passing a {@link org.apache.http.entity.StringEntity}.
+     * @param contentType the content type of the payload you are sending, for
+     *        example application/json if sending a json payload.
+     * @param responseHandler the response handler instance that should handle
+     *        the response.
+     */
+    public void patch(Context context, String url, Header[] headers, HttpEntity entity, String contentType,
+            AsyncHttpResponseHandler responseHandler) {
+        HttpEntityEnclosingRequestBase request = addEntityToRequestBase(new HttpPatch(url), entity);
         if(headers != null) request.setHeaders(headers);
         sendRequest(httpClient, httpContext, request, contentType, responseHandler, context);
     }

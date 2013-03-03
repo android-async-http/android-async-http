@@ -9,3 +9,4 @@ gen/
 _layouts
 .DS_Store
 gh-pages
+!httpclient-*.jar
