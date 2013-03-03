@@ -80,7 +80,7 @@ public class PersistentCookieStore implements CookieStore {
 
     @Override
     public void addCookie(Cookie cookie) {
-        String name = cookie.getName();
+        String name = cookie.getName() + cookie.getDomain();
 
         // Save cookie into local store, or remove if expired
         if(!cookie.isExpired(new Date())) {
