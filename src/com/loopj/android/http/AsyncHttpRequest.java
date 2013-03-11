@@ -73,14 +73,20 @@ class AsyncHttpRequest implements Runnable {
 
     private void makeRequest() throws IOException {
         if(!Thread.currentThread().isInterrupted()) {
-            HttpResponse response = client.execute(request, context);
-            if(!Thread.currentThread().isInterrupted()) {
-                if(responseHandler != null) {
-                    responseHandler.sendResponseMessage(response);
-                }
-            } else{
-                //TODO: should raise InterruptedException? this block is reached whenever the request is cancelled before its response is received
-            }
+        	try {
+        		HttpResponse response = client.execute(request, context);
+        		if(!Thread.currentThread().isInterrupted()) {
+        			if(responseHandler != null) {
+        				responseHandler.sendResponseMessage(response);
+        			}
+        		} else{
+        			//TODO: should raise InterruptedException? this block is reached whenever the request is cancelled before its response is received
+        		}
+        	} catch (IOException e) {
+        		if(!Thread.currentThread().isInterrupted()) {
+        			throw e;
+        		}
+        	}
         }
     }
 
