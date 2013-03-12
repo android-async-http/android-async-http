@@ -43,6 +43,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
@@ -169,6 +170,13 @@ public class AsyncHttpClient {
 
         requestMap = new WeakHashMap<Context, List<WeakReference<Future<?>>>>();
         clientHeaderMap = new HashMap<String, String>();
+    }
+    /**
+     * Set the retry handler of the http client.
+     * @param retryHandler and instance of {@link HttpRequestRetryHandler} to use as the retry handler
+     */
+    public void setRetryHandler(HttpRequestRetryHandler retryHandler){
+        httpClient.setHttpRequestRetryHandler(retryHandler);
     }
 
     /**
