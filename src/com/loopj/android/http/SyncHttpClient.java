@@ -14,8 +14,8 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 	 * the result back to this method. Therefore the result object has to be a
 	 * field to be accessible
 	 */
-	private String result;
-	AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
+	protected String result;
+	protected AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
 
 		void sendResponseMessage(org.apache.http.HttpResponse response) {
 			responseCode = response.getStatusLine().getStatusCode();
