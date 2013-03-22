@@ -69,7 +69,7 @@ class RetryHandler implements HttpRequestRetryHandler {
         boolean retry = true;
 
         Boolean b = (Boolean) context.getAttribute(ExecutionContext.HTTP_REQ_SENT);
-        boolean sent = (b != null && b.booleanValue());
+        boolean sent = (b != null && b);
 
         if(executionCount > maxRetries) {
             // Do not retry if over max retry count
