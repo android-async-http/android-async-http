@@ -140,7 +140,7 @@ public class AsyncHttpResponseHandler {
     //
 
     protected void sendSuccessMessage(int statusCode, String responseBody) {
-        sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{new Integer(statusCode), responseBody}));
+        sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{statusCode, responseBody}));
     }
 
     protected void sendFailureMessage(Throwable e, String responseBody) {
@@ -181,7 +181,7 @@ public class AsyncHttpResponseHandler {
         switch(msg.what) {
             case SUCCESS_MESSAGE:
                 response = (Object[])msg.obj;
-                handleSuccessMessage(((Integer) response[0]).intValue(), (String) response[1]);
+                handleSuccessMessage((Integer) response[0], (String) response[1]);
                 break;
             case FAILURE_MESSAGE:
                 response = (Object[])msg.obj;
