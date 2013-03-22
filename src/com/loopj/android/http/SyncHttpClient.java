@@ -22,7 +22,7 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 			super.sendResponseMessage(response);
 		}
 
-        @Override
+		@Override
 		protected void sendMessage(Message msg) {
 			/*
 			 * Dont use the handler and send it directly to the analysis
