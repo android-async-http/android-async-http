@@ -65,6 +65,7 @@ class RetryHandler implements HttpRequestRetryHandler {
         this.maxRetries = maxRetries;
     }
 
+    @Override
     public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
         boolean retry = true;
 
