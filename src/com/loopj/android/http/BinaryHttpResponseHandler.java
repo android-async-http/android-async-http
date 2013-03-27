@@ -18,7 +18,8 @@
 
 package com.loopj.android.http;
 
-import android.os.Message;
+import java.io.IOException;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -27,7 +28,7 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.util.EntityUtils;
 
-import java.io.IOException;
+import android.os.Message;
 
 /**
  * Used to intercept and handle the responses from requests made using
@@ -102,6 +103,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
      * @param binaryData the response body, if any
      * @deprecated
      */
+    @Deprecated
     public void onFailure(Throwable error, byte[] binaryData) {
         // By default, call the deprecated onFailure(Throwable) for compatibility
         onFailure(error);
@@ -116,6 +118,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
         sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{statusCode, responseBody}));
     }
 
+    @Override
     protected void sendFailureMessage(Throwable e, byte[] responseBody) {
         sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{e, responseBody}));
     }
@@ -133,6 +136,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     // Methods which emulate android's Handler and Message methods
+    @Override
     protected void handleMessage(Message msg) {
         Object[] response;
         switch(msg.what) {
@@ -151,6 +155,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     // Interface to AsyncHttpRequest
+    @Override
     void sendResponseMessage(HttpResponse response) {
         StatusLine status = response.getStatusLine();
         Header[] contentTypeHeaders = response.getHeaders("Content-Type");
