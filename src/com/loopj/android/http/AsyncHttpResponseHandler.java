@@ -235,7 +235,7 @@ public class AsyncHttpResponseHandler {
             onProgress(((Integer) response[0]).intValue(), ((Integer) response[1]).intValue());
             break;
         case RETRY_MESSAGE:
-            onRetry();
+            handleRetryMessage();
           break;
         }
     }
