@@ -60,8 +60,8 @@ import org.apache.http.entity.HttpEntityWrapper;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -90,7 +90,7 @@ import android.content.Context;
  * </pre>
  */
 public class AsyncHttpClient {
-    private static final String VERSION = "1.4.1";
+    private static final String VERSION = "1.4.3";
 
     private static final int DEFAULT_MAX_CONNECTIONS = 10;
     private static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
@@ -135,6 +135,7 @@ public class AsyncHttpClient {
         httpContext = new SyncBasicHttpContext(new BasicHttpContext());
         httpClient = new DefaultHttpClient(cm, httpParams);
         httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
+            @Override
             public void process(HttpRequest request, HttpContext context) {
                 if (!request.containsHeader(HEADER_ACCEPT_ENCODING)) {
                     request.addHeader(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
@@ -146,6 +147,7 @@ public class AsyncHttpClient {
         });
 
         httpClient.addResponseInterceptor(new HttpResponseInterceptor() {
+            @Override
             public void process(HttpResponse response, HttpContext context) {
                 final HttpEntity entity = response.getEntity();
                 if (entity == null) {
