@@ -19,6 +19,7 @@
 package com.loopj.android.http;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -168,7 +169,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
         Header contentTypeHeader = contentTypeHeaders[0];
         boolean foundAllowedContentType = false;
         for(String anAllowedContentType : mAllowedContentTypes) {
-            if(anAllowedContentType.equals(contentTypeHeader.getValue())) {
+            if(Pattern.matches(anAllowedContentType, contentTypeHeader.getValue())) {
                 foundAllowedContentType = true;
             }
         }
