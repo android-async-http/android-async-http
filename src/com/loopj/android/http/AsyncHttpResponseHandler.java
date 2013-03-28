@@ -221,7 +221,7 @@ public class AsyncHttpResponseHandler {
         if(handler != null){
             msg = this.handler.obtainMessage(responseMessage, response);
         }else{
-            msg = new Message();
+            msg = Message.obtain();
             msg.what = responseMessage;
             msg.obj = response;
         }
@@ -246,7 +246,7 @@ public class AsyncHttpResponseHandler {
         if(status.getStatusCode() >= 300) {
             sendFailureMessage(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()), responseBody);
         } else {
-            sendSuccessMessage(status.getStatusCode(),response.getAllHeaders(), responseBody);
+            sendSuccessMessage(status.getStatusCode(), response.getAllHeaders(), responseBody);
         }
     }
 }

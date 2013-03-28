@@ -66,7 +66,7 @@
 
         <javac
             includeantruntime="false"
-            srcdir="."
+            srcdir="src"
             destdir="${classes.dir}"
             classpathref="classpath"
             debug="true"
@@ -75,14 +75,12 @@
 
     <!-- Package a jar from compiled class files -->
     <target name="jar" depends="git-details,compile">
-        <delete dir="." includes="**/*.jar" />
-        <delete file="MANIFEST.MF" />
         <manifest file="MANIFEST.MF">
             <attribute name="Built-By" value="${user.name}" />
             <attribute name="Implementation-Version" value="${package.versionname}"/> 
         </manifest>
 
-        <jar destfile="${package.versionname}.jar" basedir="build/classes" includes="com/loopj/android/http/**/*.class" manifest="MANIFEST.MF" />
+        <jar destfile="${package.name}-${package.versionname}.jar" basedir="build/classes" includes="com/loopj/android/http/**/*.class" manifest="MANIFEST.MF" />
     </target>
 
     <!-- Clean out the build files -->
