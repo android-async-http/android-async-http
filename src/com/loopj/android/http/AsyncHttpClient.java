@@ -335,7 +335,14 @@ public class AsyncHttpClient {
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void get(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        sendRequest(httpClient, httpContext, new HttpGet(getUrlWithQueryString(url, params)), null, responseHandler, context);
+        HttpGet httpGet;
+        try {
+            httpGet = new HttpGet(getUrlWithQueryString(url, params));
+        } catch (RuntimeException e) {
+            responseHandler.sendFailureMessage(e, e.getMessage());
+            return;
+        }
+        sendRequest(httpClient, httpContext, httpGet, null, responseHandler, context);
     }
     
     /**
