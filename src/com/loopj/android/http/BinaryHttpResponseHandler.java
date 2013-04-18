@@ -143,7 +143,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
         switch(msg.what) {
             case SUCCESS_MESSAGE:
                 response = (Object[])msg.obj;
-                handleSuccessMessage(((Integer) response[0]).intValue() , (byte[]) response[1]);
+                handleSuccessMessage(((Integer) response[0]).intValue(), response[1].toString().getBytes());
                 break;
             case FAILURE_MESSAGE:
                 response = (Object[])msg.obj;
