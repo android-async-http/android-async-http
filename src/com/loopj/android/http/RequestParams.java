@@ -18,21 +18,22 @@
 
 package com.loopj.android.http;
 
-import java.io.InputStream;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
 
 /**
  * A collection of string request parameters or files to send along with
@@ -54,7 +55,6 @@ import org.apache.http.message.BasicNameValuePair;
  * </pre>
  */
 public class RequestParams {
-    private static String ENCODING = "UTF-8";
 
     protected ConcurrentHashMap<String, String> urlParams;
     protected ConcurrentHashMap<String, FileWrapper> fileParams;
@@ -226,46 +226,49 @@ public class RequestParams {
      * Returns an HttpEntity containing all request parameters
      */
     public HttpEntity getEntity() {
-        HttpEntity entity = null;
-
         if(!fileParams.isEmpty()) {
-            SimpleMultipartEntity multipartEntity = new SimpleMultipartEntity();
-
-            // Add string params
-            for(ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
-                multipartEntity.addPart(entry.getKey(), entry.getValue());
-            }
-
-            // Add dupe params
-            for(ConcurrentHashMap.Entry<String, ArrayList<String>> entry : urlParamsWithArray.entrySet()) {
-                ArrayList<String> values = entry.getValue();
-                for (String value : values) {
-                    multipartEntity.addPart(entry.getKey(), value);
-                }
-            }
-
-            // Add file params
-            int currentIndex = 0;
-            int lastIndex = fileParams.entrySet().size() - 1;
-            for(ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
-                FileWrapper file = entry.getValue();
-                if(file.inputStream != null) {
-                    boolean isLast = currentIndex == lastIndex;
-                    if(file.contentType != null) {
-                        multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream, file.contentType, isLast);
-                    } else {
-                        multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream, isLast);
-                    }
-                }
-                currentIndex++;
-            }
-
-            entity = multipartEntity;
+            return createMultipartEntity();
         } else {
-            try {
-                entity = new UrlEncodedFormEntity(getParamsList(), ENCODING);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+            return createFormEntity();
+        }
+    }
+
+    private HttpEntity createFormEntity() {
+        try {
+            return new UrlEncodedFormEntity(getParamsList(), HTTP.UTF_8);
+        } catch (UnsupportedEncodingException e) {
+            return null; // Actually cannot happen when using utf-8
+        }
+    }
+
+    private HttpEntity createMultipartEntity() {
+        SimpleMultipartEntity entity = new SimpleMultipartEntity();
+
+        // Add string params
+        for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
+            entity.addPart(entry.getKey(), entry.getValue());
+        }
+
+        // Add dupe params
+        for (ConcurrentHashMap.Entry<String, ArrayList<String>> entry : urlParamsWithArray
+                .entrySet()) {
+            ArrayList<String> values = entry.getValue();
+            for (String value : values) {
+                entity.addPart(entry.getKey(), value);
+            }
+        }
+
+        // Add file params
+        for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
+            FileWrapper file = entry.getValue();
+            if (file.inputStream != null) {
+                if (file.contentType != null) {
+                    entity.addPart(entry.getKey(), file.getFileName(),
+                            file.inputStream, file.contentType);
+                } else {
+                    entity.addPart(entry.getKey(), file.getFileName(),
+                            file.inputStream);
+                }
             }
         }
 
@@ -296,7 +299,7 @@ public class RequestParams {
     }
 
     protected String getParamString() {
-        return URLEncodedUtils.format(getParamsList(), ENCODING);
+        return URLEncodedUtils.format(getParamsList(), HTTP.UTF_8);
     }
 
     private static class FileWrapper {

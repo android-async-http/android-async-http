@@ -36,6 +36,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Random;
 
+/**
+ * Simplified multipart entity mainly used for sending one or more files.
+ */
 class SimpleMultipartEntity implements HttpEntity {
 
     private static final byte[] CR_LF = ("\r\n").getBytes();
@@ -68,16 +71,17 @@ class SimpleMultipartEntity implements HttpEntity {
             out.write(createContentDisposition(key));
             out.write(CR_LF);
             out.write(value.getBytes());
+            out.write(CR_LF);
         } catch (final IOException e) {
             // Can't happen on ByteArrayOutputStream
         }
     }
 
-    public void addPart(final String key, final String fileName, final InputStream fin, final boolean isLast){
-        addPart(key, fileName, fin, "application/octet-stream", isLast);
+    public void addPart(final String key, final String fileName, final InputStream fin) {
+        addPart(key, fileName, fin, "application/octet-stream");
     }
 
-    public void addPart(final String key, final String fileName, final InputStream fin, String type, final boolean isLast){
+    public void addPart(final String key, final String fileName, final InputStream fin, String type) {
         try {
             out.write(boundaryLine);
 
@@ -104,9 +108,9 @@ class SimpleMultipartEntity implements HttpEntity {
         }
     }
 
-    public void addPart(final String key, final File value, final boolean isLast)
+    public void addPart(final String key, final File value)
             throws FileNotFoundException {
-        addPart(key, value.getName(), new FileInputStream(value), isLast);
+        addPart(key, value.getName(), new FileInputStream(value));
     }
 
     private byte[] createContentType(String type) {
@@ -131,6 +135,8 @@ class SimpleMultipartEntity implements HttpEntity {
         builder.append("\"\r\n");
         return builder.toString().getBytes();
     }
+
+    // The following methods are from the HttpEntity interface
 
     @Override
     public long getContentLength() {
@@ -180,6 +186,6 @@ class SimpleMultipartEntity implements HttpEntity {
     @Override
     public InputStream getContent() throws IOException, UnsupportedOperationException {
         throw new UnsupportedOperationException(
-                "getContent() not supported. Use writeTo() instead.");
+                "getContent() is not supported. Use writeTo() instead.");
     }
 }
