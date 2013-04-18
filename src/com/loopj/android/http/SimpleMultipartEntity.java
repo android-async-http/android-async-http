@@ -23,28 +23,33 @@
 
 package com.loopj.android.http;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Random;
-
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.message.BasicHeader;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Random;
+
 class SimpleMultipartEntity implements HttpEntity {
+
+    private static final byte[] CR_LF = ("\r\n").getBytes();
+    private static final byte[] TRANSFER_ENCODING_BINARY = "Content-Transfer-Encoding: binary\r\n"
+            .getBytes();
+
     private final static char[] MULTIPART_CHARS = "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
-    private String boundary = null;
+    private String boundary;
+    private byte[] boundaryLine;
+    private byte[] boundaryEnd;
 
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    boolean isSetLast = false;
-    boolean isSetFirst = false;
+    // The buffer we use for building the message excluding the last boundary
+    private ByteArrayOutputStream out = new ByteArrayOutputStream();
 
     public SimpleMultipartEntity() {
         final StringBuffer buf = new StringBuffer();
@@ -52,44 +57,19 @@ class SimpleMultipartEntity implements HttpEntity {
         for (int i = 0; i < 30; i++) {
             buf.append(MULTIPART_CHARS[rand.nextInt(MULTIPART_CHARS.length)]);
         }
-        this.boundary = buf.toString();
-
-    }
-
-    public void writeFirstBoundaryIfNeeds(){
-        if(!isSetFirst){
-            try {
-                out.write(("--" + boundary + "\r\n").getBytes());
-            } catch (final IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        isSetFirst = true;
-    }
-
-    public void writeLastBoundaryIfNeeds() {
-        if(isSetLast){
-            return;
-        }
-
-        try {
-            out.write(("\r\n--" + boundary + "--\r\n").getBytes());
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
-
-        isSetLast = true;
+        boundary = buf.toString();
+        boundaryLine = ("--" + boundary + "\r\n").getBytes();
+        boundaryEnd = ("\r\n--" + boundary + "--\r\n").getBytes();
     }
 
     public void addPart(final String key, final String value) {
-        writeFirstBoundaryIfNeeds();
         try {
-            out.write(("Content-Disposition: form-data; name=\"" +key+"\"\r\n\r\n").getBytes());
+            out.write(boundaryLine);
+            out.write(createContentDisposition(key));
+            out.write(CR_LF);
             out.write(value.getBytes());
-            out.write(("\r\n--" + boundary + "\r\n").getBytes());
         } catch (final IOException e) {
-            e.printStackTrace();
+            // Can't happen on ByteArrayOutputStream
         }
     }
 
@@ -98,44 +78,63 @@ class SimpleMultipartEntity implements HttpEntity {
     }
 
     public void addPart(final String key, final String fileName, final InputStream fin, String type, final boolean isLast){
-        writeFirstBoundaryIfNeeds();
         try {
-            type = "Content-Type: "+type+"\r\n";
-            out.write(("Content-Disposition: form-data; name=\""+ key+"\"; filename=\"" + fileName + "\"\r\n").getBytes());
-            out.write(type.getBytes());
-            out.write("Content-Transfer-Encoding: binary\r\n\r\n".getBytes());
+            out.write(boundaryLine);
+
+            // Headers
+            out.write(createContentDisposition(key, fileName));
+            out.write(createContentType(type));
+            out.write(TRANSFER_ENCODING_BINARY);
+            out.write(CR_LF);
 
             final byte[] tmp = new byte[4096];
             int l = 0;
             while ((l = fin.read(tmp)) != -1) {
                 out.write(tmp, 0, l);
             }
-            if(!isLast)
-                out.write(("\r\n--" + boundary + "\r\n").getBytes());
-            out.flush();
+            out.write(CR_LF);
         } catch (final IOException e) {
-            e.printStackTrace();
+            // Can't happen on ByteArrayOutputStream
         } finally {
             try {
                 fin.close();
             } catch (final IOException e) {
-                e.printStackTrace();
+                // Ignore
             }
         }
     }
 
-    public void addPart(final String key, final File value, final boolean isLast) {
-        try {
-            addPart(key, value.getName(), new FileInputStream(value), isLast);
-        } catch (final FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    public void addPart(final String key, final File value, final boolean isLast)
+            throws FileNotFoundException {
+        addPart(key, value.getName(), new FileInputStream(value), isLast);
+    }
+
+    private byte[] createContentType(String type) {
+        String result = "Content-Type: " + type + "\r\n";
+        return result.getBytes();
+    }
+
+    private byte[] createContentDisposition(final String key) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Content-Disposition: form-data; name=\"");
+        builder.append(key);
+        builder.append("\"\r\n");
+        return builder.toString().getBytes();
+    }
+
+    private byte[] createContentDisposition(final String key, final String fileName) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Content-Disposition: form-data; name=\"");
+        builder.append(key);
+        builder.append("\"; filename=\"");
+        builder.append(fileName);
+        builder.append("\"\r\n");
+        return builder.toString().getBytes();
     }
 
     @Override
     public long getContentLength() {
-        writeLastBoundaryIfNeeds();
-        return out.toByteArray().length;
+        return out.size() + boundaryEnd.length;
     }
 
     @Override
@@ -160,7 +159,8 @@ class SimpleMultipartEntity implements HttpEntity {
 
     @Override
     public void writeTo(final OutputStream outstream) throws IOException {
-        outstream.write(out.toByteArray());
+        out.writeTo(outstream);
+        outstream.write(boundaryEnd);
     }
 
     @Override
@@ -178,8 +178,8 @@ class SimpleMultipartEntity implements HttpEntity {
     }
 
     @Override
-    public InputStream getContent() throws IOException,
-    UnsupportedOperationException {
-        return new ByteArrayInputStream(out.toByteArray());
+    public InputStream getContent() throws IOException, UnsupportedOperationException {
+        throw new UnsupportedOperationException(
+                "getContent() not supported. Use writeTo() instead.");
     }
 }
