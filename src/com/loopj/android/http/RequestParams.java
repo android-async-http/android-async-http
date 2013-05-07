@@ -210,12 +210,12 @@ public class RequestParams {
                 result.append("&");
 
             ArrayList<String> values = entry.getValue();
-            for (String value : values) {
-                if (values.indexOf(value) != 0)
+            for (int i = 0; i < values.size(); i++) {
+                if (i != 0)
                     result.append("&");
                 result.append(entry.getKey());
                 result.append("=");
-                result.append(value);
+                result.append(values.get(i));
             }
         }
 
