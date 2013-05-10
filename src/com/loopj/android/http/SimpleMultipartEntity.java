@@ -58,14 +58,18 @@ class SimpleMultipartEntity implements HttpEntity {
 
     public void writeFirstBoundaryIfNeeds(){
         if(!isSetFirst){
-            try {
-                out.write(("--" + boundary + "\r\n").getBytes());
-            } catch (final IOException e) {
-                e.printStackTrace();
-            }
+            writeBoundary();
         }
 
         isSetFirst = true;
+    }
+
+    public void writeBoundary() {
+        try {
+            out.write(("--" + boundary + "\r\n").getBytes());
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void writeLastBoundaryIfNeeds() {
@@ -73,21 +77,17 @@ class SimpleMultipartEntity implements HttpEntity {
             return;
         }
 
-        try {
-            out.write(("\r\n--" + boundary + "--\r\n").getBytes());
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
-
+        writeBoundary();
+        
         isSetLast = true;
     }
 
     public void addPart(final String key, final String value) {
-        writeFirstBoundaryIfNeeds();
+        writeBoundary();
         try {
             out.write(("Content-Disposition: form-data; name=\"" +key+"\"\r\n\r\n").getBytes());
             out.write(value.getBytes());
-            out.write(("\r\n--" + boundary + "\r\n").getBytes());
+            out.write(("\r\n").getBytes());
         } catch (final IOException e) {
             e.printStackTrace();
         }
@@ -98,7 +98,7 @@ class SimpleMultipartEntity implements HttpEntity {
     }
 
     public void addPart(final String key, final String fileName, final InputStream fin, String type, final boolean isLast){
-        writeFirstBoundaryIfNeeds();
+        writeBoundary();
         try {
             type = "Content-Type: "+type+"\r\n";
             out.write(("Content-Disposition: form-data; name=\""+ key+"\"; filename=\"" + fileName + "\"\r\n").getBytes());
@@ -110,8 +110,7 @@ class SimpleMultipartEntity implements HttpEntity {
             while ((l = fin.read(tmp)) != -1) {
                 out.write(tmp, 0, l);
             }
-            if(!isLast)
-                out.write(("\r\n--" + boundary + "\r\n").getBytes());
+            out.write(("\r\n").getBytes());
             out.flush();
         } catch (final IOException e) {
             e.printStackTrace();
