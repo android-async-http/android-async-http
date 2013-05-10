@@ -40,20 +40,25 @@ import org.apache.http.message.BasicHeader;
 class SimpleMultipartEntity implements HttpEntity {
     private final static char[] MULTIPART_CHARS = "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
+    private final static int CHUNKSIZE = 65536;
+
     private String boundary = null;
+
+    private AsyncHttpResponseHandler progressHandler;
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     boolean isSetLast = false;
     boolean isSetFirst = false;
 
-    public SimpleMultipartEntity() {
+
+    public SimpleMultipartEntity(AsyncHttpResponseHandler progressHandler) {
         final StringBuffer buf = new StringBuffer();
         final Random rand = new Random();
         for (int i = 0; i < 30; i++) {
             buf.append(MULTIPART_CHARS[rand.nextInt(MULTIPART_CHARS.length)]);
         }
         this.boundary = buf.toString();
-
+        this.progressHandler = progressHandler;
     }
 
     public void writeFirstBoundaryIfNeeds(){
@@ -160,7 +165,13 @@ class SimpleMultipartEntity implements HttpEntity {
 
     @Override
     public void writeTo(final OutputStream outstream) throws IOException {
-        outstream.write(out.toByteArray());
+    	byte[] ba = out.toByteArray();
+    	for (int pos = 0; pos < ba.length; pos += CHUNKSIZE) {
+    		progressHandler.sendProgressMessage(pos, ba.length);
+    		outstream.write(ba, pos, pos + CHUNKSIZE <= ba.length ? CHUNKSIZE : ba.length - pos);
+    	}
+        progressHandler.sendProgressMessage(ba.length, ba.length);
+    	// outstream.write(out.toByteArray());
     }
 
     @Override

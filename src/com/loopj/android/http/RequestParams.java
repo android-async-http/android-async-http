@@ -224,12 +224,13 @@ public class RequestParams {
 
    /**
      * Returns an HttpEntity containing all request parameters
+     * @param progressHandler
      */
-    public HttpEntity getEntity() {
+    public HttpEntity getEntity(AsyncHttpResponseHandler progressHandler) {
         HttpEntity entity = null;
 
         if(!fileParams.isEmpty()) {
-            SimpleMultipartEntity multipartEntity = new SimpleMultipartEntity();
+            SimpleMultipartEntity multipartEntity = new SimpleMultipartEntity(progressHandler);
 
             // Add string params
             for(ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {

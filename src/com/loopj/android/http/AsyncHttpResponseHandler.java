@@ -74,6 +74,7 @@ public class AsyncHttpResponseHandler {
     protected static final int FAILURE_MESSAGE = 1;
     protected static final int START_MESSAGE = 2;
     protected static final int FINISH_MESSAGE = 3;
+    protected static final int PROGRESS_MESSAGE = 4;
 
     private Handler handler;
 
@@ -151,6 +152,10 @@ public class AsyncHttpResponseHandler {
         onFailure(error);
     }
 
+    /**
+     * Fired when the request progress, override to handle in your own code
+     */
+    public void onProgress(int position, int length) {}
 
     //
     // Pre-processing of messages (executes in background threadpool thread)
@@ -176,6 +181,9 @@ public class AsyncHttpResponseHandler {
         sendMessage(obtainMessage(FINISH_MESSAGE, null));
     }
 
+    protected void sendProgressMessage(int position, int length) {
+        sendMessage(obtainMessage(PROGRESS_MESSAGE, new Object[]{position, length}));
+    }
 
     //
     // Pre-processing of messages (in original calling thread, typically the UI thread)
@@ -210,6 +218,10 @@ public class AsyncHttpResponseHandler {
             case FINISH_MESSAGE:
                 onFinish();
                 break;
+            case PROGRESS_MESSAGE:
+            	response = (Object[])msg.obj;
+            	onProgress(((Integer)response[0]).intValue(), ((Integer)response[1]).intValue());
+            	break;
         }
     }
 
