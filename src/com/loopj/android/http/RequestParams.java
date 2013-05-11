@@ -25,8 +25,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -56,7 +56,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RequestParams {
 
+    private static final String TAG = "RequestParams";
+
     protected ConcurrentHashMap<String, String> urlParams;
+    protected ConcurrentHashMap<String, StreamWrapper> streamParams;
     protected ConcurrentHashMap<String, FileWrapper> fileParams;
     protected ConcurrentHashMap<String, ArrayList<String>> urlParamsWithArray;
 
@@ -128,7 +131,20 @@ public class RequestParams {
      * @param file the file to add.
      */
     public void put(String key, File file) throws FileNotFoundException {
-        put(key, new FileInputStream(file), file.getName());
+        put(key, file, null);
+    }
+
+    /**
+     * Adds a file to the request.
+     * 
+     * @param key the key name for the new param.
+     * @param file the file to add.
+     * @param contentType the content type of the file, eg. application/json
+     */
+    public void put(String key, File file, String contentType) throws FileNotFoundException {
+        if (key != null && file != null) {
+            fileParams.put(key, new FileWrapper(file, contentType));
+        }
     }
 
     /**
@@ -155,22 +171,22 @@ public class RequestParams {
      * Adds an input stream to the request.
      * @param key the key name for the new param.
      * @param stream the input stream to add.
-     * @param fileName the name of the file.
+     * @param name the name of the stream.
      */
-    public void put(String key, InputStream stream, String fileName) {
-        put(key, stream, fileName, null);
+    public void put(String key, InputStream stream, String name) {
+        put(key, stream, name, null);
     }
 
     /**
      * Adds an input stream to the request.
      * @param key the key name for the new param.
      * @param stream the input stream to add.
-     * @param fileName the name of the file.
+     * @param name the name of the stream.
      * @param contentType the content type of the file, eg. application/json
      */
-    public void put(String key, InputStream stream, String fileName, String contentType) {
+    public void put(String key, InputStream stream, String name, String contentType) {
         if(key != null && stream != null) {
-            fileParams.put(key, new FileWrapper(stream, fileName, contentType));
+            streamParams.put(key, new StreamWrapper(stream, name, contentType));
         }
     }
 
@@ -180,6 +196,7 @@ public class RequestParams {
      */
     public void remove(String key){
         urlParams.remove(key);
+        streamParams.remove(key);
         fileParams.remove(key);
         urlParamsWithArray.remove(key);
     }
@@ -196,8 +213,17 @@ public class RequestParams {
             result.append(entry.getValue());
         }
 
-        for(ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
+        for (ConcurrentHashMap.Entry<String, StreamWrapper> entry : streamParams.entrySet()) {
             if(result.length() > 0)
+                result.append("&");
+
+            result.append(entry.getKey());
+            result.append("=");
+            result.append("STREAM");
+        }
+
+        for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
+            if (result.length() > 0)
                 result.append("&");
 
             result.append(entry.getKey());
@@ -222,14 +248,16 @@ public class RequestParams {
         return result.toString();
     }
 
-   /**
+    /**
      * Returns an HttpEntity containing all request parameters
+     * 
+     * @throws IOException if one of the streams cannot be read
      */
-    public HttpEntity getEntity() {
-        if(!fileParams.isEmpty()) {
-            return createMultipartEntity();
-        } else {
+    public HttpEntity getEntity() throws IOException {
+        if (streamParams.isEmpty() && fileParams.isEmpty()) {
             return createFormEntity();
+        } else {
+            return createMultipartEntity();
         }
     }
 
@@ -241,7 +269,7 @@ public class RequestParams {
         }
     }
 
-    private HttpEntity createMultipartEntity() {
+    private HttpEntity createMultipartEntity() throws IOException {
         SimpleMultipartEntity entity = new SimpleMultipartEntity();
 
         // Add string params
@@ -258,18 +286,19 @@ public class RequestParams {
             }
         }
 
+        // Add stream params
+        for (ConcurrentHashMap.Entry<String, StreamWrapper> entry : streamParams.entrySet()) {
+            StreamWrapper stream = entry.getValue();
+            if (stream.inputStream != null) {
+                entity.addPart(entry.getKey(), stream.name, stream.inputStream,
+                        stream.contentType);
+            }
+        }
+
         // Add file params
         for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
-            FileWrapper file = entry.getValue();
-            if (file.inputStream != null) {
-                if (file.contentType != null) {
-                    entity.addPart(entry.getKey(), file.getFileName(),
-                            file.inputStream, file.contentType);
-                } else {
-                    entity.addPart(entry.getKey(), file.getFileName(),
-                            file.inputStream);
-                }
-            }
+            FileWrapper fileWrapper = entry.getValue();
+            entity.addPart(entry.getKey(), fileWrapper.file, fileWrapper.contentType);
         }
 
         return entity;
@@ -277,6 +306,7 @@ public class RequestParams {
 
     private void init(){
         urlParams = new ConcurrentHashMap<String, String>();
+        streamParams = new ConcurrentHashMap<String, StreamWrapper>();
         fileParams = new ConcurrentHashMap<String, FileWrapper>();
         urlParamsWithArray = new ConcurrentHashMap<String, ArrayList<String>>();
     }
@@ -303,22 +333,24 @@ public class RequestParams {
     }
 
     private static class FileWrapper {
-        public InputStream inputStream;
-        public String fileName;
+        public File file;
         public String contentType;
 
-        public FileWrapper(InputStream inputStream, String fileName, String contentType) {
-            this.inputStream = inputStream;
-            this.fileName = fileName;
+        public FileWrapper(File file, String contentType) {
+            this.file = file;
             this.contentType = contentType;
         }
+    }
 
-        public String getFileName() {
-            if(fileName != null) {
-                return fileName;
-            } else {
-                return "nofilename";
-            }
+    private static class StreamWrapper {
+        public InputStream inputStream;
+        public String name;
+        public String contentType;
+
+        public StreamWrapper(InputStream inputStream, String name, String contentType) {
+            this.inputStream = inputStream;
+            this.name = name;
+            this.contentType = contentType;
         }
     }
 }
