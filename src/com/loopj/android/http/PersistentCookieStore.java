@@ -98,9 +98,6 @@ public class PersistentCookieStore implements CookieStore {
 
     @Override
     public void clear() {
-        // Clear cookies from local store
-        cookies.clear();
-
         // Clear cookies from persistent store
         SharedPreferences.Editor prefsWriter = cookiePrefs.edit();
         for(String name : cookies.keySet()) {
@@ -108,6 +105,9 @@ public class PersistentCookieStore implements CookieStore {
         }
         prefsWriter.remove(COOKIE_NAME_STORE);
         prefsWriter.commit();
+
+        // Clear cookies from local store
+        cookies.clear();
     }
 
     @Override
