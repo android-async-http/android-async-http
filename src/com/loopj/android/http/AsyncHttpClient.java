@@ -392,7 +392,7 @@ public class AsyncHttpClient {
         try {
             post(context, url, paramsToEntity(params, responseHandler), null, responseHandler);
         } catch (IOException e) {
-            responseHandler.onFailure(e, null);
+            responseHandler.sendFailureMessage(e, (String) null);
         }
     }
 
@@ -428,7 +428,7 @@ public class AsyncHttpClient {
             try {
                 request.setEntity(paramsToEntity(params, responseHandler));
             } catch (IOException e) {
-                responseHandler.onFailure(e, null);
+                responseHandler.sendFailureMessage(e, (String) null);
             }
         }
 
@@ -493,7 +493,7 @@ public class AsyncHttpClient {
         try {
             put(context, url, paramsToEntity(params, responseHandler), null, responseHandler);
         } catch (IOException e) {
-            responseHandler.onFailure(e, null);
+            responseHandler.sendFailureMessage(e, (String) null);
         }
     }
 
