@@ -21,8 +21,8 @@ package com.loopj.android.http;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+
 import org.apache.http.Header;
-import java.io.IOException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -30,9 +30,7 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.util.EntityUtils;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
+import java.io.IOException;
 
 /**
  * Used to intercept and handle the responses from requests made using 
@@ -74,6 +72,7 @@ public class AsyncHttpResponseHandler {
     protected static final int FAILURE_MESSAGE = 1;
     protected static final int START_MESSAGE = 2;
     protected static final int FINISH_MESSAGE = 3;
+    protected static final int PROGRESS_MESSAGE = 4;
 
     private Handler handler;
 
@@ -151,6 +150,10 @@ public class AsyncHttpResponseHandler {
         onFailure(error);
     }
 
+    /**
+     * Fired when the request progress, override to handle in your own code
+     */
+    public void onProgress(int position, int length) {}
 
     //
     // Pre-processing of messages (executes in background threadpool thread)
@@ -176,6 +179,9 @@ public class AsyncHttpResponseHandler {
         sendMessage(obtainMessage(FINISH_MESSAGE, null));
     }
 
+    protected void sendProgressMessage(int position, int length) {
+        sendMessage(obtainMessage(PROGRESS_MESSAGE, new Object[]{position, length}));
+    }
 
     //
     // Pre-processing of messages (in original calling thread, typically the UI thread)
@@ -210,6 +216,10 @@ public class AsyncHttpResponseHandler {
             case FINISH_MESSAGE:
                 onFinish();
                 break;
+            case PROGRESS_MESSAGE:
+            	response = (Object[])msg.obj;
+            	onProgress(((Integer)response[0]).intValue(), ((Integer)response[1]).intValue());
+            	break;
         }
     }
 
@@ -224,7 +234,7 @@ public class AsyncHttpResponseHandler {
     protected Message obtainMessage(int responseMessage, Object response) {
         Message msg = null;
         if(handler != null){
-            msg = this.handler.obtainMessage(responseMessage, response);
+            msg = handler.obtainMessage(responseMessage, response);
         }else{
             msg = Message.obtain();
             msg.what = responseMessage;

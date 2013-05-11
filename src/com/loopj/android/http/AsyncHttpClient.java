@@ -389,7 +389,11 @@ public class AsyncHttpClient {
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void post(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        post(context, url, null, params, null, responseHandler);
+        try {
+            post(context, url, paramsToEntity(params, responseHandler), null, responseHandler);
+        } catch (IOException e) {
+            responseHandler.onFailure(e, null);
+        }
     }
 
     /**
@@ -422,11 +426,12 @@ public class AsyncHttpClient {
         HttpEntityEnclosingRequestBase request = new HttpPost(url);
         if (params != null) {
             try {
-                request.setEntity(paramsToEntity(params));
+                request.setEntity(paramsToEntity(params, responseHandler));
             } catch (IOException e) {
                 responseHandler.onFailure(e, null);
             }
         }
+
         if(headers != null) request.setHeaders(headers);
         sendRequest(httpClient, httpContext, request, contentType,
                 responseHandler, context);
@@ -486,7 +491,7 @@ public class AsyncHttpClient {
      */
     public void put(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         try {
-            put(context, url, paramsToEntity(params), null, responseHandler);
+            put(context, url, paramsToEntity(params, responseHandler), null, responseHandler);
         } catch (IOException e) {
             responseHandler.onFailure(e, null);
         }
@@ -594,11 +599,13 @@ public class AsyncHttpClient {
         return url;
     }
 
-    private HttpEntity paramsToEntity(RequestParams params) throws IOException {
+    private HttpEntity paramsToEntity(RequestParams params, AsyncHttpResponseHandler responseHandler)
+            throws IOException {
+
         HttpEntity entity = null;
 
-        if(params != null) {
-            entity = params.getEntity();
+        if (params != null) {
+            entity = params.getEntity(responseHandler);
         }
 
         return entity;

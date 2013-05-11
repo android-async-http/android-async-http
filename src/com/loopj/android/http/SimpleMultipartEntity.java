@@ -63,15 +63,24 @@ class SimpleMultipartEntity implements HttpEntity {
     // boundary
     private ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-    public SimpleMultipartEntity() {
+    private AsyncHttpResponseHandler progressHandler;
+
+    private int bytesWritten;
+
+    private int totalSize;
+
+    public SimpleMultipartEntity(AsyncHttpResponseHandler progressHandler) {
         final StringBuffer buf = new StringBuffer();
         final Random rand = new Random();
         for (int i = 0; i < 30; i++) {
             buf.append(MULTIPART_CHARS[rand.nextInt(MULTIPART_CHARS.length)]);
         }
+
         boundary = buf.toString();
         boundaryLine = ("--" + boundary + "\r\n").getBytes();
         boundaryEnd = ("--" + boundary + "--\r\n").getBytes();
+
+        this.progressHandler = progressHandler;
     }
 
     public void addPart(final String key, final String value) {
@@ -149,6 +158,11 @@ class SimpleMultipartEntity implements HttpEntity {
         builder.append("\"\r\n");
         return builder.toString().getBytes();
     }
+
+    private void updateProgress(int count) {
+        bytesWritten += count;
+        progressHandler.sendProgressMessage(bytesWritten, totalSize);
+    }
     
     private class FilePart {
         public File file;
@@ -182,14 +196,17 @@ class SimpleMultipartEntity implements HttpEntity {
 
         public void writeTo(OutputStream out) throws IOException {
             out.write(header);
-            
+            updateProgress(header.length);
+
             FileInputStream inputStream = new FileInputStream(file);
             final byte[] tmp = new byte[4096];
             int l = 0;
             while ((l = inputStream.read(tmp)) != -1) {
                 out.write(tmp, 0, l);
+                updateProgress(l);
             }
             out.write(CR_LF);
+            updateProgress(CR_LF.length);
             out.flush();
             try {
                 inputStream.close();
@@ -238,11 +255,16 @@ class SimpleMultipartEntity implements HttpEntity {
 
     @Override
     public void writeTo(final OutputStream outstream) throws IOException {
+        bytesWritten = 0;
+        totalSize = (int) getContentLength();
         out.writeTo(outstream);
+        updateProgress(out.size());
+
         for (FilePart filePart : fileParts) {
             filePart.writeTo(outstream);
         }
         outstream.write(boundaryEnd);
+        updateProgress(boundaryEnd.length);
     }
 
     @Override

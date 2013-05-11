@@ -250,14 +250,15 @@ public class RequestParams {
 
     /**
      * Returns an HttpEntity containing all request parameters
+<<<<<<< HEAD
      * 
      * @throws IOException if one of the streams cannot be read
      */
-    public HttpEntity getEntity() throws IOException {
+    public HttpEntity getEntity(AsyncHttpResponseHandler progressHandler) throws IOException {
         if (streamParams.isEmpty() && fileParams.isEmpty()) {
             return createFormEntity();
         } else {
-            return createMultipartEntity();
+            return createMultipartEntity(progressHandler);
         }
     }
 
@@ -269,8 +270,8 @@ public class RequestParams {
         }
     }
 
-    private HttpEntity createMultipartEntity() throws IOException {
-        SimpleMultipartEntity entity = new SimpleMultipartEntity();
+    private HttpEntity createMultipartEntity(AsyncHttpResponseHandler progressHandler) throws IOException {
+        SimpleMultipartEntity entity = new SimpleMultipartEntity(progressHandler);
 
         // Add string params
         for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
