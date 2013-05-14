@@ -77,20 +77,30 @@ class SimpleMultipartEntity implements HttpEntity {
             return;
         }
 
-        writeBoundary();
+        try {
+            out.write(("--" + boundary + "--\r\n").getBytes());
+            out.flush();
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
         
         isSetLast = true;
     }
 
-    public void addPart(final String key, final String value) {
+    public void addPart(final String key, final String value, final String contentType) {
         writeBoundary();
         try {
-            out.write(("Content-Disposition: form-data; name=\"" +key+"\"\r\n\r\n").getBytes());
+            out.write(("Content-Disposition: form-data; name=\"" +key+"\"\r\n").getBytes());
+            out.write(("Content-Type: " + contentType + "\r\n\r\n").getBytes());
             out.write(value.getBytes());
             out.write(("\r\n").getBytes());
         } catch (final IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void addPart(final String key, final String value) {
+        addPart(key,value,"text/plain; charset=UTF-8");
     }
 
     public void addPart(final String key, final String fileName, final InputStream fin, final boolean isLast){
@@ -111,7 +121,7 @@ class SimpleMultipartEntity implements HttpEntity {
                 out.write(tmp, 0, l);
             }
             out.write(("\r\n").getBytes());
-            out.flush();
+            
         } catch (final IOException e) {
             e.printStackTrace();
         } finally {
@@ -159,6 +169,7 @@ class SimpleMultipartEntity implements HttpEntity {
 
     @Override
     public void writeTo(final OutputStream outstream) throws IOException {
+        writeLastBoundaryIfNeeds();
         outstream.write(out.toByteArray());
     }
 
@@ -179,6 +190,7 @@ class SimpleMultipartEntity implements HttpEntity {
     @Override
     public InputStream getContent() throws IOException,
     UnsupportedOperationException {
+    	writeLastBoundaryIfNeeds();
         return new ByteArrayInputStream(out.toByteArray());
     }
 }
