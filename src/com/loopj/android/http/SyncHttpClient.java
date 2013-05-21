@@ -28,7 +28,7 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 			 * Dont use the handler and send it directly to the analysis
 			 * (because its all the same thread)
 			 */
-			handleMessage(msg);
+			asyncHandleMessage(msg);
 		}
 
 		@Override

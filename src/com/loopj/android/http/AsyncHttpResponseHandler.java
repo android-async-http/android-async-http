@@ -18,7 +18,9 @@
 
 package com.loopj.android.http;
 
+import android.annotation.SuppressLint;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import org.apache.http.HttpEntity;
@@ -72,19 +74,31 @@ public class AsyncHttpResponseHandler {
     protected static final int FINISH_MESSAGE = 3;
 
     private Handler handler;
+    
+    private static Looper sLooper = null;
 
     /**
      * Creates a new AsyncHttpResponseHandler
      */
-    public AsyncHttpResponseHandler() {
+	public AsyncHttpResponseHandler() {
         // Set up a handler to post events back to the correct thread if possible
-        if(Looper.myLooper() != null) {
-            handler = new Handler(){
-                public void handleMessage(Message msg){
-                    AsyncHttpResponseHandler.this.handleMessage(msg);
-                }
-            };
-        }
+    	synchronized (AsyncHttpResponseHandler.class)
+		{
+    		if(sLooper == null)
+    		{
+    			HandlerThread thread = new HandlerThread("AsyncHttpResponseHandler Worker");
+    			thread.start();
+    			
+    			sLooper = thread.getLooper();
+    		}
+		}
+		handler = new Handler(sLooper)
+		{
+			public void handleMessage(Message msg)
+			{
+				asyncHandleMessage(msg);
+			}
+		};
     }
 
 
@@ -175,7 +189,7 @@ public class AsyncHttpResponseHandler {
 
 
     // Methods which emulate android's Handler and Message methods
-    protected void handleMessage(Message msg) {
+    protected void asyncHandleMessage(Message msg) {
         Object[] response;
 
         switch(msg.what) {
@@ -200,7 +214,7 @@ public class AsyncHttpResponseHandler {
         if(handler != null){
             handler.sendMessage(msg);
         } else {
-            handleMessage(msg);
+            asyncHandleMessage(msg);
         }
     }
 
