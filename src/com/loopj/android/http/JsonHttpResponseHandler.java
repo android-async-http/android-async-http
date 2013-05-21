@@ -108,14 +108,14 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     //
 
     @Override
-    protected void handleMessage(Message msg) {
+    protected void asyncHandleMessage(Message msg) {
         switch(msg.what){
             case SUCCESS_JSON_MESSAGE:
                 Object[] response = (Object[]) msg.obj;
                 handleSuccessJsonMessage(((Integer) response[0]).intValue(), response[1]);
                 break;
             default:
-                super.handleMessage(msg);
+                super.asyncHandleMessage(msg);
         }
     }
 

@@ -133,7 +133,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     // Methods which emulate android's Handler and Message methods
-    protected void handleMessage(Message msg) {
+    protected void asyncHandleMessage(Message msg) {
         Object[] response;
         switch(msg.what) {
             case SUCCESS_MESSAGE:
@@ -145,7 +145,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
                 handleFailureMessage((Throwable)response[0], (byte[])response[1]);
                 break;
             default:
-                super.handleMessage(msg);
+                super.asyncHandleMessage(msg);
                 break;
         }
     }
