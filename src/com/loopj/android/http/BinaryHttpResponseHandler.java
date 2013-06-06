@@ -143,11 +143,17 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
         switch(msg.what) {
             case SUCCESS_MESSAGE:
                 response = (Object[])msg.obj;
-                handleSuccessMessage(((Integer) response[0]).intValue() , (byte[]) response[1]);
+                if (response[1] instanceof String) {
+                  handleFailureMessage(new HttpResponseException(((Integer) response[0]).intValue(),
+                      "String cannot be cast to byte[]"), response.toString());
+                } else {
+                  handleSuccessMessage(((Integer) response[0]).intValue() , (byte[]) response[1]);
+                }
                 break;
             case FAILURE_MESSAGE:
                 response = (Object[])msg.obj;
-                handleFailureMessage((Throwable)response[0], response[1].toString());
+                String res1 = response[1] == null ? "" : response[1].toString();
+                handleFailureMessage((Throwable) response[0], res1);
                 break;
             default:
                 super.handleMessage(msg);
