@@ -218,7 +218,7 @@ public class AsyncHttpClient {
     }
 
     /**
-     * Sets the connection time oout. By default, 10 seconds
+     * Sets the connection timeout. By default, 10 seconds
      * @param timeout the connect/socket timeout in milliseconds
      */
     public void setTimeout(int timeout){
@@ -236,7 +236,15 @@ public class AsyncHttpClient {
     public void setSSLSocketFactory(SSLSocketFactory sslSocketFactory) {
         this.httpClient.getConnectionManager().getSchemeRegistry().register(new Scheme("https", sslSocketFactory, 443));
     }
-    
+
+    /**
+     * Sets the maximum number of retries for a particular Request.
+     * @param retries maximum number of retries per request
+     */
+    public void setMaxRetries(int retries) {
+        this.httpClient.setHttpRequestRetryHandler(new RetryHandler(retries));
+    }
+
     /**
      * Sets headers that will be added to all requests this client makes (before sending).
      * @param header the name of the header
