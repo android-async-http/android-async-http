@@ -126,7 +126,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     	        sendFailureMessage(e, responseBody);
     	    }
         } else {
-            sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, new JSONObject()}));
+            sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, headers, new JSONObject()}));
     	}
     }
 
