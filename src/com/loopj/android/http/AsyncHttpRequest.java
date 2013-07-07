@@ -27,6 +27,7 @@ import java.net.UnknownHostException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 
@@ -115,6 +116,11 @@ class AsyncHttpRequest implements Runnable {
             }catch (SocketTimeoutException e){
                 if(responseHandler != null) {
                     responseHandler.sendFailureMessage(e, "socket time out");
+                }
+                return;
+            } catch (ConnectTimeoutException e) {
+                if (responseHandler != null) {
+                    responseHandler.sendFailureMessage(e, "connection time out");
                 }
                 return;
             } catch (IOException e) {
