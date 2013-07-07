@@ -34,6 +34,7 @@ import java.util.zip.GZIPInputStream;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
@@ -52,6 +53,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.params.ConnPerRouteBean;
+import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -228,6 +230,17 @@ public class AsyncHttpClient {
         HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
     }
 
+    /**
+     * Sets the Proxy
+     * @param hostname  the hostname (IP or DNS name) 
+     * @param port  the port number. -1 indicates the scheme default port.  
+     */
+    public void setProxy(String hostname, int port){
+        final HttpHost proxy = new HttpHost(hostname, port);
+        final HttpParams httpParams = this.httpClient.getParams();
+        httpParams.setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+    }
+    
     /**
      * Sets the SSLSocketFactory to user when making requests. By default,
      * a new, default SSLSocketFactory is used.
