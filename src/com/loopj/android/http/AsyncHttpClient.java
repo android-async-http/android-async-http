@@ -534,6 +534,11 @@ public class AsyncHttpClient {
         final HttpDelete delete = new HttpDelete(url);
         sendRequest(httpClient, httpContext, delete, null, responseHandler, context);
     }
+
+    public void delete(String queryString, RequestParams params, AsyncHttpResponseHandler asyncHttpResponseHandler) {
+        HttpDelete httpDelete = new HttpDelete(getUrlWithQueryString(queryString, params));
+        sendRequest(httpClient, httpContext, httpDelete, null, asyncHttpResponseHandler, null );
+    }
     
     /**
      * Perform a HTTP DELETE request.
