@@ -250,7 +250,6 @@ public class RequestParams {
 
     /**
      * Returns an HttpEntity containing all request parameters
-<<<<<<< HEAD
      * 
      * @throws IOException if one of the streams cannot be read
      */
