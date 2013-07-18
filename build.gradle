@@ -1,0 +1,30 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.5.+'
+    }
+}
+
+apply plugin: 'android-library'
+
+group 'com.loopj.android.http'
+version '1.4.4-SNAPSHOT'
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion '17.0.0'
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+        }
+    }
+}
+
+task jar(type: Jar) {
+    from android.sourceSets.main.java
+}
