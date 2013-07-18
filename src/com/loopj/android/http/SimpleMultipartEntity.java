@@ -83,16 +83,21 @@ class SimpleMultipartEntity implements HttpEntity {
         this.progressHandler = progressHandler;
     }
 
-    public void addPart(final String key, final String value) {
+    public void addPart(final String key, final String value, final String contentType) {
         try {
             out.write(boundaryLine);
             out.write(createContentDisposition(key));
+            out.write(createContentType(contentType));
             out.write(CR_LF);
             out.write(value.getBytes());
             out.write(CR_LF);
         } catch (final IOException e) {
             // Can't happen on ByteArrayOutputStream
         }
+    }
+    
+    public void addPart(final String key, final String value) {
+        addPart(key, value, "text/plain; charset=UTF-8");
     }
 
     public void addPart(String key, File file) {
