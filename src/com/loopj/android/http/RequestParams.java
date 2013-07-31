@@ -152,7 +152,7 @@ public class RequestParams {
             ArrayList<String> paramArray = urlParamsWithArray.get(key);
             if (paramArray == null) {
                 paramArray = new ArrayList<String>();
-                urlParamsWithArray.put(key, paramArray);
+                this.put(key, paramArray);
             }
             paramArray.add(value);
         }
