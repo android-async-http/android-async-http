@@ -145,7 +145,7 @@ public class RequestParams {
     /**
      * Adds value to param which can have more than one value.
      * @param key the key name for the param, either existing or new.
-     * @param value
+     * @param value the value string for the new param.
      */
     public void add(String key, String value) {
         if(key != null && value != null) {
