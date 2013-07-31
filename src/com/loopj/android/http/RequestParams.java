@@ -143,6 +143,22 @@ public class RequestParams {
     }
 
     /**
+     * Adds value to param which can have more than one value.
+     * @param key the key name for the param, either existing or new.
+     * @param value
+     */
+    public void add(String key, String value) {
+        if(key != null && value != null) {
+            ArrayList<String> paramArray = urlParamsWithArray.get(key);
+            if (paramArray == null) {
+                paramArray = new ArrayList<String>();
+                urlParamsWithArray.put(key, paramArray);
+            }
+            paramArray.add(value);
+        }
+    }
+
+    /**
      * Adds an input stream to the request.
      * @param key the key name for the new param.
      * @param stream the input stream to add.
