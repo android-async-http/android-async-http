@@ -106,6 +106,7 @@ public class AsyncHttpClient {
     private final HttpContext httpContext;
     protected ThreadPoolExecutor threadPool;
     protected final Map<Context, List<WeakReference<Future<?>>>> requestMap;
+    protected final Map<String, WeakReference<Future<?>>> urlRequestMap;
     private final Map<String, String> clientHeaderMap;
 
 
@@ -170,6 +171,8 @@ public class AsyncHttpClient {
         threadPool = (ThreadPoolExecutor)Executors.newCachedThreadPool();
 
         requestMap = new WeakHashMap<Context, List<WeakReference<Future<?>>>>();
+        urlRequestMap = new HashMap<String, WeakReference<Future<?>>>();
+
         clientHeaderMap = new HashMap<String, String>();
     }
 
@@ -289,12 +292,30 @@ public class AsyncHttpClient {
                 Future<?> request = requestRef.get();
                 if(request != null) {
                     request.cancel(mayInterruptIfRunning);
+
+                    String url = null;
+                    for (String key : urlRequestMap.keySet()) {
+                        if (request.equals(urlRequestMap.get(key).get())) {
+                            url = key;
+                            break;
+                        }
+                    }
+
+                    if (url != null) {
+                        urlRequestMap.remove(url);
+                    }
                 }
             }
         }
         requestMap.remove(context);
     }
 
+    public void cancelRequest(String url) {
+        WeakReference<Future<?>> request = urlRequestMap.remove(url);
+        if (request != null && request.get() != null) {
+            request.get().cancel(true);
+        }
+    }
 
     //
     // HTTP GET Requests
@@ -555,7 +576,7 @@ public class AsyncHttpClient {
             uriRequest.addHeader("Content-Type", contentType);
         }
 
-        Future<?> request = threadPool.submit(new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler));
+        Future<?> request = threadPool.submit(new AsyncHttpRequest(this, client, httpContext, uriRequest, responseHandler));
 
         if(context != null) {
             // Add request to request map
@@ -571,6 +592,10 @@ public class AsyncHttpClient {
         }
 
         return request;
+    }
+
+    public void onRequestComplete(String url) {
+        urlRequestMap.remove(url);
     }
 
     public static String getUrlWithQueryString(String url, RequestParams params) {
