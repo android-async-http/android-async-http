@@ -104,8 +104,8 @@ public class AsyncHttpClient {
 
     private final DefaultHttpClient httpClient;
     private final HttpContext httpContext;
-    private ThreadPoolExecutor threadPool;
-    private final Map<Context, List<WeakReference<Future<?>>>> requestMap;
+    protected ThreadPoolExecutor threadPool;
+    protected final Map<Context, List<WeakReference<Future<?>>>> requestMap;
     private final Map<String, String> clientHeaderMap;
 
 
@@ -550,7 +550,7 @@ public class AsyncHttpClient {
 
 
     // Private stuff
-    protected void sendRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, AsyncHttpResponseHandler responseHandler, Context context) {
+    protected Future<?> sendRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, AsyncHttpResponseHandler responseHandler, Context context) {
         if(contentType != null) {
             uriRequest.addHeader("Content-Type", contentType);
         }
@@ -569,6 +569,8 @@ public class AsyncHttpClient {
 
             // TODO: Remove dead weakrefs from requestLists?
         }
+
+        return request;
     }
 
     public static String getUrlWithQueryString(String url, RequestParams params) {

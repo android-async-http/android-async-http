@@ -30,7 +30,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 
-class AsyncHttpRequest implements Runnable {
+public class AsyncHttpRequest implements Runnable {
     private final AbstractHttpClient client;
     private final HttpContext context;
     private final HttpUriRequest request;

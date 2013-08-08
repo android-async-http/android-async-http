@@ -7,6 +7,8 @@ import org.apache.http.protocol.HttpContext;
 import android.content.Context;
 import android.os.Message;
 
+import java.util.concurrent.Future;
+
 public abstract class SyncHttpClient extends AsyncHttpClient {
 	private int responseCode;
 	/*
@@ -53,7 +55,7 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 
 	// Private stuff
     @Override
-    protected void sendRequest(DefaultHttpClient client,
+    protected Future<?> sendRequest(DefaultHttpClient client,
 			HttpContext httpContext, HttpUriRequest uriRequest,
 			String contentType, AsyncHttpResponseHandler responseHandler,
 			Context context) {
@@ -66,6 +68,8 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 		 */
 		new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler)
 				.run();
+
+        return null;
 	}
 
 	public abstract String onRequestFailed(Throwable error, String content);
