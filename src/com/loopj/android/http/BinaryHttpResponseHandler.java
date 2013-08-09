@@ -147,7 +147,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
                 break;
             case FAILURE_MESSAGE:
                 response = (Object[])msg.obj;
-                handleFailureMessage((Throwable)response[0], response[1].toString());
+                handleFailureMessage((Throwable)response[0], (byte[]) response[1]);
                 break;
             default:
                 super.handleMessage(msg);
