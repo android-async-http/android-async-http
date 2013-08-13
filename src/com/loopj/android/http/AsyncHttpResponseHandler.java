@@ -213,6 +213,12 @@ public class AsyncHttpResponseHandler {
         }
     }
 
+   /**
+   * Sets the charset for the response string. If not set, the default is UTF-8.
+   * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Charset</a>
+   *
+   * @param charset to be used for the response string.
+   */
     public void setCharset(final String charset) {
         this.charset = charset;
     }
