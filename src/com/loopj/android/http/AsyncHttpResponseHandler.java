@@ -36,7 +36,7 @@ import android.os.Message;
 
 /**
  * Used to intercept and handle the responses from requests made using 
- * {@link AsyncHttpClient}. The {@link #onSuccess(String)} method is 
+ * {@link AsyncHttpClient}. The {@link #onSuccess(String)} method is
  * designed to be anonymously overridden with your own response handling code.
  * <p>
  * Additionally, you can override the {@link #onFailure(Throwable, String)},
@@ -76,6 +76,7 @@ public class AsyncHttpResponseHandler {
     protected static final int FINISH_MESSAGE = 3;
 
     private Handler handler;
+    private String charset = "UTF-8";
 
     /**
      * Creates a new AsyncHttpResponseHandler
@@ -91,7 +92,6 @@ public class AsyncHttpResponseHandler {
             };
         }
     }
-
 
     //
     // Callbacks to be overridden, typically anonymously
@@ -213,6 +213,16 @@ public class AsyncHttpResponseHandler {
         }
     }
 
+   /**
+   * Sets the charset for the response string. If not set, the default is UTF-8.
+   * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Charset</a>
+   *
+   * @param charset to be used for the response string.
+   */
+    public void setCharset(final String charset) {
+        this.charset = charset;
+    }
+
     protected void sendMessage(Message msg) {
         if(handler != null){
             handler.sendMessage(msg);
@@ -242,7 +252,7 @@ public class AsyncHttpResponseHandler {
             HttpEntity temp = response.getEntity();
             if(temp != null) {
                 entity = new BufferedHttpEntity(temp);
-                responseBody = EntityUtils.toString(entity, "UTF-8");
+                responseBody = EntityUtils.toString(entity, charset);
             }
         } catch(IOException e) {
             sendFailureMessage(e, (String) null);
