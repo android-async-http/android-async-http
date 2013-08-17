@@ -42,7 +42,7 @@ import org.apache.http.util.EntityUtils;
  * <p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
- * client.get("http://www.google.com", new AsyncHttpResponseHandler() {
+ * client.get("http://www.google.com", new HttpResponseHandler() {
  *     &#064;Override
  *     public void onStart() {
  *         // Initiated the request
@@ -65,7 +65,7 @@ import org.apache.http.util.EntityUtils;
  * });
  * </pre>
  */
-public class AsyncHttpResponseHandler {
+public class HttpResponseHandler {
     protected static final int SUCCESS_MESSAGE = 0;
     protected static final int FAILURE_MESSAGE = 1;
     protected static final int START_MESSAGE = 2;
@@ -74,15 +74,15 @@ public class AsyncHttpResponseHandler {
     private Handler handler;
 
     /**
-     * Creates a new AsyncHttpResponseHandler
+     * Creates a new HttpResponseHandler
      */
-    public AsyncHttpResponseHandler() {
+    public HttpResponseHandler() {
         // Set up a handler to post events back to the correct thread if possible
         if(Looper.myLooper() != null) {
             handler = new Handler(){
                 @Override
                 public void handleMessage(Message msg){
-                    AsyncHttpResponseHandler.this.handleMessage(msg);
+                    HttpResponseHandler.this.handleMessage(msg);
                 }
             };
         }
