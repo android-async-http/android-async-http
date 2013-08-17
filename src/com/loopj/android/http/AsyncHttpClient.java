@@ -555,19 +555,23 @@ public class AsyncHttpClient {
             uriRequest.addHeader("Content-Type", contentType);
         }
 
-        Future<?> request = threadPool.submit(new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler));
+        if (responseHandler instanceof SyncHttpResponseHandler){
+        	new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler).run();
+        }else{
+        	Future<?> request = threadPool.submit(new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler));
 
-        if(context != null) {
-            // Add request to request map
-            List<WeakReference<Future<?>>> requestList = requestMap.get(context);
-            if(requestList == null) {
-                requestList = new LinkedList<WeakReference<Future<?>>>();
-                requestMap.put(context, requestList);
+            if(context != null) {
+                // Add request to request map
+                List<WeakReference<Future<?>>> requestList = requestMap.get(context);
+                if(requestList == null) {
+                    requestList = new LinkedList<WeakReference<Future<?>>>();
+                    requestMap.put(context, requestList);
+                }
+
+                requestList.add(new WeakReference<Future<?>>(request));
+
+                // TODO: Remove dead weakrefs from requestLists?
             }
-
-            requestList.add(new WeakReference<Future<?>>(request));
-
-            // TODO: Remove dead weakrefs from requestLists?
         }
     }
 
