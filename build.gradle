@@ -24,7 +24,3 @@ android {
         }
     }
 }
-
-task jar(type: Jar) {
-    from android.sourceSets.main.java
-}
