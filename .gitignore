@@ -11,3 +11,5 @@ _layouts
 gh-pages
 build
 .gradle/
+*.iml
+.idea/
