@@ -246,6 +246,7 @@ public class AsyncHttpResponseHandler {
             }
         } catch(IOException e) {
             sendFailureMessage(e, (String) null);
+            return;
         }
 
         if(status.getStatusCode() >= 300) {
