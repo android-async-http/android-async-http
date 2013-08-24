@@ -92,6 +92,16 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     /**
      * Fired when a request returns successfully, override to handle in your own code
      * @param statusCode the status code of the response
+     * @param headers the headers of the HTTP response
+     * @param binaryData the body of the HTTP response from the server
+     */
+    public void onSuccess(int statusCode, Header[] headers, byte[] binaryData) {
+        onSuccess(statusCode, binaryData);
+    }
+    
+    /**
+     * Fired when a request returns successfully, override to handle in your own code
+     * @param statusCode the status code of the response
      * @param binaryData the body of the HTTP response from the server
      */
     public void onSuccess(int statusCode, byte[] binaryData) {
@@ -115,8 +125,8 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     // Pre-processing of messages (executes in background threadpool thread)
     //
 
-    protected void sendSuccessMessage(int statusCode, byte[] responseBody) {
-        sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{statusCode, responseBody}));
+    protected void sendSuccessMessage(int statusCode, Header[] headers, byte[] responseBody) {
+        sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{Integer.valueOf(statusCode), headers, responseBody}));
     }
 
     @Override
@@ -128,8 +138,8 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     // Pre-processing of messages (in original calling thread, typically the UI thread)
     //
 
-    protected void handleSuccessMessage(int statusCode, byte[] responseBody) {
-        onSuccess(statusCode, responseBody);
+    protected void handleSuccessMessage(int statusCode, Header[] headers, byte[] responseBody) {
+        onSuccess(statusCode, headers, responseBody);
     }
 
     protected void handleFailureMessage(Throwable e, byte[] responseBody) {
@@ -143,7 +153,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
         switch(msg.what) {
             case SUCCESS_MESSAGE:
                 response = (Object[])msg.obj;
-                handleSuccessMessage(((Integer) response[0]).intValue() , (byte[]) response[1]);
+                handleSuccessMessage(((Integer) response[0]).intValue(), (Header[]) response[1], (byte[]) response[2]);
                 break;
             case FAILURE_MESSAGE:
                 response = (Object[])msg.obj;
@@ -192,7 +202,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
         if(status.getStatusCode() >= 300) {
             sendFailureMessage(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()), responseBody);
         } else {
-            sendSuccessMessage(status.getStatusCode(), responseBody);
+            sendSuccessMessage(status.getStatusCode(), response.getAllHeaders(), responseBody);
         }
     }
 }
