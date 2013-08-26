@@ -59,7 +59,7 @@ public class RequestParams {
     protected ConcurrentHashMap<String, String> urlParams;
     protected ConcurrentHashMap<String, FileWrapper> fileParams;
     protected ConcurrentHashMap<String, ArrayList<String>> urlParamsWithArray;
-
+    private String encoding ;
     /**
      * Constructs a new empty <code>RequestParams</code> instance.
      */
@@ -263,7 +263,7 @@ public class RequestParams {
             entity = multipartEntity;
         } else {
             try {
-                entity = new UrlEncodedFormEntity(getParamsList(), ENCODING);
+                entity = new UrlEncodedFormEntity(getParamsList(), encoding);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -273,6 +273,7 @@ public class RequestParams {
     }
 
     private void init(){
+    	encoding = ENCODING;
         urlParams = new ConcurrentHashMap<String, String>();
         fileParams = new ConcurrentHashMap<String, FileWrapper>();
         urlParamsWithArray = new ConcurrentHashMap<String, ArrayList<String>>();
@@ -296,7 +297,7 @@ public class RequestParams {
     }
 
     protected String getParamString() {
-        return URLEncodedUtils.format(getParamsList(), ENCODING);
+        return URLEncodedUtils.format(getParamsList(), encoding);
     }
 
     private static class FileWrapper {
@@ -318,4 +319,12 @@ public class RequestParams {
             }
         }
     }
+    
+    public String getEncoding() {
+		return encoding;
+	}
+
+	public void setEncoding(String encoding) {
+		this.encoding = encoding;
+	}
 }
