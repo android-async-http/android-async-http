@@ -9,3 +9,7 @@ gen/
 _layouts
 .DS_Store
 gh-pages
+.setting/
+*.iml
+*.gradle
+*.prefs

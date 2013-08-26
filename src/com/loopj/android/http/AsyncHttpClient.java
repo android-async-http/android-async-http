@@ -18,18 +18,7 @@
 
 package com.loopj.android.http;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.zip.GZIPInputStream;
+import android.content.Context;
 
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
@@ -67,7 +56,18 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.SyncBasicHttpContext;
 
-import android.content.Context;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.zip.GZIPInputStream;
 
 
 /**
@@ -389,7 +389,11 @@ public class AsyncHttpClient {
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void post(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        post(context, url, paramsToEntity(params), null, responseHandler);
+        try {
+            post(context, url, paramsToEntity(params, responseHandler), null, responseHandler);
+        } catch (IOException e) {
+            responseHandler.sendFailureMessage(e, (String) null);
+        }
     }
 
     /**
@@ -420,7 +424,14 @@ public class AsyncHttpClient {
     public void post(Context context, String url, Header[] headers, RequestParams params, String contentType,
             AsyncHttpResponseHandler responseHandler) {
         HttpEntityEnclosingRequestBase request = new HttpPost(url);
-        if(params != null) request.setEntity(paramsToEntity(params));
+        if (params != null) {
+            try {
+                request.setEntity(paramsToEntity(params, responseHandler));
+            } catch (IOException e) {
+                responseHandler.sendFailureMessage(e, (String) null);
+            }
+        }
+
         if(headers != null) request.setHeaders(headers);
         sendRequest(httpClient, httpContext, request, contentType,
                 responseHandler, context);
@@ -479,7 +490,11 @@ public class AsyncHttpClient {
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void put(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        put(context, url, paramsToEntity(params), null, responseHandler);
+        try {
+            put(context, url, paramsToEntity(params, responseHandler), null, responseHandler);
+        } catch (IOException e) {
+            responseHandler.sendFailureMessage(e, (String) null);
+        }
     }
 
     /**
@@ -584,11 +599,13 @@ public class AsyncHttpClient {
         return url;
     }
 
-    private HttpEntity paramsToEntity(RequestParams params) {
+    private HttpEntity paramsToEntity(RequestParams params, AsyncHttpResponseHandler responseHandler)
+            throws IOException {
+
         HttpEntity entity = null;
 
-        if(params != null) {
-            entity = params.getEntity();
+        if (params != null) {
+            entity = params.getEntity(responseHandler);
         }
 
         return entity;
