@@ -53,7 +53,6 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 	}
 
 	// Private stuff
-    @Override
     protected void sendRequest(DefaultHttpClient client,
 			HttpContext httpContext, HttpUriRequest uriRequest,
 			String contentType, AsyncHttpResponseHandler responseHandler,
