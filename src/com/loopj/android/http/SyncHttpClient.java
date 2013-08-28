@@ -8,6 +8,12 @@ import org.apache.http.protocol.HttpContext;
 import android.content.Context;
 import android.os.Message;
 
+/**
+ * Does some thing in old style.
+ *
+ * @deprecated use {@link AsyncHttpClient} passing a {@link SyncHttpResponseHandler} instance
+ */
+@Deprecated
 public abstract class SyncHttpClient extends AsyncHttpClient {
 	private int responseCode;
 	/*
