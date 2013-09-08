@@ -1,5 +1,6 @@
 package com.loopj.android.http;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
@@ -7,6 +8,12 @@ import org.apache.http.protocol.HttpContext;
 import android.content.Context;
 import android.os.Message;
 
+/**
+ * Does some thing in old style.
+ *
+ * @deprecated use {@link AsyncHttpClient} passing a {@link SyncHttpResponseHandler} instance
+ */
+@Deprecated
 public abstract class SyncHttpClient extends AsyncHttpClient {
 	private int responseCode;
 	/*
@@ -52,7 +59,6 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 	}
 
 	// Private stuff
-    @Override
     protected void sendRequest(DefaultHttpClient client,
 			HttpContext httpContext, HttpUriRequest uriRequest,
 			String contentType, AsyncHttpResponseHandler responseHandler,
@@ -110,6 +116,11 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 		return result;
 	}
 
+	public String post(String url, HttpEntity entity){
+		this.post(null, url, entity, null, responseHandler);
+		return result;
+	}
+	
 	public String delete(String url, RequestParams params) {
 		this.delete(url, params, responseHandler);
 		return result;

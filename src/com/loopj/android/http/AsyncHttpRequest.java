@@ -34,11 +34,11 @@ class AsyncHttpRequest implements Runnable {
     private final AbstractHttpClient client;
     private final HttpContext context;
     private final HttpUriRequest request;
-    private final AsyncHttpResponseHandler responseHandler;
+    private final HttpResponseHandler responseHandler;
     private boolean isBinaryRequest;
     private int executionCount;
 
-    public AsyncHttpRequest(AbstractHttpClient client, HttpContext context, HttpUriRequest request, AsyncHttpResponseHandler responseHandler) {
+    public AsyncHttpRequest(AbstractHttpClient client, HttpContext context, HttpUriRequest request, HttpResponseHandler responseHandler) {
         this.client = client;
         this.context = context;
         this.request = request;

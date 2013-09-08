@@ -1,5 +1,7 @@
 package com.loopj.android.http;
 
+import android.os.Message;
+
 /**
  * Used to intercept and handle the responses from requests made using 
  * {@link AsyncHttpClient}. The {@link #onSuccess(String)} method is 
@@ -12,7 +14,7 @@ package com.loopj.android.http;
  * <p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
- * client.get("http://www.google.com", new AsyncHttpResponseHandler() {
+ * client.get("http://www.google.com", new SyncHttpResponseHandler() {
  *     &#064;Override
  *     public void onStart() {
  *         // Initiated the request
@@ -35,6 +37,8 @@ package com.loopj.android.http;
  * });
  * </pre>
  */
-public class AsyncHttpResponseHandler extends HttpResponseHandler {
-
+public class SyncHttpResponseHandler extends HttpResponseHandler {
+	protected void sendMessage(Message msg) {
+		handleMessage(msg);
+    }
 }
