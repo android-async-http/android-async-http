@@ -1,5 +1,6 @@
 package com.loopj.android.http;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
@@ -110,6 +111,11 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 		return result;
 	}
 
+	public String post(String url, HttpEntity entity){
+		this.post(null, url, entity, null, responseHandler);
+		return result;
+	}
+	
 	public String delete(String url, RequestParams params) {
 		this.delete(url, params, responseHandler);
 		return result;

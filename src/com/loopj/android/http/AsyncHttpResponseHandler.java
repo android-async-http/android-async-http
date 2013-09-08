@@ -30,10 +30,6 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.util.EntityUtils;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-
 /**
  * Used to intercept and handle the responses from requests made using 
  * {@link AsyncHttpClient}. The {@link #onSuccess(String)} method is 
