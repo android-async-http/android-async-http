@@ -45,6 +45,7 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -296,6 +297,68 @@ public class AsyncHttpClient {
     }
 
 
+    //
+    // HTTP HEAD Requests
+    //
+
+    /**
+     * Perform a HTTP HEAD request, without any parameters.
+     * @param url the URL to send the request to.
+     * @param responseHandler the response handler instance that should handle the response.
+     */
+    public void head(String url, AsyncHttpResponseHandler responseHandler) {
+        head(null, url, null, responseHandler);
+    }
+
+    /**
+     * Perform a HTTP HEAD request with parameters.
+     * @param url the URL to send the request to.
+     * @param params additional HEAD parameters to send with the request.
+     * @param responseHandler the response handler instance that should handle the response.
+     */
+    public void head(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        head(null, url, params, responseHandler);
+    }
+
+    /**
+     * Perform a HTTP HEAD request without any parameters and track the Android Context which initiated the request.
+     * @param context the Android Context which initiated the request.
+     * @param url the URL to send the request to.
+     * @param responseHandler the response handler instance that should handle the response.
+     */
+    public void head(Context context, String url, AsyncHttpResponseHandler responseHandler) {
+        head(context, url, null, responseHandler);
+    }
+
+    /**
+     * Perform a HTTP HEAD request and track the Android Context which initiated the request.
+     * @param context the Android Context which initiated the request.
+     * @param url the URL to send the request to.
+     * @param params additional HEAD parameters to send with the request.
+     * @param responseHandler the response handler instance that should handle the response.
+     */
+    public void head(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        sendRequest(httpClient, httpContext, new HttpHead(getUrlWithQueryString(url, params)), null, responseHandler, context);
+    }
+    
+    /**
+     * Perform a HTTP HEAD request and track the Android Context which initiated
+     * the request with customized headers
+     * 
+     * @param url the URL to send the request to.
+     * @param headers set headers only for this request
+     * @param params additional HEAD parameters to send with the request.
+     * @param responseHandler the response handler instance that should handle
+     *        the response.
+     */
+    public void head(Context context, String url, Header[] headers, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        HttpUriRequest request = new HttpHead(getUrlWithQueryString(url, params));
+        if(headers != null) request.setHeaders(headers);
+        sendRequest(httpClient, httpContext, request, null, responseHandler,
+                context);
+    }
+    
+    
     //
     // HTTP GET Requests
     //
