@@ -123,7 +123,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                 Object jsonResponse = parseResponse(responseBody);
 	        sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, headers, jsonResponse}));
     	    } catch(JSONException e) {
-    	        sendFailureMessage(e, responseBody);
+    	        sendFailureMessage(statusCode, headers, e, responseBody);
     	    }
         } else {
             sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, new JSONObject()}));
@@ -171,7 +171,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     @Override
-    protected void handleFailureMessage(Throwable e, String responseBody) {
+    protected void handleFailureMessage(int statusCode, Header[] headers, Throwable e, String responseBody) {
         try {
             if (responseBody != null) {
                 Object jsonResponse = parseResponse(responseBody);
