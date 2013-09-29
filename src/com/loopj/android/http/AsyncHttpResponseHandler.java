@@ -18,9 +18,6 @@
 
 package com.loopj.android.http;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import org.apache.http.Header;
 import java.io.IOException;
 import org.apache.http.HttpEntity;
@@ -33,10 +30,11 @@ import org.apache.http.util.EntityUtils;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import org.apache.http.client.methods.HttpUriRequest;
 
 /**
- * Used to intercept and handle the responses from requests made using 
- * {@link AsyncHttpClient}. The {@link #onSuccess(String)} method is 
+ * Used to intercept and handle the responses from requests made using
+ * {@link AsyncHttpClient}. The {@link #onSuccess(String)} method is
  * designed to be anonymously overridden with your own response handling code.
  * <p>
  * Additionally, you can override the {@link #onFailure(Throwable, String)},
@@ -56,7 +54,7 @@ import android.os.Message;
  *     public void onSuccess(String response) {
  *         // Successfully got a response
  *     }
- * 
+ *
  *     &#064;Override
  *     public void onFailure(Throwable e, String response) {
  *         // Response failed :(
@@ -76,6 +74,7 @@ public class AsyncHttpResponseHandler {
     protected static final int FINISH_MESSAGE = 3;
 
     private Handler handler;
+    HttpUriRequest request;
 
     /**
      * Creates a new AsyncHttpResponseHandler
@@ -92,6 +91,12 @@ public class AsyncHttpResponseHandler {
         }
     }
 
+    /**
+     * Return the accompanying request for this response
+     */
+    public HttpUriRequest getRequest() {
+      return request;
+    }
 
     //
     // Callbacks to be overridden, typically anonymously
@@ -163,7 +168,7 @@ public class AsyncHttpResponseHandler {
     protected void sendFailureMessage(Throwable e, String responseBody) {
         sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{e, responseBody}));
     }
-    
+
     protected void sendFailureMessage(Throwable e, byte[] responseBody) {
         sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{e, responseBody}));
     }

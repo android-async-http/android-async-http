@@ -43,6 +43,7 @@ class AsyncHttpRequest implements Runnable {
         this.context = context;
         this.request = request;
         this.responseHandler = responseHandler;
+        this.responseHandler.request = request;
         if(responseHandler instanceof BinaryHttpResponseHandler) {
             this.isBinaryRequest = true;
         }
