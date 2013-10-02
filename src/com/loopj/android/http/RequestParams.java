@@ -24,9 +24,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.http.HttpEntity;
@@ -48,6 +51,35 @@ import org.apache.http.message.BasicNameValuePair;
  * params.put("profile_picture", new File("pic.jpg")); // Upload a File
  * params.put("profile_picture2", someInputStream); // Upload an InputStream
  * params.put("profile_picture3", new ByteArrayInputStream(someBytes)); // Upload some bytes
+ * 
+ * Map<String, String> map = new HashMap<String, String>();
+ * map.put("first_name", "James");
+ * map.put("last_name", "Smith");
+ * params.put("user", map); // url params: "user[first_name]=James&user[last_name]=Smith"
+ *
+ * Set<String> set = new HashSet<String>(); // unordered collection
+ * set.add("music");
+ * set.add("art");
+ * params.put("like", set); // url params: "like=music&like=art"
+ * 
+ * List<String> list = new ArrayList<String>(); // Ordered collection
+ * list.add("Java");
+ * list.add("C");
+ * params.put("languages", list); // url params: "languages[]=Java&languages[]=C"
+ * 
+ * String[] colors = { "blue", "yellow" }; // Ordered collection
+ * params.put("colors", colors); // url params: "colors[]=blue&colors[]=yellow"
+ * 
+ * List<Map<String, String>> listOfMaps = new ArrayList<Map<String, String>>();
+ * Map<String, String> user1 = new HashMap<String, String>();
+ * user1.put("age", "30");
+ * user1.put("gender", "male");
+ * Map<String, String> user2 = new HashMap<String, String>();
+ * user2.put("age", "25");
+ * user2.put("gender", "female");
+ * listOfMaps.add(user1);
+ * listOfMaps.add(user2);
+ * params.put("users", listOfMaps); // url params: "users[][age]=30&users[][gender]=male&users[][age]=25&users[][gender]=female"
  *
  * AsyncHttpClient client = new AsyncHttpClient();
  * client.post("http://myendpoint.com", params, responseHandler);
@@ -58,7 +90,7 @@ public class RequestParams {
 
     protected ConcurrentHashMap<String, String> urlParams;
     protected ConcurrentHashMap<String, FileWrapper> fileParams;
-    protected ConcurrentHashMap<String, ArrayList<String>> urlParamsWithArray;
+    protected ConcurrentHashMap<String, Object> urlParamsWithObjects;
 
     /**
      * Constructs a new empty <code>RequestParams</code> instance.
@@ -132,29 +164,34 @@ public class RequestParams {
     }
 
     /**
-     * Adds param with more than one value.
+     * Adds param with non-string value (e.g. Map, List, Set).
      * @param key the key name for the new param.
-     * @param values is the ArrayList with values for the param.
+     * @param value the value object for the new param.
      */
-    public void put(String key, ArrayList<String> values)  {
-        if(key != null && values != null) {
-            urlParamsWithArray.put(key, values);
+    public void put(String key, Object value)  {
+        if(key != null && value != null) {
+            urlParamsWithObjects.put(key, value);
         }
     }
 
     /**
-     * Adds value to param which can have more than one value.
+     * Adds string value to param which can have more than one value.
      * @param key the key name for the param, either existing or new.
      * @param value the value string for the new param.
      */
     public void add(String key, String value) {
         if(key != null && value != null) {
-            ArrayList<String> paramArray = urlParamsWithArray.get(key);
-            if (paramArray == null) {
-                paramArray = new ArrayList<String>();
-                this.put(key, paramArray);
+            Object params = urlParamsWithObjects.get(key);
+            if (params == null) {
+                // Backward compatible, which will result in "k=v1&k=v2&k=v3"
+                params = new HashSet<String>();
+                this.put(key, params);
             }
-            paramArray.add(value);
+            if (params instanceof List) {
+                ((List<Object>) params).add(value);
+            } else if (params instanceof Set) {
+                ((Set<Object>) params).add(value);
+            }
         }
     }
 
@@ -197,7 +234,7 @@ public class RequestParams {
     public void remove(String key){
         urlParams.remove(key);
         fileParams.remove(key);
-        urlParamsWithArray.remove(key);
+        urlParamsWithObjects.remove(key);
     }
 
     @Override
@@ -221,18 +258,14 @@ public class RequestParams {
             result.append("FILE");
         }
 
-        for(ConcurrentHashMap.Entry<String, ArrayList<String>> entry : urlParamsWithArray.entrySet()) {
-            if(result.length() > 0)
+        List<BasicNameValuePair> params = getParamsList(null, urlParamsWithObjects);
+        for (BasicNameValuePair kv : params) {
+            if (result.length() > 0)
                 result.append("&");
-
-            ArrayList<String> values = entry.getValue();
-            for (int i = 0; i < values.size(); i++) {
-                if (i != 0)
-                    result.append("&");
-                result.append(entry.getKey());
-                result.append("=");
-                result.append(values.get(i));
-            }
+            
+            result.append(kv.getName());
+            result.append("=");
+            result.append(kv.getValue());
         }
 
         return result.toString();
@@ -252,12 +285,10 @@ public class RequestParams {
                 multipartEntity.addPart(entry.getKey(), entry.getValue());
             }
 
-            // Add dupe params
-            for(ConcurrentHashMap.Entry<String, ArrayList<String>> entry : urlParamsWithArray.entrySet()) {
-                ArrayList<String> values = entry.getValue();
-                for (String value : values) {
-                    multipartEntity.addPart(entry.getKey(), value);
-                }
+            // Add non-string params
+            List<BasicNameValuePair> params = getParamsList(null, urlParamsWithObjects);
+            for (BasicNameValuePair kv : params) {
+                multipartEntity.addPart(kv.getName(), kv.getValue());
             }
 
             // Add file params
@@ -291,7 +322,7 @@ public class RequestParams {
     private void init(){
         urlParams = new ConcurrentHashMap<String, String>();
         fileParams = new ConcurrentHashMap<String, FileWrapper>();
-        urlParamsWithArray = new ConcurrentHashMap<String, ArrayList<String>>();
+        urlParamsWithObjects = new ConcurrentHashMap<String, Object>();
     }
 
     protected List<BasicNameValuePair> getParamsList() {
@@ -301,16 +332,46 @@ public class RequestParams {
             lparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
         }
 
-        for(ConcurrentHashMap.Entry<String, ArrayList<String>> entry : urlParamsWithArray.entrySet()) {
-            ArrayList<String> values = entry.getValue();
-            for (String value : values) {
-                lparams.add(new BasicNameValuePair(entry.getKey(), value));
-            }
-        }
+        lparams.addAll(getParamsList(null, urlParamsWithObjects));
 
         return lparams;
     }
 
+    private List<BasicNameValuePair> getParamsList(String key, Object value) {
+        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
+        if (value instanceof Map) {
+            Map<String, Object> map = (Map<String, Object>) value;
+            List<String> list = new ArrayList<String>(map.keySet());
+            // Ensure consistent ordering in query string
+            Collections.sort(list);
+            for (String nestedKey : list) {
+                Object nestedValue = map.get(nestedKey);
+                if (nestedValue != null) {
+                    params.addAll(getParamsList(key == null ? nestedKey : String.format("%s[%s]", key, nestedKey),
+                            nestedValue));
+                }
+            }
+        } else if (value instanceof List) {
+            List<Object> list = (List<Object>) value;
+            for (Object nestedValue : list) {
+                params.addAll(getParamsList(String.format("%s[]", key), nestedValue));
+            }
+        } else if (value instanceof Object[]) {
+            Object[] array = (Object[]) value;
+            for (Object nestedValue : array) {
+                params.addAll(getParamsList(String.format("%s[]", key), nestedValue));
+            }
+        } else if (value instanceof Set) {
+            Set<Object> set = (Set<Object>) value;
+            for (Object nestedValue : set) {
+                params.addAll(getParamsList(key, nestedValue));
+            }
+        } else if (value instanceof String) {
+            params.add(new BasicNameValuePair(key, (String) value));
+        }
+        return params;
+    }
+    
     protected String getParamString() {
         return URLEncodedUtils.format(getParamsList(), ENCODING);
     }
