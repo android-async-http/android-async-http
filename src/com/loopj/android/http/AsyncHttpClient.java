@@ -518,8 +518,8 @@ public class AsyncHttpClient {
      * @param url the URL to send the request to.
      * @param responseHandler the response handler instance that should handle the response.
      */
-    public void delete(String url, AsyncHttpResponseHandler responseHandler) {
-        delete(null, url, responseHandler);
+    public void delete(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        delete(null, url, params, responseHandler);
     }
 
     /**
@@ -528,9 +528,10 @@ public class AsyncHttpClient {
      * @param url the URL to send the request to.
      * @param responseHandler the response handler instance that should handle the response.
      */
-    public void delete(Context context, String url, AsyncHttpResponseHandler responseHandler) {
-        final HttpDelete delete = new HttpDelete(url);
-        sendRequest(httpClient, httpContext, delete, null, responseHandler, context);
+    public void delete(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        HttpEntityEnclosingRequestBase request = new HttpDeleteWithParams(url);
+        if (params != null) request.setEntity(paramsToEntity(params));
+        sendRequest(httpClient, httpContext, request, null, responseHandler, context);
     }
     
     /**
@@ -540,10 +541,11 @@ public class AsyncHttpClient {
      * @param headers set one-time headers for this request
      * @param responseHandler the response handler instance that should handle the response.
      */
-    public void delete(Context context, String url, Header[] headers, AsyncHttpResponseHandler responseHandler) {
-        final HttpDelete delete = new HttpDelete(url);
-        if(headers != null) delete.setHeaders(headers);
-        sendRequest(httpClient, httpContext, delete, null, responseHandler, context);
+    public void delete(Context context, String url, Header[] headers, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        HttpEntityEnclosingRequestBase request = new HttpDeleteWithParams(url);
+        if(params != null) request.setEntity(paramsToEntity(params));
+        if(headers != null) request.setHeaders(headers);
+        sendRequest(httpClient, httpContext, request, null, responseHandler, context);
     }
 
 
