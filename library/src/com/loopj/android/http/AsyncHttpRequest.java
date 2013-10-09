@@ -21,6 +21,7 @@ package com.loopj.android.http;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 
@@ -106,6 +107,10 @@ class AsyncHttpRequest implements Runnable {
                     responseHandler.sendFailureMessage(e, "can't resolve host");
                 }
                 return;
+            } catch (ConnectTimeoutException e) {
+                if (responseHandler != null) {
+                    responseHandler.sendFailureMessage(e, "connection timed out");
+                }
             } catch (SocketException e) {
                 // Added to detect host unreachable
                 if (responseHandler != null) {
