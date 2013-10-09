@@ -1,22 +1,22 @@
 buildscript {
-  repositories {
-    mavenCentral()
-  }
+    repositories {
+        mavenCentral()
+    }
 
-  dependencies {
-    classpath 'com.android.tools.build:gradle:0.6.+'
-  }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.6.+'
+    }
 }
 
 allprojects {
-  group = 'com.loopj.android'
-  version = '1.4.4-SNAPSHOT'
+    group = 'com.loopj.android'
+    version = '1.4.4-SNAPSHOT'
 
-  repositories {
-    mavenCentral()
-  }
+    repositories {
+        mavenCentral()
+    }
 
-  tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
-  }
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
 }

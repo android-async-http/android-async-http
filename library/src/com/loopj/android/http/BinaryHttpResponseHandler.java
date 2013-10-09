@@ -18,8 +18,7 @@
 
 package com.loopj.android.http;
 
-import java.io.IOException;
-import java.util.regex.Pattern;
+import android.os.Message;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -29,16 +28,17 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.util.EntityUtils;
 
-import android.os.Message;
+import java.io.IOException;
+import java.util.regex.Pattern;
 
 /**
  * Used to intercept and handle the responses from requests made using
- * {@link AsyncHttpClient}. Receives response body as byte array with a 
- * content-type whitelist. (e.g. checks Content-Type against allowed list, 
+ * {@link AsyncHttpClient}. Receives response body as byte array with a
+ * content-type whitelist. (e.g. checks Content-Type against allowed list,
  * Content-length).
- * <p>
+ * <p/>
  * For example:
- * <p>
+ * <p/>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
  * String[] allowedTypes = new String[] { "image/png" };
@@ -57,9 +57,9 @@ import android.os.Message;
  */
 public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     // Allow images by default
-    private static String[] mAllowedContentTypes = new String[] {
-        "image/jpeg",
-        "image/png"
+    private static String[] mAllowedContentTypes = new String[]{
+            "image/jpeg",
+            "image/png"
     };
 
     /**
@@ -85,12 +85,15 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
 
     /**
      * Fired when a request returns successfully, override to handle in your own code
+     *
      * @param binaryData the body of the HTTP response from the server
      */
-    public void onSuccess(byte[] binaryData) {}
+    public void onSuccess(byte[] binaryData) {
+    }
 
     /**
      * Fired when a request returns successfully, override to handle in your own code
+     *
      * @param statusCode the status code of the response
      * @param binaryData the body of the HTTP response from the server
      */
@@ -100,7 +103,8 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
 
     /**
      * Fired when a request fails to complete, override to handle in your own code
-     * @param error the underlying cause of the failure
+     *
+     * @param error      the underlying cause of the failure
      * @param binaryData the response body, if any
      * @deprecated
      */
@@ -140,14 +144,14 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     @Override
     protected void handleMessage(Message msg) {
         Object[] response;
-        switch(msg.what) {
+        switch (msg.what) {
             case SUCCESS_MESSAGE:
-                response = (Object[])msg.obj;
-                handleSuccessMessage(((Integer) response[0]).intValue() , (byte[]) response[1]);
+                response = (Object[]) msg.obj;
+                handleSuccessMessage(((Integer) response[0]).intValue(), (byte[]) response[1]);
                 break;
             case FAILURE_MESSAGE:
-                response = (Object[])msg.obj;
-                handleFailureMessage((Throwable)response[0], (byte[]) response[1]);
+                response = (Object[]) msg.obj;
+                handleFailureMessage((Throwable) response[0], (byte[]) response[1]);
                 break;
             default:
                 super.handleMessage(msg);
@@ -161,19 +165,19 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
         StatusLine status = response.getStatusLine();
         Header[] contentTypeHeaders = response.getHeaders("Content-Type");
         byte[] responseBody = null;
-        if(contentTypeHeaders.length != 1) {
+        if (contentTypeHeaders.length != 1) {
             //malformed/ambiguous HTTP Header, ABORT!
             sendFailureMessage(new HttpResponseException(status.getStatusCode(), "None, or more than one, Content-Type Header found!"), responseBody);
             return;
         }
         Header contentTypeHeader = contentTypeHeaders[0];
         boolean foundAllowedContentType = false;
-        for(String anAllowedContentType : mAllowedContentTypes) {
-            if(Pattern.matches(anAllowedContentType, contentTypeHeader.getValue())) {
+        for (String anAllowedContentType : mAllowedContentTypes) {
+            if (Pattern.matches(anAllowedContentType, contentTypeHeader.getValue())) {
                 foundAllowedContentType = true;
             }
         }
-        if(!foundAllowedContentType) {
+        if (!foundAllowedContentType) {
             //Content-Type not in allowed list, ABORT!
             sendFailureMessage(new HttpResponseException(status.getStatusCode(), "Content-Type not allowed!"), responseBody);
             return;
@@ -181,15 +185,15 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
         try {
             HttpEntity entity = null;
             HttpEntity temp = response.getEntity();
-            if(temp != null) {
+            if (temp != null) {
                 entity = new BufferedHttpEntity(temp);
             }
             responseBody = EntityUtils.toByteArray(entity);
-        } catch(IOException e) {
+        } catch (IOException e) {
             sendFailureMessage(e, (byte[]) null);
         }
 
-        if(status.getStatusCode() >= 300) {
+        if (status.getStatusCode() >= 300) {
             sendFailureMessage(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()), responseBody);
         } else {
             sendSuccessMessage(status.getStatusCode(), responseBody);

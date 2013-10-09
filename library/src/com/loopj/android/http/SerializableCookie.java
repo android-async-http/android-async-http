@@ -18,14 +18,14 @@
 
 package com.loopj.android.http;
 
-import java.io.Serializable;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
-import java.util.Date;
-
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * A wrapper class around {@link Cookie} and/or {@link BasicClientCookie}
@@ -43,7 +43,7 @@ public class SerializableCookie implements Serializable {
 
     public Cookie getCookie() {
         Cookie bestCookie = cookie;
-        if(clientCookie != null) {
+        if (clientCookie != null) {
             bestCookie = clientCookie;
         }
         return bestCookie;
@@ -61,13 +61,13 @@ public class SerializableCookie implements Serializable {
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        String name = (String)in.readObject();
-        String value = (String)in.readObject();
+        String name = (String) in.readObject();
+        String value = (String) in.readObject();
         clientCookie = new BasicClientCookie(name, value);
-        clientCookie.setComment((String)in.readObject());
-        clientCookie.setDomain((String)in.readObject());
-        clientCookie.setExpiryDate((Date)in.readObject());
-        clientCookie.setPath((String)in.readObject());
+        clientCookie.setComment((String) in.readObject());
+        clientCookie.setDomain((String) in.readObject());
+        clientCookie.setExpiryDate((Date) in.readObject());
+        clientCookie.setPath((String) in.readObject());
         clientCookie.setVersion(in.readInt());
         clientCookie.setSecure(in.readBoolean());
     }
