@@ -4,10 +4,10 @@
     android:versionName="1.4.4"
     android:versionCode="2">
 
-    <application
-        android:name="android_async_http" />
-
-    <uses-sdk android:minSdkVersion="3" />
+    <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <application />
+
 </manifest> 
