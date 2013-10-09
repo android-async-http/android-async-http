@@ -127,6 +127,18 @@ public class RequestParams {
     }
 
     /**
+     * Adds a integer param to the request.
+     *
+     * @param key   the key name for the new param.
+     * @param value the integer value for the new param.
+     */
+    public void put(String key, int value) {
+        if (key != null) {
+            urlParams.put(key, String.valueOf(value));
+        }
+    }
+
+    /**
      * Adds a file to the request.
      *
      * @param key  the key name for the new param.
