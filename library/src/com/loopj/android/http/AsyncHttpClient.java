@@ -259,9 +259,9 @@ public class AsyncHttpClient {
      * @param username
      * @param password
      */
-    public void setBasicAuth(String user, String pass) {
+    public void setBasicAuth(String username, String password) {
         AuthScope scope = AuthScope.ANY;
-        setBasicAuth(user, pass, scope);
+        setBasicAuth(username, password, scope);
     }
 
     /**
@@ -272,8 +272,8 @@ public class AsyncHttpClient {
      * @param password
      * @param scope    - an AuthScope object
      */
-    public void setBasicAuth(String user, String pass, AuthScope scope) {
-        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(user, pass);
+    public void setBasicAuth(String username, String password, AuthScope scope) {
+        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
         this.httpClient.getCredentialsProvider().setCredentials(scope, credentials);
     }
 
