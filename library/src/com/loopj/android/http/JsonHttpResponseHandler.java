@@ -191,6 +191,8 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                     onFailure(e, (JSONObject) jsonResponse);
                 } else if (jsonResponse instanceof JSONArray) {
                     onFailure(e, (JSONArray) jsonResponse);
+                } else if (jsonResponse instanceof String) {
+                    onFailure(e, (String) jsonResponse);
                 } else {
                     onFailure(e, responseBody);
                 }
