@@ -40,3 +40,5 @@ before_install:
   - file $ANDROID_HOME/build-tools/18.0.1/aapt
   - echo "nexusUsername=dummy" >> gradle.properties
   - echo "nexusPassword=dummy" >> gradle.properties
+  - echo "nexusUsername=dummy" >> library/gradle.properties
+  - echo "nexusPassword=dummy" >> library/gradle.properties
