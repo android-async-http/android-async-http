@@ -38,4 +38,5 @@ before_install:
   # verify files exist in right paths
   - find $ANDROID_HOME/build-tools
   - file $ANDROID_HOME/build-tools/18.0.1/aapt
-  # - mvn clean test install
+  - echo "nexusUsername=dummy" >> gradle.properties
+  - echo "nexusPassword=dummy" >> gradle.properties
