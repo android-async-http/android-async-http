@@ -1,6 +1,12 @@
 apply plugin: 'maven'
 apply plugin: 'signing'
 
+configurations {
+    archives {
+        extendsFrom configurations.default
+    }
+}
+
 def sonatypeRepositoryUrl
 if (isReleaseBuild()) {
     println 'RELEASE BUILD'
@@ -8,6 +14,24 @@ if (isReleaseBuild()) {
 } else {
     println 'DEBUG BUILD'
     sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+}
+
+if (!signing.hasProperty('password')) {
+    if (System.console())
+        allprojects {
+            ext.set('signing.password', System.console().readPassword("\n\$ Type in GPG key password: "))
+        }
+    else
+        allprojects { ext.set('signing.password', 'dummy') }
+}
+
+if (!project.ext.hasProperty('nexusPassword')) {
+    if (System.console())
+        allprojects {
+            project.ext.set('nexusPassword', new String(System.console().readPassword("\n\$ Type in password for Sonatype nexus account ${nexusUsername}: ")))
+        }
+    else
+        allprojects { project.ext.set('nexusPassword', 'dummy') }
 }
 
 afterEvaluate { project ->
@@ -62,24 +86,26 @@ afterEvaluate { project ->
         sign configurations.archives
     }
 
+    task androidReleaseJar(type: Jar) {
+        from "$buildDir/classes/release/"
+    }
+
     task androidJavadocs(type: Javadoc) {
         source = android.sourceSets.main.allJava
     }
 
     task androidJavadocsJar(type: Jar) {
         classifier = 'javadoc'
-        //basename = artifact_id
         from androidJavadocs.destinationDir
     }
 
     task androidSourcesJar(type: Jar) {
         classifier = 'sources'
-        //basename = artifact_id
         from android.sourceSets.main.allSource
     }
 
     artifacts {
-        //archives packageReleaseJar
+        archives androidReleaseJar
         archives androidSourcesJar
         archives androidJavadocsJar
     }
