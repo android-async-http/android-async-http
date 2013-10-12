@@ -48,6 +48,7 @@ import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.HttpEntityWrapper;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.DefaultRedirectHandler;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -92,7 +93,8 @@ import java.util.zip.GZIPInputStream;
  */
 public class AsyncHttpClient {
     // This property won't be available soon, don't use it
-    @Deprecated private static final String VERSION = "1.4.4";
+    @Deprecated
+    private static final String VERSION = "1.4.4";
 
     private static final int DEFAULT_MAX_CONNECTIONS = 10;
     private static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
@@ -217,6 +219,21 @@ public class AsyncHttpClient {
     }
 
     /**
+     * Simple interface method, to enable or disable redirects.
+     * If you set manually RedirectHandler on underlying HttpClient, effects of this method will be canceled.
+     *
+     * @param enableRedirects boolean
+     */
+    public void setEnableRedirects(final boolean enableRedirects) {
+        httpClient.setRedirectHandler(new DefaultRedirectHandler() {
+            @Override
+            public boolean isRedirectRequested(HttpResponse response, HttpContext context) {
+                return enableRedirects;
+            }
+        });
+    }
+
+    /**
      * Sets the User-Agent header to be sent with each request. By default,
      * "Android Asynchronous Http Client/VERSION (http://loopj.com/android-async-http/)" is used.
      *
@@ -314,7 +331,8 @@ public class AsyncHttpClient {
 
     /**
      * Perform a HTTP HEAD request, without any parameters.
-     * @param url the URL to send the request to.
+     *
+     * @param url             the URL to send the request to.
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void head(String url, AsyncHttpResponseHandler responseHandler) {
@@ -323,8 +341,9 @@ public class AsyncHttpClient {
 
     /**
      * Perform a HTTP HEAD request with parameters.
-     * @param url the URL to send the request to.
-     * @param params additional HEAD parameters to send with the request.
+     *
+     * @param url             the URL to send the request to.
+     * @param params          additional HEAD parameters to send with the request.
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void head(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
@@ -333,8 +352,9 @@ public class AsyncHttpClient {
 
     /**
      * Perform a HTTP HEAD request without any parameters and track the Android Context which initiated the request.
-     * @param context the Android Context which initiated the request.
-     * @param url the URL to send the request to.
+     *
+     * @param context         the Android Context which initiated the request.
+     * @param url             the URL to send the request to.
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void head(Context context, String url, AsyncHttpResponseHandler responseHandler) {
@@ -343,9 +363,10 @@ public class AsyncHttpClient {
 
     /**
      * Perform a HTTP HEAD request and track the Android Context which initiated the request.
-     * @param context the Android Context which initiated the request.
-     * @param url the URL to send the request to.
-     * @param params additional HEAD parameters to send with the request.
+     *
+     * @param context         the Android Context which initiated the request.
+     * @param url             the URL to send the request to.
+     * @param params          additional HEAD parameters to send with the request.
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void head(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
@@ -356,16 +377,16 @@ public class AsyncHttpClient {
      * Perform a HTTP HEAD request and track the Android Context which initiated
      * the request with customized headers
      *
-     * @param context Context to execute request against
-     * @param url the URL to send the request to.
-     * @param headers set headers only for this request
-     * @param params additional HEAD parameters to send with the request.
+     * @param context         Context to execute request against
+     * @param url             the URL to send the request to.
+     * @param headers         set headers only for this request
+     * @param params          additional HEAD parameters to send with the request.
      * @param responseHandler the response handler instance that should handle
-     *        the response.
+     *                        the response.
      */
     public void head(Context context, String url, Header[] headers, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         HttpUriRequest request = new HttpHead(getUrlWithQueryString(url, params));
-        if(headers != null) request.setHeaders(headers);
+        if (headers != null) request.setHeaders(headers);
         sendRequest(httpClient, httpContext, request, null, responseHandler,
                 context);
     }
