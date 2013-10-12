@@ -74,6 +74,17 @@ public class AsyncHttpResponseHandler {
     protected static final int FINISH_MESSAGE = 3;
 
     private Handler handler;
+    private String responseCharset = "UTF-8";
+
+    /**
+     * Sets the charset for the response string. If not set, the default is UTF-8.
+     * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Charset</a>
+     *
+     * @param charset to be used for the response string.
+     */
+    public void setCharset(final String charset) {
+        this.responseCharset = charset;
+    }
 
     /**
      * Creates a new AsyncHttpResponseHandler
@@ -249,7 +260,7 @@ public class AsyncHttpResponseHandler {
             HttpEntity temp = response.getEntity();
             if (temp != null) {
                 entity = new BufferedHttpEntity(temp);
-                responseBody = EntityUtils.toString(entity, "UTF-8");
+                responseBody = EntityUtils.toString(entity, responseCharset);
             }
         } catch (IOException e) {
             sendFailureMessage(e, (String) null);
