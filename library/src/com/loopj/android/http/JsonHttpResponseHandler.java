@@ -129,14 +129,19 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     //
 
     @Override
-    protected void sendSuccessMessage(int statusCode, Header[] headers, String responseBody) {
+    protected void sendSuccessMessage(final int statusCode, final Header[] headers, final String responseBody) {
         if (statusCode != HttpStatus.SC_NO_CONTENT) {
-            try {
-                Object jsonResponse = parseResponse(responseBody);
-                sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, headers, jsonResponse}));
-            } catch (JSONException e) {
-                sendFailureMessage(e, responseBody);
-            }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Object jsonResponse = parseResponse(responseBody);
+                        sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, headers, jsonResponse}));
+                    } catch (JSONException e) {
+                        sendFailureMessage(e, responseBody);
+                    }
+                }
+            }).start();
         } else {
             sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, new JSONObject()}));
         }
@@ -183,24 +188,30 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     @Override
-    protected void handleFailureMessage(Throwable e, String responseBody) {
-        try {
-            if (responseBody != null) {
-                Object jsonResponse = parseResponse(responseBody);
-                if (jsonResponse instanceof JSONObject) {
-                    onFailure(e, (JSONObject) jsonResponse);
-                } else if (jsonResponse instanceof JSONArray) {
-                    onFailure(e, (JSONArray) jsonResponse);
-                } else if (jsonResponse instanceof String) {
-                    onFailure(e, (String) jsonResponse);
-                } else {
+    protected void handleFailureMessage(final Throwable e, final String responseBody) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (responseBody != null) {
+                        Object jsonResponse = parseResponse(responseBody);
+                        if (jsonResponse instanceof JSONObject) {
+                            onFailure(e, (JSONObject) jsonResponse);
+                        } else if (jsonResponse instanceof JSONArray) {
+                            onFailure(e, (JSONArray) jsonResponse);
+                        } else if (jsonResponse instanceof String) {
+                            onFailure(e, (String) jsonResponse);
+                        } else {
+                            onFailure(e, responseBody);
+                        }
+                    } else {
+                        onFailure(e, "");
+                    }
+                } catch (JSONException ex) {
                     onFailure(e, responseBody);
                 }
-            } else {
-                onFailure(e, "");
             }
-        } catch (JSONException ex) {
-            onFailure(e, responseBody);
-        }
+        }).start();
+
     }
 }
