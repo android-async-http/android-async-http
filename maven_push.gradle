@@ -23,7 +23,7 @@ if (ext.hasProperty('signing.keyId') && !ext.hasProperty('signing.password')) {
         ext.set('signing.password', 'dummy')
 }
 
-if (!ext.hasProperty('nexusPassword')) {
+if (System.env.TERM != 'dumb' && !ext.hasProperty('nexusPassword')) {
     if (System.console())
         project.ext.set('nexusPassword', new String(System.console().readPassword("\n\$ Type in password for Sonatype nexus account ${nexusUsername}: ")))
     else
