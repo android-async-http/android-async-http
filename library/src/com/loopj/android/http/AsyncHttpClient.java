@@ -279,6 +279,14 @@ public class AsyncHttpClient {
     }
 
     /**
+     * Sets the maximum number of retries for a particular Request.
+     * @param retries maximum number of retries per request
+     */
+    public void setMaxRetries(int retries) {
+        this.httpClient.setHttpRequestRetryHandler(new RetryHandler(retries));
+    }
+
+    /**
      * Sets headers that will be added to all requests this client makes (before sending).
      *
      * @param header the name of the header
