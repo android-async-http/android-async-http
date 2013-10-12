@@ -88,7 +88,7 @@ class RetryHandler implements HttpRequestRetryHandler {
         if (retry) {
             // resend all idempotent requests
             HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
-            String requestType = currentReq.getMethod();
+            String requestType = currentReq != null ? currentReq.getMethod() : "";
             retry = !requestType.equals("POST");
         }
 
