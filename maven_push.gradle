@@ -16,18 +16,18 @@ if (isReleaseBuild()) {
     sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
-if (ext.hasProperty('signing.keyId') && !ext.hasProperty('signing.password')) {
+if (ext.properties.containsKey('signing.keyId') && !ext.properties.containsKey('signing.password')) {
     if (System.console())
         ext.set('signing.password', System.console().readPassword("\n\$ Type in GPG key password: "))
     else
         ext.set('signing.password', 'dummy')
 }
 
-if (System.env.TERM != 'dumb' && !ext.hasProperty('nexusPassword')) {
+if (System.env.TERM != 'dumb' && !ext.properties.containsKey('nexusPassword')) {
     if (System.console())
-        project.ext.set('nexusPassword', new String(System.console().readPassword("\n\$ Type in password for Sonatype nexus account ${nexusUsername}: ")))
+        ext.set('nexusPassword', new String(System.console().readPassword("\n\$ Type in password for Sonatype nexus account ${nexusUsername}: ")))
     else
-    	project.ext.set('nexusPassword', 'dummy')
+    	ext.set('nexusPassword', 'dummy')
 }
 
 afterEvaluate { project ->
@@ -82,7 +82,7 @@ afterEvaluate { project ->
         sign configurations.archives
     }
 
-    task androidReleaseJar(type: Jar) {
+    task androidReleaseJar(type: Jar, dependsOn: assembleRelease) {
         from "$buildDir/classes/release/"
     }
 
