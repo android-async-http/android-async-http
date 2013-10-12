@@ -16,22 +16,18 @@ if (isReleaseBuild()) {
     sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
-if (!signing.hasProperty('password')) {
+if (ext.hasProperty('signing.keyId') && !ext.hasProperty('signing.password')) {
     if (System.console())
-        allprojects {
-            ext.set('signing.password', System.console().readPassword("\n\$ Type in GPG key password: "))
-        }
+        ext.set('signing.password', System.console().readPassword("\n\$ Type in GPG key password: "))
     else
-        allprojects { ext.set('signing.password', 'dummy') }
+        ext.set('signing.password', 'dummy')
 }
 
-if (!project.ext.hasProperty('nexusPassword')) {
+if (!ext.hasProperty('nexusPassword')) {
     if (System.console())
-        allprojects {
-            project.ext.set('nexusPassword', new String(System.console().readPassword("\n\$ Type in password for Sonatype nexus account ${nexusUsername}: ")))
-        }
+        project.ext.set('nexusPassword', new String(System.console().readPassword("\n\$ Type in password for Sonatype nexus account ${nexusUsername}: ")))
     else
-        allprojects { project.ext.set('nexusPassword', 'dummy') }
+    	project.ext.set('nexusPassword', 'dummy')
 }
 
 afterEvaluate { project ->
