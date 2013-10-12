@@ -86,13 +86,9 @@ afterEvaluate { project ->
         from "$buildDir/classes/release/"
     }
 
-    task androidJavadocs(type: Javadoc) {
-        source = android.sourceSets.main.allJava
-    }
-
     task androidJavadocsJar(type: Jar) {
         classifier = 'javadoc'
-        from androidJavadocs.destinationDir
+        from generateReleaseJavadoc.destinationDir
     }
 
     task androidSourcesJar(type: Jar) {
