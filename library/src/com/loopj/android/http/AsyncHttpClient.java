@@ -136,6 +136,10 @@ public class AsyncHttpClient {
         schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
+        threadPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+        requestMap = new WeakHashMap<Context, List<WeakReference<Future<?>>>>();
+        clientHeaderMap = new HashMap<String, String>();
+
         httpContext = new SyncBasicHttpContext(new BasicHttpContext());
         httpClient = new DefaultHttpClient(cm, httpParams);
         httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
@@ -170,11 +174,6 @@ public class AsyncHttpClient {
         });
 
         httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES));
-
-        threadPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
-
-        requestMap = new WeakHashMap<Context, List<WeakReference<Future<?>>>>();
-        clientHeaderMap = new HashMap<String, String>();
     }
 
     /**
@@ -273,6 +272,15 @@ public class AsyncHttpClient {
      */
     public void addHeader(String header, String value) {
         clientHeaderMap.put(header, value);
+    }
+
+    /**
+     * Remove header from all requests this client makes (before sending).
+     *
+     * @param header the name of the header
+     */
+    public void removeHeader(String header) {
+        clientHeaderMap.remove(header);
     }
 
     /**
