@@ -47,7 +47,7 @@ class SimpleMultipartEntity implements HttpEntity {
     boolean isSetFirst = false;
 
     public SimpleMultipartEntity() {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         final Random rand = new Random();
         for (int i = 0; i < 30; i++) {
             buf.append(MULTIPART_CHARS[rand.nextInt(MULTIPART_CHARS.length)]);
@@ -116,7 +116,7 @@ class SimpleMultipartEntity implements HttpEntity {
             out.write("Content-Transfer-Encoding: binary\r\n\r\n".getBytes());
 
             final byte[] tmp = new byte[4096];
-            int l = 0;
+            int l;
             while ((l = fin.read(tmp)) != -1) {
                 out.write(tmp, 0, l);
             }

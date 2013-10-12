@@ -152,7 +152,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
         switch (msg.what) {
             case SUCCESS_JSON_MESSAGE:
                 Object[] response = (Object[]) msg.obj;
-                handleSuccessJsonMessage(((Integer) response[0]).intValue(), (Header[]) response[1], response[2]);
+                handleSuccessJsonMessage((Integer) response[0], (Header[]) response[1], response[2]);
                 break;
             default:
                 super.handleMessage(msg);

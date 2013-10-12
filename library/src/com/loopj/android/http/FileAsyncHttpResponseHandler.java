@@ -54,7 +54,7 @@ public class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
         switch (msg.what) {
             case SUCCESS_MESSAGE:
                 response = (Object[]) msg.obj;
-                handleSuccessMessage(((Integer) response[0]).intValue(), (File) response[1]);
+                handleSuccessMessage((Integer) response[0], (File) response[1]);
                 break;
             case FAILURE_MESSAGE:
                 response = (Object[]) msg.obj;

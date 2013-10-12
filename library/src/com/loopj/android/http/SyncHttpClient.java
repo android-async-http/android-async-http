@@ -23,8 +23,6 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
             super.sendResponseMessage(response);
         }
 
-        ;
-
         @Override
         protected void sendMessage(Message msg) {
             /*

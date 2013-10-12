@@ -167,7 +167,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
         byte[] responseBody = null;
         if (contentTypeHeaders.length != 1) {
             //malformed/ambiguous HTTP Header, ABORT!
-            sendFailureMessage(new HttpResponseException(status.getStatusCode(), "None, or more than one, Content-Type Header found!"), responseBody);
+            sendFailureMessage(new HttpResponseException(status.getStatusCode(), "None, or more than one, Content-Type Header found!"), (String) null);
             return;
         }
         Header contentTypeHeader = contentTypeHeaders[0];
@@ -179,7 +179,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
         }
         if (!foundAllowedContentType) {
             //Content-Type not in allowed list, ABORT!
-            sendFailureMessage(new HttpResponseException(status.getStatusCode(), "Content-Type not allowed!"), responseBody);
+            sendFailureMessage(new HttpResponseException(status.getStatusCode(), "Content-Type not allowed!"), (String) null);
             return;
         }
         try {
