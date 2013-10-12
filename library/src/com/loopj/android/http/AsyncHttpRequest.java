@@ -19,6 +19,7 @@
 package com.loopj.android.http;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ConnectTimeoutException;
@@ -101,6 +102,11 @@ class AsyncHttpRequest implements Runnable {
         while (retry) {
             try {
                 makeRequest();
+                return;
+            } catch (ClientProtocolException e) {
+                if(responseHandler != null) {
+                    responseHandler.sendFailureMessage(e, "cannot repeat the request");
+                }
                 return;
             } catch (UnknownHostException e) {
                 if (responseHandler != null) {
