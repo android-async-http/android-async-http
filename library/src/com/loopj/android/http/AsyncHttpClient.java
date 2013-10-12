@@ -77,9 +77,9 @@ import java.util.zip.GZIPInputStream;
  * with additional parameters by passing a {@link RequestParams} instance,
  * and responses can be handled by passing an anonymously overridden
  * {@link AsyncHttpResponseHandler} instance.
- * <p/>
+ * <p>&nbsp;</p>
  * For example:
- * <p/>
+ * <p>&nbsp;</p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
  * client.get("http://www.google.com", new AsyncHttpResponseHandler() {
@@ -179,6 +179,8 @@ public class AsyncHttpClient {
      * Get the underlying HttpClient instance. This is useful for setting
      * additional fine-grained settings for requests by accessing the
      * client's ConnectionManager, HttpParams and SchemeRegistry.
+     *
+     * @return underlying HttpClient instance
      */
     public HttpClient getHttpClient() {
         return this.httpClient;
@@ -188,6 +190,8 @@ public class AsyncHttpClient {
      * Get the underlying HttpContext instance. This is useful for getting
      * and setting fine-grained settings for requests by accessing the
      * context's attributes such as the CookieStore.
+     *
+     * @return underlying HttpContext instance
      */
     public HttpContext getHttpContext() {
         return this.httpContext;
@@ -258,8 +262,8 @@ public class AsyncHttpClient {
      * Sets basic authentication for the request. Uses AuthScope.ANY. This is the same as
      * setBasicAuth('username','password',AuthScope.ANY)
      *
-     * @param username
-     * @param password
+     * @param username Basic Auth username
+     * @param password Basic Auth password
      */
     public void setBasicAuth(String username, String password) {
         AuthScope scope = AuthScope.ANY;
@@ -270,8 +274,8 @@ public class AsyncHttpClient {
      * Sets basic authentication for the request. You should pass in your AuthScope for security. It should be like this
      * setBasicAuth("username","password", new AuthScope("host",port,AuthScope.ANY_REALM))
      *
-     * @param username
-     * @param password
+     * @param username Basic Auth username
+     * @param password Basic Auth password
      * @param scope    - an AuthScope object
      */
     public void setBasicAuth(String username, String password, AuthScope scope) {
@@ -282,7 +286,7 @@ public class AsyncHttpClient {
     /**
      * Cancels any pending (or potentially active) requests associated with the
      * passed Context.
-     * <p/>
+     * <p>&nbsp;</p>
      * <b>Note:</b> This will only affect requests which were created with a non-null
      * android Context. This method is intended to be used in the onDestroy
      * method of your android activities to destroy all requests which are no
@@ -352,6 +356,7 @@ public class AsyncHttpClient {
      * Perform a HTTP HEAD request and track the Android Context which initiated
      * the request with customized headers
      *
+     * @param context Context to execute request against
      * @param url the URL to send the request to.
      * @param headers set headers only for this request
      * @param params additional HEAD parameters to send with the request.
@@ -418,6 +423,7 @@ public class AsyncHttpClient {
      * Perform a HTTP GET request and track the Android Context which initiated
      * the request with customized headers
      *
+     * @param context         Context to execute request against
      * @param url             the URL to send the request to.
      * @param headers         set headers only for this request
      * @param params          additional GET parameters to send with the request.
@@ -474,9 +480,9 @@ public class AsyncHttpClient {
      *
      * @param context         the Android Context which initiated the request.
      * @param url             the URL to send the request to.
-     * @param entity          a raw {@link HttpEntity} to send with the request, for example, use this to send string/json/xml payloads to a server by passing a {@link org.apache.http.entity.StringEntity}.
+     * @param entity          a raw {@link org.apache.http.HttpEntity} to send with the request, for example, use this to send string/json/xml payloads to a server by passing a {@link org.apache.http.entity.StringEntity}.
      * @param contentType     the content type of the payload you are sending, for example application/json if sending a json payload.
-     * @param responseHandler the response handler instance that should handle the response.
+     * @param responseHandler the response ha   ndler instance that should handle the response.
      */
     public void post(Context context, String url, HttpEntity entity, String contentType, AsyncHttpResponseHandler responseHandler) {
         sendRequest(httpClient, httpContext, addEntityToRequestBase(new HttpPost(url), entity), contentType, responseHandler, context);

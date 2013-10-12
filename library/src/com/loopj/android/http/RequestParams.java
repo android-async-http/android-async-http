@@ -37,9 +37,9 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * A collection of string request parameters or files to send along with
  * requests made from an {@link AsyncHttpClient} instance.
- * <p/>
+ * <p>&nbsp;</p>
  * For example:
- * <p/>
+ * <p>&nbsp;</p>
  * <pre>
  * RequestParams params = new RequestParams();
  * params.put("username", "james");
@@ -143,6 +143,8 @@ public class RequestParams {
      *
      * @param key  the key name for the new param.
      * @param file the file to add.
+     *
+     * @throws java.io.FileNotFoundException if the file is not found
      */
     public void put(String key, File file) throws FileNotFoundException {
         put(key, new FileInputStream(file), file.getName());
@@ -263,6 +265,8 @@ public class RequestParams {
 
     /**
      * Returns an HttpEntity containing all request parameters
+     *
+     * @return an HttpEntity containing all request parameters
      */
     public HttpEntity getEntity() {
         HttpEntity entity = null;

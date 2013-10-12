@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * {@link CookieStore} interface. Cookies are stored and will persist on the
  * user's device between application sessions since they are serialized and
  * stored in {@link SharedPreferences}.
- * <p/>
+ * <p>&nbsp;</p>
  * Instances of this class are designed to be used with
  * {@link AsyncHttpClient#setCookieStore}, but can also be used with a
  * regular old apache HttpClient/HttpContext if you prefer.
@@ -54,6 +54,8 @@ public class PersistentCookieStore implements CookieStore {
 
     /**
      * Construct a persistent cookie store.
+     *
+     * @param context Context to attach cookie store to
      */
     public PersistentCookieStore(Context context) {
         cookiePrefs = context.getSharedPreferences(COOKIE_PREFS, 0);

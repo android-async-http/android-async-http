@@ -31,11 +31,11 @@ import org.json.JSONTokener;
  * Used to intercept and handle the responses from requests made using
  * {@link AsyncHttpClient}, with automatic parsing into a {@link JSONObject}
  * or {@link JSONArray}.
- * <p/>
+ * <p>&nbsp;</p>
  * This class is designed to be passed to get, post, put and delete requests
  * with the {@link #onSuccess(JSONObject)} or {@link #onSuccess(JSONArray)}
  * methods anonymously overridden.
- * <p/>
+ * <p>&nbsp;</p>
  * Additionally, you can override the other event methods from the
  * parent class.
  */

@@ -36,9 +36,9 @@ import java.util.regex.Pattern;
  * {@link AsyncHttpClient}. Receives response body as byte array with a
  * content-type whitelist. (e.g. checks Content-Type against allowed list,
  * Content-length).
- * <p/>
+ * <p>&nbsp;</p>
  * For example:
- * <p/>
+ * <p>&nbsp;</p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
  * String[] allowedTypes = new String[] { "image/png" };
@@ -72,6 +72,8 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     /**
      * Creates a new BinaryHttpResponseHandler, and overrides the default allowed
      * content types with passed String array (hopefully) of content types.
+     *
+     * @param allowedContentTypes content types array, eg. 'image/jpeg'
      */
     public BinaryHttpResponseHandler(String[] allowedContentTypes) {
         this();
