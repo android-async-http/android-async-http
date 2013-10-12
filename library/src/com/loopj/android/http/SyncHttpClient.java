@@ -3,6 +3,7 @@ package com.loopj.android.http;
 import android.content.Context;
 import android.os.Message;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
@@ -97,6 +98,11 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 
     public String put(String url) {
         this.put(url, null, responseHandler);
+        return result;
+    }
+
+    public String post(String url, HttpEntity entity){
+        this.post(null, url, entity, null, responseHandler);
         return result;
     }
 
