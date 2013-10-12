@@ -683,6 +683,21 @@ public class AsyncHttpClient {
         sendRequest(httpClient, httpContext, delete, null, responseHandler, context);
     }
 
+    /**
+     * Perform a HTTP DELETE request.
+     *
+     * @param context         the Android Context which initiated the request.
+     * @param url             the URL to send the request to.
+     * @param headers         set one-time headers for this request
+     * @param params          additional DELETE parameters or files to send along with request
+     * @param responseHandler the response handler instance that should handle the response.
+     */
+    public void delete(Context context, String url, Header[] headers, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        HttpDelete httpDelete = new HttpDelete(getUrlWithQueryString(url, params));
+        if(headers != null) httpDelete.setHeaders(headers);
+        sendRequest(httpClient, httpContext, httpDelete, null, responseHandler, context);
+    }
+
 
     // Private stuff
     protected void sendRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, AsyncHttpResponseHandler responseHandler, Context context) {
