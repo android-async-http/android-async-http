@@ -64,6 +64,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String content) {
                 setStatusMessage("Succeeded", Color.parseColor("#DD00FF00"));
+                printThrowable(null);
                 printHeaders(headers);
                 printContents(content);
                 printStatusCode(statusCode);
