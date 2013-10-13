@@ -206,8 +206,18 @@ public class AsyncHttpResponseHandler {
         sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{statusCode, headers, e, responseBody}));
     }
 
+    @Deprecated
+    protected void sendFailureMessage(Throwable e, String responseBody) {
+        sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{0, null, e, responseBody}));
+    }
+
     protected void sendFailureMessage(int statusCode, Header[] headers, Throwable e, byte[] responseBody) {
         sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{statusCode, headers, e, responseBody}));
+    }
+
+    @Deprecated
+    protected void sendFailureMessage( Throwable e, byte[] responseBody) {
+        sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{0, null, e, responseBody}));
     }
 
     protected void sendStartMessage() {
