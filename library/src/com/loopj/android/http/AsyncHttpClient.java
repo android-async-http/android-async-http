@@ -147,8 +147,8 @@ public class AsyncHttpClient {
      * Creates a new AsyncHttpClient.
      *
      * @param fixNoHttpResponseException See issue https://github.com/loopj/android-async-http/issues/143
-     * @param httpPort  non-standard HTTP-only port
-     * @param httpsPort non-standard HTTPS-only port
+     * @param httpPort                   non-standard HTTP-only port
+     * @param httpsPort                  non-standard HTTPS-only port
      */
     public AsyncHttpClient(boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
         if (fixNoHttpResponseException)
