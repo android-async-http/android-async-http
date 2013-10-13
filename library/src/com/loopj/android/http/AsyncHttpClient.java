@@ -119,6 +119,15 @@ public class AsyncHttpClient {
      * Creates a new AsyncHttpClient.
      */
     public AsyncHttpClient() {
+        this(false);
+    }
+
+    /**
+     * Creates a new AsyncHttpClient.
+     *
+     * @param fixNoHttpResponseException See issue https://github.com/loopj/android-async-http/issues/143
+     */
+    public AsyncHttpClient(boolean fixNoHttpResponseException) {
         BasicHttpParams httpParams = new BasicHttpParams();
 
         ConnManagerParams.setTimeout(httpParams, socketTimeout);
@@ -133,9 +142,18 @@ public class AsyncHttpClient {
         HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
         HttpProtocolParams.setUserAgent(httpParams, String.format("android-async-http/%s (http://loopj.com/android-async-http)", VERSION));
 
+        // Fix to SSL flaw in API < ICS
+        // See https://code.google.com/p/android/issues/detail?id=13117
+        SSLSocketFactory sslSocketFactory;
+        if(fixNoHttpResponseException)
+            sslSocketFactory = MySSLSocketFactory.getFixedSocketFactory();
+        else
+            sslSocketFactory = SSLSocketFactory.getSocketFactory();
+
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-        schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+        schemeRegistry.register(new Scheme("https", sslSocketFactory, 443));
+
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
         threadPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
