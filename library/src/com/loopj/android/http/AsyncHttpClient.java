@@ -118,19 +118,40 @@ public class AsyncHttpClient {
 
 
     /**
-     * Creates a new AsyncHttpClient.
+     * Creates a new AsyncHttpClient with default constructor arguments values
      */
     public AsyncHttpClient() {
-        this(false);
+        this(false, 80, 443);
+    }
+
+    /**
+     * Creates a new AsyncHttpClient.
+     *
+     * @param httpPort non-standard HTTP-only port
+     */
+    public AsyncHttpClient(int httpPort) {
+        this(false, httpPort, 443);
+    }
+
+    /**
+     * Creates a new AsyncHttpClient.
+     *
+     * @param httpPort  non-standard HTTP-only port
+     * @param httpsPort non-standard HTTPS-only port
+     */
+    public AsyncHttpClient(int httpPort, int httpsPort) {
+        this(false, httpPort, httpsPort);
     }
 
     /**
      * Creates a new AsyncHttpClient.
      *
      * @param fixNoHttpResponseException See issue https://github.com/loopj/android-async-http/issues/143
+     * @param httpPort  non-standard HTTP-only port
+     * @param httpsPort non-standard HTTPS-only port
      */
-    public AsyncHttpClient(boolean fixNoHttpResponseException) {
-        if(fixNoHttpResponseException)
+    public AsyncHttpClient(boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
+        if (fixNoHttpResponseException)
             Log.d(LOG_TAG, "Beware! Using the fix is insecure, as it doesn't verify SSL certificates.");
         BasicHttpParams httpParams = new BasicHttpParams();
 
@@ -155,8 +176,8 @@ public class AsyncHttpClient {
             sslSocketFactory = SSLSocketFactory.getSocketFactory();
 
         SchemeRegistry schemeRegistry = new SchemeRegistry();
-        schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-        schemeRegistry.register(new Scheme("https", sslSocketFactory, 443));
+        schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), httpPort));
+        schemeRegistry.register(new Scheme("https", sslSocketFactory, httpsPort));
 
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
