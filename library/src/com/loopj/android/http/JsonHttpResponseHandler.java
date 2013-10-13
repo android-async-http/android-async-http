@@ -161,7 +161,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                 }
             }).start();
         } else {
-            sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, new JSONObject()}));
+            sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, headers, new JSONObject()}));
         }
     }
 
@@ -187,13 +187,15 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
             onSuccess(statusCode, headers, (JSONObject) jsonResponse);
         } else if (jsonResponse instanceof JSONArray) {
             onSuccess(statusCode, headers, (JSONArray) jsonResponse);
+        } else if (jsonResponse instanceof String) {
+            onSuccess(statusCode, headers, (String) jsonResponse);
         } else {
             onFailure(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (JSONObject) null);
         }
     }
 
     protected Object parseResponse(String responseBody) throws JSONException {
-        if(null == responseBody)
+        if (null == responseBody)
             return null;
         Object result = null;
         //trim the string to prevent start with blank, and test if the string is valid JSON, because the parser don't do this :(. If Json is not valid this will return null
