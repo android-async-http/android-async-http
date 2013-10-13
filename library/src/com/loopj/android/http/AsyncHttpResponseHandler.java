@@ -86,6 +86,10 @@ public class AsyncHttpResponseHandler {
         this.responseCharset = charset;
     }
 
+    public String getCharset() {
+        return this.responseCharset;
+    }
+
     /**
      * Creates a new AsyncHttpResponseHandler
      */
@@ -172,8 +176,8 @@ public class AsyncHttpResponseHandler {
      * Fired when a request fails to complete, override to handle in your own code
      *
      * @param statusCode return HTTP status code
-     * @param error   the underlying cause of the failure
-     * @param content the response body, if any
+     * @param error      the underlying cause of the failure
+     * @param content    the response body, if any
      */
     public void onFailure(int statusCode, Throwable error, String content) {
         // By default, call the chain method onFailure(Throwable,String)
@@ -184,9 +188,9 @@ public class AsyncHttpResponseHandler {
      * Fired when a request fails to complete, override to handle in your own code
      *
      * @param statusCode return HTTP status code
-     * @param headers return headers, if any
-     * @param error   the underlying cause of the failure
-     * @param content the response body, if any
+     * @param headers    return headers, if any
+     * @param error      the underlying cause of the failure
+     * @param content    the response body, if any
      */
     public void onFailure(int statusCode, Header[] headers, Throwable error, String content) {
         // By default, call the chain method onFailure(int,Throwable,String)
@@ -216,7 +220,7 @@ public class AsyncHttpResponseHandler {
     }
 
     @Deprecated
-    protected void sendFailureMessage( Throwable e, byte[] responseBody) {
+    protected void sendFailureMessage(Throwable e, byte[] responseBody) {
         sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{0, null, e, responseBody}));
     }
 
@@ -295,7 +299,7 @@ public class AsyncHttpResponseHandler {
             HttpEntity temp = response.getEntity();
             if (temp != null) {
                 entity = new BufferedHttpEntity(temp);
-                responseBody = EntityUtils.toString(entity, responseCharset);
+                responseBody = EntityUtils.toString(entity, getCharset());
             }
         } catch (IOException e) {
             sendFailureMessage(status.getStatusCode(), response.getAllHeaders(), e, (String) null);
