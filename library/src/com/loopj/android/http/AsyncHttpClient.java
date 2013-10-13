@@ -19,6 +19,7 @@
 package com.loopj.android.http;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
@@ -104,6 +105,7 @@ public class AsyncHttpClient {
     private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;
     private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     private static final String ENCODING_GZIP = "gzip";
+    private static final String LOG_TAG = "AsyncHttpClient";
 
     private static int maxConnections = DEFAULT_MAX_CONNECTIONS;
     private static int socketTimeout = DEFAULT_SOCKET_TIMEOUT;
@@ -128,6 +130,8 @@ public class AsyncHttpClient {
      * @param fixNoHttpResponseException See issue https://github.com/loopj/android-async-http/issues/143
      */
     public AsyncHttpClient(boolean fixNoHttpResponseException) {
+        if(fixNoHttpResponseException)
+            Log.d(LOG_TAG, "Beware! Using the fix is insecure, as it doesn't verify SSL certificates.");
         BasicHttpParams httpParams = new BasicHttpParams();
 
         ConnManagerParams.setTimeout(httpParams, socketTimeout);
@@ -145,7 +149,7 @@ public class AsyncHttpClient {
         // Fix to SSL flaw in API < ICS
         // See https://code.google.com/p/android/issues/detail?id=13117
         SSLSocketFactory sslSocketFactory;
-        if(fixNoHttpResponseException)
+        if (fixNoHttpResponseException)
             sslSocketFactory = MySSLSocketFactory.getFixedSocketFactory();
         else
             sslSocketFactory = SSLSocketFactory.getSocketFactory();
@@ -277,10 +281,10 @@ public class AsyncHttpClient {
     /**
      * Sets the Proxy by it's hostname and port
      *
-     * @param hostname  the hostname (IP or DNS name)
-     * @param port  the port number. -1 indicates the scheme default port.
+     * @param hostname the hostname (IP or DNS name)
+     * @param port     the port number. -1 indicates the scheme default port.
      */
-    public void setProxy(String hostname, int port){
+    public void setProxy(String hostname, int port) {
         final HttpHost proxy = new HttpHost(hostname, port);
         final HttpParams httpParams = this.httpClient.getParams();
         httpParams.setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
@@ -298,6 +302,7 @@ public class AsyncHttpClient {
 
     /**
      * Sets the maximum number of retries for a particular Request.
+     *
      * @param retries maximum number of retries per request
      */
     public void setMaxRetries(int retries) {
@@ -350,8 +355,8 @@ public class AsyncHttpClient {
 
     /**
      * Removes set basic auth credentials
-     * */
-    public void clearBasicAuth(){
+     */
+    public void clearBasicAuth() {
         this.httpClient.getCredentialsProvider().clear();
     }
 
@@ -727,7 +732,7 @@ public class AsyncHttpClient {
      */
     public void delete(Context context, String url, Header[] headers, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         HttpDelete httpDelete = new HttpDelete(getUrlWithQueryString(url, params));
-        if(headers != null) httpDelete.setHeaders(headers);
+        if (headers != null) httpDelete.setHeaders(headers);
         sendRequest(httpClient, httpContext, httpDelete, null, responseHandler, context);
     }
 
