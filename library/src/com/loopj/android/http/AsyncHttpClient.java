@@ -349,6 +349,13 @@ public class AsyncHttpClient {
     }
 
     /**
+     * Removes set basic auth credentials
+     * */
+    public void clearBasicAuth(){
+        this.httpClient.getCredentialsProvider().clear();
+    }
+
+    /**
      * Cancels any pending (or potentially active) requests associated with the
      * passed Context.
      * <p>&nbsp;</p>
