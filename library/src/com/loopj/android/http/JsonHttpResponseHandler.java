@@ -118,9 +118,27 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     public void onFailure(Throwable e, JSONObject errorResponse) {
+        onFailure(e);
+    }
+
+    public void onFailure(int statusCode, Throwable e, JSONObject errorResponse) {
+        onFailure(e, errorResponse);
+    }
+
+    public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject errorResponse) {
+        onFailure(statusCode, e, errorResponse);
     }
 
     public void onFailure(Throwable e, JSONArray errorResponse) {
+        onFailure(e);
+    }
+
+    public void onFailure(int statusCode, Throwable e, JSONArray errorResponse) {
+        onFailure(e, errorResponse);
+    }
+
+    public void onFailure(int statusCode, Header[] headers, Throwable e, JSONArray errorResponse) {
+        onFailure(statusCode, e, errorResponse);
     }
 
 
@@ -138,7 +156,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                         Object jsonResponse = parseResponse(responseBody);
                         sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, headers, jsonResponse}));
                     } catch (JSONException e) {
-                        sendFailureMessage(e, responseBody);
+                        sendFailureMessage(statusCode, headers, e, responseBody);
                     }
                 }
             }).start();
@@ -188,7 +206,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     @Override
-    protected void handleFailureMessage(final Throwable e, final String responseBody) {
+    protected void handleFailureMessage(final int statusCode, final Header[] headers, final Throwable e, final String responseBody) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -196,19 +214,19 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                     if (responseBody != null) {
                         Object jsonResponse = parseResponse(responseBody);
                         if (jsonResponse instanceof JSONObject) {
-                            onFailure(e, (JSONObject) jsonResponse);
+                            onFailure(statusCode, headers, e, (JSONObject) jsonResponse);
                         } else if (jsonResponse instanceof JSONArray) {
-                            onFailure(e, (JSONArray) jsonResponse);
+                            onFailure(statusCode, headers, e, (JSONArray) jsonResponse);
                         } else if (jsonResponse instanceof String) {
-                            onFailure(e, (String) jsonResponse);
+                            onFailure(statusCode, headers, e, (String) jsonResponse);
                         } else {
-                            onFailure(e, responseBody);
+                            onFailure(statusCode, headers, e, responseBody);
                         }
                     } else {
                         onFailure(e, "");
                     }
                 } catch (JSONException ex) {
-                    onFailure(e, responseBody);
+                    onFailure(statusCode, headers, e, responseBody);
                 }
             }
         }).start();

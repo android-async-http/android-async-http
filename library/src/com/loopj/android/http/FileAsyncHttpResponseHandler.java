@@ -2,6 +2,7 @@ package com.loopj.android.http;
 
 import android.os.Message;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpResponseException;
@@ -29,6 +30,18 @@ public class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     public void onFailure(Throwable e, File response) {
+        // By default call lower chain method
+        onFailure(e);
+    }
+
+    public void onFailure(int statusCode, Throwable e, File response) {
+        // By default call lower chain method
+        onFailure(e, response);
+    }
+
+    public void onFailure(int statusCode, Header[] headers, Throwable e, File response) {
+        // By default call lower chain method
+        onFailure(statusCode, e, response);
     }
 
 
@@ -36,16 +49,16 @@ public class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
         sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{statusCode, file}));
     }
 
-    protected void sendFailureMessage(Throwable e, File file) {
-        sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{e, file}));
+    protected void sendFailureMessage(int statusCode, Header[] headers, Throwable e, File file) {
+        sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{statusCode, headers, e, file}));
     }
 
     protected void handleSuccessMessage(int statusCode, File responseBody) {
         onSuccess(statusCode, responseBody);
     }
 
-    protected void handleFailureMessage(Throwable e, File responseBody) {
-        onFailure(e, responseBody);
+    protected void handleFailureMessage(int statusCode, Header[] headers, Throwable e, File responseBody) {
+        onFailure(statusCode, headers, e, responseBody);
     }
 
     // Methods which emulate android's Handler and Message methods
@@ -58,7 +71,7 @@ public class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
                 break;
             case FAILURE_MESSAGE:
                 response = (Object[]) msg.obj;
-                handleFailureMessage((Throwable) response[0], (File) response[1]);
+                handleFailureMessage((Integer) response[0], (Header[]) response[1], (Throwable) response[2], (File) response[3]);
                 break;
             default:
                 super.handleMessage(msg);
@@ -84,11 +97,11 @@ public class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
             buffer.close();
 
         } catch (IOException e) {
-            sendFailureMessage(e, this.mFile);
+            sendFailureMessage(status.getStatusCode(), response.getAllHeaders(), e, this.mFile);
         }
 
         if (status.getStatusCode() >= 300) {
-            sendFailureMessage(new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()), this.mFile);
+            sendFailureMessage(status.getStatusCode(), response.getAllHeaders(), new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()), this.mFile);
         } else {
             sendSuccessMessage(status.getStatusCode(), this.mFile);
         }
