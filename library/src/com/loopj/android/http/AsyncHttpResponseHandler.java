@@ -302,6 +302,12 @@ public class AsyncHttpResponseHandler {
                 responseBody = EntityUtils.toString(entity, getCharset());
             }
         } catch (IOException e) {
+            try {
+                if (response != null && response.getEntity() != null)
+                    response.getEntity().consumeContent();
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
             sendFailureMessage(status.getStatusCode(), response.getAllHeaders(), e, (String) null);
             return;
         }
