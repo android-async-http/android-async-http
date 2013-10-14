@@ -57,7 +57,7 @@ import java.util.regex.Pattern;
  */
 public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     // Allow images by default
-    private static String[] mAllowedContentTypes = new String[]{
+    private String[] mAllowedContentTypes = new String[]{
             "image/jpeg",
             "image/png"
     };
