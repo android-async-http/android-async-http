@@ -574,7 +574,7 @@ public class AsyncHttpClient {
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void post(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        post(context, url, paramsToEntity(params), null, responseHandler);
+        post(context, url, paramsToEntity(params, responseHandler), null, responseHandler);
     }
 
     /**
@@ -606,7 +606,7 @@ public class AsyncHttpClient {
     public void post(Context context, String url, Header[] headers, RequestParams params, String contentType,
                      AsyncHttpResponseHandler responseHandler) {
         HttpEntityEnclosingRequestBase request = new HttpPost(url);
-        if (params != null) request.setEntity(paramsToEntity(params));
+        if (params != null) request.setEntity(paramsToEntity(params, responseHandler));
         if (headers != null) request.setHeaders(headers);
         sendRequest(httpClient, httpContext, request, contentType,
                 responseHandler, context);
@@ -668,7 +668,7 @@ public class AsyncHttpClient {
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void put(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        put(context, url, paramsToEntity(params), null, responseHandler);
+        put(context, url, paramsToEntity(params, responseHandler), null, responseHandler);
     }
 
     /**
@@ -793,11 +793,18 @@ public class AsyncHttpClient {
         return url;
     }
 
-    private HttpEntity paramsToEntity(RequestParams params) {
+    private HttpEntity paramsToEntity(RequestParams params, AsyncHttpResponseHandler responseHandler) {
         HttpEntity entity = null;
 
-        if (params != null) {
-            entity = params.getEntity();
+        try {
+            if (params != null) {
+                entity = params.getEntity(responseHandler);
+            }
+        } catch (Throwable t) {
+            if (responseHandler != null)
+                responseHandler.sendFailureMessage(0, null, t, (String) null);
+            else
+                t.printStackTrace();
         }
 
         return entity;

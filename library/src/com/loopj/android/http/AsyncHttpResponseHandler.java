@@ -72,6 +72,7 @@ public class AsyncHttpResponseHandler {
     protected static final int FAILURE_MESSAGE = 1;
     protected static final int START_MESSAGE = 2;
     protected static final int FINISH_MESSAGE = 3;
+    protected static final int PROGRESS_MESSAGE = 4;
 
     private Handler handler;
     private String responseCharset = "UTF-8";
@@ -109,6 +110,15 @@ public class AsyncHttpResponseHandler {
     //
     // Callbacks to be overridden, typically anonymously
     //
+
+    /**
+     * Fired when the request progress, override to handle in your own code
+     *
+     * @param bytesWritten offset from start of file
+     * @param totalSize total size of file
+     */
+    public void onProgress(int bytesWritten, int totalSize) {
+    }
 
     /**
      * Fired when the request is started, override to handle in your own code
@@ -202,6 +212,10 @@ public class AsyncHttpResponseHandler {
     // Pre-processing of messages (executes in background threadpool thread)
     //
 
+    protected void sendProgressMessage(int bytesWritten, int totalSize) {
+        sendMessage(obtainMessage(PROGRESS_MESSAGE, new Object[]{bytesWritten, totalSize}));
+    }
+
     protected void sendSuccessMessage(int statusCode, Header[] headers, String responseBody) {
         sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{statusCode, headers, responseBody}));
     }
@@ -265,6 +279,10 @@ public class AsyncHttpResponseHandler {
             case FINISH_MESSAGE:
                 onFinish();
                 break;
+            case PROGRESS_MESSAGE:
+                response = (Object[]) msg.obj;
+                onProgress((Integer) response[0], (Integer) response[1]);
+                break;
         }
     }
 
@@ -279,7 +297,7 @@ public class AsyncHttpResponseHandler {
     protected Message obtainMessage(int responseMessage, Object response) {
         Message msg;
         if (handler != null) {
-            msg = this.handler.obtainMessage(responseMessage, response);
+            msg = handler.obtainMessage(responseMessage, response);
         } else {
             msg = Message.obtain();
             if (msg != null) {
@@ -292,6 +310,10 @@ public class AsyncHttpResponseHandler {
 
     // Interface to AsyncHttpRequest
     protected void sendResponseMessage(HttpResponse response) {
+        if (response == null) {
+            sendFailureMessage(0, null, new IllegalStateException("No response"), (String) null);
+            return;
+        }
         StatusLine status = response.getStatusLine();
         String responseBody = null;
         try {
@@ -303,7 +325,7 @@ public class AsyncHttpResponseHandler {
             }
         } catch (IOException e) {
             try {
-                if (response != null && response.getEntity() != null)
+                if (response.getEntity() != null)
                     response.getEntity().consumeContent();
             } catch (Throwable t) {
                 t.printStackTrace();
