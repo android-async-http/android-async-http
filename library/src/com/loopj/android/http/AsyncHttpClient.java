@@ -210,7 +210,7 @@ public class AsyncHttpClient {
                 if (encoding != null) {
                     for (HeaderElement element : encoding.getElements()) {
                         if (element.getName().equalsIgnoreCase(ENCODING_GZIP)) {
-                            response.setEntity(new InflatingEntity(response.getEntity()));
+                            response.setEntity(new InflatingEntity(entity));
                             break;
                         }
                     }
