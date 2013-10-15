@@ -144,15 +144,60 @@ public class AsyncHttpClient {
     }
 
     /**
-     * Creates a new AsyncHttpClient.
+     * Creates new AsyncHttpClient using given params
      *
-     * @param fixNoHttpResponseException See issue https://github.com/loopj/android-async-http/issues/143
-     * @param httpPort                   non-standard HTTP-only port
-     * @param httpsPort                  non-standard HTTPS-only port
+     * @param fixNoHttpResponseException Whether to fix or not issue, by ommiting SSL verification
+     * @param httpPort                   HTTP port to be used, must be greater than 0
+     * @param httpsPort                  HTTPS port to be used, must be greater than 0
      */
     public AsyncHttpClient(boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
-        if (fixNoHttpResponseException)
+        this(getDefaultSchemeRegistry(fixNoHttpResponseException, httpPort, httpsPort));
+    }
+
+    /**
+     * Returns default instance of SchemeRegistry
+     *
+     * @param fixNoHttpResponseException Whether to fix or not issue, by ommiting SSL verification
+     * @param httpPort                   HTTP port to be used, must be greater than 0
+     * @param httpsPort                  HTTPS port to be used, must be greater than 0
+     */
+    private static SchemeRegistry getDefaultSchemeRegistry(boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
+        if (fixNoHttpResponseException) {
             Log.d(LOG_TAG, "Beware! Using the fix is insecure, as it doesn't verify SSL certificates.");
+        }
+
+        if (httpPort < 1) {
+            httpPort = 80;
+            Log.d(LOG_TAG, "You've given wront HTTP port number, defaulting to 80");
+        }
+
+        if (httpsPort < 1) {
+            httpsPort = 443;
+            Log.d(LOG_TAG, "You've given wront HTTP port number, defaulting to 443");
+        }
+
+        // Fix to SSL flaw in API < ICS
+        // See https://code.google.com/p/android/issues/detail?id=13117
+        SSLSocketFactory sslSocketFactory;
+        if (fixNoHttpResponseException)
+            sslSocketFactory = MySSLSocketFactory.getFixedSocketFactory();
+        else
+            sslSocketFactory = SSLSocketFactory.getSocketFactory();
+
+        SchemeRegistry schemeRegistry = new SchemeRegistry();
+        schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), httpPort));
+        schemeRegistry.register(new Scheme("https", sslSocketFactory, httpsPort));
+
+        return schemeRegistry;
+    }
+
+    /**
+     * Creates a new AsyncHttpClient.
+     *
+     * @param schemeRegistry SchemeRegistry to be used
+     */
+    public AsyncHttpClient(SchemeRegistry schemeRegistry) {
+
         BasicHttpParams httpParams = new BasicHttpParams();
 
         ConnManagerParams.setTimeout(httpParams, socketTimeout);
@@ -166,18 +211,6 @@ public class AsyncHttpClient {
 
         HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
         HttpProtocolParams.setUserAgent(httpParams, String.format("android-async-http/%s (http://loopj.com/android-async-http)", VERSION));
-
-        // Fix to SSL flaw in API < ICS
-        // See https://code.google.com/p/android/issues/detail?id=13117
-        SSLSocketFactory sslSocketFactory;
-        if (fixNoHttpResponseException)
-            sslSocketFactory = MySSLSocketFactory.getFixedSocketFactory();
-        else
-            sslSocketFactory = SSLSocketFactory.getSocketFactory();
-
-        SchemeRegistry schemeRegistry = new SchemeRegistry();
-        schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), httpPort));
-        schemeRegistry.register(new Scheme("https", sslSocketFactory, httpsPort));
 
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
