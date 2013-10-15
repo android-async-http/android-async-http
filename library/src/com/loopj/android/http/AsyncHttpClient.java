@@ -343,6 +343,23 @@ public class AsyncHttpClient {
         final HttpParams httpParams = this.httpClient.getParams();
         httpParams.setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
     }
+    /**
+     * Sets the Proxy by it's hostname,port,username and password
+     *
+     * @param hostname the hostname (IP or DNS name)
+     * @param port     the port number. -1 indicates the scheme default port.
+     * @param username the username
+     * @param password the password
+     */
+     public void setProxy(String hostname,int port,String username,String password){
+         httpClient.getCredentialsProvider().setCredentials(
+    		    new AuthScope(hostname, port),
+    		    new UsernamePasswordCredentials(username, password));
+        final HttpHost proxy = new HttpHost(hostname, port);
+        final HttpParams httpParams = this.httpClient.getParams();
+        httpParams.setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+     }
+
 
     /**
      * Sets the SSLSocketFactory to user when making requests. By default,
