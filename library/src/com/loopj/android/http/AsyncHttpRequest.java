@@ -28,6 +28,7 @@ import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -74,16 +75,19 @@ class AsyncHttpRequest implements Runnable {
         }
     }
 
-    private void makeRequest() throws IOException {
+    private void makeRequest() throws IOException, InterruptedException {
         if (!Thread.currentThread().isInterrupted()) {
             try {
+                // Fixes #115
+                if (request.getURI().getScheme() == null)
+                    throw new MalformedURLException("No valid URI scheme was provided");
                 HttpResponse response = client.execute(request, context);
                 if (!Thread.currentThread().isInterrupted()) {
                     if (responseHandler != null) {
                         responseHandler.sendResponseMessage(response);
                     }
                 } else {
-                    //TODO: should raise InterruptedException? this block is reached whenever the request is cancelled before its response is received
+                    throw new InterruptedException("makeRequest was interrupted");
                 }
             } catch (IOException e) {
                 if (!Thread.currentThread().isInterrupted()) {
@@ -104,7 +108,7 @@ class AsyncHttpRequest implements Runnable {
                 makeRequest();
                 return;
             } catch (ClientProtocolException e) {
-                if(responseHandler != null) {
+                if (responseHandler != null) {
                     responseHandler.sendFailureMessage(e, "cannot repeat the request");
                 }
                 return;
@@ -136,6 +140,9 @@ class AsyncHttpRequest implements Runnable {
                 // DefaultRequestExecutor to throw an NPE, see
                 // http://code.google.com/p/android/issues/detail?id=5255
                 cause = new IOException("NPE in HttpClient" + e.getMessage());
+                retry = retryHandler.retryRequest(cause, ++executionCount, context);
+            } catch (InterruptedException e) {
+                cause = new IOException("Request was interrupted while executing");
                 retry = retryHandler.retryRequest(cause, ++executionCount, context);
             }
         }
