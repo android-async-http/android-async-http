@@ -896,6 +896,10 @@ public class AsyncHttpClient {
         return entity;
     }
 
+    public boolean isUrlEncodingEnabled(){
+        return isUrlEncodingEnabled;
+    }
+
     /**
      * Applicable only to HttpRequest methods extending HttpEntityEnclosingRequestBase, which is for example not DELETE
      *

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Message;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
@@ -19,7 +20,7 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
     protected AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
 
         @Override
-        protected void sendResponseMessage(org.apache.http.HttpResponse response) {
+        protected void sendResponseMessage(HttpResponse response) {
             responseCode = response.getStatusLine().getStatusCode();
             super.sendResponseMessage(response);
         }
@@ -27,7 +28,7 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
         @Override
         protected void sendMessage(Message msg) {
             /*
-			 * Dont use the handler and send it directly to the analysis
+             * Dont use the handler and send it directly to the analysis
 			 * (because its all the same thread)
 			 */
             handleMessage(msg);
@@ -63,7 +64,7 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
         }
 
 		/*
-		 * will execute the request directly
+         * will execute the request directly
 		 */
         new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler)
                 .run();
@@ -73,13 +74,12 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 
     public void delete(String url, RequestParams queryParams,
                        AsyncHttpResponseHandler responseHandler) {
-        // TODO what about query params??
-        delete(url, responseHandler);
+        delete(getUrlWithQueryString(isUrlEncodingEnabled(), url, queryParams), responseHandler);
     }
 
     public String get(String url, RequestParams params) {
         this.get(url, params, responseHandler);
-		/*
+        /*
 		 * the response handler will have set the result when this line is
 		 * reached
 		 */
@@ -101,7 +101,7 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
         return result;
     }
 
-    public String post(String url, HttpEntity entity){
+    public String post(String url, HttpEntity entity) {
         this.post(null, url, entity, null, responseHandler);
         return result;
     }
