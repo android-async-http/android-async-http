@@ -115,6 +115,7 @@ public class AsyncHttpClient {
     private ThreadPoolExecutor threadPool;
     private final Map<Context, List<WeakReference<Future<?>>>> requestMap;
     private final Map<String, String> clientHeaderMap;
+    private boolean isUrlEncodingEnabled = true;
 
 
     /**
@@ -343,6 +344,7 @@ public class AsyncHttpClient {
         final HttpParams httpParams = this.httpClient.getParams();
         httpParams.setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
     }
+
     /**
      * Sets the Proxy by it's hostname,port,username and password
      *
@@ -351,14 +353,14 @@ public class AsyncHttpClient {
      * @param username the username
      * @param password the password
      */
-     public void setProxy(String hostname,int port,String username,String password){
-         httpClient.getCredentialsProvider().setCredentials(
-    		    new AuthScope(hostname, port),
-    		    new UsernamePasswordCredentials(username, password));
+    public void setProxy(String hostname, int port, String username, String password) {
+        httpClient.getCredentialsProvider().setCredentials(
+                new AuthScope(hostname, port),
+                new UsernamePasswordCredentials(username, password));
         final HttpHost proxy = new HttpHost(hostname, port);
         final HttpParams httpParams = this.httpClient.getParams();
         httpParams.setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-     }
+    }
 
 
     /**
@@ -501,7 +503,7 @@ public class AsyncHttpClient {
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void head(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        sendRequest(httpClient, httpContext, new HttpHead(getUrlWithQueryString(url, params)), null, responseHandler, context);
+        sendRequest(httpClient, httpContext, new HttpHead(getUrlWithQueryString(isUrlEncodingEnabled, url, params)), null, responseHandler, context);
     }
 
     /**
@@ -516,7 +518,7 @@ public class AsyncHttpClient {
      *                        the response.
      */
     public void head(Context context, String url, Header[] headers, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        HttpUriRequest request = new HttpHead(getUrlWithQueryString(url, params));
+        HttpUriRequest request = new HttpHead(getUrlWithQueryString(isUrlEncodingEnabled, url, params));
         if (headers != null) request.setHeaders(headers);
         sendRequest(httpClient, httpContext, request, null, responseHandler,
                 context);
@@ -568,7 +570,7 @@ public class AsyncHttpClient {
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void get(Context context, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        sendRequest(httpClient, httpContext, new HttpGet(getUrlWithQueryString(url, params)), null, responseHandler, context);
+        sendRequest(httpClient, httpContext, new HttpGet(getUrlWithQueryString(isUrlEncodingEnabled, url, params)), null, responseHandler, context);
     }
 
     /**
@@ -583,7 +585,7 @@ public class AsyncHttpClient {
      *                        the response.
      */
     public void get(Context context, String url, Header[] headers, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        HttpUriRequest request = new HttpGet(getUrlWithQueryString(url, params));
+        HttpUriRequest request = new HttpGet(getUrlWithQueryString(isUrlEncodingEnabled, url, params));
         if (headers != null) request.setHeaders(headers);
         sendRequest(httpClient, httpContext, request, null, responseHandler,
                 context);
@@ -802,7 +804,7 @@ public class AsyncHttpClient {
      * @param responseHandler the response handler instance that should handle the response.
      */
     public void delete(Context context, String url, Header[] headers, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        HttpDelete httpDelete = new HttpDelete(getUrlWithQueryString(url, params));
+        HttpDelete httpDelete = new HttpDelete(getUrlWithQueryString(isUrlEncodingEnabled, url, params));
         if (headers != null) httpDelete.setHeaders(headers);
         sendRequest(httpClient, httpContext, httpDelete, null, responseHandler, context);
     }
@@ -830,7 +832,20 @@ public class AsyncHttpClient {
         }
     }
 
-    public static String getUrlWithQueryString(String url, RequestParams params) {
+    public void setURLEncodingEnabled(boolean enabled) {
+        this.isUrlEncodingEnabled = enabled;
+    }
+
+    /**
+     * Will encode url, if not disabled, and adds params on the end of it
+     *
+     * @param url    String with URL, should be valid URL without params
+     * @param params RequestParams to be appended on the end of URL
+     */
+    public static String getUrlWithQueryString(boolean isUrlEncodingEnabled, String url, RequestParams params) {
+        if (isUrlEncodingEnabled)
+            url = url.replace(" ", "%20");
+
         if (params != null) {
             String paramString = params.getParamString();
             if (!url.contains("?")) {
