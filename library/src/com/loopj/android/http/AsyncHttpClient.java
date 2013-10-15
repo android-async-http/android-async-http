@@ -809,8 +809,16 @@ public class AsyncHttpClient {
         sendRequest(httpClient, httpContext, httpDelete, null, responseHandler, context);
     }
 
-
-    // Private stuff
+    /**
+     * Puts a new request in queue as a new thread in pool to be executed
+     *
+     * @param client          HttpClient to be used for request, can differ in single requests
+     * @param contentType     MIME body type, for POST and PUT requests, may be null
+     * @param context         Context of Android application, to hold the reference of request
+     * @param httpContext     HttpContext in which the request will be executed
+     * @param responseHandler ResponseHandler or its subclass to put the response into
+     * @param uriRequest      instance of HttpUriRequest, which means it must be of HttpDelete, HttpPost, HttpGet, HttpPut, etc.
+     */
     protected void sendRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, AsyncHttpResponseHandler responseHandler, Context context) {
         if (contentType != null) {
             uriRequest.addHeader("Content-Type", contentType);
@@ -832,6 +840,12 @@ public class AsyncHttpClient {
         }
     }
 
+    /**
+     * Sets state of URL encoding feature, see bug #227, this method
+     * allows you to turn off and on this auto-magic feature on-demand.
+     *
+     * @param enabled desired state of feature
+     */
     public void setURLEncodingEnabled(boolean enabled) {
         this.isUrlEncodingEnabled = enabled;
     }
@@ -858,6 +872,13 @@ public class AsyncHttpClient {
         return url;
     }
 
+    /**
+     * Returns HttpEntity containing data from RequestParams included with request declaration.
+     * Allows also passing progress from upload via provided ResponseHandler
+     *
+     * @param params          additional request params
+     * @param responseHandler AsyncHttpResponseHandler or its subclass to be notified on progress
+     */
     private HttpEntity paramsToEntity(RequestParams params, AsyncHttpResponseHandler responseHandler) {
         HttpEntity entity = null;
 
@@ -875,6 +896,12 @@ public class AsyncHttpClient {
         return entity;
     }
 
+    /**
+     * Applicable only to HttpRequest methods extending HttpEntityEnclosingRequestBase, which is for example not DELETE
+     *
+     * @param entity      entity to be included within the request
+     * @param requestBase HttpRequest instance, must not be null
+     */
     private HttpEntityEnclosingRequestBase addEntityToRequestBase(HttpEntityEnclosingRequestBase requestBase, HttpEntity entity) {
         if (entity != null) {
             requestBase.setEntity(entity);
@@ -883,6 +910,9 @@ public class AsyncHttpClient {
         return requestBase;
     }
 
+    /**
+     * Enclosing entity to hold stream of gzip decoded data for accessing HttpEntity contents
+     */
     private static class InflatingEntity extends HttpEntityWrapper {
         public InflatingEntity(HttpEntity wrapped) {
             super(wrapped);
