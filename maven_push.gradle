@@ -1,0 +1,104 @@
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+configurations {
+    archives {
+        extendsFrom configurations.default
+    }
+}
+
+def sonatypeRepositoryUrl
+if (isReleaseBuild()) {
+    println 'RELEASE BUILD'
+    sonatypeRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+} else {
+    println 'DEBUG BUILD'
+    sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+}
+
+if (ext.properties.containsKey('signing.keyId') && !ext.properties.containsKey('signing.password')) {
+    if (System.console())
+        ext.set('signing.password', System.console().readPassword("\n\$ Type in GPG key password: "))
+    else
+        ext.set('signing.password', 'dummy')
+}
+
+if (System.env.TERM != 'dumb' && !ext.properties.containsKey('nexusPassword')) {
+    if (System.console())
+        ext.set('nexusPassword', new String(System.console().readPassword("\n\$ Type in password for Sonatype nexus account ${nexusUsername}: ")))
+    else
+    	ext.set('nexusPassword', 'dummy')
+}
+
+afterEvaluate { project ->
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                pom.artifactId = POM_ARTIFACT_ID
+
+                repository(url: sonatypeRepositoryUrl) {
+                    authentication(userName: nexusUsername, password: nexusPassword)
+                }
+
+                pom.project {
+                    name POM_NAME
+                    packaging POM_PACKAGING
+                    description POM_DESCRIPTION
+                    url POM_URL
+
+                    scm {
+                        url POM_SCM_URL
+                        connection POM_SCM_CONNECTION
+                        developerConnection POM_SCM_DEV_CONNECTION
+                    }
+
+                    licenses {
+                        license {
+                            name POM_LICENCE_NAME
+                            url POM_LICENCE_URL
+                            distribution POM_LICENCE_DIST
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id "loopj"
+                            name "James Smith"
+                        }
+                        developer {
+                            id "smarek"
+                            name "Marek Sebera"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    signing {
+        required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
+        sign configurations.archives
+    }
+
+    task androidReleaseJar(type: Jar, dependsOn: assembleRelease) {
+        from "$buildDir/classes/release/"
+    }
+
+    task androidJavadocsJar(type: Jar) {
+        classifier = 'javadoc'
+        from generateReleaseJavadoc.destinationDir
+    }
+
+    task androidSourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives androidReleaseJar
+        archives androidSourcesJar
+        archives androidJavadocsJar
+    }
+}
