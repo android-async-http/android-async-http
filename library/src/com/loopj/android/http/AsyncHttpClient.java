@@ -102,6 +102,7 @@ public class AsyncHttpClient {
     private static final int DEFAULT_MAX_CONNECTIONS = 10;
     private static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
     private static final int DEFAULT_MAX_RETRIES = 5;
+    private static final int DEFAULT_RETRY_SLEEP_TIME_MILLIS = 1500;
     private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;
     private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     private static final String ENCODING_GZIP = "gzip";
@@ -169,12 +170,12 @@ public class AsyncHttpClient {
 
         if (httpPort < 1) {
             httpPort = 80;
-            Log.d(LOG_TAG, "You've given wront HTTP port number, defaulting to 80");
+            Log.d(LOG_TAG, "Invalid HTTP port number specified, defaulting to 80");
         }
 
         if (httpsPort < 1) {
             httpsPort = 443;
-            Log.d(LOG_TAG, "You've given wront HTTP port number, defaulting to 443");
+            Log.d(LOG_TAG, "Invalid HTTPS port number specified, defaulting to 443");
         }
 
         // Fix to SSL flaw in API < ICS
@@ -252,7 +253,7 @@ public class AsyncHttpClient {
             }
         });
 
-        httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES));
+        httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES, DEFAULT_RETRY_SLEEP_TIME_MILLIS));
     }
 
     /**
@@ -374,12 +375,12 @@ public class AsyncHttpClient {
     }
 
     /**
-     * Sets the maximum number of retries for a particular Request.
+     * Sets the maximum number of retries and timeout for a particular Request.
      *
      * @param retries maximum number of retries per request
      */
-    public void setMaxRetries(int retries) {
-        this.httpClient.setHttpRequestRetryHandler(new RetryHandler(retries));
+    public void setMaxRetriesAndTimeout(int retries, int timeout) {
+        this.httpClient.setHttpRequestRetryHandler(new RetryHandler(retries, timeout));
     }
 
     /**
