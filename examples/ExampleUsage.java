@@ -1,5 +1,3 @@
-import com.loopj.android.http.*;
-
 public class ExampleUsage {
     public static void makeRequest() {
         AsyncHttpClient client = new AsyncHttpClient();
