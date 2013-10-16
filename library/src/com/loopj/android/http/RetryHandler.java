@@ -40,7 +40,6 @@ import java.util.HashSet;
 import javax.net.ssl.SSLException;
 
 class RetryHandler implements HttpRequestRetryHandler {
-    private static final int RETRY_SLEEP_TIME_MILLIS = 1500;
     private static HashSet<Class<?>> exceptionWhitelist = new HashSet<Class<?>>();
     private static HashSet<Class<?>> exceptionBlacklist = new HashSet<Class<?>>();
 
@@ -59,9 +58,11 @@ class RetryHandler implements HttpRequestRetryHandler {
     }
 
     private final int maxRetries;
+    private final int retrySleepTimeMS;
 
-    public RetryHandler(int maxRetries) {
+    public RetryHandler(int maxRetries, int retrySleepTimeMS) {
         this.maxRetries = maxRetries;
+        this.retrySleepTimeMS = retrySleepTimeMS;
     }
 
     @Override
@@ -96,7 +97,7 @@ class RetryHandler implements HttpRequestRetryHandler {
         }
 
         if (retry) {
-            SystemClock.sleep(RETRY_SLEEP_TIME_MILLIS);
+            SystemClock.sleep(retrySleepTimeMS);
         } else {
             exception.printStackTrace();
         }
