@@ -233,28 +233,28 @@ public class AsyncHttpResponseHandler {
         Object[] response;
 
         switch (msg.what) {
-        case SUCCESS_MESSAGE:
-            response = (Object[]) msg.obj;
-            handleSuccessMessage((Integer) response[0], (Header[]) response[1], (byte[]) response[2]);
-            break;
-        case FAILURE_MESSAGE:
-            response = (Object[]) msg.obj;
-            handleFailureMessage((Integer) response[0], (Header[]) response[1], (byte[]) response[2], (Throwable) response[3]);
-            break;
-        case START_MESSAGE:
-            onStart();
-            break;
-        case FINISH_MESSAGE:
-            onFinish();
-            break;
-        case PROGRESS_MESSAGE:
-            response = (Object[]) msg.obj;
-            onProgress((Integer) response[0], (Integer) response[1]);
-            break;
-        case RETRY_MESSAGE:
-            handleRetryMessage();
-          break;
-        }
+            case SUCCESS_MESSAGE:
+                response = (Object[]) msg.obj;
+                handleSuccessMessage((Integer) response[0], (Header[]) response[1], (byte[]) response[2]);
+                break;
+            case FAILURE_MESSAGE:
+                response = (Object[]) msg.obj;
+                handleFailureMessage((Integer) response[0], (Header[]) response[1], (byte[]) response[2], (Throwable) response[3]);
+                break;
+            case START_MESSAGE:
+                onStart();
+                break;
+            case FINISH_MESSAGE:
+                onFinish();
+                break;
+            case PROGRESS_MESSAGE:
+                response = (Object[]) msg.obj;
+                onProgress((Integer) response[0], (Integer) response[1]);
+                break;
+            case RETRY_MESSAGE:
+                handleRetryMessage();
+              break;
+            }
     }
 
     protected void sendMessage(Message msg) {
