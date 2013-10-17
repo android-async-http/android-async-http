@@ -1,3 +1,28 @@
+# Custom
+_site
+
+# Ant
+MANIFEST.MF
+./*.jar
+build.num
+build
+
+# ADT
+.classpath
+.project
+.settings
+local.properties
+bin
+gen
+_layouts
+proguard.cfg
+
+# OSX
+.DS_Store
+
+# Github
+gh-pages
+
 # built application files
 *.apk
 *.ap_
