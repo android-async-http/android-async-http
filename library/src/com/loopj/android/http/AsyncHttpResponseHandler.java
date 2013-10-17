@@ -322,10 +322,13 @@ public class AsyncHttpResponseHandler {
             StatusLine status = response.getStatusLine();
             byte[] responseBody = null;
             responseBody = getResponseData(response.getEntity());
-            if (status.getStatusCode() >= 300) {
-                sendFailureMessage(status.getStatusCode(), response.getAllHeaders(), responseBody, new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()));
-            } else {
-                sendSuccessMessage(status.getStatusCode(), response.getAllHeaders(), responseBody);
+            // additional cancellation check as getResponseData() can take non-zero time to process
+            if (!Thread.currentThread().isInterrupted()) {
+                if (status.getStatusCode() >= 300) {
+                    sendFailureMessage(status.getStatusCode(), response.getAllHeaders(), responseBody, new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()));
+                } else {
+                    sendSuccessMessage(status.getStatusCode(), response.getAllHeaders(), responseBody);
+                }
             }
         }
     }
