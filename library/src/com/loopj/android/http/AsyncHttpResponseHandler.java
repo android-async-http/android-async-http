@@ -105,10 +105,6 @@ public class AsyncHttpResponseHandler {
         }
     }
 
-    public Boolean getForceSynchronous() {
-        return (forceSynchronous);
-    }
-
     public void setForceSynchronous(Boolean value) {
         forceSynchronous = value;
     }
@@ -220,14 +216,6 @@ public class AsyncHttpResponseHandler {
         onFailure(statusCode, headers, responseBody, error);
     }
 
-    protected void handleProgressMessage(int current, int total) {
-        onProgress(current, total);
-    }
-
-    protected void handleRetryMessage() {
-      onRetry();
-  }
-    
     // Methods which emulate android's Handler and Message methods
     protected void handleMessage(Message msg) {
         Object[] response;
@@ -252,7 +240,7 @@ public class AsyncHttpResponseHandler {
                 onProgress((Integer) response[0], (Integer) response[1]);
                 break;
             case RETRY_MESSAGE:
-                handleRetryMessage();
+                onRetry();
               break;
             }
     }
