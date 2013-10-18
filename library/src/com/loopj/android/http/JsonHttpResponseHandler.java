@@ -146,18 +146,29 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                 @Override
                 public void run() {
                     try {
-                        Object jsonResponse = parseResponse(responseBody);
-                        if (jsonResponse instanceof JSONObject) {
-                            onSuccess(statusCode, headers, (JSONObject) jsonResponse);
-                        } else if (jsonResponse instanceof JSONArray) {
-                            onSuccess(statusCode, headers, (JSONArray) jsonResponse);
-                        } else if (jsonResponse instanceof String) {
-                            onSuccess(statusCode, headers, (String) jsonResponse);
-                        } else {
-                            onFailure(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (JSONObject) null);
-                        }
-                    } catch (JSONException ex) {
-                        onFailure(ex, (JSONObject) null);
+                        final Object jsonResponse = parseResponse(responseBody);
+                        postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (jsonResponse instanceof JSONObject) {
+                                    onSuccess(statusCode, headers, (JSONObject) jsonResponse);
+                                } else if (jsonResponse instanceof JSONArray) {
+                                    onSuccess(statusCode, headers, (JSONArray) jsonResponse);
+                                } else if (jsonResponse instanceof String) {
+                                    onSuccess(statusCode, headers, (String) jsonResponse);
+                                } else {
+                                    onFailure(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (JSONObject) null);
+                                }
+
+                            }
+                        });
+                    } catch (final JSONException ex) {
+                        postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                onFailure(ex, (JSONObject) null);
+                            }
+                        });
                     }
                 }
             }).start();
@@ -168,30 +179,41 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
 
     @Override
     public void onFailure(final int statusCode, final Header[] headers, final byte[] responseBody, final Throwable e) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (responseBody != null) {
-                        Object jsonResponse = parseResponse(responseBody);
-                        if (jsonResponse instanceof JSONObject) {
-                            onFailure(statusCode, headers, e, (JSONObject) jsonResponse);
-                        } else if (jsonResponse instanceof JSONArray) {
-                            onFailure(statusCode, headers, e, (JSONArray) jsonResponse);
-                        } else if (jsonResponse instanceof String) {
-                            onFailure(statusCode, headers, e, (String) jsonResponse);
-                        } else {
-                            onFailure(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (JSONObject) null);
-                        }
-                    } else {
-                        onFailure(e, "");
-                    }
-                } catch (JSONException ex) {
-                    onFailure(ex, (JSONObject) null);
-                }
-            }
-        }).start();
+        if (responseBody != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        final Object jsonResponse = parseResponse(responseBody);
+                        postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (jsonResponse instanceof JSONObject) {
+                                    onFailure(statusCode, headers, e, (JSONObject) jsonResponse);
+                                } else if (jsonResponse instanceof JSONArray) {
+                                    onFailure(statusCode, headers, e, (JSONArray) jsonResponse);
+                                } else if (jsonResponse instanceof String) {
+                                    onFailure(statusCode, headers, e, (String) jsonResponse);
+                                } else {
+                                    onFailure(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (JSONObject) null);
+                                }
+                            }
+                        });
 
+                    } catch (final JSONException ex) {
+                        postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                onFailure(ex, (JSONObject) null );
+                            }
+                        });
+
+                    }
+                }
+            }).start();
+        } else {
+            onFailure(e, "");
+        }
     }
 
     protected Object parseResponse(byte[] responseBody) throws JSONException {
