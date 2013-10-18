@@ -18,6 +18,19 @@
 
 package com.loopj.android.http;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.zip.GZIPInputStream;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -60,19 +73,6 @@ import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.SyncBasicHttpContext;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.zip.GZIPInputStream;
 
 
 /**
@@ -255,13 +255,7 @@ public class AsyncHttpClient {
         });
 
         httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES, DEFAULT_RETRY_SLEEP_TIME_MILLIS));
-
-        threadPool = (ThreadPoolExecutor)Executors.newCachedThreadPool();
-
-        requestMap = new WeakHashMap<Context, List<WeakReference<Future<?>>>>();
         urlRequestMap = new HashMap<String, WeakReference<Future<?>>>();
-
-        clientHeaderMap = new HashMap<String, String>();
     }
 
     /**
@@ -483,9 +477,6 @@ public class AsyncHttpClient {
         requestMap.remove(context);
     }
 
-    //
-    // HTTP HEAD Requests
-    //
     public void cancelRequest(String url) {
         WeakReference<Future<?>> request = urlRequestMap.remove(url);
         if (request != null && request.get() != null) {
@@ -856,6 +847,7 @@ public class AsyncHttpClient {
         }
 
         Future<?> request = threadPool.submit(new AsyncHttpRequest(this, client, httpContext, uriRequest, responseHandler));
+        WeakReference localWeakReference = new WeakReference(request);
 
         if (context != null) {
             // Add request to request map
@@ -870,6 +862,7 @@ public class AsyncHttpClient {
             // TODO: Remove dead weakrefs from requestLists?
         }
 
+        urlRequestMap.put(uriRequest.getURI().toString(), localWeakReference);
         return request;
     }
 
