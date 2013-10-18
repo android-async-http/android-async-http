@@ -53,3 +53,7 @@ proguard/
 *.iws
 .idea/
 
+.gradle/
+gradle/
+gradlew
+gradlew.bat
