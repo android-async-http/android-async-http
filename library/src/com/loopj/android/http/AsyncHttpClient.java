@@ -86,7 +86,7 @@ import java.util.zip.GZIPInputStream;
  * <p>&nbsp;</p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
- * client.get("http://www.google.com", new TextHttpResponseHandler() {
+ * client.get("http://www.google.com", new AsyncHttpResponseHandler() {
  *     &#064;Override
  *     public void onSuccess(String response) {
  *         System.out.println(response);
@@ -199,6 +199,7 @@ public class AsyncHttpClient {
      * @param schemeRegistry SchemeRegistry to be used
      */
     public AsyncHttpClient(SchemeRegistry schemeRegistry) {
+
         BasicHttpParams httpParams = new BasicHttpParams();
 
         ConnManagerParams.setTimeout(httpParams, socketTimeout);
@@ -888,7 +889,7 @@ public class AsyncHttpClient {
             }
         } catch (Throwable t) {
             if (responseHandler != null)
-                responseHandler.sendFailureMessage(0, null, null, t);
+                responseHandler.sendFailureMessage(0, null, t, (String) null);
             else
                 t.printStackTrace();
         }
