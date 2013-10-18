@@ -18,14 +18,14 @@
 
 package com.loopj.android.http;
 
-import android.os.Message;
-
 import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * Used to intercept and handle the responses from requests made using
@@ -40,8 +40,6 @@ import org.json.JSONTokener;
  * parent class.
  */
 public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
-    protected static final int SUCCESS_JSON_MESSAGE = 100;
-
     //
     // Callbacks to be overridden, typically anonymously
     //
@@ -141,76 +139,35 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
         onFailure(statusCode, e, errorResponse);
     }
 
-
-    //
-    // Pre-processing of messages (executes in background threadpool thread)
-    //
-
     @Override
-    protected void sendSuccessMessage(final int statusCode, final Header[] headers, final String responseBody) {
+    public void onSuccess(final int statusCode, final Header[] headers, final byte[] responseBody) {
         if (statusCode != HttpStatus.SC_NO_CONTENT) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         Object jsonResponse = parseResponse(responseBody);
-                        sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, headers, jsonResponse}));
-                    } catch (JSONException e) {
-                        sendFailureMessage(statusCode, headers, e, responseBody);
+                        if (jsonResponse instanceof JSONObject) {
+                            onSuccess(statusCode, headers, (JSONObject) jsonResponse);
+                        } else if (jsonResponse instanceof JSONArray) {
+                            onSuccess(statusCode, headers, (JSONArray) jsonResponse);
+                        } else if (jsonResponse instanceof String) {
+                            onSuccess(statusCode, headers, (String) jsonResponse);
+                        } else {
+                            onFailure(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (JSONObject) null);
+                        }
+                    } catch (JSONException ex) {
+                        onFailure(ex, (JSONObject) null);
                     }
                 }
             }).start();
         } else {
-            sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, headers, new JSONObject()}));
+            onSuccess(statusCode, headers, new JSONObject());
         }
-    }
-
-
-    //
-    // Pre-processing of messages (in original calling thread, typically the UI thread)
-    //
-
-    @Override
-    protected void handleMessage(Message msg) {
-        switch (msg.what) {
-            case SUCCESS_JSON_MESSAGE:
-                Object[] response = (Object[]) msg.obj;
-                handleSuccessJsonMessage((Integer) response[0], (Header[]) response[1], response[2]);
-                break;
-            default:
-                super.handleMessage(msg);
-        }
-    }
-
-    protected void handleSuccessJsonMessage(int statusCode, Header[] headers, Object jsonResponse) {
-        if (jsonResponse instanceof JSONObject) {
-            onSuccess(statusCode, headers, (JSONObject) jsonResponse);
-        } else if (jsonResponse instanceof JSONArray) {
-            onSuccess(statusCode, headers, (JSONArray) jsonResponse);
-        } else if (jsonResponse instanceof String) {
-            onSuccess(statusCode, headers, (String) jsonResponse);
-        } else {
-            onFailure(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (JSONObject) null);
-        }
-    }
-
-    protected Object parseResponse(String responseBody) throws JSONException {
-        if (null == responseBody)
-            return null;
-        Object result = null;
-        //trim the string to prevent start with blank, and test if the string is valid JSON, because the parser don't do this :(. If Json is not valid this will return null
-        responseBody = responseBody.trim();
-        if (responseBody.startsWith("{") || responseBody.startsWith("[")) {
-            result = new JSONTokener(responseBody).nextValue();
-        }
-        if (result == null) {
-            result = responseBody;
-        }
-        return result;
     }
 
     @Override
-    protected void handleFailureMessage(final int statusCode, final Header[] headers, final Throwable e, final String responseBody) {
+    public void onFailure(final int statusCode, final Header[] headers, final byte[] responseBody, final Throwable e) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -224,16 +181,34 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                         } else if (jsonResponse instanceof String) {
                             onFailure(statusCode, headers, e, (String) jsonResponse);
                         } else {
-                            onFailure(statusCode, headers, e, responseBody);
+                            onFailure(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (JSONObject) null);
                         }
                     } else {
                         onFailure(e, "");
                     }
                 } catch (JSONException ex) {
-                    onFailure(statusCode, headers, e, responseBody);
+                    onFailure(ex, (JSONObject) null);
                 }
             }
         }).start();
 
+    }
+
+    protected Object parseResponse(byte[] responseBody) throws JSONException {
+        if (null == responseBody)
+            return null;
+        Object result = null;
+        try {
+            //trim the string to prevent start with blank, and test if the string is valid JSON, because the parser don't do this :(. If Json is not valid this will return null
+            String jsonString = new String(responseBody, "UTF-8").trim();
+            if (jsonString.startsWith("{") || jsonString.startsWith("[")) {
+                result = new JSONTokener(jsonString).nextValue();
+            }
+            if (result == null) {
+                result = jsonString;
+            }
+        } catch (UnsupportedEncodingException ex) {
+        }
+        return result;
     }
 }

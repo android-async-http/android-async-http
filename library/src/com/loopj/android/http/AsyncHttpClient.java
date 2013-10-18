@@ -889,7 +889,7 @@ public class AsyncHttpClient {
             }
         } catch (Throwable t) {
             if (responseHandler != null)
-                responseHandler.sendFailureMessage(0, null, t, (String) null);
+                responseHandler.sendFailureMessage(0, null, (byte[]) null, t);
             else
                 t.printStackTrace();
         }

@@ -38,7 +38,6 @@ class AsyncHttpRequest implements Runnable {
     private final HttpContext context;
     private final HttpUriRequest request;
     private final AsyncHttpResponseHandler responseHandler;
-    private boolean isBinaryRequest;
     private int executionCount;
 
     public AsyncHttpRequest(AbstractHttpClient client, HttpContext context, HttpUriRequest request, AsyncHttpResponseHandler responseHandler) {
@@ -46,110 +45,81 @@ class AsyncHttpRequest implements Runnable {
         this.context = context;
         this.request = request;
         this.responseHandler = responseHandler;
-        if (responseHandler instanceof BinaryHttpResponseHandler) {
-            this.isBinaryRequest = true;
-        }
     }
 
     @Override
     public void run() {
+        if (responseHandler != null) {
+            responseHandler.sendStartMessage();
+        }
+
         try {
-            if (responseHandler != null) {
-                responseHandler.sendStartMessage();
-            }
-
             makeRequestWithRetries();
-
-            if (responseHandler != null) {
-                responseHandler.sendFinishMessage();
-            }
         } catch (IOException e) {
             if (responseHandler != null) {
-                responseHandler.sendFinishMessage();
-                if (this.isBinaryRequest) {
-                    responseHandler.sendFailureMessage(e, (byte[]) null);
-                } else {
-                    responseHandler.sendFailureMessage(e, (String) null);
-                }
+                responseHandler.sendFailureMessage(0, null, (byte[]) null, e);
             }
+        }
+        
+        if (responseHandler != null) {
+            responseHandler.sendFinishMessage();
         }
     }
 
-    private void makeRequest() throws IOException, InterruptedException {
+    private void makeRequest() throws IOException {
         if (!Thread.currentThread().isInterrupted()) {
-            try {
-                // Fixes #115
-                if (request.getURI().getScheme() == null)
-                    throw new MalformedURLException("No valid URI scheme was provided");
-                HttpResponse response = client.execute(request, context);
-                if (!Thread.currentThread().isInterrupted()) {
-                    if (responseHandler != null) {
-                        responseHandler.sendResponseMessage(response);
-                    }
-                } else {
-                    throw new InterruptedException("makeRequest was interrupted");
-                }
-            } catch (IOException e) {
-                if (!Thread.currentThread().isInterrupted()) {
-                    throw e;
+            // Fixes #115
+            if (request.getURI().getScheme() == null) {
+                // subclass of IOException so processed in the caller
+                throw new MalformedURLException("No valid URI scheme was provided");
+            }
+
+            HttpResponse response = client.execute(request, context);
+
+            if (!Thread.currentThread().isInterrupted()) {
+                if (responseHandler != null) {
+                    responseHandler.sendResponseMessage(response);
                 }
             }
         }
     }
 
-    private void makeRequestWithRetries() throws ConnectException {
-        // This is an additional layer of retry logic lifted from droid-fu
-        // See: https://github.com/kaeppler/droid-fu/blob/master/src/main/java/com/github/droidfu/http/BetterHttpRequestBase.java
+    private void makeRequestWithRetries() throws IOException {
         boolean retry = true;
         IOException cause = null;
         HttpRequestRetryHandler retryHandler = client.getHttpRequestRetryHandler();
-        while (retry) {
-            try {
-                makeRequest();
-                return;
-            } catch (ClientProtocolException e) {
-                if (responseHandler != null) {
-                    responseHandler.sendFailureMessage(e, "cannot repeat the request");
+        try
+        {
+            while (retry) {
+                try {
+                    makeRequest();
+                    return;
+                } catch (UnknownHostException e) {
+                    // switching between WI-FI and mobile data networks can cause a retry which then results in an UnknownHostException
+                    // while the WI-FI is initialising. The retry logic will be invoked here, if this is NOT the first retry
+                    // (to assist in genuine cases of unknown host) which seems better than outright failure
+                    cause = new IOException("UnknownHostException exception: " + e.getMessage());
+                    retry = (executionCount > 0) && retryHandler.retryRequest(cause, ++executionCount, context);
+                } catch (NullPointerException e) {
+                    // there's a bug in HttpClient 4.0.x that on some occasions causes
+                    // DefaultRequestExecutor to throw an NPE, see
+                    // http://code.google.com/p/android/issues/detail?id=5255
+                    cause = new IOException("NPE in HttpClient: " + e.getMessage());
+                    retry = retryHandler.retryRequest(cause, ++executionCount, context);
+                } catch (IOException e) {
+                    cause = e;
+                    retry = retryHandler.retryRequest(cause, ++executionCount, context);
                 }
-                return;
-            } catch (UnknownHostException e) {
-                if (responseHandler != null) {
-                    responseHandler.sendFailureMessage(e, "can't resolve host");
+                if(retry && (responseHandler != null)) {
+                    responseHandler.sendRetryMessage();
                 }
-                return;
-            } catch (ConnectTimeoutException e) {
-                if (responseHandler != null) {
-                    responseHandler.sendFailureMessage(e, "connection timed out");
-                }
-            } catch (SocketException e) {
-                // Added to detect host unreachable
-                if (responseHandler != null) {
-                    responseHandler.sendFailureMessage(e, "can't resolve host");
-                }
-                return;
-            } catch (SocketTimeoutException e) {
-                if (responseHandler != null) {
-                    responseHandler.sendFailureMessage(e, "socket time out");
-                }
-                return;
-            } catch (IOException e) {
-                cause = e;
-                retry = retryHandler.retryRequest(cause, ++executionCount, context);
-            } catch (NullPointerException e) {
-                // there's a bug in HttpClient 4.0.x that on some occasions causes
-                // DefaultRequestExecutor to throw an NPE, see
-                // http://code.google.com/p/android/issues/detail?id=5255
-                cause = new IOException("NPE in HttpClient" + e.getMessage());
-                retry = retryHandler.retryRequest(cause, ++executionCount, context);
-            } catch (InterruptedException e) {
-                cause = new IOException("Request was interrupted while executing");
-                retry = retryHandler.retryRequest(cause, ++executionCount, context);
             }
+        } catch (Exception e) {
+            // catch anything else to ensure failure message is propagated
+            cause = new IOException("Unhandled exception: " + e.getMessage());
         }
-
-        // no retries left, crap out with exception
-        ConnectException ex = new ConnectException();
-        ex.initCause(cause);
-        throw ex;
+        
+        // cleaned up to throw IOException
+        throw(cause);
     }
 }
