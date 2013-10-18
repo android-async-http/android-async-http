@@ -33,15 +33,17 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-class AsyncHttpRequest implements Runnable {
+public class AsyncHttpRequest implements Runnable {
     private final AbstractHttpClient client;
     private final HttpContext context;
     private final HttpUriRequest request;
     private final AsyncHttpResponseHandler responseHandler;
+    private final AsyncHttpClient asyncClient;
     private boolean isBinaryRequest;
     private int executionCount;
 
-    public AsyncHttpRequest(AbstractHttpClient client, HttpContext context, HttpUriRequest request, AsyncHttpResponseHandler responseHandler) {
+    public AsyncHttpRequest(AsyncHttpClient asyncHttpClient, AbstractHttpClient client, HttpContext context, HttpUriRequest request, AsyncHttpResponseHandler responseHandler) {
+        this.asyncClient = asyncHttpClient;
         this.client = client;
         this.context = context;
         this.request = request;
@@ -73,6 +75,8 @@ class AsyncHttpRequest implements Runnable {
                 }
             }
         }
+
+        this.asyncClient.onRequestComplete(request.getURI().toString());
     }
 
     private void makeRequest() throws IOException, InterruptedException {

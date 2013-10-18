@@ -18,6 +18,19 @@
 
 package com.loopj.android.http;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.zip.GZIPInputStream;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -61,19 +74,6 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.SyncBasicHttpContext;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.zip.GZIPInputStream;
-
 
 /**
  * The AsyncHttpClient can be used to make asynchronous GET, POST, PUT and
@@ -113,8 +113,9 @@ public class AsyncHttpClient {
 
     private final DefaultHttpClient httpClient;
     private final HttpContext httpContext;
-    private ThreadPoolExecutor threadPool;
-    private final Map<Context, List<WeakReference<Future<?>>>> requestMap;
+    protected ThreadPoolExecutor threadPool;
+    protected final Map<Context, List<WeakReference<Future<?>>>> requestMap;
+    protected final Map<String, WeakReference<Future<?>>> urlRequestMap;
     private final Map<String, String> clientHeaderMap;
     private boolean isUrlEncodingEnabled = true;
 
@@ -254,6 +255,7 @@ public class AsyncHttpClient {
         });
 
         httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES, DEFAULT_RETRY_SLEEP_TIME_MILLIS));
+        urlRequestMap = new HashMap<String, WeakReference<Future<?>>>();
     }
 
     /**
@@ -393,6 +395,10 @@ public class AsyncHttpClient {
         clientHeaderMap.put(header, value);
     }
 
+    public void clearHeader(String header) {
+        clientHeaderMap.remove(header);
+    }
+
     /**
      * Remove header from all requests this client makes (before sending).
      *
@@ -453,15 +459,30 @@ public class AsyncHttpClient {
                 Future<?> request = requestRef.get();
                 if (request != null) {
                     request.cancel(mayInterruptIfRunning);
+
+                    String url = null;
+                    for (String key : urlRequestMap.keySet()) {
+                        if (request.equals(urlRequestMap.get(key).get())) {
+                            url = key;
+                            break;
+                        }
+                    }
+
+                    if (url != null) {
+                        urlRequestMap.remove(url);
+                    }
                 }
             }
         }
         requestMap.remove(context);
     }
 
-    //
-    // HTTP HEAD Requests
-    //
+    public void cancelRequest(String url) {
+        WeakReference<Future<?>> request = urlRequestMap.remove(url);
+        if (request != null && request.get() != null) {
+            request.get().cancel(true);
+        }
+    }
 
     /**
      * Perform a HTTP HEAD request, without any parameters.
@@ -820,12 +841,13 @@ public class AsyncHttpClient {
      * @param responseHandler ResponseHandler or its subclass to put the response into
      * @param uriRequest      instance of HttpUriRequest, which means it must be of HttpDelete, HttpPost, HttpGet, HttpPut, etc.
      */
-    protected void sendRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, AsyncHttpResponseHandler responseHandler, Context context) {
+    protected Future<?> sendRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, AsyncHttpResponseHandler responseHandler, Context context) {
         if (contentType != null) {
             uriRequest.addHeader("Content-Type", contentType);
         }
 
-        Future<?> request = threadPool.submit(new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler));
+        Future<?> request = threadPool.submit(new AsyncHttpRequest(this, client, httpContext, uriRequest, responseHandler));
+        WeakReference localWeakReference = new WeakReference(request);
 
         if (context != null) {
             // Add request to request map
@@ -839,6 +861,13 @@ public class AsyncHttpClient {
 
             // TODO: Remove dead weakrefs from requestLists?
         }
+
+        urlRequestMap.put(uriRequest.getURI().toString(), localWeakReference);
+        return request;
+    }
+
+    public void onRequestComplete(String url) {
+        urlRequestMap.remove(url);
     }
 
     /**

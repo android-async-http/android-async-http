@@ -1,5 +1,7 @@
 package com.loopj.android.http;
 
+import java.util.concurrent.Future;
+
 import android.content.Context;
 import android.os.Message;
 
@@ -55,7 +57,7 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 
     // Private stuff
     @Override
-    protected void sendRequest(DefaultHttpClient client,
+    protected Future<?> sendRequest(DefaultHttpClient client,
                                HttpContext httpContext, HttpUriRequest uriRequest,
                                String contentType, AsyncHttpResponseHandler responseHandler,
                                Context context) {
@@ -66,8 +68,8 @@ public abstract class SyncHttpClient extends AsyncHttpClient {
 		/*
          * will execute the request directly
 		 */
-        new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler)
-                .run();
+        new AsyncHttpRequest(this, client, httpContext, uriRequest, responseHandler).run();
+        return null;
     }
 
     public abstract String onRequestFailed(Throwable error, String content);
