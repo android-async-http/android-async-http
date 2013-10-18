@@ -2,7 +2,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.TextHttpResponseHandler;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import android.test.InstrumentationTestCase;
 import android.util.Log;
@@ -23,7 +23,7 @@ public class TestCaseExampleUsage extends InstrumentationTestCase
 			{
 				AsyncHttpClient client = new AsyncHttpClient();
 
-				client.get("http://www.google.com", new TextHttpResponseHandler()
+				client.get("http://www.google.com", new AsyncHttpResponseHandler()
 				{
 					@Override
 					public void onStart()
@@ -39,7 +39,7 @@ public class TestCaseExampleUsage extends InstrumentationTestCase
 					}
 
 					@Override
-					public void onFailure(String content, Throwable error)
+					public void onFailure(Throwable error, String content)
 					{
 						Log.e(TAG , "onFailure error : " + error.toString() + "content : " + content);
 					}

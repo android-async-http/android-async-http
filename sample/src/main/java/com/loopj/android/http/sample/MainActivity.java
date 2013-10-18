@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
 
@@ -60,7 +59,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void startRequest() {
-        aclient.get(this, getURLString(), new TextHttpResponseHandler() {
+        aclient.get(this, getURLString(), new AsyncHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String content) {
@@ -72,7 +71,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String content, Throwable error) {
+            public void onFailure(int statusCode, Header[] headers, Throwable error, String content) {
                 setStatusMessage("Failed", Color.parseColor("#99FF0000"));
                 printThrowable(error);
                 printHeaders(headers);
