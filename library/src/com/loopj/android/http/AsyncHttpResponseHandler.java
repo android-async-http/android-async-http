@@ -115,7 +115,7 @@ public class AsyncHttpResponseHandler {
      * Fired when the request progress, override to handle in your own code
      *
      * @param bytesWritten offset from start of file
-     * @param totalSize total size of file
+     * @param totalSize    total size of file
      */
     public void onProgress(int bytesWritten, int totalSize) {
     }
@@ -291,6 +291,12 @@ public class AsyncHttpResponseHandler {
             handler.sendMessage(msg);
         } else {
             handleMessage(msg);
+        }
+    }
+
+    protected void postRunnable(Runnable r) {
+        if (r != null) {
+            handler.post(r);
         }
     }
 

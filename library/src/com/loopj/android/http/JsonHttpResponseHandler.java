@@ -153,10 +153,20 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                 @Override
                 public void run() {
                     try {
-                        Object jsonResponse = parseResponse(responseBody);
-                        sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, headers, jsonResponse}));
-                    } catch (JSONException e) {
-                        sendFailureMessage(statusCode, headers, e, responseBody);
+                        final Object jsonResponse = parseResponse(responseBody);
+                        postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendMessage(obtainMessage(SUCCESS_JSON_MESSAGE, new Object[]{statusCode, headers, jsonResponse}));
+                            }
+                        });
+                    } catch (final JSONException e) {
+                        postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendFailureMessage(statusCode, headers, e, responseBody);
+                            }
+                        });
                     }
                 }
             }).start();
@@ -211,29 +221,41 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
 
     @Override
     protected void handleFailureMessage(final int statusCode, final Header[] headers, final Throwable e, final String responseBody) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (responseBody != null) {
-                        Object jsonResponse = parseResponse(responseBody);
-                        if (jsonResponse instanceof JSONObject) {
-                            onFailure(statusCode, headers, e, (JSONObject) jsonResponse);
-                        } else if (jsonResponse instanceof JSONArray) {
-                            onFailure(statusCode, headers, e, (JSONArray) jsonResponse);
-                        } else if (jsonResponse instanceof String) {
-                            onFailure(statusCode, headers, e, (String) jsonResponse);
-                        } else {
-                            onFailure(statusCode, headers, e, responseBody);
-                        }
-                    } else {
-                        onFailure(e, "");
+        if (responseBody != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        final Object jsonResponse = parseResponse(responseBody);
+                        postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (jsonResponse instanceof JSONObject) {
+                                    onFailure(statusCode, headers, e, (JSONObject) jsonResponse);
+                                } else if (jsonResponse instanceof JSONArray) {
+                                    onFailure(statusCode, headers, e, (JSONArray) jsonResponse);
+                                } else if (jsonResponse instanceof String) {
+                                    onFailure(statusCode, headers, e, (String) jsonResponse);
+                                } else {
+                                    onFailure(statusCode, headers, e, responseBody);
+                                }
+                            }
+                        });
+
+                    } catch (JSONException ex) {
+                        postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                onFailure(statusCode, headers, e, responseBody);
+                            }
+                        });
+
                     }
-                } catch (JSONException ex) {
-                    onFailure(statusCode, headers, e, responseBody);
                 }
-            }
-        }).start();
+            }).start();
+        } else {
+            onFailure(e, "");
+        }
 
     }
 }
