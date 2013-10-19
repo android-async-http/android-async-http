@@ -215,7 +215,8 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                 }
             }).start();
         } else {
-            onFailure(e, "");
+            Log.v(LOG_TAG, "response body is null, calling onFailure(Throwable, JSONObject)");
+            onFailure(e, (JSONObject) null);
         }
     }
 
@@ -233,7 +234,8 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                 result = jsonString;
             }
         } catch (UnsupportedEncodingException ex) {
-            Log.d(LOG_TAG, "JSON Parsing failed", ex);
+            Log.v(LOG_TAG, "JSON parsing failed, calling onFailure(Throwable, JSONObject)");
+            onFailure(ex, (JSONObject) null);
         }
         return result;
     }
