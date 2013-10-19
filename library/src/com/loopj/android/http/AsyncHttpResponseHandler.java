@@ -134,6 +134,7 @@ public class AsyncHttpResponseHandler {
      * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Charset</a>
      * @deprecated use {@link com.loopj.android.http.TextHttpResponseHandler} instead
      */
+    @Deprecated
     public void setCharset(final String charset) {
         this.responseCharset = charset;
     }
