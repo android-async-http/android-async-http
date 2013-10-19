@@ -62,20 +62,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
         aclient.get(this, getURLString(), new TextHttpResponseHandler() {
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String content) {
+            public void onSuccess(int statusCode, Header[] headers, String responseBody) {
                 setStatusMessage("Succeeded", Color.parseColor("#DD00FF00"));
                 printThrowable(null);
                 printHeaders(headers);
-                printContents(content);
+                printContents(responseBody);
                 printStatusCode(statusCode);
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable error, String content) {
+            public void onFailure(int statusCode, Header[] headers, String responseBody, Throwable error) {
                 setStatusMessage("Failed", Color.parseColor("#99FF0000"));
                 printThrowable(error);
                 printHeaders(headers);
-                printContents(content);
+                printContents(responseBody);
                 printStatusCode(statusCode);
             }
 
