@@ -39,7 +39,7 @@ import java.io.UnsupportedEncodingException;
  * });
  * </pre>
  */
-public abstract class TextHttpResponseHandler extends AsyncHttpResponseHandler {
+public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
 
     /**
      * Creates a new TextHttpResponseHandler
