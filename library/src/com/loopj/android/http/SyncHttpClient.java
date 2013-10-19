@@ -55,7 +55,7 @@ public class SyncHttpClient extends AsyncHttpClient {
     }
 
     @Override
-    protected void sendRequest(DefaultHttpClient client,
+    protected RequestHandle sendRequest(DefaultHttpClient client,
                                HttpContext httpContext, HttpUriRequest uriRequest,
                                String contentType, AsyncHttpResponseHandler responseHandler,
                                Context context) {
@@ -69,5 +69,9 @@ public class SyncHttpClient extends AsyncHttpClient {
          * will execute the request directly
 		*/
         new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler).run();
+        
+        // Return a Request Handle that cannot be used to cancel the request
+        // because it is already complete by the time this returns
+        return new RequestHandle(null);
     }
 }
