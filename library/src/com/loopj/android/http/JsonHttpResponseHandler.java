@@ -18,6 +18,8 @@
 
 package com.loopj.android.http;
 
+import android.util.Log;
+
 import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
@@ -40,6 +42,7 @@ import java.io.UnsupportedEncodingException;
  * parent class.
  */
 public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
+    private static final String LOG_TAG = "JsonHttpResponseHandler";
     //
     // Callbacks to be overridden, typically anonymously
     //
@@ -204,7 +207,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                         postRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                onFailure(ex, (JSONObject) null );
+                                onFailure(ex, (JSONObject) null);
                             }
                         });
 
@@ -230,6 +233,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
                 result = jsonString;
             }
         } catch (UnsupportedEncodingException ex) {
+            Log.d(LOG_TAG, "JSON Parsing failed", ex);
         }
         return result;
     }
