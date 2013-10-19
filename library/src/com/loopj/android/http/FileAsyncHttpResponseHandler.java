@@ -71,11 +71,11 @@ public class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
                 break;
             case FAILURE_MESSAGE:
                 response = (Object[]) msg.obj;
-		if(response[3] instanceof File){
-		    handleFailureMessage((Integer) response[0], (Header[]) response[1], (Throwable) response[2], (File) response[3]);
-		}else{
-		    handleFailureMessage((Integer) response[0], (Header[]) response[1], (Throwable) response[2], mFile);
-		}
+                if(response[3] instanceof File){
+                    handleFailureMessage((Integer) response[0], (Header[]) response[1], (Throwable) response[2], (File) response[3]);
+                }else{
+                    handleFailureMessage((Integer) response[0], (Header[]) response[1], (Throwable) response[2], mFile);
+                }
                 break;
             default:
                 super.handleMessage(msg);
