@@ -1,7 +1,5 @@
 package com.loopj.android.http.sample;
 
-import android.os.Bundle;
-
 public class GetSample extends SampleParentActivity {
 
     @Override
@@ -17,10 +15,5 @@ public class GetSample extends SampleParentActivity {
     @Override
     protected boolean isRequestHeadersAllowed() {
         return true;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 }

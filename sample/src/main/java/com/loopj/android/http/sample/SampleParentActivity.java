@@ -19,11 +19,11 @@ public abstract class SampleParentActivity extends Activity {
     private AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
     private EditText urlEditText;
     private Button executeButton;
+    private static final LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         final LinearLayout content_wrapper = new LinearLayout(this);
         content_wrapper.setOrientation(LinearLayout.VERTICAL);
         content_wrapper.setLayoutParams(lParams);
@@ -58,6 +58,11 @@ public abstract class SampleParentActivity extends Activity {
         executeButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         urlLayout.addView(executeButton);
         headers.addView(urlLayout);
+        if(isRequestHeadersAllowed()){
+            LinearLayout headersLayout = new LinearLayout(this);
+            headersLayout.setOrientation(LinearLayout.VERTICAL);
+            headersLayout.setLayoutParams(lParams);
+        }
     }
 
     protected final void addView(View v) {
