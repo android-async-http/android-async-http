@@ -65,6 +65,7 @@ public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
      *
      * @param responseBody the body of the HTTP response from the server
      */
+    @Override
     public void onSuccess(String responseBody) {
     }
 
@@ -76,6 +77,7 @@ public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
      * @param headers      HTTP response headers
      * @param responseBody the body of the HTTP response from the server
      */
+    @Override
     public void onSuccess(int statusCode, Header[] headers, String responseBody) {
         onSuccess(responseBody);
     }
