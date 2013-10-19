@@ -108,8 +108,8 @@ public class AsyncHttpClient {
     private static final String ENCODING_GZIP = "gzip";
     private static final String LOG_TAG = "AsyncHttpClient";
 
-    private static int maxConnections = DEFAULT_MAX_CONNECTIONS;
-    private static int socketTimeout = DEFAULT_SOCKET_TIMEOUT;
+    private int maxConnections = DEFAULT_MAX_CONNECTIONS;
+    private int timeout = DEFAULT_SOCKET_TIMEOUT;
 
     private final DefaultHttpClient httpClient;
     private final HttpContext httpContext;
@@ -117,7 +117,6 @@ public class AsyncHttpClient {
     private final Map<Context, List<WeakReference<Future<?>>>> requestMap;
     private final Map<String, String> clientHeaderMap;
     private boolean isUrlEncodingEnabled = true;
-
 
     /**
      * Creates a new AsyncHttpClient with default constructor arguments values
@@ -202,12 +201,12 @@ public class AsyncHttpClient {
 
         BasicHttpParams httpParams = new BasicHttpParams();
 
-        ConnManagerParams.setTimeout(httpParams, socketTimeout);
+        ConnManagerParams.setTimeout(httpParams, timeout);
         ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(maxConnections));
         ConnManagerParams.setMaxTotalConnections(httpParams, DEFAULT_MAX_CONNECTIONS);
 
-        HttpConnectionParams.setSoTimeout(httpParams, socketTimeout);
-        HttpConnectionParams.setConnectionTimeout(httpParams, socketTimeout);
+        HttpConnectionParams.setSoTimeout(httpParams, timeout);
+        HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
         HttpConnectionParams.setTcpNoDelay(httpParams, true);
         HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
 
@@ -322,16 +321,51 @@ public class AsyncHttpClient {
         HttpProtocolParams.setUserAgent(this.httpClient.getParams(), userAgent);
     }
 
+
     /**
-     * Set the connection timeout. By default, 10 seconds.
+     * Returns current limit of parallel connections
      *
-     * @param timeout the connect/socket timeout in milliseconds
+     * @return maximum limit of parallel connections, default is 10
+     */
+    public int getMaxConnections() {
+        return maxConnections;
+    }
+
+    /**
+     * Sets maximum limit of parallel connections
+     *
+     * @param maxConnections maximum parallel connections, must be at least 1
+     */
+    public void setMaxConnections(int maxConnections) {
+        if (maxConnections < 1)
+            maxConnections = DEFAULT_MAX_CONNECTIONS;
+        this.maxConnections = maxConnections;
+        final HttpParams httpParams = this.httpClient.getParams();
+        ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(this.maxConnections));
+    }
+
+    /**
+     * Returns current socket timeout limit (milliseconds), default is 10000 (10sec)
+     *
+     * @return Socket Timeout limit in milliseconds
+     */
+    public int getTimeout() {
+        return timeout;
+    }
+
+    /**
+     * Set the connection and socket timeout. By default, 10 seconds.
+     *
+     * @param timeout the connect/socket timeout in milliseconds, at least 1 second
      */
     public void setTimeout(int timeout) {
+        if (timeout < 1000)
+            timeout = DEFAULT_SOCKET_TIMEOUT;
+        this.timeout = timeout;
         final HttpParams httpParams = this.httpClient.getParams();
-        ConnManagerParams.setTimeout(httpParams, timeout);
-        HttpConnectionParams.setSoTimeout(httpParams, timeout);
-        HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
+        ConnManagerParams.setTimeout(httpParams, this.timeout);
+        HttpConnectionParams.setSoTimeout(httpParams, this.timeout);
+        HttpConnectionParams.setConnectionTimeout(httpParams, this.timeout);
     }
 
     /**
@@ -897,7 +931,7 @@ public class AsyncHttpClient {
         return entity;
     }
 
-    public boolean isUrlEncodingEnabled(){
+    public boolean isUrlEncodingEnabled() {
         return isUrlEncodingEnabled;
     }
 
