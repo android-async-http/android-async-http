@@ -104,13 +104,13 @@ public class AsyncHttpResponseHandler {
         ResponderHandler(AsyncHttpResponseHandler service) {
             mResponder = new WeakReference<AsyncHttpResponseHandler>(service);
         }
+
         @Override
-        public void handleMessage(Message msg)
-        {
+        public void handleMessage(Message msg) {
             AsyncHttpResponseHandler service = mResponder.get();
-             if (service != null) {
-                  service.handleMessage(msg);
-             }
+            if (service != null) {
+                service.handleMessage(msg);
+            }
         }
     }
 
@@ -216,9 +216,9 @@ public class AsyncHttpResponseHandler {
     /**
      * Fired when a request returns successfully, override to handle in your own code
      *
-     * @param statusCode    the status code of the response
-     * @param headers       return headers, if any
-     * @param responseBody  the body of the HTTP response from the server
+     * @param statusCode   the status code of the response
+     * @param headers      return headers, if any
+     * @param responseBody the body of the HTTP response from the server
      */
     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
         try {
@@ -229,6 +229,7 @@ public class AsyncHttpResponseHandler {
             onFailure(statusCode, headers, e, (String) null);
         }
     }
+
     /**
      * Fired when a request fails to complete, override to handle in your own code
      *
@@ -284,29 +285,28 @@ public class AsyncHttpResponseHandler {
     /**
      * Fired when a request fails to complete, override to handle in your own code
      *
-     * @param statusCode    return HTTP status code
-     * @param headers       return headers, if any
-     * @param responseBody  the response body, if any
-     * @param error         the underlying cause of the failure
+     * @param statusCode   return HTTP status code
+     * @param headers      return headers, if any
+     * @param responseBody the response body, if any
+     * @param error        the underlying cause of the failure
      */
     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
         String response = null;
         try {
             response = new String(responseBody, getCharset());
+            onFailure(statusCode, headers, error, response);
         } catch (UnsupportedEncodingException e) {
             Log.e(LOG_TAG, e.toString());
             onFailure(statusCode, headers, e, null);
         }
-        onFailure(statusCode, headers, error, response);
     }
 
     /**
      * Fired when a retry occurs, override to handle in your own code
-     * 
      */
     public void onRetry() {
     }
-    
+
 
     //
     // Pre-processing of messages (executes in background threadpool thread)
@@ -333,9 +333,9 @@ public class AsyncHttpResponseHandler {
     }
 
     protected void sendRetryMessage() {
-      sendMessage(obtainMessage(RETRY_MESSAGE, null));
+        sendMessage(obtainMessage(RETRY_MESSAGE, null));
     }
-    
+
     // Methods which emulate android's Handler and Message methods
     protected void handleMessage(Message msg) {
         Object[] response;
@@ -361,7 +361,7 @@ public class AsyncHttpResponseHandler {
                 break;
             case RETRY_MESSAGE:
                 onRetry();
-              break;
+                break;
         }
     }
 
@@ -423,7 +423,7 @@ public class AsyncHttpResponseHandler {
                 if (contentLength < 0) {
                     contentLength = BUFFER_SIZE;
                 }
-                try{
+                try {
                     ByteArrayBuffer buffer = new ByteArrayBuffer((int) contentLength);
                     try {
                         byte[] tmp = new byte[BUFFER_SIZE];
@@ -438,7 +438,7 @@ public class AsyncHttpResponseHandler {
                         instream.close();
                     }
                     responseBody = buffer.buffer();
-                } catch( OutOfMemoryError e ) {
+                } catch (OutOfMemoryError e) {
                     System.gc();
                     throw new IOException("File too large to fit into available memory");
                 }
