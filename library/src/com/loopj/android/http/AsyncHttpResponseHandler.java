@@ -343,11 +343,17 @@ public class AsyncHttpResponseHandler {
         switch (msg.what) {
             case SUCCESS_MESSAGE:
                 response = (Object[]) msg.obj;
-                onSuccess((Integer) response[0], (Header[]) response[1], (byte[]) response[2]);
+                if (response != null && response.length >= 3)
+                    onSuccess((Integer) response[0], (Header[]) response[1], (byte[]) response[2]);
+                else
+                    Log.e(LOG_TAG, "SUCCESS_MESSAGE didn't got enough params");
                 break;
             case FAILURE_MESSAGE:
                 response = (Object[]) msg.obj;
-                onFailure((Integer) response[0], (Header[]) response[1], (byte[]) response[2], (Throwable) response[3]);
+                if (response != null && response.length >= 4)
+                    onFailure((Integer) response[0], (Header[]) response[1], (byte[]) response[2], (Throwable) response[3]);
+                else
+                    Log.e(LOG_TAG, "FAILURE_MESSAGE didn't got enough params");
                 break;
             case START_MESSAGE:
                 onStart();
@@ -357,7 +363,10 @@ public class AsyncHttpResponseHandler {
                 break;
             case PROGRESS_MESSAGE:
                 response = (Object[]) msg.obj;
-                onProgress((Integer) response[0], (Integer) response[1]);
+                if (response != null && response.length >= 2)
+                    onProgress((Integer) response[0], (Integer) response[1]);
+                else
+                    Log.e(LOG_TAG, "PROGRESS_MESSAGE didn't got enough params");
                 break;
             case RETRY_MESSAGE:
                 onRetry();
@@ -398,7 +407,7 @@ public class AsyncHttpResponseHandler {
         // do not process if request has been cancelled
         if (!Thread.currentThread().isInterrupted()) {
             StatusLine status = response.getStatusLine();
-            byte[] responseBody = null;
+            byte[] responseBody;
             responseBody = getResponseData(response.getEntity());
             // additional cancellation check as getResponseData() can take non-zero time to process
             if (!Thread.currentThread().isInterrupted()) {
