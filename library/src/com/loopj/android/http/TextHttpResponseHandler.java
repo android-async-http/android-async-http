@@ -1,5 +1,7 @@
 package com.loopj.android.http;
 
+import android.util.Log;
+
 import org.apache.http.Header;
 
 import java.io.UnsupportedEncodingException;
@@ -40,6 +42,7 @@ import java.io.UnsupportedEncodingException;
  * </pre>
  */
 public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
+    private static final String LOG_TAG = "TextHttpResponseHandler";
 
     /**
      * Creates a new TextHttpResponseHandler
@@ -99,6 +102,7 @@ public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
         try {
             onSuccess(statusCode, headers, new String(responseBody, getCharset()));
         } catch (UnsupportedEncodingException e) {
+            Log.v(LOG_TAG, "String encoding failed, calling onFailure(int, Header[], String, Throwable)");
             onFailure(0, headers, (String) null, e);
         }
     }
@@ -108,6 +112,7 @@ public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
         try {
             onFailure(statusCode, headers, new String(responseBody, getCharset()), error);
         } catch (UnsupportedEncodingException e) {
+            Log.v(LOG_TAG, "String encoding failed, calling onFailure(int, Header[], String, Throwable)");
             onFailure(0, headers, (String) null, e);
         }
     }
