@@ -39,9 +39,7 @@ import java.io.UnsupportedEncodingException;
  * });
  * </pre>
  */
-public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
-
-    private String _encoding;
+public abstract class TextHttpResponseHandler extends AsyncHttpResponseHandler {
 
     /**
      * Creates a new TextHttpResponseHandler
@@ -53,34 +51,12 @@ public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
 
     public TextHttpResponseHandler(String encoding) {
         super();
-        _encoding = encoding;
+        setCharset(encoding);
     }
+
     //
     // Callbacks to be overridden, typically anonymously
     //
-
-    /**
-     * Fired when a request returns successfully, override to handle in your own
-     * code
-     *
-     * @param responseBody the body of the HTTP response from the server
-     */
-    @Override
-    public void onSuccess(String responseBody) {
-    }
-
-    /**
-     * Fired when a request returns successfully, override to handle in your own
-     * code
-     *
-     * @param statusCode   the status code of the response
-     * @param headers      HTTP response headers
-     * @param responseBody the body of the HTTP response from the server
-     */
-    @Override
-    public void onSuccess(int statusCode, Header[] headers, String responseBody) {
-        onSuccess(responseBody);
-    }
 
     /**
      * Fired when a request fails to complete, override to handle in your own
@@ -108,7 +84,7 @@ public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
     @Override
     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
         try {
-            onSuccess(statusCode, headers, new String(responseBody, _encoding));
+            onSuccess(statusCode, headers, new String(responseBody, getCharset()));
         } catch (UnsupportedEncodingException e) {
             onFailure(0, headers, (String) null, e);
         }
@@ -117,7 +93,7 @@ public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
     @Override
     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
         try {
-            onFailure(statusCode, headers, new String(responseBody, _encoding), error);
+            onFailure(statusCode, headers, new String(responseBody, getCharset()), error);
         } catch (UnsupportedEncodingException e) {
             onFailure(0, headers, (String) null, e);
         }
