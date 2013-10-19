@@ -95,8 +95,6 @@ import java.util.zip.GZIPInputStream;
  * </pre>
  */
 public class AsyncHttpClient {
-    // This property won't be available soon, don't use it
-    @Deprecated
     private static final String VERSION = "1.4.4";
 
     private static final int DEFAULT_MAX_CONNECTIONS = 10;
