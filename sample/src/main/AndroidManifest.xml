@@ -14,12 +14,19 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <activity android:name="com.loopj.android.http.sample.MainActivity">
+        <activity android:name=".WaypointsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".GetSample" />
+        <activity android:name=".PostSample" />
+        <activity android:name=".DeleteSample" />
+        <activity android:name=".PutSample" />
+        <activity android:name=".JsonSample" />
+        <activity android:name=".FileSample" />
+        <activity android:name=".BinarySample" />
     </application>
 
 </manifest>

@@ -2,9 +2,6 @@
 <resources>
 
     <string name="app_name">Android Async Http Sample</string>
-    <string name="action_settings">Settings</string>
-    <string name="default_url">https://raw.github.com/loopj/android-async-http/master/README.md</string>
-    <string name="action_get">GET</string>
-    <string name="status_n_a">Not Yet Started</string>
+    <string name="get_sample">GET Request Sample</string>
 
 </resources>
