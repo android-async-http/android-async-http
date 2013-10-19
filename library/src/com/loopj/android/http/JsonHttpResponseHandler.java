@@ -41,8 +41,21 @@ import java.io.UnsupportedEncodingException;
  * Additionally, you can override the other event methods from the
  * parent class.
  */
-public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
+public class JsonHttpResponseHandler extends TextHttpResponseHandler {
     private static final String LOG_TAG = "JsonHttpResponseHandler";
+
+    /**
+     * Creates a new TextHttpResponseHandler
+     */
+
+    public JsonHttpResponseHandler() {
+        super(DEFAULT_CHARSET);
+    }
+
+    public JsonHttpResponseHandler(String encoding) {
+        super(encoding);
+    }
+
     //
     // Callbacks to be overridden, typically anonymously
     //
@@ -143,7 +156,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     @Override
-    public void onSuccess(final int statusCode, final Header[] headers, final byte[] responseBody) {
+    public void onSuccess(final int statusCode, final Header[] headers, final String responseBody) {
         if (statusCode != HttpStatus.SC_NO_CONTENT) {
             new Thread(new Runnable() {
                 @Override
@@ -181,7 +194,7 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     @Override
-    public void onFailure(final int statusCode, final Header[] headers, final byte[] responseBody, final Throwable e) {
+    public void onFailure(final int statusCode, final Header[] headers, final String responseBody, final Throwable e) {
         if (responseBody != null) {
             new Thread(new Runnable() {
                 @Override
@@ -220,22 +233,17 @@ public class JsonHttpResponseHandler extends AsyncHttpResponseHandler {
         }
     }
 
-    protected Object parseResponse(byte[] responseBody) throws JSONException {
+    protected Object parseResponse(String responseBody) throws JSONException {
         if (null == responseBody)
             return null;
         Object result = null;
-        try {
-            //trim the string to prevent start with blank, and test if the string is valid JSON, because the parser don't do this :(. If Json is not valid this will return null
-            String jsonString = new String(responseBody, "UTF-8").trim();
-            if (jsonString.startsWith("{") || jsonString.startsWith("[")) {
-                result = new JSONTokener(jsonString).nextValue();
-            }
-            if (result == null) {
-                result = jsonString;
-            }
-        } catch (UnsupportedEncodingException ex) {
-            Log.v(LOG_TAG, "JSON parsing failed, calling onFailure(Throwable, JSONObject)");
-            onFailure(ex, (JSONObject) null);
+        //trim the string to prevent start with blank, and test if the string is valid JSON, because the parser don't do this :(. If Json is not valid this will return null
+        String jsonString = responseBody.trim();
+        if (jsonString.startsWith("{") || jsonString.startsWith("[")) {
+            result = new JSONTokener(jsonString).nextValue();
+        }
+        if (result == null) {
+            result = jsonString;
         }
         return result;
     }
