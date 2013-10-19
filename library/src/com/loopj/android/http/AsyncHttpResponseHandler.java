@@ -445,6 +445,6 @@ public class AsyncHttpResponseHandler {
                 }
             }
         }
-        return (responseBody);
+        return responseBody;
     }
 }

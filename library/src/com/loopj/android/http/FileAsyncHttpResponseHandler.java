@@ -59,7 +59,7 @@ public class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
           if (instream != null) {
               try {
                   byte[] tmp = new byte[BUFFER_SIZE];
-                  int l, count = 0;;
+                  int l, count = 0;
                   // do not send messages if request has been cancelled
                   while ((l = instream.read(tmp)) != -1 && !Thread.currentThread().isInterrupted()) {
                       count += l;
@@ -73,7 +73,7 @@ public class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
               }
           }
       }
-      return (null);
+      return null;
   }
   
 }
