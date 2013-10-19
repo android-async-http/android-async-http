@@ -19,18 +19,13 @@
 package com.loopj.android.http;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.MalformedURLException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 class AsyncHttpRequest implements Runnable {
@@ -57,7 +52,7 @@ class AsyncHttpRequest implements Runnable {
             makeRequestWithRetries();
         } catch (IOException e) {
             if (responseHandler != null) {
-                responseHandler.sendFailureMessage(0, null, (byte[]) null, e);
+                responseHandler.sendFailureMessage(0, null, null, e);
             }
         }
         
