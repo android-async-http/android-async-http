@@ -93,7 +93,8 @@ public class AsyncHttpResponseHandler {
     protected static final int BUFFER_SIZE = 4096;
 
     private Handler handler;
-    private String responseCharset = "UTF-8";
+    public static final String DEFAULT_CHARSET = "UTF-8";
+    private String responseCharset = DEFAULT_CHARSET;
     private Boolean useSynchronousMode = false;
 
     // avoid leaks by using a non-anonymous handler class
