@@ -196,6 +196,7 @@ public class AsyncHttpResponseHandler {
      * @param content    the body of the HTTP response from the server
      * @deprecated use {@link #onSuccess(int, Header[], byte[])}
      */
+    @Deprecated
     public void onSuccess(int statusCode, Header[] headers, String content) {
         onSuccess(statusCode, content);
     }
