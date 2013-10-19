@@ -25,13 +25,13 @@
                 android:layout_weight="1"
                 android:inputType="textUri"
                 android:saveEnabled="true"
-                android:text="https://raw.github.com/loopj/android-async-http/master/README.md" />
+                android:text="@string/default_url" />
 
             <Button
                 android:id="@+id/request_get"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GET" />
+                android:text="@string/action_get" />
 
         </LinearLayout>
 
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:background="#33000000"
             android:padding="5dip"
-            android:text="Not Yet Started" />
+            android:text="@string/status_n_a" />
 
         <TextView
             android:id="@+id/return_code"
