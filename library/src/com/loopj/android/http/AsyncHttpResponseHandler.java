@@ -225,7 +225,7 @@ public class AsyncHttpResponseHandler {
             onSuccess(statusCode, headers, response);
         } catch (UnsupportedEncodingException e) {
             Log.e(LOG_TAG, e.toString());
-            onFailure(statusCode, headers, e, (String) null);
+            onFailure(statusCode, headers, e, null);
         }
     }
 
@@ -290,7 +290,7 @@ public class AsyncHttpResponseHandler {
      * @param error        the underlying cause of the failure
      */
     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-        String response = null;
+        String response;
         try {
             response = new String(responseBody, getCharset());
             onFailure(statusCode, headers, error, response);
