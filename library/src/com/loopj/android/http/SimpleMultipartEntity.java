@@ -148,22 +148,12 @@ class SimpleMultipartEntity implements HttpEntity {
     }
 
     private byte[] createContentDisposition(final String key) {
-        return new StringBuilder()
-                .append("Content-Disposition: form-data; name=\"")
-                .append(key)
-                .append("\"\r\n")
-                .toString()
+        return ("Content-Disposition: form-data; name=\"" + key + "\"\r\n")
                 .getBytes();
     }
 
     private byte[] createContentDisposition(final String key, final String fileName) {
-        return new StringBuilder()
-                .append("Content-Disposition: form-data; name=\"")
-                .append(key)
-                .append("\"; filename=\"")
-                .append(fileName)
-                .append("\"\r\n")
-                .toString()
+        return ("Content-Disposition: form-data; name=\"" + key + "\"; filename=\"" + fileName + "\"\r\n")
                 .getBytes();
     }
 
