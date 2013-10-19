@@ -45,7 +45,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
     private static final String LOG_TAG = "JsonHttpResponseHandler";
 
     /**
-     * Creates a new TextHttpResponseHandler
+     * Creates a new JsonHttpResponseHandler
      */
 
     public JsonHttpResponseHandler() {
