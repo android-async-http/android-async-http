@@ -27,8 +27,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  * Used to intercept and handle the responses from requests made using
  * {@link AsyncHttpClient}, with automatic parsing into a {@link JSONObject}
@@ -220,7 +218,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                         postRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                onFailure(ex, (JSONObject) null);
+                                onFailure(statusCode, headers, ex, (JSONObject) null);
                             }
                         });
 
@@ -229,7 +227,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
             }).start();
         } else {
             Log.v(LOG_TAG, "response body is null, calling onFailure(Throwable, JSONObject)");
-            onFailure(e, (JSONObject) null);
+            onFailure(statusCode, headers, e, (JSONObject) null);
         }
     }
 
