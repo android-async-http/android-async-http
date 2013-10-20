@@ -38,11 +38,63 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
         super(encoding);
     }
 
-    public void onSuccess(int statusCode, Header[] headers, String rawResponse, JSON_TYPE response) {
+    @Override
+    public final void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+        // Disabling this method
+        super.onSuccess(statusCode, headers, responseBody);
     }
 
-    public void onFailure(int statusCode, Header[] headers, Throwable e, String rawData, JSON_TYPE errorResponse) {
+    @Override
+    public final void onSuccess(String content) {
+        // Disabling usage of this method, until removed from parent
+        super.onSuccess(content);
     }
+
+    @Override
+    public final void onSuccess(int statusCode, String content) {
+        // Disabling usage of this method, until removed from parent
+        super.onSuccess(statusCode, content);
+    }
+
+    @Override
+    public final void onFailure(String responseBody, Throwable error) {
+        // Disabling usage of this method, until removed from parent
+        super.onFailure(responseBody, error);
+    }
+
+    @Override
+    public final void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+        //Disabling this method
+        super.onFailure(statusCode, headers, responseBody, error);
+    }
+
+    @Override
+    public final void onFailure(Throwable error) {
+        // Disabling usage of this method, until removed from parent
+        super.onFailure(error);
+    }
+
+    @Override
+    public final void onFailure(Throwable error, String content) {
+        // Disabling usage of this method, until removed from parent
+        super.onFailure(error, content);
+    }
+
+    @Override
+    public final void onFailure(int statusCode, Throwable error, String content) {
+        // Disabling usage of this method, until removed from parent
+        super.onFailure(statusCode, error, content);
+    }
+
+    @Override
+    public final void onFailure(int statusCode, Header[] headers, Throwable error, String content) {
+        // Disabling usage of this method, until removed from parent
+        super.onFailure(statusCode, headers, error, content);
+    }
+
+    public abstract void onSuccess(int statusCode, Header[] headers, String rawResponse, JSON_TYPE response);
+
+    public abstract void onFailure(int statusCode, Header[] headers, Throwable e, String rawData, JSON_TYPE errorResponse);
 
     @Override
     public void onSuccess(final int statusCode, final Header[] headers, final String responseBody) {
