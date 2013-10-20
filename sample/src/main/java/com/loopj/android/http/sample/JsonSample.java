@@ -1,9 +1,8 @@
 package com.loopj.android.http.sample;
 
-import android.widget.Toast;
-
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.sample.util.SampleJSON;
@@ -15,8 +14,8 @@ public class JsonSample extends SampleParentActivity {
     private static final String LOG_TAG = "JsonSample";
 
     @Override
-    protected void executeSample() {
-        getAsyncHttpClient().get(this, getDefaultURL(), getResponseHandler());
+    protected void executeSample(AsyncHttpClient client, String URL, AsyncHttpResponseHandler responseHandler) {
+        client.get(this, URL, responseHandler);
     }
 
     @Override
@@ -44,21 +43,26 @@ public class JsonSample extends SampleParentActivity {
         return new BaseJsonHttpResponseHandler<SampleJSON>() {
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, SampleJSON response) {
+            public void onStart() {
+                clearOutputs();
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String rawResponse, SampleJSON response) {
                 debugHeaders(LOG_TAG, headers);
                 debugStatusCode(LOG_TAG, statusCode);
                 if (response != null) {
-                    Toast.makeText(JsonSample.this, response.getIp(), Toast.LENGTH_SHORT).show();
+                    debugResponse(LOG_TAG, rawResponse);
                 }
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable e, SampleJSON errorResponse) {
+            public void onFailure(int statusCode, Header[] headers, Throwable e, String rawResponse, SampleJSON errorResponse) {
                 debugHeaders(LOG_TAG, headers);
                 debugStatusCode(LOG_TAG, statusCode);
                 debugThrowable(LOG_TAG, e);
                 if (errorResponse != null) {
-                    Toast.makeText(JsonSample.this, errorResponse.getAbout(), Toast.LENGTH_SHORT).show();
+                    debugResponse(LOG_TAG, rawResponse);
                 }
             }
 

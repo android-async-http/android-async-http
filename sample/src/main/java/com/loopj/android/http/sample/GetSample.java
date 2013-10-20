@@ -1,12 +1,13 @@
 package com.loopj.android.http.sample;
 
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class GetSample extends SampleParentActivity {
 
     @Override
-    protected void executeSample() {
-        getAsyncHttpClient().get(this, getDefaultURL(), getResponseHandler());
+    protected void executeSample(AsyncHttpClient client, String URL, AsyncHttpResponseHandler responseHandler) {
+        client.get(this, URL, responseHandler);
     }
 
     @Override
