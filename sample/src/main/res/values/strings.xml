@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">Android Async Http Sample</string>
-    <string name="get_sample">GET Request Sample</string>
+    <string name="title_get_sample">GET Sample</string>
+    <string name="title_json_sample">JSON Sample</string>
 
 </resources>

@@ -26,5 +26,6 @@ android {
 }
 
 dependencies {
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
     compile project(':library')
 }

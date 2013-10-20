@@ -3,6 +3,7 @@ package com.loopj.android.http.sample;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -11,6 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import org.apache.http.Header;
 
 public abstract class SampleParentActivity extends Activity {
 
@@ -50,6 +54,7 @@ public abstract class SampleParentActivity extends Activity {
         urlLayout.setOrientation(LinearLayout.HORIZONTAL);
         urlEditText = new EditText(this);
         urlEditText.setHint("URL for request");
+        urlEditText.setText(getDefaultURL());
         urlEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
         urlEditText.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         urlLayout.addView(urlEditText);
@@ -58,11 +63,38 @@ public abstract class SampleParentActivity extends Activity {
         executeButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         urlLayout.addView(executeButton);
         headers.addView(urlLayout);
-        if(isRequestHeadersAllowed()){
+        if (isRequestHeadersAllowed()) {
             LinearLayout headersLayout = new LinearLayout(this);
             headersLayout.setOrientation(LinearLayout.VERTICAL);
             headersLayout.setLayoutParams(lParams);
         }
+        executeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                executeSample();
+            }
+        });
+    }
+
+    protected abstract void executeSample();
+
+    protected final void debugHeaders(String TAG, Header[] headers) {
+        if (headers != null) {
+            Log.d(TAG, "Return Headers:");
+            for (Header h : headers) {
+                Log.d(TAG, String.format("%s : %s", h.getName(), h.getValue()));
+            }
+        }
+    }
+
+    protected final void debugThrowable(String TAG, Throwable t) {
+        if (t != null) {
+            Log.e(TAG, "AsyncHttpClient returned error", t);
+        }
+    }
+
+    protected final void debugStatusCode(String TAG, int statusCode) {
+        Log.d(TAG, String.format("Return Status Code: %d", statusCode));
     }
 
     protected final void addView(View v) {
@@ -78,6 +110,10 @@ public abstract class SampleParentActivity extends Activity {
     protected abstract boolean isRequestBodyAllowed();
 
     protected abstract boolean isRequestHeadersAllowed();
+
+    protected abstract String getDefaultURL();
+
+    protected abstract AsyncHttpResponseHandler getResponseHandler();
 
     protected AsyncHttpClient getAsyncHttpClient() {
         return this.asyncHttpClient;
