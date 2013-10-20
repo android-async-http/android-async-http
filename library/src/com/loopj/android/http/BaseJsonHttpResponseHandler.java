@@ -38,10 +38,10 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
         super(encoding);
     }
 
-    public void onSuccess(int statusCode, Header[] headers, JSON_TYPE response) {
+    public void onSuccess(int statusCode, Header[] headers, String rawResponse, JSON_TYPE response) {
     }
 
-    public void onFailure(int statusCode, Header[] headers, Throwable e, JSON_TYPE errorResponse) {
+    public void onFailure(int statusCode, Header[] headers, Throwable e, String rawData, JSON_TYPE errorResponse) {
     }
 
     @Override
@@ -55,7 +55,7 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
                         postRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                onSuccess(statusCode, headers, jsonResponse);
+                                onSuccess(statusCode, headers, responseBody, jsonResponse);
                             }
                         });
                     } catch (final Throwable t) {
@@ -63,14 +63,14 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
                         postRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                onFailure(statusCode, headers, t, (JSON_TYPE) null);
+                                onFailure(statusCode, headers, t, responseBody, null);
                             }
                         });
                     }
                 }
             }).start();
         } else {
-            onSuccess(statusCode, headers, (JSON_TYPE) null);
+            onSuccess(statusCode, headers, null, null);
         }
     }
 
@@ -85,7 +85,7 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
                         postRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                onFailure(statusCode, headers, e, jsonResponse);
+                                onFailure(statusCode, headers, e, responseBody, jsonResponse);
                             }
                         });
                     } catch (Throwable t) {
@@ -93,14 +93,14 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
                         postRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                onFailure(statusCode, headers, e, (JSON_TYPE) null);
+                                onFailure(statusCode, headers, e, responseBody, null);
                             }
                         });
                     }
                 }
             }).start();
         } else {
-            onFailure(statusCode, headers, e, (JSON_TYPE) null);
+            onFailure(statusCode, headers, e, null, null);
         }
     }
 
