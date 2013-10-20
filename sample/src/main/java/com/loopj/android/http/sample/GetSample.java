@@ -34,6 +34,11 @@ public class GetSample extends SampleParentActivity {
     protected AsyncHttpResponseHandler getResponseHandler() {
         return new AsyncHttpResponseHandler() {
 
+            @Override
+            public void onStart() {
+                clearOutputs();
+            }
+
         };
     }
 }
