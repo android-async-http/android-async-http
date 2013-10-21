@@ -139,7 +139,7 @@ public class AsyncHttpResponseHandler {
     }
 
     public String getCharset() {
-        return this.responseCharset;
+        return this.responseCharset == null ? DEFAULT_CHARSET : this.responseCharset;
     }
 
     /**
@@ -222,7 +222,7 @@ public class AsyncHttpResponseHandler {
      */
     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
         try {
-            String response = new String(responseBody, getCharset());
+            String response = responseBody == null ? null : new String(responseBody, getCharset());
             onSuccess(statusCode, headers, response);
         } catch (UnsupportedEncodingException e) {
             Log.e(LOG_TAG, e.toString());
