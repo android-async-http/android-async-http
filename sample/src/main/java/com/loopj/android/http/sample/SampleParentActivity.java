@@ -102,10 +102,7 @@ public abstract class SampleParentActivity extends Activity {
     protected static String throwableToString(Throwable t) {
         if (t == null)
             return null;
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        t.printStackTrace(pw);
-        return pw.toString();
+        return t.getMessage().toString();
     }
 
     protected final void debugThrowable(String TAG, Throwable t) {
