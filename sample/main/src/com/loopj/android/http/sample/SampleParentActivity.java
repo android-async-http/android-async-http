@@ -1,6 +1,9 @@
 package com.loopj.android.http.sample;
 
-import java.util.Locale;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import org.apache.http.Header;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -17,8 +20,6 @@ import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-
-import org.apache.http.Header;
 
 public abstract class SampleParentActivity extends Activity {
 
@@ -101,7 +102,10 @@ public abstract class SampleParentActivity extends Activity {
     protected static String throwableToString(Throwable t) {
         if (t == null)
             return null;
-        return t.getMessage().toString();
+        
+        StringWriter sw = new StringWriter();
+        t.printStackTrace(new PrintWriter(sw));
+        return sw.toString();
     }
 
     protected final void debugThrowable(String TAG, Throwable t) {
