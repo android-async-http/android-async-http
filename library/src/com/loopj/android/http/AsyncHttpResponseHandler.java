@@ -298,6 +298,10 @@ public class AsyncHttpResponseHandler {
             Log.e(LOG_TAG, e.toString());
             onFailure(statusCode, headers, e, null);
         }
+        catch (Exception e) {
+			Log.e(LOG_TAG,e.toString());
+			onFailure(statusCode, headers, e, null);
+		}
     }
 
     /**
