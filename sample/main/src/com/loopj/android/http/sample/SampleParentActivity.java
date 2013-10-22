@@ -1,5 +1,7 @@
 package com.loopj.android.http.sample;
 
+import java.util.Locale;
+
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,9 +19,6 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.apache.http.Header;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 public abstract class SampleParentActivity extends Activity {
 
