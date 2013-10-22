@@ -100,7 +100,8 @@ public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
     @Override
     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
         try {
-            onSuccess(statusCode, headers, new String(responseBody, getCharset()));
+        	String response = responseBody == null ? null : new String(responseBody, getCharset());
+            onSuccess(statusCode, headers, response);
         } catch (UnsupportedEncodingException e) {
             Log.v(LOG_TAG, "String encoding failed, calling onFailure(int, Header[], String, Throwable)");
             onFailure(0, headers, (String) null, e);
@@ -110,7 +111,8 @@ public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
     @Override
     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
         try {
-            onFailure(statusCode, headers, new String(responseBody, getCharset()), error);
+        	String response = responseBody == null ? null : new String(responseBody, getCharset());
+            onFailure(statusCode, headers, response, error);
         } catch (UnsupportedEncodingException e) {
             Log.v(LOG_TAG, "String encoding failed, calling onFailure(int, Header[], String, Throwable)");
             onFailure(0, headers, (String) null, e);
