@@ -446,7 +446,7 @@ public class AsyncHttpResponseHandler {
                     } finally {
                         instream.close();
                     }
-                    responseBody = buffer.buffer();
+                    responseBody = buffer.toByteArray();
                 } catch (OutOfMemoryError e) {
                     System.gc();
                     throw new IOException("File too large to fit into available memory");
