@@ -14,6 +14,17 @@ android {
 }
 
 android.libraryVariants.all { variant ->
+  def name = variant.buildType.name
+  if (name.equals(com.android.builder.BuilderConstants.DEBUG)) {
+    return; // Skip debug builds.
+  }
+  def task = project.tasks.create "android${name.capitalize()}Jar", Jar
+  task.dependsOn variant.javaCompile
+  task.from variant.javaCompile.destinationDir
+  artifacts.add('archives', task);
+}
+
+android.libraryVariants.all { variant ->
 
     task("generate${variant.name}Javadoc", type: Javadoc) {
         description "Generates Javadoc for $variant.name."

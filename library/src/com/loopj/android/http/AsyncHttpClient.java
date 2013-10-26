@@ -213,7 +213,7 @@ public class AsyncHttpClient {
 
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
-        threadPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+        threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(DEFAULT_MAX_CONNECTIONS);
         requestMap = new WeakHashMap<Context, List<WeakReference<Future<?>>>>();
         clientHeaderMap = new HashMap<String, String>();
 
@@ -286,7 +286,7 @@ public class AsyncHttpClient {
 
     /**
      * Overrides the threadpool implementation used when queuing/pooling
-     * requests. By default, Executors.newCachedThreadPool() is used.
+     * requests. By default, Executors.newFixedThreadPool() is used.
      *
      * @param threadPool an instance of {@link ThreadPoolExecutor} to use for queuing/pooling requests.
      */
