@@ -90,6 +90,7 @@ public class RequestParams {
 
     private static final String LOG_TAG = "RequestParams";
 
+    protected boolean isRepeatable = false;
     protected ConcurrentHashMap<String, String> urlParams;
     protected ConcurrentHashMap<String, StreamWrapper> streamParams;
     protected ConcurrentHashMap<String, FileWrapper> fileParams;
@@ -308,6 +309,10 @@ public class RequestParams {
         return result.toString();
     }
 
+    public void setHttpEntityIsRepeatable(boolean isRepeatable){
+        this.isRepeatable = isRepeatable;
+    }
+
     /**
      * Returns an HttpEntity containing all request parameters
      *
@@ -333,6 +338,7 @@ public class RequestParams {
 
     private HttpEntity createMultipartEntity(AsyncHttpResponseHandler progressHandler) throws IOException {
         SimpleMultipartEntity entity = new SimpleMultipartEntity(progressHandler);
+        entity.setIsRepeatable(isRepeatable);
 
         // Add string params
         for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
@@ -425,7 +431,7 @@ public class RequestParams {
         public File file;
         public String contentType;
 
-        public FileWrapper(File file, String contentType) {
+        public  FileWrapper(File file, String contentType) {
             this.file = file;
             this.contentType = contentType;
         }

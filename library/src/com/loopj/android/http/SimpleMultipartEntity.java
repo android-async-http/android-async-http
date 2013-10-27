@@ -56,6 +56,7 @@ class SimpleMultipartEntity implements HttpEntity {
     private String boundary;
     private byte[] boundaryLine;
     private byte[] boundaryEnd;
+    private boolean isRepeatable = false;
 
     private List<FilePart> fileParts = new ArrayList<FilePart>();
 
@@ -242,9 +243,13 @@ class SimpleMultipartEntity implements HttpEntity {
         return false;
     }
 
+    public void setIsRepeatable(boolean isRepeatable){
+        this.isRepeatable = isRepeatable;
+    }
+
     @Override
     public boolean isRepeatable() {
-        return false;
+        return isRepeatable;
     }
 
     @Override
