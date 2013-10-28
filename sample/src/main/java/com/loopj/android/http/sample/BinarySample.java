@@ -38,6 +38,12 @@ public class BinarySample extends SampleParentActivity {
                 clearOutputs();
             }
 
+            @Override
+            public String[] getAllowedContentTypes() {
+                // Allowing all data for debug purposes
+                return new String[]{".*"};
+            }
+
             public void onSuccess(int statusCode, Header[] headers, byte[] binaryData) {
                 debugStatusCode(LOG_TAG, statusCode);
                 debugHeaders(LOG_TAG, headers);
