@@ -37,45 +37,42 @@ public class FileSample extends SampleParentActivity {
 
     @Override
     protected AsyncHttpResponseHandler getResponseHandler() {
-        try {
-            File tmpFile = File.createTempFile("temp_", "_response", getCacheDir());
-            return new FileAsyncHttpResponseHandler(tmpFile) {
-                @Override
-                public void onStart() {
-                    clearOutputs();
-                }
+        return new FileAsyncHttpResponseHandler(this) {
+            @Override
+            public void onStart() {
+                clearOutputs();
+            }
 
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, File file) {
-                    debugHeaders(LOG_TAG, headers);
-                    debugStatusCode(LOG_TAG, statusCode);
-                    debugFile(getTargetFile());
-                }
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, File file) {
+                debugHeaders(LOG_TAG, headers);
+                debugStatusCode(LOG_TAG, statusCode);
+                debugFile(getTargetFile());
+            }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                    debugHeaders(LOG_TAG, headers);
-                    debugStatusCode(LOG_TAG, statusCode);
-                    debugThrowable(LOG_TAG, e);
-                    debugFile(getTargetFile());
-                }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+                debugHeaders(LOG_TAG, headers);
+                debugStatusCode(LOG_TAG, statusCode);
+                debugThrowable(LOG_TAG, e);
+                debugFile(getTargetFile());
+            }
 
-                private void debugFile(File file) {
-                    if (file == null || !file.exists()) {
-                        debugResponse(LOG_TAG, "Response is null");
-                        return;
-                    }
-                    try {
-                        debugResponse(LOG_TAG, FileUtil.getStringFromFile(file));
-                    } catch (Throwable t) {
-                        Log.e(LOG_TAG, "Cannot debug file contents", t);
-                    }
+            private void debugFile(File file) {
+                if (file == null || !file.exists()) {
+                    debugResponse(LOG_TAG, "Response is null");
+                    return;
                 }
-            };
-        } catch (Throwable t) {
-            Log.e("FileSample", "Cannot create temporary file", t);
-        }
-        return null;
+                try {
+                    debugResponse(LOG_TAG, file.getAbsolutePath() + "\r\n\r\n" + FileUtil.getStringFromFile(file));
+                } catch (Throwable t) {
+                    Log.e(LOG_TAG, "Cannot debug file contents", t);
+                }
+                if (!file.delete()) {
+                    Log.d(LOG_TAG, "Could not delete response file " + file.getAbsolutePath());
+                }
+            }
+        };
     }
 
     @Override
