@@ -36,7 +36,7 @@ public class JsonSample extends SampleParentActivity {
 
     @Override
     protected String getDefaultURL() {
-        return "http://www.jsonip.com/";
+        return "http://httpbin.org/headers";
     }
 
     @Override

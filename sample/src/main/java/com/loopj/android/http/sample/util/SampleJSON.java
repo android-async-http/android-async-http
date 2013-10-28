@@ -6,32 +6,54 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SampleJSON {
 
-    private String ip;
-    private String about;
-    @JsonProperty(value = "Pro!")
-    private String promo;
+    private String Accept;
+    private String Referer;
+    private String AcceptLanguage;
+    private String Connection;
+    private String UserAgent;
 
-    public String getPromo() {
-        return promo;
+    public String getAccept() {
+        return Accept;
     }
 
-    public void setPromo(String promo) {
-        this.promo = promo;
+    @JsonProperty("Accept")
+    public void setAccept(String accept) {
+        Accept = accept;
     }
 
-    public String getAbout() {
-        return about;
+    public String getReferer() {
+        return Referer;
     }
 
-    public void setAbout(String about) {
-        this.about = about;
+    @JsonProperty("Referer")
+    public void setReferer(String referer) {
+        Referer = referer;
     }
 
-    public String getIp() {
-        return ip;
+    public String getAcceptLanguage() {
+        return AcceptLanguage;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    @JsonProperty("Accept-Language")
+    public void setAcceptLanguage(String acceptLanguage) {
+        AcceptLanguage = acceptLanguage;
+    }
+
+    public String getConnection() {
+        return Connection;
+    }
+
+    @JsonProperty("Connection")
+    public void setConnection(String connection) {
+        Connection = connection;
+    }
+
+    public String getUserAgent() {
+        return UserAgent;
+    }
+
+    @JsonProperty("User-Agent")
+    public void setUserAgent(String userAgent) {
+        UserAgent = userAgent;
     }
 }

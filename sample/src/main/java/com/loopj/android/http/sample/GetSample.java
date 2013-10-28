@@ -31,7 +31,7 @@ public class GetSample extends SampleParentActivity {
 
     @Override
     protected String getDefaultURL() {
-        return "https://raw.github.com/loopj/android-async-http/master/README.md";
+        return "https://httpbin.org/get";
     }
 
     @Override

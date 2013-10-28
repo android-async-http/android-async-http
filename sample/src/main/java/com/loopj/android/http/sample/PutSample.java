@@ -31,7 +31,7 @@ public class PutSample extends SampleParentActivity {
 
     @Override
     protected String getDefaultURL() {
-        return "http://www.google.com";
+        return "http://httpbin.org/put";
     }
 
     @Override

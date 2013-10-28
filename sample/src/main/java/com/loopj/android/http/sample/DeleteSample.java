@@ -32,7 +32,7 @@ public class DeleteSample extends SampleParentActivity {
 
     @Override
     protected String getDefaultURL() {
-        return "http://www.google.com";
+        return "http://httpbin.org/delete";
     }
 
     @Override
