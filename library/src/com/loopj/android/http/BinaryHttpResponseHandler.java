@@ -144,7 +144,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
 
     // Interface to AsyncHttpRequest
     @Override
-    protected void sendResponseMessage(HttpResponse response) throws IOException {
+    public final void sendResponseMessage(HttpResponse response) throws IOException {
         StatusLine status = response.getStatusLine();
         Header[] contentTypeHeaders = response.getHeaders("Content-Type");
         if (contentTypeHeaders.length != 1) {

@@ -322,7 +322,7 @@ public class RequestParams {
      * @return HttpEntity resulting HttpEntity to be included along with {@link org.apache.http.client.methods.HttpEntityEnclosingRequestBase}
      * @throws IOException if one of the streams cannot be read
      */
-    public HttpEntity getEntity(AsyncHttpResponseHandler progressHandler) throws IOException {
+    public HttpEntity getEntity(ResponseHandlerInterface progressHandler) throws IOException {
         if (streamParams.isEmpty() && fileParams.isEmpty()) {
             return createFormEntity();
         } else {
@@ -338,7 +338,7 @@ public class RequestParams {
         }
     }
 
-    private HttpEntity createMultipartEntity(AsyncHttpResponseHandler progressHandler) throws IOException {
+    private HttpEntity createMultipartEntity(ResponseHandlerInterface progressHandler) throws IOException {
         SimpleMultipartEntity entity = new SimpleMultipartEntity(progressHandler);
         entity.setIsRepeatable(isRepeatable);
 

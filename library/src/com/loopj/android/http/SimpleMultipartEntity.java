@@ -64,13 +64,13 @@ class SimpleMultipartEntity implements HttpEntity {
     // boundary
     private ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-    private AsyncHttpResponseHandler progressHandler;
+    private ResponseHandlerInterface progressHandler;
 
     private int bytesWritten;
 
     private int totalSize;
 
-    public SimpleMultipartEntity(AsyncHttpResponseHandler progressHandler) {
+    public SimpleMultipartEntity(ResponseHandlerInterface progressHandler) {
         final StringBuilder buf = new StringBuilder();
         final Random rand = new Random();
         for (int i = 0; i < 30; i++) {

@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.net.URI;
 
 /**
  * Used to intercept and handle the responses from requests made using
@@ -80,7 +81,7 @@ import java.lang.ref.WeakReference;
  * });
  * </pre>
  */
-public class AsyncHttpResponseHandler {
+public class AsyncHttpResponseHandler implements ResponseHandlerInterface {
     private static final String LOG_TAG = "AsyncHttpResponseHandler";
 
     protected static final int SUCCESS_MESSAGE = 0;
@@ -96,6 +97,29 @@ public class AsyncHttpResponseHandler {
     public static final String DEFAULT_CHARSET = "UTF-8";
     private String responseCharset = DEFAULT_CHARSET;
     private Boolean useSynchronousMode = false;
+
+    private URI requestURI = null;
+    private Header[] requestHeaders = null;
+
+    @Override
+    public URI getRequestURI() {
+        return this.requestURI;
+    }
+
+    @Override
+    public Header[] getRequestHeaders() {
+        return this.requestHeaders;
+    }
+
+    @Override
+    public void setRequestURI(URI requestURI) {
+        this.requestURI = requestURI;
+    }
+
+    @Override
+    public void setRequestHeaders(Header[] requestHeaders) {
+        this.requestHeaders = requestHeaders;
+    }
 
     // avoid leaks by using a non-anonymous handler class
     // with a weak reference
@@ -119,12 +143,8 @@ public class AsyncHttpResponseHandler {
         return (useSynchronousMode);
     }
 
-    /**
-     * Set the response handler to use synchronous mode or not
-     *
-     * @param value true indicates that synchronous mode should be used
-     */
-    public void setUseSynchronousMode(Boolean value) {
+    @Override
+    public void setUseSynchronousMode(boolean value) {
         useSynchronousMode = value;
     }
 
@@ -311,27 +331,27 @@ public class AsyncHttpResponseHandler {
     // Pre-processing of messages (executes in background threadpool thread)
     //
 
-    protected void sendProgressMessage(int bytesWritten, int totalSize) {
-        sendMessage(obtainMessage(PROGRESS_MESSAGE, new Object[]{bytesWritten, totalSize}));
+    final public void sendProgressMessage(int bytesWritten, int bytesTotal) {
+        sendMessage(obtainMessage(PROGRESS_MESSAGE, new Object[]{bytesWritten, bytesTotal}));
     }
 
-    protected void sendSuccessMessage(int statusCode, Header[] headers, byte[] responseBody) {
+    final public void sendSuccessMessage(int statusCode, Header[] headers, byte[] responseBody) {
         sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{statusCode, headers, responseBody}));
     }
 
-    protected void sendFailureMessage(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+    final public void sendFailureMessage(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
         sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{statusCode, headers, responseBody, error}));
     }
 
-    protected void sendStartMessage() {
+    final public void sendStartMessage() {
         sendMessage(obtainMessage(START_MESSAGE, null));
     }
 
-    protected void sendFinishMessage() {
+    final public void sendFinishMessage() {
         sendMessage(obtainMessage(FINISH_MESSAGE, null));
     }
 
-    protected void sendRetryMessage() {
+    final public void sendRetryMessage() {
         sendMessage(obtainMessage(RETRY_MESSAGE, null));
     }
 
@@ -408,8 +428,8 @@ public class AsyncHttpResponseHandler {
         return msg;
     }
 
-    // Interface to AsyncHttpRequest
-    void sendResponseMessage(HttpResponse response) throws IOException {
+    @Override
+    public void sendResponseMessage(HttpResponse response) throws IOException {
         // do not process if request has been cancelled
         if (!Thread.currentThread().isInterrupted()) {
             StatusLine status = response.getStatusLine();
