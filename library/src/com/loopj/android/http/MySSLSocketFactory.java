@@ -15,8 +15,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 /**
- * This file is introduced to fix HTTPS Post bug on API &lt; ICS
- * see http://code.google.com/p/android/issues/detail?id=13117#c14
+ * This file is introduced to fix HTTPS Post bug on API &lt; ICS see
+ * http://code.google.com/p/android/issues/detail?id=13117#c14
  */
 public class MySSLSocketFactory extends SSLSocketFactory {
     SSLContext sslContext = SSLContext.getInstance("TLS");

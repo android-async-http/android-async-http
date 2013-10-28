@@ -15,6 +15,7 @@ public interface ResponseHandlerInterface {
      * Returns data whether request completed successfully
      *
      * @param response HttpResponse object with data
+     * @throws java.io.IOException if retrieving data from response fails
      */
     void sendResponseMessage(HttpResponse response) throws IOException;
 
@@ -76,11 +77,15 @@ public interface ResponseHandlerInterface {
 
     /**
      * Helper for handlers to receive Request URI info
+     *
+     * @param requestURI claimed request URI
      */
     public void setRequestURI(URI requestURI);
 
     /**
      * Helper for handlers to receive Request Header[] info
+     *
+     * @param requestHeaders Headers, claimed to be from original request
      */
     public void setRequestHeaders(Header[] requestHeaders);
 

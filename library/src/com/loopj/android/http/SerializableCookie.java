@@ -28,8 +28,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * A wrapper class around {@link Cookie} and/or {@link BasicClientCookie}
- * designed for use in {@link PersistentCookieStore}.
+ * A wrapper class around {@link Cookie} and/or {@link BasicClientCookie} designed for use in {@link
+ * PersistentCookieStore}.
  */
 public class SerializableCookie implements Serializable {
     private static final long serialVersionUID = 6374381828722046732L;

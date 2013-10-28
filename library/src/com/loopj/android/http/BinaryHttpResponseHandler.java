@@ -30,13 +30,9 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
- * Used to intercept and handle the responses from requests made using
- * {@link AsyncHttpClient}. Receives response body as byte array with a
- * content-type whitelist. (e.g. checks Content-Type against allowed list,
- * Content-length).
- * <p>&nbsp;</p>
- * For example:
- * <p>&nbsp;</p>
+ * Used to intercept and handle the responses from requests made using {@link AsyncHttpClient}.
+ * Receives response body as byte array with a content-type whitelist. (e.g. checks Content-Type
+ * against allowed list, Content-length). <p>&nbsp;</p> For example: <p>&nbsp;</p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
  * String[] allowedTypes = new String[] { "image/png" };
@@ -61,8 +57,8 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     };
 
     /**
-     * Method can be overriden to return allowed content types,
-     * can be sometimes better than passing data in constructor
+     * Method can be overriden to return allowed content types, can be sometimes better than passing
+     * data in constructor
      *
      * @return array of content-types or Pattern string templates (eg. '.*' to match every response)
      */
@@ -78,8 +74,8 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     /**
-     * Creates a new BinaryHttpResponseHandler, and overrides the default allowed
-     * content types with passed String array (hopefully) of content types.
+     * Creates a new BinaryHttpResponseHandler, and overrides the default allowed content types with
+     * passed String array (hopefully) of content types.
      *
      * @param allowedContentTypes content types array, eg. 'image/jpeg' or pattern '.*'
      */

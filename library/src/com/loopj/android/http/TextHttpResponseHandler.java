@@ -7,15 +7,11 @@ import org.apache.http.Header;
 import java.io.UnsupportedEncodingException;
 
 /**
- * Used to intercept and handle the responses from requests made using
- * {@link AsyncHttpClient}. The {@link #onSuccess(String)} method is
- * designed to be anonymously overridden with your own response handling code.
- * <p/>
- * Additionally, you can override the {@link #onFailure(String, Throwable)},
- * {@link #onStart()}, and {@link #onFinish()} methods as required.
- * <p/>
- * For example:
- * <p/>
+ * Used to intercept and handle the responses from requests made using {@link AsyncHttpClient}. The
+ * {@link #onSuccess(String)} method is designed to be anonymously overridden with your own response
+ * handling code. <p>&nbsp;</p> Additionally, you can override the {@link #onFailure(String,
+ * Throwable)}, {@link #onStart()}, and {@link #onFinish()} methods as required. <p>&nbsp;</p> For
+ * example: <p>&nbsp;</p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
  * client.get("http://www.google.com", new TextHttpResponseHandler() {
@@ -62,8 +58,7 @@ public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
     //
 
     /**
-     * Fired when a request fails to complete, override to handle in your own
-     * code
+     * Fired when a request fails to complete, override to handle in your own code
      *
      * @param responseBody the response body, if any
      * @param error        the underlying cause of the failure
@@ -72,8 +67,7 @@ public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     /**
-     * Fired when a request fails to complete, override to handle in your own
-     * code
+     * Fired when a request fails to complete, override to handle in your own code
      *
      * @param statusCode   the status code of the response
      * @param headers      HTTP response headers
@@ -85,8 +79,7 @@ public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     /**
-     * Fired when a request returns successfully, override to handle in your own
-     * code
+     * Fired when a request returns successfully, override to handle in your own code
      *
      * @param statusCode   the status code of the response
      * @param headers      HTTP response headers

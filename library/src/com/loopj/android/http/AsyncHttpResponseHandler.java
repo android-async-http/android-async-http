@@ -37,15 +37,12 @@ import java.lang.ref.WeakReference;
 import java.net.URI;
 
 /**
- * Used to intercept and handle the responses from requests made using
- * {@link AsyncHttpClient}. The {@link #onSuccess(int, org.apache.http.Header[], byte[])} method is
- * designed to be anonymously overridden with your own response handling code.
- * <p>&nbsp;</p>
- * Additionally, you can override the {@link #onFailure(int, org.apache.http.Header[], byte[], Throwable)},
- * {@link #onStart()}, {@link #onFinish()}, {@link #onRetry()} and {@link #onProgress(int, int)} methods as required.
- * <p>&nbsp;</p>
- * For example:
- * <p>&nbsp;</p>
+ * Used to intercept and handle the responses from requests made using {@link AsyncHttpClient}. The
+ * {@link #onSuccess(int, org.apache.http.Header[], byte[])} method is designed to be anonymously
+ * overridden with your own response handling code. <p>&nbsp;</p> Additionally, you can override the
+ * {@link #onFailure(int, org.apache.http.Header[], byte[], Throwable)}, {@link #onStart()}, {@link
+ * #onFinish()}, {@link #onRetry()} and {@link #onProgress(int, int)} methods as required.
+ * <p>&nbsp;</p> For example: <p>&nbsp;</p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
  * client.get("http://www.google.com", new AsyncHttpResponseHandler() {
@@ -60,7 +57,8 @@ import java.net.URI;
  *     }
  *
  *     &#064;Override
- *     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+ *     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error)
+ * {
  *         // Response failed :(
  *     }
  *
@@ -193,7 +191,8 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface {
     }
 
     /**
-     * Fired in all cases when the request is finished, after both success and failure, override to handle in your own code
+     * Fired in all cases when the request is finished, after both success and failure, override to
+     * handle in your own code
      */
     public void onFinish() {
     }
