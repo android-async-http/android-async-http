@@ -1,16 +1,17 @@
 package com.loopj.android.http.sample;
 
-import org.apache.http.Header;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 
 public class PostSample extends SampleParentActivity {
     private static final String LOG_TAG = "PostSample";
 
     @Override
-    protected void executeSample(AsyncHttpClient client, String URL, AsyncHttpResponseHandler responseHandler) {
-        client.post(this, URL, null, responseHandler);
+    protected void executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler) {
+        client.post(this, URL, headers, entity, null, responseHandler);
     }
 
     @Override
@@ -20,7 +21,7 @@ public class PostSample extends SampleParentActivity {
 
     @Override
     protected boolean isRequestBodyAllowed() {
-        return false;
+        return true;
     }
 
     @Override

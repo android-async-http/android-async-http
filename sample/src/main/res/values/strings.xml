@@ -3,7 +3,7 @@
 
     <string name="app_name">Android Async Http Sample</string>
     <string name="title_get_sample">GET Sample</string>
-    <string name="title_json_sample">JSON Sample</string>
+    <string name="title_json_sample">JSON GET Sample</string>
     <string name="title_post_sample">POST Sample</string>
 	<string name="title_put_sample">PUT Sample</string>
 	<string name="title_delete_sample">DELETE Sample</string>

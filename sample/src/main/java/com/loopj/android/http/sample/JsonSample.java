@@ -8,14 +8,15 @@ import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.sample.util.SampleJSON;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 
 public class JsonSample extends SampleParentActivity {
 
     private static final String LOG_TAG = "JsonSample";
 
     @Override
-    protected void executeSample(AsyncHttpClient client, String URL, AsyncHttpResponseHandler responseHandler) {
-        client.get(this, URL, responseHandler);
+    protected void executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler) {
+        client.get(this, URL, headers, null, responseHandler);
     }
 
     @Override

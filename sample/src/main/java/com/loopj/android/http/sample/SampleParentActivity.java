@@ -1,33 +1,35 @@
 package com.loopj.android.http.sample;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import org.apache.http.Header;
-
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHeader;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class SampleParentActivity extends Activity {
 
-    private LinearLayout headers; // Sample header, inputs and buttons
-    private LinearLayout contents; // Sample output, states, errors, ...
     private AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-    private EditText urlEditText;
-    private static final LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    private EditText urlEditText, headersEditText, bodyEditText;
+    private LinearLayout responseLayout;
 
     private static final int LIGHTGREEN = Color.parseColor("#00FF66");
     private static final int LIGHTRED = Color.parseColor("#FF3300");
@@ -37,52 +39,69 @@ public abstract class SampleParentActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final LinearLayout content_wrapper = new LinearLayout(this);
-        content_wrapper.setOrientation(LinearLayout.VERTICAL);
-        content_wrapper.setLayoutParams(lParams);
-        contents = new LinearLayout(this);
-        contents.setLayoutParams(lParams);
-        contents.setOrientation(LinearLayout.VERTICAL);
-        headers = new LinearLayout(this);
-        headers.setLayoutParams(lParams);
-        headers.setOrientation(LinearLayout.VERTICAL);
-        ScrollView contents_scroll = new ScrollView(this);
-        contents_scroll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        contents_scroll.setFillViewport(true);
-        content_wrapper.addView(headers);
-        content_wrapper.addView(contents);
-        contents_scroll.addView(content_wrapper);
-        setContentView(contents_scroll);
+        setContentView(R.layout.parent_layout);
         setTitle(getSampleTitle());
-        setupHeaders();
+
+        urlEditText = (EditText) findViewById(R.id.edit_url);
+        headersEditText = (EditText) findViewById(R.id.edit_headers);
+        bodyEditText = (EditText) findViewById(R.id.edit_body);
+        Button runButton = (Button) findViewById(R.id.button_run);
+        LinearLayout headersLayout = (LinearLayout) findViewById(R.id.layout_headers);
+        LinearLayout bodyLayout = (LinearLayout) findViewById(R.id.layout_body);
+        responseLayout = (LinearLayout) findViewById(R.id.layout_response);
+
+        urlEditText.setText(getDefaultURL());
+
+        bodyLayout.setVisibility(isRequestBodyAllowed() ? View.VISIBLE : View.GONE);
+        headersLayout.setVisibility(isRequestHeadersAllowed() ? View.VISIBLE : View.GONE);
+
+        runButton.setOnClickListener(onClickListener);
     }
 
-    private void setupHeaders() {
-        LinearLayout urlLayout = new LinearLayout(this);
-        urlLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        urlLayout.setOrientation(LinearLayout.HORIZONTAL);
-        urlEditText = new EditText(this);
-        urlEditText.setHint("URL for request");
-        urlEditText.setText(getDefaultURL());
-        urlEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
-        urlEditText.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        urlLayout.addView(urlEditText);
-        Button executeButton = new Button(this);
-        executeButton.setText("Run");
-        executeButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        urlLayout.addView(executeButton);
-        headers.addView(urlLayout);
-        if (isRequestHeadersAllowed()) {
-            LinearLayout headersLayout = new LinearLayout(this);
-            headersLayout.setOrientation(LinearLayout.VERTICAL);
-            headersLayout.setLayoutParams(lParams);
-        }
-        executeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                executeSample(getAsyncHttpClient(), (urlEditText == null || urlEditText.getText() == null) ? getDefaultURL() : urlEditText.getText().toString(), getResponseHandler());
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.button_run:
+                    executeSample(getAsyncHttpClient(),
+                            (urlEditText == null || urlEditText.getText() == null) ? getDefaultURL() : urlEditText.getText().toString(),
+                            getRequestHeaders(),
+                            getRequestEntity(),
+                            getResponseHandler());
+                    break;
             }
-        });
+        }
+    };
+
+    protected Header[] getRequestHeaders() {
+        List<Header> headers = new ArrayList<Header>();
+        String headersRaw = headersEditText.getText() == null ? null : headersEditText.getText().toString();
+
+        if (headersRaw != null && headersRaw.length() > 3) {
+            String[] lines = headersRaw.split("\\r?\\n");
+            for (String line : lines) {
+                try {
+                    String[] kv = line.split("=");
+                    if (kv.length != 2)
+                        throw new IllegalArgumentException("Wrong header format, may be 'Key=Value' only");
+                    headers.add(new BasicHeader(kv[0].trim(), kv[1].trim()));
+                } catch (Throwable t) {
+                    Log.e("SampleParentActivity", "Not a valid header line: " + line, t);
+                }
+            }
+        }
+        return headers.toArray(new Header[headers.size()]);
+    }
+
+    protected HttpEntity getRequestEntity() {
+        if (isRequestBodyAllowed() && bodyEditText.getText() != null) {
+            try {
+                return new StringEntity(bodyEditText.getText().toString());
+            } catch (UnsupportedEncodingException e) {
+                Log.e("SampleParentActivity", "cannot create String entity", e);
+            }
+        }
+        return null;
     }
 
     protected final void debugHeaders(String TAG, Header[] headers) {
@@ -102,7 +121,7 @@ public abstract class SampleParentActivity extends Activity {
     protected static String throwableToString(Throwable t) {
         if (t == null)
             return null;
-        
+
         StringWriter sw = new StringWriter();
         t.printStackTrace(new PrintWriter(sw));
         return sw.toString();
@@ -136,7 +155,7 @@ public abstract class SampleParentActivity extends Activity {
 
     private View getColoredView(int bgColor, String msg) {
         TextView tv = new TextView(this);
-        tv.setLayoutParams(lParams);
+        tv.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         tv.setText(msg);
         tv.setBackgroundColor(bgColor);
         tv.setPadding(10, 10, 10, 10);
@@ -145,11 +164,11 @@ public abstract class SampleParentActivity extends Activity {
     }
 
     protected final void addView(View v) {
-        contents.addView(v);
+        responseLayout.addView(v);
     }
 
     protected final void clearOutputs() {
-        contents.removeAllViews();
+        responseLayout.removeAllViews();
     }
 
     protected abstract int getSampleTitle();
@@ -166,5 +185,5 @@ public abstract class SampleParentActivity extends Activity {
         return this.asyncHttpClient;
     }
 
-    protected abstract void executeSample(AsyncHttpClient client, String URL, AsyncHttpResponseHandler responseHandler);
+    protected abstract void executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler);
 }
