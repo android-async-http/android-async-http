@@ -8,5 +8,5 @@
     <string name="title_put_sample">PUT</string>
     <string name="title_delete_sample">DELETE</string>
     <string name="title_file_sample">GET to File</string>
-    <string name="title_binary_sample">GET to Binary</string>
+    <string name="title_binary_sample">GET binary data</string>
 </resources>
