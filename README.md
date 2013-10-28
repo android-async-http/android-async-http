@@ -40,7 +40,7 @@ http://central.maven.org/maven2/com/loopj/android/android-async-http/
 Maven URL: http://repo1.maven.org/maven2/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
-Version: 1.4.3
+Version: 1.4.4
 Packaging: JAR or AAR
 ```
 
