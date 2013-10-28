@@ -82,7 +82,7 @@ afterEvaluate { project ->
         sign configurations.archives
     }
 
-    task androidJavadocsJar(type: Jar) {
+    task androidJavadocsJar(type: Jar, dependsOn: generateReleaseJavadoc) {
         classifier = 'javadoc'
         from generateReleaseJavadoc.destinationDir
     }
