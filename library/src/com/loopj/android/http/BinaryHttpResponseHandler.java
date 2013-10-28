@@ -51,11 +51,19 @@ import java.util.regex.Pattern;
  * </pre>
  */
 public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
-    // Allow images by default
+
     private String[] mAllowedContentTypes = new String[]{
             "image/jpeg",
             "image/png"
     };
+
+    /**
+     * Method can be overriden to return allowed content types,
+     * can be sometimes better than passing data in constructor
+     */
+    public String[] getAllowedContentTypes() {
+        return mAllowedContentTypes;
+    }
 
     /**
      * Creates a new BinaryHttpResponseHandler
@@ -101,27 +109,27 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     /**
      * Fired when a request returns successfully, override to handle in your own code
      *
-     * @param statusCode    response HTTP statuse code
-     * @param headers       response headers, if any
-     * @param responseData  the response body, if any
+     * @param statusCode response HTTP statuse code
+     * @param headers    response headers, if any
+     * @param binaryData the response body, if any
      */
 
     @Override
-    public void onSuccess(int statusCode, Header[] headers, byte[] responseData) {
-        onSuccess(statusCode, responseData);
+    public void onSuccess(int statusCode, Header[] headers, byte[] binaryData) {
+        onSuccess(statusCode, binaryData);
     }
 
     /**
      * Fired when a request fails to complete, override to handle in your own code
      *
-     * @param statusCode    response HTTP statuse code
-     * @param headers       response headers, if any
-     * @param responseData  the response body, if any
-     * @param error         the underlying cause of the failure
+     * @param statusCode response HTTP statuse code
+     * @param headers    response headers, if any
+     * @param binaryData the response body, if any
+     * @param error      the underlying cause of the failure
      */
 
     @Override
-    public void onFailure(int statusCode, Header[] headers, byte[] responseData, Throwable error) {
+    public void onFailure(int statusCode, Header[] headers, byte[] binaryData, Throwable error) {
         onFailure(statusCode, error, null);
     }
 
@@ -141,7 +149,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
         }
         Header contentTypeHeader = contentTypeHeaders[0];
         boolean foundAllowedContentType = false;
-        for (String anAllowedContentType : mAllowedContentTypes) {
+        for (String anAllowedContentType : getAllowedContentTypes()) {
             if (Pattern.matches(anAllowedContentType, contentTypeHeader.getValue())) {
                 foundAllowedContentType = true;
             }
@@ -151,6 +159,6 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
             sendFailureMessage(status.getStatusCode(), response.getAllHeaders(), null, new HttpResponseException(status.getStatusCode(), "Content-Type not allowed!"));
             return;
         }
-        super.sendResponseMessage( response );
+        super.sendResponseMessage(response);
     }
 }
