@@ -18,6 +18,8 @@
 
 package com.loopj.android.http;
 
+import android.util.Log;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -110,6 +112,7 @@ class AsyncHttpRequest implements Runnable {
             }
         } catch (Exception e) {
             // catch anything else to ensure failure message is propagated
+            Log.e("AsyncHttpRequest", "Unhandled exception origin cause", e);
             cause = new IOException("Unhandled exception: " + e.getMessage());
         }
 

@@ -18,6 +18,8 @@
 
 package com.loopj.android.http;
 
+import android.util.Log;
+
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -25,6 +27,7 @@ import org.apache.http.client.HttpResponseException;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Used to intercept and handle the responses from requests made using
@@ -60,6 +63,8 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
     /**
      * Method can be overriden to return allowed content types,
      * can be sometimes better than passing data in constructor
+     *
+     * @return array of content-types or Pattern string templates (eg. '.*' to match every response)
      */
     public String[] getAllowedContentTypes() {
         return mAllowedContentTypes;
@@ -76,7 +81,7 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
      * Creates a new BinaryHttpResponseHandler, and overrides the default allowed
      * content types with passed String array (hopefully) of content types.
      *
-     * @param allowedContentTypes content types array, eg. 'image/jpeg'
+     * @param allowedContentTypes content types array, eg. 'image/jpeg' or pattern '.*'
      */
     public BinaryHttpResponseHandler(String[] allowedContentTypes) {
         this();
@@ -150,8 +155,12 @@ public class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
         Header contentTypeHeader = contentTypeHeaders[0];
         boolean foundAllowedContentType = false;
         for (String anAllowedContentType : getAllowedContentTypes()) {
-            if (Pattern.matches(anAllowedContentType, contentTypeHeader.getValue())) {
-                foundAllowedContentType = true;
+            try {
+                if (Pattern.matches(anAllowedContentType, contentTypeHeader.getValue())) {
+                    foundAllowedContentType = true;
+                }
+            } catch (PatternSyntaxException e) {
+                Log.e("BinaryHttpResponseHandler", "Given pattern is not valid: " + anAllowedContentType, e);
             }
         }
         if (!foundAllowedContentType) {
