@@ -55,7 +55,7 @@ class AsyncHttpRequest implements Runnable {
                 responseHandler.sendFailureMessage(0, null, null, e);
             }
         }
-        
+
         if (responseHandler != null) {
             responseHandler.sendFinishMessage();
         }
@@ -83,8 +83,7 @@ class AsyncHttpRequest implements Runnable {
         boolean retry = true;
         IOException cause = null;
         HttpRequestRetryHandler retryHandler = client.getHttpRequestRetryHandler();
-        try
-        {
+        try {
             while (retry) {
                 try {
                     makeRequest();
@@ -105,7 +104,7 @@ class AsyncHttpRequest implements Runnable {
                     cause = e;
                     retry = retryHandler.retryRequest(cause, ++executionCount, context);
                 }
-                if(retry && (responseHandler != null)) {
+                if (retry && (responseHandler != null)) {
                     responseHandler.sendRetryMessage();
                 }
             }
@@ -113,8 +112,8 @@ class AsyncHttpRequest implements Runnable {
             // catch anything else to ensure failure message is propagated
             cause = new IOException("Unhandled exception: " + e.getMessage());
         }
-        
+
         // cleaned up to throw IOException
-        throw(cause);
+        throw (cause);
     }
 }

@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,7 +53,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * params.put("profile_picture", new File("pic.jpg")); // Upload a File
  * params.put("profile_picture2", someInputStream); // Upload an InputStream
  * params.put("profile_picture3", new ByteArrayInputStream(someBytes)); // Upload some bytes
- * 
+ *
  * Map<String, String> map = new HashMap<String, String>();
  * map.put("first_name", "James");
  * map.put("last_name", "Smith");
@@ -62,15 +63,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * set.add("music");
  * set.add("art");
  * params.put("like", set); // url params: "like=music&like=art"
- * 
+ *
  * List<String> list = new ArrayList<String>(); // Ordered collection
  * list.add("Java");
  * list.add("C");
  * params.put("languages", list); // url params: "languages[]=Java&languages[]=C"
- * 
+ *
  * String[] colors = { "blue", "yellow" }; // Ordered collection
  * params.put("colors", colors); // url params: "colors[]=blue&colors[]=yellow"
- * 
+ *
  * List<Map<String, String>> listOfMaps = new ArrayList<Map<String, String>>();
  * Map<String, String> user1 = new HashMap<String, String>();
  * user1.put("age", "30");
@@ -88,8 +89,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RequestParams {
 
-    private static final String LOG_TAG = "RequestParams";
-
     protected boolean isRepeatable = false;
     protected ConcurrentHashMap<String, String> urlParams;
     protected ConcurrentHashMap<String, StreamWrapper> streamParams;
@@ -100,7 +99,7 @@ public class RequestParams {
      * Constructs a new empty <code>RequestParams</code> instance.
      */
     public RequestParams() {
-        init();
+        this((Map<String, String>) null);
     }
 
     /**
@@ -111,9 +110,10 @@ public class RequestParams {
      */
     public RequestParams(Map<String, String> source) {
         init();
-
-        for (Map.Entry<String, String> entry : source.entrySet()) {
-            put(entry.getKey(), entry.getValue());
+        if (source != null) {
+            for (Map.Entry<String, String> entry : source.entrySet()) {
+                put(entry.getKey(), entry.getValue());
+            }
         }
     }
 
@@ -124,10 +124,10 @@ public class RequestParams {
      * @param key   the key name for the intial param.
      * @param value the value string for the initial param.
      */
-    public RequestParams(String key, String value) {
-        init();
-
-        put(key, value);
+    public RequestParams(final String key, final String value) {
+        this(new HashMap<String, String>() {{
+            put(key, value);
+        }});
     }
 
     /**
@@ -224,17 +224,19 @@ public class RequestParams {
 
     /**
      * Adds param with non-string value (e.g. Map, List, Set).
+     *
      * @param key   the key name for the new param.
      * @param value the non-string value object for the new param.
      */
-    public void put(String key, Object value)  {
+    public void put(String key, Object value) {
         if (key != null && value != null) {
             urlParamsWithObjects.put(key, value);
         }
     }
-            
+
     /**
      * Adds string value to param which can have more than one value.
+     *
      * @param key   the key name for the param, either existing or new.
      * @param value the value string for the new param.
      */
@@ -253,7 +255,7 @@ public class RequestParams {
             }
         }
     }
-    
+
     /**
      * Removes a parameter from the request.
      *
@@ -300,7 +302,7 @@ public class RequestParams {
         for (BasicNameValuePair kv : params) {
             if (result.length() > 0)
                 result.append("&");
-            
+
             result.append(kv.getName());
             result.append("=");
             result.append(kv.getValue());
@@ -309,7 +311,7 @@ public class RequestParams {
         return result.toString();
     }
 
-    public void setHttpEntityIsRepeatable(boolean isRepeatable){
+    public void setHttpEntityIsRepeatable(boolean isRepeatable) {
         this.isRepeatable = isRepeatable;
     }
 
@@ -348,7 +350,7 @@ public class RequestParams {
         // Add non-string params
         List<BasicNameValuePair> params = getParamsList(null, urlParamsWithObjects);
         for (BasicNameValuePair kv : params) {
-        	entity.addPart(kv.getName(), kv.getValue());
+            entity.addPart(kv.getName(), kv.getValue());
         }
 
         // Add stream params
@@ -422,7 +424,7 @@ public class RequestParams {
         }
         return params;
     }
-    
+
     protected String getParamString() {
         return URLEncodedUtils.format(getParamsList(), HTTP.UTF_8);
     }
@@ -431,7 +433,7 @@ public class RequestParams {
         public File file;
         public String contentType;
 
-        public  FileWrapper(File file, String contentType) {
+        public FileWrapper(File file, String contentType) {
             this.file = file;
             this.contentType = contentType;
         }

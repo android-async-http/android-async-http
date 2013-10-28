@@ -243,7 +243,7 @@ class SimpleMultipartEntity implements HttpEntity {
         return false;
     }
 
-    public void setIsRepeatable(boolean isRepeatable){
+    public void setIsRepeatable(boolean isRepeatable) {
         this.isRepeatable = isRepeatable;
     }
 

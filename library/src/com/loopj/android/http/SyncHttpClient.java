@@ -1,6 +1,7 @@
 package com.loopj.android.http;
 
 import android.content.Context;
+
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -56,9 +57,9 @@ public class SyncHttpClient extends AsyncHttpClient {
 
     @Override
     protected RequestHandle sendRequest(DefaultHttpClient client,
-                               HttpContext httpContext, HttpUriRequest uriRequest,
-                               String contentType, AsyncHttpResponseHandler responseHandler,
-                               Context context) {
+                                        HttpContext httpContext, HttpUriRequest uriRequest,
+                                        String contentType, AsyncHttpResponseHandler responseHandler,
+                                        Context context) {
         if (contentType != null) {
             uriRequest.addHeader("Content-Type", contentType);
         }
@@ -69,7 +70,7 @@ public class SyncHttpClient extends AsyncHttpClient {
          * will execute the request directly
 		*/
         new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler).run();
-        
+
         // Return a Request Handle that cannot be used to cancel the request
         // because it is already complete by the time this returns
         return new RequestHandle(null);
