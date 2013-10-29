@@ -3,14 +3,6 @@ apply plugin: 'android-library'
 android {
     compileSdkVersion 18
     buildToolsVersion '18.0.1'
-
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            res.srcDirs = ['res']
-        }
-    }
 }
 
 android.libraryVariants.all { variant ->
