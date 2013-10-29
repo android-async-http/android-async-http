@@ -299,6 +299,9 @@ Credits & Contributors
 James Smith (<http://github.com/loopj>)
 :   Creator and Maintainer
 
+Marek Sebera (<http://github.com/smarek>)
+:   Maintainer since 1.4.4 release
+
 Micah Fivecoate (<http://github.com/m5>)
 :   Major Contributor, including the original `RequestParams`
 
