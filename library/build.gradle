@@ -5,6 +5,10 @@ android {
     buildToolsVersion '18.0.1'
 }
 
+dependencies {
+    compile 'com.squareup.okhttp:okhttp-apache:1.2.1'
+}
+
 android.libraryVariants.all { variant ->
   def name = variant.buildType.name
   if (name.equals(com.android.builder.BuilderConstants.DEBUG)) {

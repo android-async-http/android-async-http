@@ -2,9 +2,10 @@ package com.loopj.android.http;
 
 import android.content.Context;
 
+import com.squareup.okhttp.OkHttpClient;
+
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
 
 public class SyncHttpClient extends AsyncHttpClient {
@@ -56,7 +57,7 @@ public class SyncHttpClient extends AsyncHttpClient {
     }
 
     @Override
-    protected RequestHandle sendRequest(DefaultHttpClient client,
+    protected RequestHandle sendRequest(OkHttpClient client,
                                         HttpContext httpContext, HttpUriRequest uriRequest,
                                         String contentType, ResponseHandlerInterface responseHandler,
                                         Context context) {
