@@ -21,6 +21,8 @@ package com.loopj.android.http;
 import android.content.Context;
 import android.util.Log;
 
+import com.squareup.okhttp.OkHttpClient;
+
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -50,7 +52,6 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.HttpEntityWrapper;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultRedirectHandler;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
@@ -91,7 +92,7 @@ import java.util.zip.GZIPInputStream;
  * </pre>
  */
 public class AsyncHttpClient {
-    private static final String VERSION = "1.4.4";
+    private static final String VERSION = "2.0.0";
 
     private static final int DEFAULT_MAX_CONNECTIONS = 10;
     private static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
@@ -105,7 +106,7 @@ public class AsyncHttpClient {
     private int maxConnections = DEFAULT_MAX_CONNECTIONS;
     private int timeout = DEFAULT_SOCKET_TIMEOUT;
 
-    private final DefaultHttpClient httpClient;
+    private final OkHttpClient httpClient;
     private final HttpContext httpContext;
     private ThreadPoolExecutor threadPool;
     private final Map<Context, List<WeakReference<Future<?>>>> requestMap;
@@ -214,7 +215,8 @@ public class AsyncHttpClient {
         clientHeaderMap = new HashMap<String, String>();
 
         httpContext = new SyncBasicHttpContext(new BasicHttpContext());
-        httpClient = new DefaultHttpClient(cm, httpParams);
+        httpClient = new OkHttpClient(cm, httpParams);
+        httpClient.setFollowProtocolRedirects()
         httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
             @Override
             public void process(HttpRequest request, HttpContext context) {
@@ -882,7 +884,7 @@ public class AsyncHttpClient {
      *                        HttpPost, HttpGet, HttpPut, etc.
      * @return RequestHandle of future request process
      */
-    protected RequestHandle sendRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, ResponseHandlerInterface responseHandler, Context context) {
+    protected RequestHandle sendRequest(OkHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, ResponseHandlerInterface responseHandler, Context context) {
         if (contentType != null) {
             uriRequest.addHeader("Content-Type", contentType);
         }

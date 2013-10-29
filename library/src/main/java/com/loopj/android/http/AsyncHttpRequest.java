@@ -20,10 +20,11 @@ package com.loopj.android.http;
 
 import android.util.Log;
 
+import com.squareup.okhttp.OkHttpClient;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
@@ -31,13 +32,13 @@ import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 
 class AsyncHttpRequest implements Runnable {
-    private final AbstractHttpClient client;
+    private final OkHttpClient client;
     private final HttpContext context;
     private final HttpUriRequest request;
     private final ResponseHandlerInterface responseHandler;
     private int executionCount;
 
-    public AsyncHttpRequest(AbstractHttpClient client, HttpContext context, HttpUriRequest request, ResponseHandlerInterface responseHandler) {
+    public AsyncHttpRequest(OkHttpClient client, HttpContext context, HttpUriRequest request, ResponseHandlerInterface responseHandler) {
         this.client = client;
         this.context = context;
         this.request = request;
