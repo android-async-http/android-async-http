@@ -107,8 +107,8 @@ public class TextHttpResponseHandler extends AsyncHttpResponseHandler {
             String response = responseBody == null ? null : new String(responseBody, getCharset());
             onFailure(statusCode, headers, response, error);
         } catch (UnsupportedEncodingException e) {
-            Log.v(LOG_TAG, "String encoding failed, calling onFailure(int, Header[], String, Throwable)");
-            onFailure(0, headers, (String) null, e);
+            Log.e(LOG_TAG, "String encoding failed, calling onFailure(int, Header[], String, Throwable)", e);
+            onFailure(0, headers, (String) null, error);
         }
     }
 

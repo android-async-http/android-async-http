@@ -315,7 +315,7 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface {
             onFailure(statusCode, headers, error, response);
         } catch (UnsupportedEncodingException e) {
             Log.e(LOG_TAG, e.toString());
-            onFailure(statusCode, headers, e, null);
+            onFailure(statusCode, headers, error, null);
         }
     }
 
