@@ -884,7 +884,7 @@ public class AsyncHttpClient {
      */
     protected RequestHandle sendRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, ResponseHandlerInterface responseHandler, Context context) {
         if (contentType != null) {
-            uriRequest.addHeader("Content-Type", contentType);
+            uriRequest.setHeader("Content-Type", contentType);
         }
 
         responseHandler.setRequestHeaders(uriRequest.getAllHeaders());
