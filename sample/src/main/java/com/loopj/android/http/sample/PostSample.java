@@ -5,14 +5,12 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.message.BasicHeader;
 
 public class PostSample extends SampleParentActivity {
     private static final String LOG_TAG = "PostSample";
 
     @Override
     protected void executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler) {
-        headers = new Header[]{ new BasicHeader("Content-Type", "ee") };
         client.post(this, URL, headers, entity, null, responseHandler);
     }
 

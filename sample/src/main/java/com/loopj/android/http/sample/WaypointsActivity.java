@@ -9,7 +9,7 @@ import android.widget.ListView;
 
 public class WaypointsActivity extends ListActivity {
 
-    private static final String[] samples = new String[]{"GET", "POST", "DELETE", "PUT", "JSON", "FILE", "BINARY"};
+    private static final String[] samples = new String[]{"GET", "POST", "DELETE", "PUT", "JSON", "FILE", "BINARY", "THREADING TIMEOUTS"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +42,9 @@ public class WaypointsActivity extends ListActivity {
                 break;
             case 6:
                 targetClass = BinarySample.class;
+                break;
+            case 7:
+                targetClass = ThreadingTimeoutSample.class;
                 break;
         }
         if (targetClass != null)

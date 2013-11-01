@@ -27,6 +27,7 @@
         <activity android:name=".JsonSample" />
         <activity android:name=".FileSample" />
         <activity android:name=".BinarySample" />
+        <activity android:name=".ThreadingTimeoutSample" />
     </application>
 
 </manifest>
