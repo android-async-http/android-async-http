@@ -337,6 +337,7 @@ public class AsyncHttpClient {
         this.maxConnections = maxConnections;
         final HttpParams httpParams = this.httpClient.getParams();
         ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(this.maxConnections));
+        this.threadPool.setCorePoolSize(maxConnections);
     }
 
     /**

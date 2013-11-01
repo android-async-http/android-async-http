@@ -55,6 +55,8 @@ class AsyncHttpRequest implements Runnable {
         } catch (IOException e) {
             if (responseHandler != null) {
                 responseHandler.sendFailureMessage(0, null, null, e);
+            } else {
+                Log.e("AsyncHttpRequest", "makeRequestWithRetries returned error, but handler is null", e);
             }
         }
 
