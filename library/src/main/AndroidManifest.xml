@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.loopj.android.http"
-    android:versionName="1.4.4"
-    android:versionCode="144">
+    android:versionName="1.4.5-SNAPSHOT"
+    android:versionCode="145">
 
     <uses-sdk
         android:minSdkVersion="3" />

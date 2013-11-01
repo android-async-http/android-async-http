@@ -91,7 +91,7 @@ import java.util.zip.GZIPInputStream;
  * </pre>
  */
 public class AsyncHttpClient {
-    private static final String VERSION = "1.4.4";
+    private static final String VERSION = "1.4.5";
 
     private static final int DEFAULT_MAX_CONNECTIONS = 10;
     private static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
