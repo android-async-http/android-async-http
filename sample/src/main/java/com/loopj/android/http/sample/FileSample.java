@@ -44,18 +44,18 @@ public class FileSample extends SampleParentActivity {
             }
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, File file) {
+            public void onSuccess(int statusCode, Header[] headers, File response) {
                 debugHeaders(LOG_TAG, headers);
                 debugStatusCode(LOG_TAG, statusCode);
-                debugFile(getTargetFile());
+                debugFile(response);
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+            public void onFailure(int statusCode, Header[] headers, Throwable e, File response) {
                 debugHeaders(LOG_TAG, headers);
                 debugStatusCode(LOG_TAG, statusCode);
                 debugThrowable(LOG_TAG, e);
-                debugFile(getTargetFile());
+                debugFile(response);
             }
 
             private void debugFile(File file) {
@@ -68,7 +68,7 @@ public class FileSample extends SampleParentActivity {
                 } catch (Throwable t) {
                     Log.e(LOG_TAG, "Cannot debug file contents", t);
                 }
-                if (!file.delete()) {
+                if (!deleteTargetFile()) {
                     Log.d(LOG_TAG, "Could not delete response file " + file.getAbsolutePath());
                 }
             }

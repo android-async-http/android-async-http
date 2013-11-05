@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-public class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
+public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
 
     private File mFile;
     private static final String LOG_TAG = "FileAsyncHttpResponseHandler";
@@ -29,6 +29,10 @@ public class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
         this.mFile = getTemporaryFile(c);
     }
 
+    public boolean deleteTargetFile() {
+        return getTargetFile() == null || getTargetFile().delete();
+    }
+
     protected File getTemporaryFile(Context c) {
         try {
             return File.createTempFile("temp_", "_handled", c.getCacheDir());
@@ -43,44 +47,22 @@ public class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
         return mFile;
     }
 
-    public void onSuccess(File file) {
-    }
-
-    public void onSuccess(int statusCode, File file) {
-        onSuccess(file);
-    }
-
-    public void onSuccess(int statusCode, Header[] headers, File file) {
-        onSuccess(statusCode, file);
-    }
-
-    public void onFailure(Throwable e, File response) {
-        // By default call lower chain method
-        onFailure(e);
-    }
-
-    public void onFailure(int statusCode, Throwable e, File response) {
-        // By default call lower chain method
-        onFailure(e, response);
-    }
-
-    public void onFailure(int statusCode, Header[] headers, Throwable e, File response) {
-        // By default call lower chain method
-        onFailure(statusCode, e, response);
-    }
-
     @Override
-    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+    public final void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
         onFailure(statusCode, headers, error, getTargetFile());
     }
 
+    public abstract void onFailure(int statusCode, Header[] headers, Throwable e, File response);
+
     @Override
-    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+    public final void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
         onSuccess(statusCode, headers, getTargetFile());
     }
 
+    public abstract void onSuccess(int statusCode, Header[] headers, File file);
+
     @Override
-    byte[] getResponseData(HttpEntity entity) throws IOException {
+    protected byte[] getResponseData(HttpEntity entity) throws IOException {
         if (entity != null) {
             InputStream instream = entity.getContent();
             long contentLength = entity.getContentLength();

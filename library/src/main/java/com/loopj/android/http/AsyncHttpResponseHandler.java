@@ -32,7 +32,6 @@ import org.apache.http.util.ByteArrayBuffer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 
@@ -57,7 +56,8 @@ import java.net.URI;
  *     }
  *
  *     &#064;Override
- *     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error)
+ *     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable
+ * error)
  * {
  *         // Response failed :(
  *     }
@@ -79,7 +79,7 @@ import java.net.URI;
  * });
  * </pre>
  */
-public class AsyncHttpResponseHandler implements ResponseHandlerInterface {
+public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterface {
     private static final String LOG_TAG = "AsyncHttpResponseHandler";
 
     protected static final int SUCCESS_MESSAGE = 0;
@@ -170,11 +170,6 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface {
         }
     }
 
-
-    //
-    // Callbacks to be overridden, typically anonymously
-    //
-
     /**
      * Fired when the request progress, override to handle in your own code
      *
@@ -182,6 +177,7 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface {
      * @param totalSize    total size of file
      */
     public void onProgress(int bytesWritten, int totalSize) {
+        Log.d(LOG_TAG, String.format("Progress %d from %d (%d)", bytesWritten, totalSize, bytesWritten / (totalSize / 100)));
     }
 
     /**
@@ -200,106 +196,11 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface {
     /**
      * Fired when a request returns successfully, override to handle in your own code
      *
-     * @param content the body of the HTTP response from the server
-     * @deprecated use {@link #onSuccess(int, Header[], byte[])}
-     */
-    @Deprecated
-    public void onSuccess(String content) {
-    }
-
-    /**
-     * Fired when a request returns successfully, override to handle in your own code
-     *
-     * @param statusCode the status code of the response
-     * @param headers    the headers of the HTTP response
-     * @param content    the body of the HTTP response from the server
-     * @deprecated use {@link #onSuccess(int, Header[], byte[])}
-     */
-    @Deprecated
-    public void onSuccess(int statusCode, Header[] headers, String content) {
-        onSuccess(statusCode, content);
-    }
-
-    /**
-     * Fired when a request returns successfully, override to handle in your own code
-     *
-     * @param statusCode the status code of the response
-     * @param content    the body of the HTTP response from the server
-     * @deprecated use {@link #onSuccess(int, Header[], byte[])}
-     */
-    @Deprecated
-    public void onSuccess(int statusCode, String content) {
-        onSuccess(content);
-    }
-
-    /**
-     * Fired when a request returns successfully, override to handle in your own code
-     *
      * @param statusCode   the status code of the response
      * @param headers      return headers, if any
      * @param responseBody the body of the HTTP response from the server
      */
-    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-        try {
-            String response = responseBody == null ? null : new String(responseBody, getCharset());
-            onSuccess(statusCode, headers, response);
-        } catch (UnsupportedEncodingException e) {
-            Log.e(LOG_TAG, e.toString());
-            onFailure(statusCode, headers, e, null);
-        }
-    }
-
-    /**
-     * Fired when a request fails to complete, override to handle in your own code
-     *
-     * @param error the underlying cause of the failure
-     * @deprecated use {@link #onFailure(Throwable, String)}
-     */
-    @Deprecated
-    public void onFailure(Throwable error) {
-    }
-
-    /**
-     * Fired when a request fails to complete, override to handle in your own code
-     *
-     * @param error   the underlying cause of the failure
-     * @param content the response body, if any
-     * @deprecated use {@link #onFailure(int, Header[], byte[], Throwable)}
-     */
-    @Deprecated
-    public void onFailure(Throwable error, String content) {
-        // By default, call the deprecated onFailure(Throwable) for compatibility
-        onFailure(error);
-    }
-
-    /**
-     * Fired when a request fails to complete, override to handle in your own code
-     *
-     * @param statusCode return HTTP status code
-     * @param error      the underlying cause of the failure
-     * @param content    the response body, if any
-     * @deprecated use {@link #onFailure(int, Header[], byte[], Throwable)}
-     */
-    @Deprecated
-    public void onFailure(int statusCode, Throwable error, String content) {
-        // By default, call the chain method onFailure(Throwable,String)
-        onFailure(error, content);
-    }
-
-    /**
-     * Fired when a request fails to complete, override to handle in your own code
-     *
-     * @param statusCode return HTTP status code
-     * @param headers    return headers, if any
-     * @param error      the underlying cause of the failure
-     * @param content    the response body, if any
-     * @deprecated use {@link #onFailure(int, Header[], byte[], Throwable)}
-     */
-    @Deprecated
-    public void onFailure(int statusCode, Header[] headers, Throwable error, String content) {
-        // By default, call the chain method onFailure(int,Throwable,String)
-        onFailure(statusCode, error, content);
-    }
+    public abstract void onSuccess(int statusCode, Header[] headers, byte[] responseBody);
 
     /**
      * Fired when a request fails to complete, override to handle in your own code
@@ -309,15 +210,7 @@ public class AsyncHttpResponseHandler implements ResponseHandlerInterface {
      * @param responseBody the response body, if any
      * @param error        the underlying cause of the failure
      */
-    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-        try {
-            String response = responseBody == null ? null : new String(responseBody, getCharset());
-            onFailure(statusCode, headers, error, response);
-        } catch (UnsupportedEncodingException e) {
-            Log.e(LOG_TAG, e.toString());
-            onFailure(statusCode, headers, error, null);
-        }
-    }
+    public abstract void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error);
 
     /**
      * Fired when a retry occurs, override to handle in your own code
