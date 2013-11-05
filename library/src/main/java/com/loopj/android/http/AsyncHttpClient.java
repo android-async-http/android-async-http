@@ -69,6 +69,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -107,7 +108,7 @@ public class AsyncHttpClient {
 
     private final DefaultHttpClient httpClient;
     private final HttpContext httpContext;
-    private ThreadPoolExecutor threadPool;
+    private ExecutorService threadPool;
     private final Map<Context, List<WeakReference<Future<?>>>> requestMap;
     private final Map<String, String> clientHeaderMap;
     private boolean isUrlEncodingEnabled = true;
@@ -209,7 +210,7 @@ public class AsyncHttpClient {
 
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
-        threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(DEFAULT_MAX_CONNECTIONS);
+        threadPool = Executors.newFixedThreadPool(DEFAULT_MAX_CONNECTIONS);
         requestMap = new WeakHashMap<Context, List<WeakReference<Future<?>>>>();
         clientHeaderMap = new HashMap<String, String>();
 
@@ -337,7 +338,6 @@ public class AsyncHttpClient {
         this.maxConnections = maxConnections;
         final HttpParams httpParams = this.httpClient.getParams();
         ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(this.maxConnections));
-        this.threadPool.setCorePoolSize(maxConnections);
     }
 
     /**
