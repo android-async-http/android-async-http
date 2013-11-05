@@ -40,7 +40,7 @@ import java.net.URI;
  * {@link #onSuccess(int, org.apache.http.Header[], byte[])} method is designed to be anonymously
  * overridden with your own response handling code. <p>&nbsp;</p> Additionally, you can override the
  * {@link #onFailure(int, org.apache.http.Header[], byte[], Throwable)}, {@link #onStart()}, {@link
- * #onFinish()}, {@link #onRetry()} and {@link #onProgress(int, int)} methods as required.
+ * #onFinish()}, {@link #onRetry(int)} and {@link #onProgress(int, int)} methods as required.
  * <p>&nbsp;</p> For example: <p>&nbsp;</p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
@@ -119,8 +119,9 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         this.requestHeaders = requestHeaders;
     }
 
-    // avoid leaks by using a non-anonymous handler class
-    // with a weak reference
+    /**
+     * Avoid leaks by using a non-anonymous handler class with a weak reference
+     */
     static class ResponderHandler extends Handler {
         private final WeakReference<AsyncHttpResponseHandler> mResponder;
 
@@ -137,8 +138,9 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         }
     }
 
+    @Override
     public boolean getUseSynchronousMode() {
-        return (useSynchronousMode);
+        return useSynchronousMode;
     }
 
     @Override
@@ -214,25 +216,23 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
 
     /**
      * Fired when a retry occurs, override to handle in your own code
+     *
+     * @param retryNo number of retry
      */
-    public void onRetry() {
+    public void onRetry(int retryNo) {
+        Log.d(LOG_TAG, String.format("Request retry no. %d", retryNo));
     }
-
-
-    //
-    // Pre-processing of messages (executes in background threadpool thread)
-    //
 
     final public void sendProgressMessage(int bytesWritten, int bytesTotal) {
         sendMessage(obtainMessage(PROGRESS_MESSAGE, new Object[]{bytesWritten, bytesTotal}));
     }
 
-    final public void sendSuccessMessage(int statusCode, Header[] headers, byte[] responseBody) {
-        sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{statusCode, headers, responseBody}));
+    final public void sendSuccessMessage(int statusCode, Header[] headers, byte[] responseBytes) {
+        sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{statusCode, headers, responseBytes}));
     }
 
-    final public void sendFailureMessage(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-        sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{statusCode, headers, responseBody, error}));
+    final public void sendFailureMessage(int statusCode, Header[] headers, byte[] responseBody, Throwable throwable) {
+        sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{statusCode, headers, responseBody, throwable}));
     }
 
     final public void sendStartMessage() {
@@ -243,17 +243,17 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         sendMessage(obtainMessage(FINISH_MESSAGE, null));
     }
 
-    final public void sendRetryMessage() {
-        sendMessage(obtainMessage(RETRY_MESSAGE, null));
+    final public void sendRetryMessage(int retryNo) {
+        sendMessage(obtainMessage(RETRY_MESSAGE, new Object[]{retryNo}));
     }
 
     // Methods which emulate android's Handler and Message methods
-    protected void handleMessage(Message msg) {
+    protected void handleMessage(Message message) {
         Object[] response;
 
-        switch (msg.what) {
+        switch (message.what) {
             case SUCCESS_MESSAGE:
-                response = (Object[]) msg.obj;
+                response = (Object[]) message.obj;
                 if (response != null && response.length >= 3) {
                     onSuccess((Integer) response[0], (Header[]) response[1], (byte[]) response[2]);
                 } else {
@@ -261,7 +261,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 }
                 break;
             case FAILURE_MESSAGE:
-                response = (Object[]) msg.obj;
+                response = (Object[]) message.obj;
                 if (response != null && response.length >= 4) {
                     onFailure((Integer) response[0], (Header[]) response[1], (byte[]) response[2], (Throwable) response[3]);
                 } else {
@@ -275,7 +275,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 onFinish();
                 break;
             case PROGRESS_MESSAGE:
-                response = (Object[]) msg.obj;
+                response = (Object[]) message.obj;
                 if (response != null && response.length >= 2) {
                     try {
                         onProgress((Integer) response[0], (Integer) response[1]);
@@ -287,7 +287,11 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 }
                 break;
             case RETRY_MESSAGE:
-                onRetry();
+                response = (Object[]) message.obj;
+                if (response != null && response.length == 1)
+                    onRetry((Integer) response[0]);
+                else
+                    Log.e(LOG_TAG, "RETRY_MESSAGE didn't get enough params");
                 break;
         }
     }
@@ -300,21 +304,33 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         }
     }
 
-    protected void postRunnable(Runnable r) {
-        if (r != null) {
-            handler.post(r);
+    /**
+     * Helper method to send runnable into local handler loop
+     *
+     * @param runnable runnable instance, can be null
+     */
+    protected void postRunnable(Runnable runnable) {
+        if (runnable != null) {
+            handler.post(runnable);
         }
     }
 
-    protected Message obtainMessage(int responseMessage, Object response) {
+    /**
+     * Helper method to create Message instance from handler
+     *
+     * @param responseMessageId   constant to identify Handler message
+     * @param responseMessageData object to be passed to message receiver
+     * @return Message instance, should not be null
+     */
+    protected Message obtainMessage(int responseMessageId, Object responseMessageData) {
         Message msg;
         if (handler != null) {
-            msg = handler.obtainMessage(responseMessage, response);
+            msg = handler.obtainMessage(responseMessageId, responseMessageData);
         } else {
             msg = Message.obtain();
             if (msg != null) {
-                msg.what = responseMessage;
-                msg.obj = response;
+                msg.what = responseMessageId;
+                msg.obj = responseMessageData;
             }
         }
         return msg;
@@ -338,6 +354,13 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         }
     }
 
+    /**
+     * Returns byte array of response HttpEntity contents
+     *
+     * @param entity can be null
+     * @return response entity body or null
+     * @throws java.io.IOException if reading entity or creating byte array failed
+     */
     byte[] getResponseData(HttpEntity entity) throws IOException {
         byte[] responseBody = null;
         if (entity != null) {

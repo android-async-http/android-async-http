@@ -7,6 +7,12 @@ import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
 
+/**
+ * Processes http requests in synchronous mode, so your caller thread will be blocked on each
+ * request
+ *
+ * @see com.loopj.android.http.AsyncHttpClient
+ */
 public class SyncHttpClient extends AsyncHttpClient {
 
     /**

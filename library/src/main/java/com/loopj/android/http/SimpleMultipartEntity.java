@@ -93,7 +93,7 @@ class SimpleMultipartEntity implements HttpEntity {
             out.write(value.getBytes());
             out.write(CR_LF);
         } catch (final IOException e) {
-            // Can't happen on ByteArrayOutputStream
+            // Shall not happen on ByteArrayOutputStream
             Log.e(LOG_TAG, "addPart ByteArrayOutputStream exception", e);
         }
     }

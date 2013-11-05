@@ -58,8 +58,10 @@ public interface ResponseHandlerInterface {
 
     /**
      * Notifies callback of retrying request
+     *
+     * @param retryNo number of retry within one request
      */
-    void sendRetryMessage();
+    void sendRetryMessage(int retryNo);
 
     /**
      * Returns URI which was used to request
@@ -95,4 +97,11 @@ public interface ResponseHandlerInterface {
      * @param useSynchronousMode whether data should be handled on background Thread on UI Thread
      */
     void setUseSynchronousMode(boolean useSynchronousMode);
+
+    /**
+     * Can set, whether the handler should be asynchronous or synchronous
+     *
+     * @return boolean if the ResponseHandler is running in synchronous mode
+     */
+    boolean getUseSynchronousMode();
 }

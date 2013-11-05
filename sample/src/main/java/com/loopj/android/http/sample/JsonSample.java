@@ -49,28 +49,29 @@ public class JsonSample extends SampleParentActivity {
             }
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String rawResponse, SampleJSON response) {
+            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, SampleJSON response) {
                 debugHeaders(LOG_TAG, headers);
                 debugStatusCode(LOG_TAG, statusCode);
                 if (response != null) {
-                    debugResponse(LOG_TAG, rawResponse);
+                    debugResponse(LOG_TAG, rawJsonResponse);
                 }
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable e, String rawResponse, SampleJSON errorResponse) {
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, SampleJSON errorResponse) {
                 debugHeaders(LOG_TAG, headers);
                 debugStatusCode(LOG_TAG, statusCode);
-                debugThrowable(LOG_TAG, e);
+                debugThrowable(LOG_TAG, throwable);
                 if (errorResponse != null) {
-                    debugResponse(LOG_TAG, rawResponse);
+                    debugResponse(LOG_TAG, rawJsonData);
                 }
             }
 
             @Override
-            protected SampleJSON parseResponse(String responseBody) throws Throwable {
-                return new ObjectMapper().readValues(new JsonFactory().createParser(responseBody), SampleJSON.class).next();
+            protected SampleJSON parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
+                return new ObjectMapper().readValues(new JsonFactory().createParser(rawJsonData), SampleJSON.class).next();
             }
+
         };
     }
 }

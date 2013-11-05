@@ -91,16 +91,16 @@ import java.util.zip.GZIPInputStream;
  * </pre>
  */
 public class AsyncHttpClient {
-    private static final String VERSION = "1.4.5";
 
-    private static final int DEFAULT_MAX_CONNECTIONS = 10;
-    private static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
-    private static final int DEFAULT_MAX_RETRIES = 5;
-    private static final int DEFAULT_RETRY_SLEEP_TIME_MILLIS = 1500;
-    private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;
-    private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
-    private static final String ENCODING_GZIP = "gzip";
-    private static final String LOG_TAG = "AsyncHttpClient";
+    public static final String VERSION = "1.4.5";
+    public static final int DEFAULT_MAX_CONNECTIONS = 10;
+    public static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
+    public static final int DEFAULT_MAX_RETRIES = 5;
+    public static final int DEFAULT_RETRY_SLEEP_TIME_MILLIS = 1500;
+    public static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;
+    public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
+    public static final String ENCODING_GZIP = "gzip";
+    public static final String LOG_TAG = "AsyncHttpClient";
 
     private int maxConnections = DEFAULT_MAX_CONNECTIONS;
     private int timeout = DEFAULT_SOCKET_TIMEOUT;
@@ -488,9 +488,7 @@ public class AsyncHttpClient {
         requestMap.remove(context);
     }
 
-    //
-    // HTTP HEAD Requests
-    //
+    // [+] HTTP HEAD
 
     /**
      * Perform a HTTP HEAD request, without any parameters.
@@ -559,10 +557,8 @@ public class AsyncHttpClient {
                 context);
     }
 
-
-    //
-    // HTTP GET Requests
-    //
+    // [-] HTTP HEAD
+    // [+] HTTP GET
 
     /**
      * Perform a HTTP GET request, without any parameters.
@@ -631,10 +627,8 @@ public class AsyncHttpClient {
                 context);
     }
 
-
-    //
-    // HTTP POST Requests
-    //
+    // [-] HTTP GET
+    // [+] HTTP POST
 
     /**
      * Perform a HTTP POST request, without any parameters.
@@ -733,9 +727,8 @@ public class AsyncHttpClient {
         return sendRequest(httpClient, httpContext, request, contentType, responseHandler, context);
     }
 
-    //
-    // HTTP PUT Requests
-    //
+    // [-] HTTP POST
+    // [+] HTTP PUT
 
     /**
      * Perform a HTTP PUT request, without any parameters.
@@ -812,9 +805,8 @@ public class AsyncHttpClient {
         return sendRequest(httpClient, httpContext, request, contentType, responseHandler, context);
     }
 
-    //
-    // HTTP DELETE Requests
-    //
+    // [-] HTTP PUT
+    // [+] HTTP DELETE
 
     /**
      * Perform a HTTP DELETE request.
@@ -870,6 +862,8 @@ public class AsyncHttpClient {
         if (headers != null) httpDelete.setHeaders(headers);
         return sendRequest(httpClient, httpContext, httpDelete, null, responseHandler, context);
     }
+
+    // [-] HTTP DELETE
 
     /**
      * Puts a new request in queue as a new thread in pool to be executed

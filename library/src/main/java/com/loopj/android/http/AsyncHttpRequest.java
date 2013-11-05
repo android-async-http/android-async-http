@@ -30,6 +30,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 
+/**
+ * Internal class, representing the HttpRequest, done in asynchronous manner
+ */
 class AsyncHttpRequest implements Runnable {
     private final AbstractHttpClient client;
     private final HttpContext context;
@@ -109,7 +112,7 @@ class AsyncHttpRequest implements Runnable {
                     retry = retryHandler.retryRequest(cause, ++executionCount, context);
                 }
                 if (retry && (responseHandler != null)) {
-                    responseHandler.sendRetryMessage();
+                    responseHandler.sendRetryMessage(executionCount);
                 }
             }
         } catch (Exception e) {

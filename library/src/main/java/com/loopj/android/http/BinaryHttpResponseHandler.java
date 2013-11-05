@@ -89,25 +89,8 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
             Log.e(LOG_TAG, "Constructor passed allowedContentTypes was null !");
     }
 
-    /**
-     * Fired when a request returns successfully, override to handle in your own code
-     *
-     * @param statusCode response HTTP statuse code
-     * @param headers    response headers, if any
-     * @param binaryData the response body, if any
-     */
-
     @Override
     public abstract void onSuccess(int statusCode, Header[] headers, byte[] binaryData);
-
-    /**
-     * Fired when a request fails to complete, override to handle in your own code
-     *
-     * @param statusCode response HTTP statuse code
-     * @param headers    response headers, if any
-     * @param binaryData the response body, if any
-     * @param error      the underlying cause of the failure
-     */
 
     @Override
     public abstract void onFailure(int statusCode, Header[] headers, byte[] binaryData, Throwable error);

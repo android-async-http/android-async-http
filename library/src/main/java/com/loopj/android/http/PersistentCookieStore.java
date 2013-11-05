@@ -174,8 +174,10 @@ public class PersistentCookieStore implements CookieStore {
         return cookie;
     }
 
-    // Using some super basic byte array <-> hex conversions so we don't have
-    // to rely on any large Base64 libraries. Can be overridden if you like!
+    /**
+     * Using some super basic byte array <-> hex conversions so we don't have to rely on any large
+     * Base64 libraries. Can be overridden if you like!
+     */
     protected String byteArrayToHexString(byte[] b) {
         StringBuilder sb = new StringBuilder(b.length * 2);
         for (byte element : b) {

@@ -51,11 +51,11 @@ public class FileSample extends SampleParentActivity {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable e, File response) {
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
                 debugHeaders(LOG_TAG, headers);
                 debugStatusCode(LOG_TAG, statusCode);
-                debugThrowable(LOG_TAG, e);
-                debugFile(response);
+                debugThrowable(LOG_TAG, throwable);
+                debugFile(file);
             }
 
             private void debugFile(File file) {
