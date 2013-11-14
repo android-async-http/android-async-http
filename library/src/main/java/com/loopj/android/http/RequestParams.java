@@ -427,7 +427,7 @@ public class RequestParams {
         return URLEncodedUtils.format(getParamsList(), HTTP.UTF_8);
     }
 
-    private static class FileWrapper {
+    public static class FileWrapper {
         public File file;
         public String contentType;
 
@@ -437,7 +437,7 @@ public class RequestParams {
         }
     }
 
-    private static class StreamWrapper {
+    public static class StreamWrapper {
         public InputStream inputStream;
         public String name;
         public String contentType;
