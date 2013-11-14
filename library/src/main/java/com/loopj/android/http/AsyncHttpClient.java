@@ -187,18 +187,6 @@ public class AsyncHttpClient {
         return schemeRegistry;
     }
 
-    public static void allowRetryExceptionClass(Class<?> cls) {
-        if (cls != null) {
-            RetryHandler.addToWhitelist(cls);
-        }
-    }
-
-    public static void blockRetryExceptionClass(Class<?> cls) {
-        if (cls != null) {
-            RetryHandler.addToBlacklist(cls);
-        }
-    }
-
     /**
      * Creates a new AsyncHttpClient.
      *
@@ -260,6 +248,18 @@ public class AsyncHttpClient {
         });
 
         httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES, DEFAULT_RETRY_SLEEP_TIME_MILLIS));
+    }
+
+    public static void allowRetryExceptionClass(Class<?> cls) {
+        if (cls != null) {
+            RetryHandler.addClassToWhitelist(cls);
+        }
+    }
+
+    public static void blockRetryExceptionClass(Class<?> cls) {
+        if (cls != null) {
+            RetryHandler.addClassToBlacklist(cls);
+        }
     }
 
     /**
