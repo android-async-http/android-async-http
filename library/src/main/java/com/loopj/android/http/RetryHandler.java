@@ -105,6 +105,14 @@ class RetryHandler implements HttpRequestRetryHandler {
         return retry;
     }
 
+    static void addClassToWhitelist(Class<?> cls) {
+        exceptionWhitelist.add(cls);
+    }
+
+    static void addClassToBlacklist(Class<?> cls) {
+        exceptionBlacklist.add(cls);
+    }
+
     protected boolean isInList(HashSet<Class<?>> list, Throwable error) {
         for (Class<?> aList : list) {
             if (aList.isInstance(error)) {

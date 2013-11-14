@@ -187,6 +187,18 @@ public class AsyncHttpClient {
         return schemeRegistry;
     }
 
+    public static void allowRetryExceptionClass(Class<?> cls) {
+        if (cls != null) {
+            RetryHandler.addToWhitelist(cls);
+        }
+    }
+
+    public static void blockRetryExceptionClass(Class<?> cls) {
+        if (cls != null) {
+            RetryHandler.addToBlacklist(cls);
+        }
+    }
+
     /**
      * Creates a new AsyncHttpClient.
      *
