@@ -40,10 +40,10 @@ import org.apache.http.protocol.HttpContext;
 
 import android.os.SystemClock;
 
-class RetryHandler implements HttpRequestRetryHandler {
-    private static final int RETRY_SLEEP_TIME_MILLIS = 1500;
-    private static HashSet<Class<?>> exceptionWhitelist = new HashSet<Class<?>>();
-    private static HashSet<Class<?>> exceptionBlacklist = new HashSet<Class<?>>();
+public class RetryHandler implements HttpRequestRetryHandler {
+    private static int RETRY_SLEEP_TIME_MILLIS = 1500;
+    private static final HashSet<Class<?>> exceptionWhitelist = new HashSet<Class<?>>();
+    private static final HashSet<Class<?>> exceptionBlacklist = new HashSet<Class<?>>();
 
     static {
         // Retry if the server dropped connection on us
@@ -59,7 +59,16 @@ class RetryHandler implements HttpRequestRetryHandler {
         exceptionBlacklist.add(SSLException.class);
     }
 
+    private static boolean retryPostsToo;
     private final int maxRetries;
+
+    public static void setRetryPostsToo(boolean flag) {
+      retryPostsToo = flag;
+    }
+
+    public static void setRetrySleepDuration(int time) {
+      RETRY_SLEEP_TIME_MILLIS = time;
+    }
 
     public RetryHandler(int maxRetries) {
         this.maxRetries = maxRetries;
@@ -86,7 +95,7 @@ class RetryHandler implements HttpRequestRetryHandler {
             retry = true;
         }
 
-        if(retry) {
+        if(retry && !retryPostsToo) {
             // resend all idempotent requests
             HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute( ExecutionContext.HTTP_REQUEST );
             String requestType = currentReq.getMethod();
@@ -101,7 +110,7 @@ class RetryHandler implements HttpRequestRetryHandler {
 
         return retry;
     }
-    
+
     protected boolean isInList(HashSet<Class<?>> list, Throwable error) {
     	Iterator<Class<?>> itr = list.iterator();
     	while (itr.hasNext()) {
