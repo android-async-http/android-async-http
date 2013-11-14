@@ -98,6 +98,7 @@ public class AsyncHttpClient {
     public static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
     public static final int DEFAULT_MAX_RETRIES = 5;
     public static final int DEFAULT_RETRY_SLEEP_TIME_MILLIS = 1500;
+    public static final boolean DEFAULT_RETRY_ON_POST_TOO = false;
     public static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;
     public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     public static final String ENCODING_GZIP = "gzip";
@@ -247,7 +248,7 @@ public class AsyncHttpClient {
             }
         });
 
-        httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES, DEFAULT_RETRY_SLEEP_TIME_MILLIS));
+        httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES, DEFAULT_RETRY_SLEEP_TIME_MILLIS, DEFAULT_RETRY_ON_POST_TOO));
     }
 
     /**
@@ -411,7 +412,19 @@ public class AsyncHttpClient {
      * @param timeout sleep between retries in milliseconds
      */
     public void setMaxRetriesAndTimeout(int retries, int timeout) {
-        this.httpClient.setHttpRequestRetryHandler(new RetryHandler(retries, timeout));
+        this(retries, timeout, DEFAULT_RETRY_ON_POST_TOO);
+    }
+
+    /**
+     * Sets the maximum number of retries and timeout for a particular Request,
+     * and also whether to retry on failed POST requests too.
+     *
+     * @param retries maximum number of retries per request
+     * @param timeout sleep between retries in milliseconds
+     * @param postToo whether to retry on failed POST operations too
+     */
+    public void setRetryHandlerSettings(int retries, int timeout, boolean postToo) {
+        this.httpClient.setHttpRequestRetryHandler(new RetryHandler(retries, timeout, postToo));
     }
 
     /**
