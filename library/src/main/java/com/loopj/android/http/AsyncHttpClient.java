@@ -412,7 +412,7 @@ public class AsyncHttpClient {
      * @param timeout sleep between retries in milliseconds
      */
     public void setMaxRetriesAndTimeout(int retries, int timeout) {
-        this(retries, timeout, DEFAULT_RETRY_ON_POST_TOO);
+        setRetryHandlerSettings(retries, timeout, DEFAULT_RETRY_ON_POST_TOO);
     }
 
     /**
