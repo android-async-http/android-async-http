@@ -86,7 +86,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RequestParams {
 
-    protected boolean isRepeatable = false;
+    protected boolean isRepeatable;
+    protected boolean useJsonStreamer;
     protected ConcurrentHashMap<String, String> urlParams;
     protected ConcurrentHashMap<String, StreamWrapper> streamParams;
     protected ConcurrentHashMap<String, FileWrapper> fileParams;
@@ -312,6 +313,13 @@ public class RequestParams {
         this.isRepeatable = isRepeatable;
     }
 
+    public void setUseJsonStreamer(boolean useJsonStreamer) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.FROYO) {
+            throw new IllegalStateException("Use of JSON streamer is available for API level 8 and later.");
+        }
+        this.useJsonStreamer = useJsonStreamer;
+    }
+
     /**
      * Returns an HttpEntity containing all request parameters
      *
@@ -321,11 +329,43 @@ public class RequestParams {
      * @throws IOException if one of the streams cannot be read
      */
     public HttpEntity getEntity(ResponseHandlerInterface progressHandler) throws IOException {
-        if (streamParams.isEmpty() && fileParams.isEmpty()) {
+        if (useJsonStreamer) {
+            return createJsonStreamerEntity();
+        } else if (streamParams.isEmpty() && fileParams.isEmpty()) {
             return createFormEntity();
         } else {
             return createMultipartEntity(progressHandler);
         }
+    }
+
+    private HttpEntity createJsonStreamerEntity() throws IOException {
+        JsonStreamerEntity entity = new JsonStreamerEntity(!fileParams.isEmpty() || !streamParams.isEmpty());
+
+        // Add string params
+        for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
+            entity.addPart(entry.getKey(), entry.getValue());
+        }
+
+        // Add non-string params
+        for (ConcurrentHashMap.Entry<String, Object> entry : urlParamsWithObjects.entrySet()) {
+            entity.addPart(entry.getKey(), entry.getValue());
+        }
+
+        // Add file params
+        for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
+            FileWrapper fileWrapper = entry.getValue();
+            entity.addPart(entry.getKey(), fileWrapper.file, fileWrapper.contentType);
+        }
+
+        // Add stream params
+        for (ConcurrentHashMap.Entry<String, StreamWrapper> entry : streamParams.entrySet()) {
+            StreamWrapper stream = entry.getValue();
+            if (stream.inputStream != null) {
+                entity.addPart(entry.getKey(), stream.inputStream, stream.name, stream.contentType);
+            }
+        }
+
+        return entity;
     }
 
     private HttpEntity createFormEntity() {
@@ -427,7 +467,7 @@ public class RequestParams {
         return URLEncodedUtils.format(getParamsList(), HTTP.UTF_8);
     }
 
-    private static class FileWrapper {
+    public static class FileWrapper {
         public File file;
         public String contentType;
 
@@ -437,7 +477,7 @@ public class RequestParams {
         }
     }
 
-    private static class StreamWrapper {
+    public static class StreamWrapper {
         public InputStream inputStream;
         public String name;
         public String contentType;
