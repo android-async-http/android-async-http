@@ -16,11 +16,6 @@
     limitations under the License.
 */
 
-/*
-    This code is taken from Rafael Sanches' blog.
-    http://blog.rafaelsanches.com/2011/01/29/upload-using-multipart-post-using-httpclient-in-android/
-*/
-
 package com.loopj.android.http;
 
 import org.apache.http.Header;
