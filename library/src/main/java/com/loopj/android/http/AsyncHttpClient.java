@@ -34,6 +34,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
@@ -329,6 +330,18 @@ public class AsyncHttpClient {
         HttpProtocolParams.setUserAgent(this.httpClient.getParams(), userAgent);
     }
 
+    /**
+     * By default, RetryHandler will not retry erroneous POST requests.
+     * Use this method to turn this feature ON or OFF.
+     *
+     * @param retryOnPost whether POST requests should be retried on error
+     */
+    public void setRetryOnPostErrors(boolean retryOnPost) {
+        HttpRequestRetryHandler handler = httpClient.getHttpRequestRetryHandler();
+        if (handler instanceof RetryHandler) {
+            ((RetryHandler)handler).retryOnPost = retryOnPost;
+        }
+    }
 
     /**
      * Returns current limit of parallel connections
