@@ -354,8 +354,8 @@ public class RequestParams {
             FileWrapper fileWrapper = entry.getValue();
             entity.addPart(entry.getKey(),
                            new FileInputStream(fileWrapper.file),
-                                               fileWrapper.file.getName(),
-                                               fileWrapper.contentType);
+                           fileWrapper.file.getName(),
+                           fileWrapper.contentType);
         }
 
         // Add stream params
