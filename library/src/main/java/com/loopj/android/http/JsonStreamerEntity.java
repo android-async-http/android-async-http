@@ -18,24 +18,23 @@
 
 package com.loopj.android.http;
 
+import android.util.Base64;
+import android.util.Base64OutputStream;
+import android.util.Log;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.message.BasicHeader;
 
-import android.util.Log;
-import android.util.Base64;
-import android.util.Base64OutputStream;
-
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-
-import java.util.Set;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -63,13 +62,13 @@ class JsonStreamerEntity implements HttpEntity {
         "application/octet-stream";
 
     // Size of the byte-array buffer used to read from files.
-    private static int BUFFER_SIZE = 2048;
+    private static final int BUFFER_SIZE = 2048;
 
     // K/V objects to be uploaded.
-    private final Map<String, Object> kvParams = new HashMap();
+    private final Map<String, Object> kvParams = new HashMap<String, Object>();
 
     // Streams and their associated meta-data to be uploaded.
-    private final Map<String, RequestParams.StreamWrapper> streamParams = new HashMap();
+    private final Map<String, RequestParams.StreamWrapper> streamParams = new HashMap<String, RequestParams.StreamWrapper>();
 
     // Whether to use gzip compression while uploading
     private final Header contentEncoding;
@@ -169,7 +168,7 @@ class JsonStreamerEntity implements HttpEntity {
             Object value = kvParams.get(key);
 
             if (value instanceof Boolean) {
-                upload.write(((Boolean)value).booleanValue() ? JSON_TRUE : JSON_FALSE);
+                upload.write((Boolean) value ? JSON_TRUE : JSON_FALSE);
             } else if (value instanceof Long) {
                 upload.write((((Number)value).longValue() + "").getBytes());
             } else if (value instanceof Double) {
@@ -229,10 +228,6 @@ class JsonStreamerEntity implements HttpEntity {
             upload.write('}');
             upload.write(',');
         }
-
-        // GC.
-        keys = null;
-        buffer = null;
 
         // Include the elapsed time taken to upload everything.
         upload.write(STREAM_ELAPSED);
