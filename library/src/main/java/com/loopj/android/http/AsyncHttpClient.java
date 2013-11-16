@@ -210,7 +210,7 @@ public class AsyncHttpClient {
 
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
-        threadPool = Executors.newFixedThreadPool(DEFAULT_MAX_CONNECTIONS);
+        threadPool = Executors.newCachedThreadPool();
         requestMap = new WeakHashMap<Context, List<WeakReference<Future<?>>>>();
         clientHeaderMap = new HashMap<String, String>();
 
