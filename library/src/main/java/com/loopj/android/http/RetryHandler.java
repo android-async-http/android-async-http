@@ -40,8 +40,8 @@ import java.util.HashSet;
 import javax.net.ssl.SSLException;
 
 class RetryHandler implements HttpRequestRetryHandler {
-    private static HashSet<Class<?>> exceptionWhitelist = new HashSet<Class<?>>();
-    private static HashSet<Class<?>> exceptionBlacklist = new HashSet<Class<?>>();
+    private final static HashSet<Class<?>> exceptionWhitelist = new HashSet<Class<?>>();
+    private final static HashSet<Class<?>> exceptionBlacklist = new HashSet<Class<?>>();
 
     static {
         // Retry if the server dropped connection on us
@@ -59,10 +59,12 @@ class RetryHandler implements HttpRequestRetryHandler {
 
     private final int maxRetries;
     private final int retrySleepTimeMS;
+    private final boolean retryPostsToo;
 
-    public RetryHandler(int maxRetries, int retrySleepTimeMS) {
+    public RetryHandler(int maxRetries, int retrySleepTimeMS, boolean retryPostsToo) {
         this.maxRetries = maxRetries;
         this.retrySleepTimeMS = retrySleepTimeMS;
+        this.retryPostsToo = retryPostsToo;
     }
 
     @Override
@@ -86,7 +88,7 @@ class RetryHandler implements HttpRequestRetryHandler {
             retry = true;
         }
 
-        if (retry) {
+        if (retry && !retryPostsToo) {
             // resend all idempotent requests
             HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
             if (currentReq == null) {
