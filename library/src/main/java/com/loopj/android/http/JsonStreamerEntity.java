@@ -45,6 +45,16 @@ class JsonStreamerEntity implements HttpEntity {
     private static final UnsupportedOperationException ERR_UNSUPPORTED =
         new UnsupportedOperationException("Unsupported operation in this implementation.");
 
+    // Size of the byte-array buffer used to read from streams.
+    private static final int BUFFER_SIZE = 2048;
+
+    // Reusable StringBuilder used by escape() method.
+    // Base64, at worst, will make a binary stream grow in size by approximately
+    // (n + 2 - ((n + 2) % 3)) / 3 * 4, which is roughly 1.3333333% for a
+    // large 'n'.
+    private static final StringBuilder BUILDER =
+        new StringBuilder((int)(BUFFER_SIZE * 1.35f));
+
     private static final byte[] JSON_TRUE = "true".getBytes();
     private static final byte[] JSON_FALSE = "false".getBytes();
     private static final byte[] STREAM_NAME = escape("name");
@@ -58,16 +68,6 @@ class JsonStreamerEntity implements HttpEntity {
         new BasicHeader("Content-Encoding", "gzip");
     private static final String APPLICATION_OCTET_STREAM =
         "application/octet-stream";
-
-    // Size of the byte-array buffer used to read from streams.
-    private static final int BUFFER_SIZE = 2048;
-
-    // Reusable StringBuilder used by escape() method.
-    // Base64, at worst, will make a binary stream grow in size by approximately
-    // (n + 2 - ((n + 2) % 3)) / 3 * 4, which is roughly 1.3333333% for a
-    // large 'n'.
-    private static final StringBuilder BUILDER =
-        new StringBuilder((int)(BUFFER_SIZE * 1.35f));
 
     // K/V objects to be uploaded.
     private final Map<String, Object> kvParams =
