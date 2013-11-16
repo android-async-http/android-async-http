@@ -250,6 +250,18 @@ public class AsyncHttpClient {
         httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES, DEFAULT_RETRY_SLEEP_TIME_MILLIS));
     }
 
+    public static void allowRetryExceptionClass(Class<?> cls) {
+        if (cls != null) {
+            RetryHandler.addClassToWhitelist(cls);
+        }
+    }
+
+    public static void blockRetryExceptionClass(Class<?> cls) {
+        if (cls != null) {
+            RetryHandler.addClassToBlacklist(cls);
+        }
+    }
+
     /**
      * Get the underlying HttpClient instance. This is useful for setting additional fine-grained
      * settings for requests by accessing the client's ConnectionManager, HttpParams and
