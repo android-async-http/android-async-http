@@ -57,6 +57,7 @@ class JsonStreamerEntity implements HttpEntity {
 
     private static final byte[] JSON_TRUE = "true".getBytes();
     private static final byte[] JSON_FALSE = "false".getBytes();
+    private static final byte[] JSON_NULL = "null".getBytes();
     private static final byte[] STREAM_NAME = escape("name");
     private static final byte[] STREAM_TYPE = escape("type");
     private static final byte[] STREAM_CONTENTS = escape("contents");
@@ -204,11 +205,13 @@ class JsonStreamerEntity implements HttpEntity {
             upload.write(STREAM_NAME);
             upload.write(':');
             upload.write(escape(entry.name));
+            upload.write(',');
 
             // Send the streams's content type.
             upload.write(STREAM_TYPE);
             upload.write(':');
             upload.write(escape(entry.contentType));
+            upload.write(',');
 
             // Prepare the file content's key.
             upload.write(STREAM_CONTENTS);
@@ -252,6 +255,11 @@ class JsonStreamerEntity implements HttpEntity {
     // Curtosy of Simple-JSON: http://goo.gl/XoW8RF
     // Changed a bit to suit our needs in this class.
     static byte[] escape(String string) {
+        // If it's null, just return prematurely.
+        if (string == null) {
+          return JSON_NULL;
+        }
+
         // Surround with quotations.
         BUILDER.append('"');
 
