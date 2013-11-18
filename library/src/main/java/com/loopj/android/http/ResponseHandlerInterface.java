@@ -37,6 +37,10 @@ public interface ResponseHandlerInterface {
      */
     void sendProgressMessage(int bytesWritten, int bytesTotal);
 
+
+    void sendProgressDataMessage(byte[] responseBody);
+
+
     /**
      * Notifies callback, that request was handled successfully
      *

@@ -1,3 +1,5 @@
+package com.loopj.android.http;
+
 /*
     Android Asynchronous Http Client
     Copyright (c) 2011 James Smith <james@loopj.com>
@@ -16,8 +18,6 @@
     limitations under the License.
 */
 
-package com.loopj.android.http;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URI;
+import java.util.Arrays;
 
 /**
  * Used to intercept and handle the responses from requests made using {@link AsyncHttpClient}. The
@@ -79,14 +80,17 @@ import java.net.URI;
  * });
  * </pre>
  */
-public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterface {
+/**
+ * Created by vkr on 14.11.13.
+ */
+public abstract class DataAsyncHttpResponseHandler implements ResponseHandlerInterface {
     private static final String LOG_TAG = "AsyncHttpResponseHandler";
 
     protected static final int SUCCESS_MESSAGE = 0;
     protected static final int FAILURE_MESSAGE = 1;
     protected static final int START_MESSAGE = 2;
     protected static final int FINISH_MESSAGE = 3;
-    protected static final int PROGRESS_MESSAGE = 4;
+    protected static final int PROGRESS_DATA_MESSAGE = 4;
     protected static final int RETRY_MESSAGE = 5;
 
     protected static final int BUFFER_SIZE = 4096;
@@ -123,15 +127,15 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * Avoid leaks by using a non-anonymous handler class with a weak reference
      */
     static class ResponderHandler extends Handler {
-        private final WeakReference<AsyncHttpResponseHandler> mResponder;
+        private final WeakReference<DataAsyncHttpResponseHandler> mResponder;
 
-        ResponderHandler(AsyncHttpResponseHandler service) {
-            mResponder = new WeakReference<AsyncHttpResponseHandler>(service);
+        ResponderHandler(DataAsyncHttpResponseHandler service) {
+            mResponder = new WeakReference<DataAsyncHttpResponseHandler>(service);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            AsyncHttpResponseHandler service = mResponder.get();
+            DataAsyncHttpResponseHandler service = mResponder.get();
             if (service != null) {
                 service.handleMessage(msg);
             }
@@ -165,7 +169,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     /**
      * Creates a new AsyncHttpResponseHandler
      */
-    public AsyncHttpResponseHandler() {
+    public DataAsyncHttpResponseHandler() {
         // Set up a handler to post events back to the correct thread if possible
         if (Looper.myLooper() != null) {
             handler = new ResponderHandler(this);
@@ -175,11 +179,9 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     /**
      * Fired when the request progress, override to handle in your own code
      *
-     * @param bytesWritten offset from start of file
-     * @param totalSize    total size of file
+     * @param responseBody
      */
-    public void onProgress(int bytesWritten, int totalSize) {
-        Log.d(LOG_TAG, String.format("Progress %d from %d (%d)", bytesWritten, totalSize, bytesWritten / (totalSize / 100)));
+    public void onProgressData(byte[] responseBody) {
     }
 
     /**
@@ -224,10 +226,10 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     final public void sendProgressMessage(int bytesWritten, int bytesTotal) {
-        sendMessage(obtainMessage(PROGRESS_MESSAGE, new Object[]{bytesWritten, bytesTotal}));
     }
 
     final public void sendProgressDataMessage(byte[] responseBytes) {
+        sendMessage(obtainMessage(PROGRESS_DATA_MESSAGE, new Object[]{responseBytes}));
     }
 
     final public void sendSuccessMessage(int statusCode, Header[] headers, byte[] responseBytes) {
@@ -277,16 +279,16 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
             case FINISH_MESSAGE:
                 onFinish();
                 break;
-            case PROGRESS_MESSAGE:
+            case PROGRESS_DATA_MESSAGE:
                 response = (Object[]) message.obj;
-                if (response != null && response.length >= 2) {
+                if (response != null && response.length >= 1) {
                     try {
-                        onProgress((Integer) response[0], (Integer) response[1]);
+                        onProgressData((byte[])response[0]);
                     } catch (Throwable t) {
-                        Log.e(LOG_TAG, "custom onProgress contains an error", t);
+                        Log.e(LOG_TAG, "custom onProgressData contains an error", t);
                     }
                 } else {
-                    Log.e(LOG_TAG, "PROGRESS_MESSAGE didn't got enough params");
+                    Log.e(LOG_TAG, "PROGRESS_DATA_MESSAGE didn't got enough params");
                 }
                 break;
             case RETRY_MESSAGE:
@@ -385,7 +387,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                         while ((l = instream.read(tmp)) != -1 && !Thread.currentThread().isInterrupted()) {
                             count += l;
                             buffer.append(tmp, 0, l);
-                            sendProgressMessage(count, (int) contentLength);
+                            sendProgressDataMessage(Arrays.copyOfRange(tmp, 0, l));
                         }
                     } finally {
                         instream.close();
@@ -400,3 +402,4 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         return responseBody;
     }
 }
+
