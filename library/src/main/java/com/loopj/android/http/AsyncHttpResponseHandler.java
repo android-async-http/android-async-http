@@ -179,7 +179,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @param totalSize    total size of file
      */
     public void onProgress(int bytesWritten, int totalSize) {
-        Log.d(LOG_TAG, String.format("Progress %d from %d (%d)", bytesWritten, totalSize, totalSize > 0 ? bytesWritten / (totalSize / 100) : -1));
+        Log.d(LOG_TAG, String.format("Progress %d from %d (%d%%)", bytesWritten, totalSize, (totalSize > 0) ? (bytesWritten / totalSize) * 100 : -1));
     }
 
     /**
