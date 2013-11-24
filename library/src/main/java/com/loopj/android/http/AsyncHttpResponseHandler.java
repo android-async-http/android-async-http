@@ -179,7 +179,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @param totalSize    total size of file
      */
     public void onProgress(int bytesWritten, int totalSize) {
-        Log.d(LOG_TAG, String.format("Progress %d from %d (%d)", bytesWritten, totalSize, bytesWritten / (totalSize / 100)));
+        Log.d(LOG_TAG, String.format("Progress %d from %d (%d)", bytesWritten, totalSize, totalSize > 0 ? bytesWritten / (totalSize / 100) : -1));
     }
 
     /**
@@ -370,11 +370,9 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 if (contentLength > Integer.MAX_VALUE) {
                     throw new IllegalArgumentException("HTTP entity too large to be buffered in memory");
                 }
-                if (contentLength < 0) {
-                    contentLength = BUFFER_SIZE;
-                }
+                int buffersize =  (contentLength < 0) ? BUFFER_SIZE : (int) contentLength;
                 try {
-                    ByteArrayBuffer buffer = new ByteArrayBuffer((int) contentLength);
+                    ByteArrayBuffer buffer = new ByteArrayBuffer((int) buffersize);
                     try {
                         byte[] tmp = new byte[BUFFER_SIZE];
                         int l, count = 0;
