@@ -25,6 +25,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -314,9 +315,6 @@ public class RequestParams {
     }
 
     public void setUseJsonStreamer(boolean useJsonStreamer) {
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.FROYO) {
-            throw new IllegalStateException("Use of JSON streamer is available for API level 8 and later.");
-        }
         this.useJsonStreamer = useJsonStreamer;
     }
 
@@ -354,14 +352,20 @@ public class RequestParams {
         // Add file params
         for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
             FileWrapper fileWrapper = entry.getValue();
-            entity.addPart(entry.getKey(), fileWrapper.file, fileWrapper.contentType);
+            entity.addPart(entry.getKey(),
+                           new FileInputStream(fileWrapper.file),
+                           fileWrapper.file.getName(),
+                           fileWrapper.contentType);
         }
 
         // Add stream params
         for (ConcurrentHashMap.Entry<String, StreamWrapper> entry : streamParams.entrySet()) {
             StreamWrapper stream = entry.getValue();
             if (stream.inputStream != null) {
-                entity.addPart(entry.getKey(), stream.inputStream, stream.name, stream.contentType);
+                entity.addPart(entry.getKey(),
+                               stream.inputStream,
+                               stream.name,
+                               stream.contentType);
             }
         }
 
