@@ -1,9 +1,9 @@
 package com.loopj.android.http;
 
 import org.apache.http.Header;
-import org.apache.http.HttpResponse;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 
 /**
@@ -17,7 +17,7 @@ public interface ResponseHandlerInterface {
      * @param response HttpResponse object with data
      * @throws java.io.IOException if retrieving data from response fails
      */
-    void sendResponseMessage(HttpResponse response) throws IOException;
+    void sendResponseMessage(InputStream response) throws IOException;
 
     /**
      * Notifies callback, that request started execution
