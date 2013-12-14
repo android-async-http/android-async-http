@@ -30,7 +30,7 @@
                 android:id="@+id/button_run"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Run" />
+                android:text="@string/button_run" />
         </LinearLayout>
 
         <LinearLayout
@@ -42,7 +42,7 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Headers (key=val, one per line)" />
+                android:text="@string/label_headers" />
 
             <EditText
                 android:id="@+id/edit_headers"
@@ -63,7 +63,7 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Request body" />
+                android:text="@string/label_req_body" />
 
             <EditText
                 android:id="@+id/edit_body"

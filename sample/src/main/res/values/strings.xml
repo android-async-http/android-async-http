@@ -9,4 +9,7 @@
     <string name="title_delete_sample">DELETE</string>
     <string name="title_file_sample">GET to File</string>
     <string name="title_binary_sample">GET binary data</string>
+    <string name="button_run">Run</string>
+    <string name="label_headers">Headers (key=val, one per line)</string>
+    <string name="label_req_body">Request body</string>
 </resources>
