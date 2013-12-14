@@ -132,7 +132,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         @Override
         public void handleMessage(Message msg) {
             AsyncHttpResponseHandler service = mResponder.get();
-            if (service != null) {
+            if (null != service) {
                 service.handleMessage(msg);
             }
         }
@@ -308,7 +308,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @param runnable runnable instance, can be null
      */
     protected void postRunnable(Runnable runnable) {
-        boolean missingLooper = null != Looper.myLooper();
+        boolean missingLooper = null == Looper.myLooper();
         if (missingLooper) {
             Looper.prepare();
         }
