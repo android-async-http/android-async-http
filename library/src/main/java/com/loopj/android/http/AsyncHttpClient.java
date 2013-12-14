@@ -64,7 +64,12 @@ import org.apache.http.protocol.SyncBasicHttpContext;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -73,6 +78,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
 
@@ -106,149 +112,17 @@ public class AsyncHttpClient {
     private int maxConnections = DEFAULT_MAX_CONNECTIONS;
     private int timeout = DEFAULT_SOCKET_TIMEOUT;
 
-    private final OkHttpClient httpClient;
-    private final HttpContext httpContext;
+    private final OkHttpClient httpClient = new OkHttpClient();
     private ThreadPoolExecutor threadPool;
-    private final Map<Context, List<WeakReference<Future<?>>>> requestMap;
-    private final Map<String, String> clientHeaderMap;
+   // private final Map<Context, List<WeakReference<Future<?>>>> requestMap;
+    private final Map<String, String> clientHeaderMap = new HashMap<String, String>();
     private boolean isUrlEncodingEnabled = true;
 
     /**
      * Creates a new AsyncHttpClient with default constructor arguments values
      */
     public AsyncHttpClient() {
-        this(false, 80, 443);
-    }
-
-    /**
-     * Creates a new AsyncHttpClient.
-     *
-     * @param httpPort non-standard HTTP-only port
-     */
-    public AsyncHttpClient(int httpPort) {
-        this(false, httpPort, 443);
-    }
-
-    /**
-     * Creates a new AsyncHttpClient.
-     *
-     * @param httpPort  non-standard HTTP-only port
-     * @param httpsPort non-standard HTTPS-only port
-     */
-    public AsyncHttpClient(int httpPort, int httpsPort) {
-        this(false, httpPort, httpsPort);
-    }
-
-    /**
-     * Creates new AsyncHttpClient using given params
-     *
-     * @param fixNoHttpResponseException Whether to fix or not issue, by ommiting SSL verification
-     * @param httpPort                   HTTP port to be used, must be greater than 0
-     * @param httpsPort                  HTTPS port to be used, must be greater than 0
-     */
-    public AsyncHttpClient(boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
-        this(getDefaultSchemeRegistry(fixNoHttpResponseException, httpPort, httpsPort));
-    }
-
-    /**
-     * Returns default instance of SchemeRegistry
-     *
-     * @param fixNoHttpResponseException Whether to fix or not issue, by ommiting SSL verification
-     * @param httpPort                   HTTP port to be used, must be greater than 0
-     * @param httpsPort                  HTTPS port to be used, must be greater than 0
-     */
-    private static SchemeRegistry getDefaultSchemeRegistry(boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
-        if (fixNoHttpResponseException) {
-            Log.d(LOG_TAG, "Beware! Using the fix is insecure, as it doesn't verify SSL certificates.");
-        }
-
-        if (httpPort < 1) {
-            httpPort = 80;
-            Log.d(LOG_TAG, "Invalid HTTP port number specified, defaulting to 80");
-        }
-
-        if (httpsPort < 1) {
-            httpsPort = 443;
-            Log.d(LOG_TAG, "Invalid HTTPS port number specified, defaulting to 443");
-        }
-
-        // Fix to SSL flaw in API < ICS
-        // See https://code.google.com/p/android/issues/detail?id=13117
-        SSLSocketFactory sslSocketFactory;
-        if (fixNoHttpResponseException)
-            sslSocketFactory = MySSLSocketFactory.getFixedSocketFactory();
-        else
-            sslSocketFactory = SSLSocketFactory.getSocketFactory();
-
-        SchemeRegistry schemeRegistry = new SchemeRegistry();
-        schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), httpPort));
-        schemeRegistry.register(new Scheme("https", sslSocketFactory, httpsPort));
-
-        return schemeRegistry;
-    }
-
-    /**
-     * Creates a new AsyncHttpClient.
-     *
-     * @param schemeRegistry SchemeRegistry to be used
-     */
-    public AsyncHttpClient(SchemeRegistry schemeRegistry) {
-
-        BasicHttpParams httpParams = new BasicHttpParams();
-
-        ConnManagerParams.setTimeout(httpParams, timeout);
-        ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(maxConnections));
-        ConnManagerParams.setMaxTotalConnections(httpParams, DEFAULT_MAX_CONNECTIONS);
-
-        HttpConnectionParams.setSoTimeout(httpParams, timeout);
-        HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
-        HttpConnectionParams.setTcpNoDelay(httpParams, true);
-        HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
-
-        HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setUserAgent(httpParams, String.format("android-async-http/%s (http://loopj.com/android-async-http)", VERSION));
-
-        ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
-
-        threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(DEFAULT_MAX_CONNECTIONS);
-        requestMap = new WeakHashMap<Context, List<WeakReference<Future<?>>>>();
-        clientHeaderMap = new HashMap<String, String>();
-
-        httpContext = new SyncBasicHttpContext(new BasicHttpContext());
-        httpClient = new OkHttpClient(cm, httpParams);
-        httpClient.setFollowProtocolRedirects()
-        httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
-            @Override
-            public void process(HttpRequest request, HttpContext context) {
-                if (!request.containsHeader(HEADER_ACCEPT_ENCODING)) {
-                    request.addHeader(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
-                }
-                for (String header : clientHeaderMap.keySet()) {
-                    request.addHeader(header, clientHeaderMap.get(header));
-                }
-            }
-        });
-
-        httpClient.addResponseInterceptor(new HttpResponseInterceptor() {
-            @Override
-            public void process(HttpResponse response, HttpContext context) {
-                final HttpEntity entity = response.getEntity();
-                if (entity == null) {
-                    return;
-                }
-                final Header encoding = entity.getContentEncoding();
-                if (encoding != null) {
-                    for (HeaderElement element : encoding.getElements()) {
-                        if (element.getName().equalsIgnoreCase(ENCODING_GZIP)) {
-                            response.setEntity(new InflatingEntity(entity));
-                            break;
-                        }
-                    }
-                }
-            }
-        });
-
-        httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES, DEFAULT_RETRY_SLEEP_TIME_MILLIS));
+    	
     }
 
     /**
@@ -258,18 +132,8 @@ public class AsyncHttpClient {
      *
      * @return underlying HttpClient instance
      */
-    public HttpClient getHttpClient() {
-        return this.httpClient;
-    }
-
-    /**
-     * Get the underlying HttpContext instance. This is useful for getting and setting fine-grained
-     * settings for requests by accessing the context's attributes such as the CookieStore.
-     *
-     * @return underlying HttpContext instance
-     */
-    public HttpContext getHttpContext() {
-        return this.httpContext;
+    public OkHttpClient getHttpClient() {
+        return httpClient;
     }
 
     /**
@@ -354,15 +218,14 @@ public class AsyncHttpClient {
      * Set the connection and socket timeout. By default, 10 seconds.
      *
      * @param timeout the connect/socket timeout in milliseconds, at least 1 second
+     * @deprecated use {@link #setTimeout(long, TimeUnit)} instead
      */
     public void setTimeout(int timeout) {
-        if (timeout < 1000)
-            timeout = DEFAULT_SOCKET_TIMEOUT;
-        this.timeout = timeout;
-        final HttpParams httpParams = this.httpClient.getParams();
-        ConnManagerParams.setTimeout(httpParams, this.timeout);
-        HttpConnectionParams.setSoTimeout(httpParams, this.timeout);
-        HttpConnectionParams.setConnectionTimeout(httpParams, this.timeout);
+    	setTimeout(timeout, TimeUnit.MILLISECONDS);
+    }
+    
+    public void setTimeout(long timeout, TimeUnit unit) {
+    	httpClient.setConnectTimeout(timeout, unit);
     }
 
     /**
@@ -884,30 +747,33 @@ public class AsyncHttpClient {
      *                        HttpPost, HttpGet, HttpPut, etc.
      * @return RequestHandle of future request process
      */
-    protected RequestHandle sendRequest(OkHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, ResponseHandlerInterface responseHandler, Context context) {
-        if (contentType != null) {
-            uriRequest.addHeader("Content-Type", contentType);
+    protected RequestHandle sendRequest(OkHttpClient client, HttpUriRequest uriRequest, String contentType, ResponseHandlerInterface responseHandler, Context context) {
+        HttpURLConnection connection = null;
+    	try {
+        	connection = client.open(uriRequest.getURI().toURL());
+            connection.setRequestMethod(uriRequest.getMethod()); //TODO write the params to connection.getOutputStream(void)
+            for(Map.Entry<String, String> header : clientHeaderMap.entrySet()) {
+        		connection.setRequestProperty(header.getKey(), header.getValue());
+        	}
+            if(contentType != null) {
+                uriRequest.addHeader("Content-Type", contentType);
+                connection.setRequestProperty("Content-Type", contentType);
+            }
+        } catch(ProtocolException e) {
+        	
+        } catch(MalformedURLException e) {
+        	
         }
 
         responseHandler.setRequestHeaders(uriRequest.getAllHeaders());
         responseHandler.setRequestURI(uriRequest.getURI());
 
-        Future<?> request = threadPool.submit(new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler));
-
-        if (context != null) {
-            // Add request to request map
-            List<WeakReference<Future<?>>> requestList = requestMap.get(context);
-            if (requestList == null) {
-                requestList = new LinkedList<WeakReference<Future<?>>>();
-                requestMap.put(context, requestList);
-            }
-
-            requestList.add(new WeakReference<Future<?>>(request));
-
-            // TODO: Remove dead weakrefs from requestLists?
+        if(connection != null) {
+        	Future<?> request = threadPool.submit(new AsyncHttpRequest(connection, uriRequest, responseHandler));
+        	return new RequestHandle(request);
         }
-
-        return new RequestHandle(request);
+        
+        return null;
     }
 
     /**
