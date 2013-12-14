@@ -166,10 +166,8 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * Creates a new AsyncHttpResponseHandler
      */
     public AsyncHttpResponseHandler() {
-        // Set up a handler to post events back to the correct thread if possible
-        if (Looper.myLooper() != null) {
-            handler = new ResponderHandler(this);
-        }
+        // Init Looper by calling postRunnable without argument
+        postRunnable(null);
     }
 
     /**
@@ -310,8 +308,18 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @param runnable runnable instance, can be null
      */
     protected void postRunnable(Runnable runnable) {
-        if (runnable != null) {
+        boolean missingLooper = null != Looper.myLooper();
+        if (missingLooper) {
+            Looper.prepare();
+        }
+        if (null == handler) {
+            handler = new ResponderHandler(this);
+        }
+        if (null != runnable) {
             handler.post(runnable);
+        }
+        if (missingLooper) {
+            Looper.loop();
         }
     }
 
@@ -370,7 +378,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 if (contentLength > Integer.MAX_VALUE) {
                     throw new IllegalArgumentException("HTTP entity too large to be buffered in memory");
                 }
-                int buffersize =  (contentLength < 0) ? BUFFER_SIZE : (int) contentLength;
+                int buffersize = (contentLength < 0) ? BUFFER_SIZE : (int) contentLength;
                 try {
                     ByteArrayBuffer buffer = new ByteArrayBuffer(buffersize);
                     try {
