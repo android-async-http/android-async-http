@@ -372,7 +372,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 }
                 int buffersize =  (contentLength < 0) ? BUFFER_SIZE : (int) contentLength;
                 try {
-                    ByteArrayBuffer buffer = new ByteArrayBuffer((int) buffersize);
+                    ByteArrayBuffer buffer = new ByteArrayBuffer(buffersize);
                     try {
                         byte[] tmp = new byte[BUFFER_SIZE];
                         int l, count = 0;
