@@ -70,7 +70,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * String[] colors = { "blue", "yellow" }; // Ordered collection
  * params.put("colors", colors); // url params: "colors[]=blue&amp;colors[]=yellow"
  *
- * List&lt;Map&lt;String, String&gt;&gt; listOfMaps = new ArrayList&lt;Map&lt;String, String&gt;&gt;();
+ * List&lt;Map&lt;String, String&gt;&gt; listOfMaps = new ArrayList&lt;Map&lt;String,
+ * String&gt;&gt;();
  * Map&lt;String, String&gt; user1 = new HashMap&lt;String, String&gt;();
  * user1.put("age", "30");
  * user1.put("gender", "male");
@@ -181,7 +182,10 @@ public class RequestParams {
      * @throws java.io.FileNotFoundException throws if wrong File argument was passed
      */
     public void put(String key, File file, String contentType) throws FileNotFoundException {
-        if (key != null && file != null) {
+        if (file == null || !file.exists()) {
+            throw new FileNotFoundException();
+        }
+        if (key != null) {
             fileParams.put(key, new FileWrapper(file, contentType));
         }
     }
@@ -353,9 +357,9 @@ public class RequestParams {
         for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
             FileWrapper fileWrapper = entry.getValue();
             entity.addPart(entry.getKey(),
-                           new FileInputStream(fileWrapper.file),
-                           fileWrapper.file.getName(),
-                           fileWrapper.contentType);
+                    new FileInputStream(fileWrapper.file),
+                    fileWrapper.file.getName(),
+                    fileWrapper.contentType);
         }
 
         // Add stream params
@@ -363,9 +367,9 @@ public class RequestParams {
             StreamWrapper stream = entry.getValue();
             if (stream.inputStream != null) {
                 entity.addPart(entry.getKey(),
-                               stream.inputStream,
-                               stream.name,
-                               stream.contentType);
+                        stream.inputStream,
+                        stream.name,
+                        stream.contentType);
             }
         }
 
