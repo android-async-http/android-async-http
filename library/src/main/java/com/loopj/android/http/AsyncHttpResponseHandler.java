@@ -227,9 +227,6 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         sendMessage(obtainMessage(PROGRESS_MESSAGE, new Object[]{bytesWritten, bytesTotal}));
     }
 
-    final public void sendProgressDataMessage(byte[] responseBytes) {
-    }
-
     final public void sendSuccessMessage(int statusCode, Header[] headers, byte[] responseBytes) {
         sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{statusCode, headers, responseBytes}));
     }
