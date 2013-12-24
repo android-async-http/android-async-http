@@ -18,6 +18,8 @@
 
 package com.loopj.android.http;
 
+import android.util.Log;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -88,12 +90,27 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RequestParams {
 
+    protected final static String LOG_TAG = "RequestParams";
     protected boolean isRepeatable;
     protected boolean useJsonStreamer;
     protected ConcurrentHashMap<String, String> urlParams;
     protected ConcurrentHashMap<String, StreamWrapper> streamParams;
     protected ConcurrentHashMap<String, FileWrapper> fileParams;
     protected ConcurrentHashMap<String, Object> urlParamsWithObjects;
+    protected String contentEncoding = HTTP.UTF_8;
+
+    /**
+     * Sets content encoding for return value of {@link #getParamString()} and {@link
+     * #createFormEntity()} <p>&nbsp;</p> Default encoding is "UTF-8"
+     *
+     * @param encoding String constant from {@link org.apache.http.protocol.HTTP}
+     */
+    public void setContentEncoding(final String encoding) {
+        if (encoding != null)
+            this.contentEncoding = encoding;
+        else
+            Log.d(LOG_TAG, "setContentEncoding called with null attribute");
+    }
 
     /**
      * Constructs a new empty {@code RequestParams} instance.
@@ -378,9 +395,10 @@ public class RequestParams {
 
     private HttpEntity createFormEntity() {
         try {
-            return new UrlEncodedFormEntity(getParamsList(), HTTP.UTF_8);
+            return new UrlEncodedFormEntity(getParamsList(), contentEncoding);
         } catch (UnsupportedEncodingException e) {
-            return null; // Actually cannot happen when using utf-8
+            Log.e(LOG_TAG, "createFormEntity failed", e);
+            return null; // Can happen, if the 'contentEncoding' won't be HTTP.UTF_8
         }
     }
 
@@ -472,7 +490,7 @@ public class RequestParams {
     }
 
     protected String getParamString() {
-        return URLEncodedUtils.format(getParamsList(), HTTP.UTF_8);
+        return URLEncodedUtils.format(getParamsList(), contentEncoding);
     }
 
     public static class FileWrapper {
