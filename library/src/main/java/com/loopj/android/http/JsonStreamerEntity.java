@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.GZIPOutputStream;
@@ -297,7 +298,7 @@ class JsonStreamerEntity implements HttpEntity {
                         for (int zero = 0; zero < intLength; zero++) {
                             BUILDER.append('0');
                         }
-                        BUILDER.append(intString.toUpperCase());
+                        BUILDER.append(intString.toUpperCase(Locale.US));
                     } else {
                         BUILDER.append(ch);
                     }

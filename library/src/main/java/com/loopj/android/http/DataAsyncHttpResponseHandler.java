@@ -26,7 +26,6 @@ import org.apache.http.util.ByteArrayBuffer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 
 public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
     private static final String LOG_TAG = "DataAsyncHttpResponseHandler";
@@ -42,8 +41,6 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
 
     /**
      * Fired when the request progress, override to handle in your own code
-     *
-     * @param responseBody
      */
     public void onProgressData(byte[] responseBody) {
     }
@@ -64,7 +61,7 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
                 response = (Object[]) message.obj;
                 if (response != null && response.length >= 1) {
                     try {
-                        onProgressData((byte[])response[0]);
+                        onProgressData((byte[]) response[0]);
                     } catch (Throwable t) {
                         Log.e(LOG_TAG, "custom onProgressData contains an error", t);
                     }
@@ -100,12 +97,11 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
                     ByteArrayBuffer buffer = new ByteArrayBuffer((int) contentLength);
                     try {
                         byte[] tmp = new byte[BUFFER_SIZE];
-                        int l, count = 0;
+                        int l;
                         // do not send messages if request has been cancelled
                         while ((l = instream.read(tmp)) != -1 && !Thread.currentThread().isInterrupted()) {
-                            count += l;
                             buffer.append(tmp, 0, l);
-                            sendProgressDataMessage(Arrays.copyOfRange(tmp, 0, l));
+                            sendProgressDataMessage(copyOfRange(tmp, 0, l));
                         }
                     } finally {
                         instream.close();
@@ -118,6 +114,36 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
             }
         }
         return responseBody;
+    }
+
+    /**
+     * Copies elements from {@code original} into a new array, from indexes start (inclusive) to end
+     * (exclusive). The original order of elements is preserved. If {@code end} is greater than
+     * {@code original.length}, the result is padded with the value {@code (byte) 0}.
+     *
+     * @param original the original array
+     * @param start    the start index, inclusive
+     * @param end      the end index, exclusive
+     * @return the new array
+     * @throws ArrayIndexOutOfBoundsException if {@code start < 0 || start > original.length}
+     * @throws IllegalArgumentException       if {@code start > end}
+     * @throws NullPointerException           if {@code original == null}
+     * @see java.util.Arrays
+     * @since 1.6
+     */
+    public static byte[] copyOfRange(byte[] original, int start, int end) throws ArrayIndexOutOfBoundsException, IllegalArgumentException, NullPointerException {
+        if (start > end) {
+            throw new IllegalArgumentException();
+        }
+        int originalLength = original.length;
+        if (start < 0 || start > originalLength) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        int resultLength = end - start;
+        int copyLength = Math.min(resultLength, originalLength - start);
+        byte[] result = new byte[resultLength];
+        System.arraycopy(original, start, result, 0, copyLength);
+        return result;
     }
 }
 
