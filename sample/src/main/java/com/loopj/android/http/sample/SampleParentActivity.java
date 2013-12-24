@@ -24,6 +24,7 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public abstract class SampleParentActivity extends Activity {
 
@@ -109,7 +110,7 @@ public abstract class SampleParentActivity extends Activity {
             Log.d(TAG, "Return Headers:");
             StringBuilder builder = new StringBuilder();
             for (Header h : headers) {
-                String _h = String.format("%s : %s", h.getName(), h.getValue());
+                String _h = String.format(Locale.US, "%s : %s", h.getName(), h.getValue());
                 Log.d(TAG, _h);
                 builder.append(_h);
                 builder.append("\n");
@@ -143,7 +144,7 @@ public abstract class SampleParentActivity extends Activity {
     }
 
     protected final void debugStatusCode(String TAG, int statusCode) {
-        String msg = String.format("Return Status Code: %d", statusCode);
+        String msg = String.format(Locale.US, "Return Status Code: %d", statusCode);
         Log.d(TAG, msg);
         addView(getColoredView(LIGHTBLUE, msg));
     }
