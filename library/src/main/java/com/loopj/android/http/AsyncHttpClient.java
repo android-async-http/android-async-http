@@ -20,27 +20,13 @@ package com.loopj.android.http;
 
 import android.content.Context;
 import android.util.Log;
-
-import org.apache.http.Header;
-import org.apache.http.HeaderElement;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpResponseInterceptor;
-import org.apache.http.HttpVersion;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.params.ConnPerRouteBean;
@@ -50,6 +36,7 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.HttpEntityWrapper;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultRedirectHandler;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -63,12 +50,9 @@ import org.apache.http.protocol.SyncBasicHttpContext;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -651,6 +635,28 @@ public class AsyncHttpClient {
      */
     public RequestHandle post(String url, ResponseHandlerInterface responseHandler) {
         return post(null, url, null, responseHandler);
+    }
+
+    /**
+     * Perform a HTTP POST request, with a object handled by jacson.
+     *
+     * @param url             the URL to send the request to.
+     * @param body             the body to send .
+     * @param responseHandler the response handler instance that should handle the response.
+     * @return RequestHandle of future request process
+     */
+    public RequestHandle post(String url,Object body, ResponseHandlerInterface responseHandler) {
+
+        HttpEntity entity = null;
+        try {
+            entity = new StringEntity(JsonHttpResponseHandler.getMapper().writeValueAsString(body));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        HttpEntityEnclosingRequestBase request = addEntityToRequestBase(new HttpPost(url), entity);
+        return sendRequest(httpClient, httpContext, request, "application/json", responseHandler, null);
     }
 
     /**

@@ -19,7 +19,7 @@
 package com.loopj.android.http;
 
 import android.util.Log;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
@@ -37,6 +37,42 @@ import org.json.JSONTokener;
  */
 public class JsonHttpResponseHandler extends TextHttpResponseHandler {
     private static final String LOG_TAG = "JsonHttpResponseHandler";
+
+    public static ObjectMapper getMapper() {
+        return mapper;
+    }
+
+    public static Boolean getIsjackson() {
+        return isjackson;
+    }
+
+    private static Boolean isjackson = false;
+    private static Class<?> mType = null;
+    static private ObjectMapper mapper = null;
+
+    public static Class<?> getmType() {
+        return mType;
+    }
+
+    public static void setmType(Class<?> mType) {
+        JsonHttpResponseHandler.mType = mType;
+    }
+
+    private static Boolean init() {
+        try {
+            Class.forName("com.fasterxml.jackson.databind.ObjectMapper");
+            isjackson = true;
+            mapper = new ObjectMapper();
+        } catch (Exception e) {
+            Log.i(LOG_TAG, "this is no jason lib...");
+            isjackson = false;
+        }
+        return false;
+    }
+
+    public void onSuccess(int statusCode, Header[] headers, Object response) {
+
+    }
 
     /**
      * Creates new JsonHttpResponseHandler, with Json String encoding UTF-8
@@ -100,6 +136,10 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
 
     }
 
+    public void onFailure(int statusCode, Header[] headers, Throwable throwable, Object errorResponse) {
+
+    }
+
     @Override
     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
@@ -126,7 +166,8 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                                 } else if (jsonResponse instanceof JSONArray) {
                                     onSuccess(statusCode, headers, (JSONArray) jsonResponse);
                                 } else {
-                                    onFailure(statusCode, headers, new JSONException("Unexpected response type " + jsonResponse.getClass().getName()), (JSONObject) null);
+                                    onSuccess(statusCode, headers, responseBytes);
+//                                    onFailure(statusCode, headers, new JSONException("Unexpected response type " + jsonResponse.getClass().getName()), (JSONObject) null);
                                 }
 
                             }
@@ -164,6 +205,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                                 } else if (jsonResponse instanceof String) {
                                     onFailure(statusCode, headers, (String) jsonResponse, throwable);
                                 } else {
+                                    onFailure(statusCode, headers, throwable, jsonResponse);
                                     onFailure(statusCode, headers, new JSONException("Unexpected response type " + jsonResponse.getClass().getName()), (JSONObject) null);
                                 }
                             }
@@ -201,6 +243,14 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
         //trim the string to prevent start with blank, and test if the string is valid JSON, because the parser don't do this :(. If Json is not valid this will return null
         String jsonString = getResponseString(responseBody, getCharset());
         if (jsonString != null) {
+            if (isjackson) {
+                try {
+                    result = mapper.readValue(jsonString, mType);
+                    return result;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             jsonString = jsonString.trim();
             if (jsonString.startsWith("{") || jsonString.startsWith("[")) {
                 result = new JSONTokener(jsonString).nextValue();
