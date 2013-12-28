@@ -63,15 +63,14 @@ import org.apache.http.protocol.SyncBasicHttpContext;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.zip.GZIPInputStream;
 
@@ -109,7 +108,7 @@ public class AsyncHttpClient {
     private final DefaultHttpClient httpClient;
     private final HttpContext httpContext;
     private ExecutorService threadPool;
-    private final Map<Context, List<WeakReference<Future<?>>>> requestMap;
+    private final Map<Context, List<RequestHandle>> requestMap;
     private final Map<String, String> clientHeaderMap;
     private boolean isUrlEncodingEnabled = true;
 
@@ -211,7 +210,7 @@ public class AsyncHttpClient {
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
         threadPool = Executors.newCachedThreadPool();
-        requestMap = new WeakHashMap<Context, List<WeakReference<Future<?>>>>();
+        requestMap = new WeakHashMap<Context, List<RequestHandle>>();
         clientHeaderMap = new HashMap<String, String>();
 
         httpContext = new SyncBasicHttpContext(new BasicHttpContext());
@@ -488,16 +487,13 @@ public class AsyncHttpClient {
      *                              pending requests.
      */
     public void cancelRequests(Context context, boolean mayInterruptIfRunning) {
-        List<WeakReference<Future<?>>> requestList = requestMap.get(context);
+        List<RequestHandle> requestList = requestMap.get(context);
         if (requestList != null) {
-            for (WeakReference<Future<?>> requestRef : requestList) {
-                Future<?> request = requestRef.get();
-                if (request != null) {
-                    request.cancel(mayInterruptIfRunning);
-                }
+            for (RequestHandle requestHandle : requestList) {
+                requestHandle.cancel(mayInterruptIfRunning);
             }
+            requestMap.remove(context);
         }
-        requestMap.remove(context);
     }
 
     // [+] HTTP HEAD
@@ -897,22 +893,29 @@ public class AsyncHttpClient {
         responseHandler.setRequestHeaders(uriRequest.getAllHeaders());
         responseHandler.setRequestURI(uriRequest.getURI());
 
-        Future<?> request = threadPool.submit(new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler));
+        AsyncHttpRequest request = new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler);
+        threadPool.submit(request);
+        RequestHandle requestHandle = new RequestHandle(request);
 
         if (context != null) {
             // Add request to request map
-            List<WeakReference<Future<?>>> requestList = requestMap.get(context);
+            List<RequestHandle> requestList = requestMap.get(context);
             if (requestList == null) {
-                requestList = new LinkedList<WeakReference<Future<?>>>();
+                requestList = new LinkedList<RequestHandle>();
                 requestMap.put(context, requestList);
             }
 
-            requestList.add(new WeakReference<Future<?>>(request));
+            requestList.add(requestHandle);
 
-            // TODO: Remove dead weakrefs from requestLists?
+            Iterator<RequestHandle> iterator = requestList.iterator();
+            while (iterator.hasNext()) {
+                if (iterator.next().shouldBeGarbageCollected()) {
+                    iterator.remove();
+                }
+            }
         }
 
-        return new RequestHandle(request);
+        return requestHandle;
     }
 
     /**

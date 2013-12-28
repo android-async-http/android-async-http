@@ -1,15 +1,15 @@
 package com.loopj.android.http;
 
-import java.util.concurrent.Future;
+import java.lang.ref.WeakReference;
 
 /**
  * A Handle to an AsyncRequest which can be used to cancel a running request.
  */
 public class RequestHandle {
-    private final Future<?> request;
+    private final WeakReference<AsyncHttpRequest> request;
 
-    public RequestHandle(Future<?> request) {
-        this.request = request;
+    public RequestHandle(AsyncHttpRequest request) {
+        this.request = new WeakReference<AsyncHttpRequest>(request);
     }
 
     /**
@@ -28,7 +28,8 @@ public class RequestHandle {
      * completed normally; true otherwise
      */
     public boolean cancel(boolean mayInterruptIfRunning) {
-        return this.request != null && request.cancel(mayInterruptIfRunning);
+        AsyncHttpRequest _request = request.get();
+        return _request == null || _request.cancel(mayInterruptIfRunning);
     }
 
     /**
@@ -38,7 +39,8 @@ public class RequestHandle {
      * @return true if this task completed
      */
     public boolean isFinished() {
-        return this.request == null || request.isDone();
+        AsyncHttpRequest _request = request.get();
+        return _request == null || _request.isDone();
     }
 
     /**
@@ -47,6 +49,14 @@ public class RequestHandle {
      * @return true if this task was cancelled before it completed
      */
     public boolean isCancelled() {
-        return this.request != null && request.isCancelled();
+        AsyncHttpRequest _request = request.get();
+        return _request == null || _request.isCancelled();
+    }
+
+    public boolean shouldBeGarbageCollected() {
+        boolean should = isCancelled() || isFinished();
+        if (should)
+            request.clear();
+        return should;
     }
 }

@@ -88,6 +88,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     protected static final int FINISH_MESSAGE = 3;
     protected static final int PROGRESS_MESSAGE = 4;
     protected static final int RETRY_MESSAGE = 5;
+    protected static final int CANCEL_MESSAGE = 6;
 
     protected static final int BUFFER_SIZE = 4096;
 
@@ -221,6 +222,10 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         Log.d(LOG_TAG, String.format("Request retry no. %d", retryNo));
     }
 
+    public void onCancel() {
+        Log.d(LOG_TAG, "Request got cancelled");
+    }
+
     final public void sendProgressMessage(int bytesWritten, int bytesTotal) {
         sendMessage(obtainMessage(PROGRESS_MESSAGE, new Object[]{bytesWritten, bytesTotal}));
     }
@@ -243,6 +248,10 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
 
     final public void sendRetryMessage(int retryNo) {
         sendMessage(obtainMessage(RETRY_MESSAGE, new Object[]{retryNo}));
+    }
+
+    final public void sendCancelMessage() {
+        sendMessage(obtainMessage(CANCEL_MESSAGE, null));
     }
 
     // Methods which emulate android's Handler and Message methods
@@ -290,6 +299,9 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                     onRetry((Integer) response[0]);
                 else
                     Log.e(LOG_TAG, "RETRY_MESSAGE didn't get enough params");
+                break;
+            case CANCEL_MESSAGE:
+                onCancel();
                 break;
         }
     }

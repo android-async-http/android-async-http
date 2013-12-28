@@ -38,6 +38,11 @@ public interface ResponseHandlerInterface {
     void sendProgressMessage(int bytesWritten, int bytesTotal);
 
     /**
+     * Notifies callback, that request was cancelled
+     */
+    void sendCancelMessage();
+
+    /**
      * Notifies callback, that request was handled successfully
      *
      * @param statusCode   HTTP status code
