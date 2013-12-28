@@ -12,4 +12,5 @@
     <string name="button_run">Run</string>
     <string name="label_headers">Headers (key=val, one per line)</string>
     <string name="label_req_body">Request body</string>
+    <string name="button_cancel">Cancel</string>
 </resources>

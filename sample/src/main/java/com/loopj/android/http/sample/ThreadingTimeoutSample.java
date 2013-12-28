@@ -8,12 +8,11 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 
-import java.util.Random;
-
 public class ThreadingTimeoutSample extends SampleParentActivity {
 
     private static final String LOG_TAG = "ThreadingTimeoutSample";
     private SparseArray<String> states = new SparseArray<String>();
+    private int counter = 0;
 
     @Override
     protected int getSampleTitle() {
@@ -28,6 +27,11 @@ public class ThreadingTimeoutSample extends SampleParentActivity {
     @Override
     protected boolean isRequestHeadersAllowed() {
         return false;
+    }
+
+    @Override
+    protected boolean isCancelButtonAllowed() {
+        return true;
     }
 
     @Override
@@ -48,7 +52,7 @@ public class ThreadingTimeoutSample extends SampleParentActivity {
     protected AsyncHttpResponseHandler getResponseHandler() {
         return new AsyncHttpResponseHandler() {
 
-            private int id = new Random().nextInt(1000);
+            private int id = counter++;
 
             @Override
             public void onStart() {
@@ -68,6 +72,11 @@ public class ThreadingTimeoutSample extends SampleParentActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 setStatus(id, "FAILURE");
+            }
+
+            @Override
+            public void onCancel() {
+                setStatus(id, "CANCEL");
             }
         };
     }

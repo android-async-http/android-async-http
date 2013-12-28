@@ -47,6 +47,7 @@ public abstract class SampleParentActivity extends Activity {
         headersEditText = (EditText) findViewById(R.id.edit_headers);
         bodyEditText = (EditText) findViewById(R.id.edit_body);
         Button runButton = (Button) findViewById(R.id.button_run);
+        Button cancelButton = (Button) findViewById(R.id.button_cancel);
         LinearLayout headersLayout = (LinearLayout) findViewById(R.id.layout_headers);
         LinearLayout bodyLayout = (LinearLayout) findViewById(R.id.layout_body);
         responseLayout = (LinearLayout) findViewById(R.id.layout_response);
@@ -57,6 +58,10 @@ public abstract class SampleParentActivity extends Activity {
         headersLayout.setVisibility(isRequestHeadersAllowed() ? View.VISIBLE : View.GONE);
 
         runButton.setOnClickListener(onClickListener);
+        if (isCancelButtonAllowed() && cancelButton != null) {
+            cancelButton.setVisibility(View.VISIBLE);
+            cancelButton.setOnClickListener(onClickListener);
+        }
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -69,6 +74,9 @@ public abstract class SampleParentActivity extends Activity {
                             getRequestHeaders(),
                             getRequestEntity(),
                             getResponseHandler());
+                    break;
+                case R.id.button_cancel:
+                    asyncHttpClient.cancelRequests(SampleParentActivity.this, true);
                     break;
             }
         }
@@ -170,6 +178,10 @@ public abstract class SampleParentActivity extends Activity {
 
     protected final void clearOutputs() {
         responseLayout.removeAllViews();
+    }
+
+    protected boolean isCancelButtonAllowed() {
+        return false;
     }
 
     protected abstract int getSampleTitle();
