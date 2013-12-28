@@ -190,7 +190,7 @@ class SimpleMultipartEntity implements HttpEntity {
         }
 
         public long getTotalLength() {
-            long streamLength = file.length();
+            long streamLength = file.length() + CR_LF.length;
             return header.length + streamLength;
         }
 
