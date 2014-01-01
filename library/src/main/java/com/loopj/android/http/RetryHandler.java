@@ -24,20 +24,17 @@
 package com.loopj.android.http;
 
 import android.os.SystemClock;
-
-import org.apache.http.NoHttpResponseException;
-import org.apache.http.client.HttpRequestRetryHandler;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpContext;
-
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.HashSet;
-
 import javax.net.ssl.SSLException;
+import org.apache.http.NoHttpResponseException;
+import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.protocol.HttpContext;
 
 class RetryHandler implements HttpRequestRetryHandler {
     private static HashSet<Class<?>> exceptionWhitelist = new HashSet<Class<?>>();
@@ -75,12 +72,12 @@ class RetryHandler implements HttpRequestRetryHandler {
         if (executionCount > maxRetries) {
             // Do not retry if over max retry count
             retry = false;
-        } else if (isInList(exceptionBlacklist, exception)) {
-            // immediately cancel retry if the error is blacklisted
-            retry = false;
         } else if (isInList(exceptionWhitelist, exception)) {
             // immediately retry if error is whitelisted
             retry = true;
+        } else if (isInList(exceptionBlacklist, exception)) {
+            // immediately cancel retry if the error is blacklisted
+            retry = false;
         } else if (!sent) {
             // for most other errors, retry only if request hasn't been fully sent yet
             retry = true;
