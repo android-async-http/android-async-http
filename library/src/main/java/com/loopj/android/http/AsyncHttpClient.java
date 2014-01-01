@@ -20,7 +20,19 @@ package com.loopj.android.http;
 
 import android.content.Context;
 import android.util.Log;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.zip.GZIPInputStream;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -60,20 +72,6 @@ import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.SyncBasicHttpContext;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.zip.GZIPInputStream;
 
 
 /**
@@ -938,11 +936,10 @@ public class AsyncHttpClient {
             url = url.replace(" ", "%20");
 
         if (params != null) {
-            String paramString = params.getParamString();
-            if (!url.contains("?")) {
-                url += "?" + paramString;
-            } else {
-                url += "&" + paramString;
+            String paramString = params.getParamString().trim();
+            if (!paramString.equals("") && !paramString.equals("?")) {
+                url += url.contains("?") ? "&" : "?";
+                url += paramString;
             }
         }
 
