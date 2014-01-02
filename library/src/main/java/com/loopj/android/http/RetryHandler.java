@@ -75,12 +75,12 @@ class RetryHandler implements HttpRequestRetryHandler {
         if (executionCount > maxRetries) {
             // Do not retry if over max retry count
             retry = false;
-        } else if (isInList(exceptionBlacklist, exception)) {
-            // immediately cancel retry if the error is blacklisted
-            retry = false;
         } else if (isInList(exceptionWhitelist, exception)) {
             // immediately retry if error is whitelisted
             retry = true;
+        } else if (isInList(exceptionBlacklist, exception)) {
+            // immediately cancel retry if the error is blacklisted
+            retry = false;
         } else if (!sent) {
             // for most other errors, retry only if request hasn't been fully sent yet
             retry = true;
