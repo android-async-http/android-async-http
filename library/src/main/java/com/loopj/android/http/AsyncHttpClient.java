@@ -941,11 +941,15 @@ public class AsyncHttpClient {
             url = url.replace(" ", "%20");
 
         if (params != null) {
-            String paramString = params.getParamString();
-            if (!url.contains("?")) {
-                url += "?" + paramString;
-            } else {
-                url += "&" + paramString;
+            // Construct the query string and trim it, in case it
+            // includes any excessive white spaces.
+            String paramString = params.getParamString().trim();
+
+            // Only add the query string if it isn't empty and it
+            // isn't equal to '?'.
+            if (!paramString.equals("") && !paramString.equals("?")) {
+                url += url.contains("?") ? "&" : "?";
+                url += paramString;
             }
         }
 
