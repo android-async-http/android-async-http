@@ -502,7 +502,6 @@ public class AsyncHttpClient {
      * android Context. This method is intended to be used in the onDestroy method of your android
      * activities to destroy all requests which are no longer required.
      *
-     * @param context               the android Context instance associated to the request.
      * @param mayInterruptIfRunning specifies if active requests should be cancelled along with
      *                              pending requests.
      */
