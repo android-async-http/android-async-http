@@ -32,7 +32,6 @@ import org.apache.http.util.ByteArrayBuffer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 import java.net.URI;
 
 /**
@@ -92,7 +91,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
 
     protected static final int BUFFER_SIZE = 4096;
 
-    private Handler handler;
+    private final Handler handler;
     public static final String DEFAULT_CHARSET = "UTF-8";
     private String responseCharset = DEFAULT_CHARSET;
     private Boolean useSynchronousMode = false;
@@ -121,21 +120,18 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     /**
-     * Avoid leaks by using a non-anonymous handler class with a weak reference
+     * Avoid leaks by using a non-anonymous handler class.
      */
-    static class ResponderHandler extends Handler {
-        private final WeakReference<AsyncHttpResponseHandler> mResponder;
+    private static class ResponderHandler extends Handler {
+        private final AsyncHttpResponseHandler mResponder;
 
-        ResponderHandler(AsyncHttpResponseHandler service) {
-            mResponder = new WeakReference<AsyncHttpResponseHandler>(service);
+        ResponderHandler(AsyncHttpResponseHandler mResponder) {
+            this.mResponder = mResponder;
         }
 
         @Override
         public void handleMessage(Message msg) {
-            AsyncHttpResponseHandler service = mResponder.get();
-            if (null != service) {
-                service.handleMessage(msg);
-            }
+            mResponder.handleMessage(msg);
         }
     }
 
@@ -167,7 +163,10 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * Creates a new AsyncHttpResponseHandler
      */
     public AsyncHttpResponseHandler() {
-        // Init Looper by calling postRunnable without argument
+        // There is always a handler ready for delivering messages.
+        handler = new ResponderHandler(this);
+
+        // Init Looper by calling postRunnable without an argument.
         postRunnable(null);
     }
 
@@ -178,7 +177,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @param totalSize    total size of file
      */
     public void onProgress(int bytesWritten, int totalSize) {
-        Log.d(LOG_TAG, String.format("Progress %d from %d (%d%%)", bytesWritten, totalSize, (totalSize > 0) ? (bytesWritten / totalSize) * 100 : -1));
+        Log.v(LOG_TAG, String.format("Progress %d from %d (%d%%)", bytesWritten, totalSize, (totalSize > 0) ? (bytesWritten / totalSize) * 100 : -1));
     }
 
     /**
@@ -307,7 +306,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     protected void sendMessage(Message msg) {
-        if (getUseSynchronousMode() || handler == null) {
+        if (getUseSynchronousMode()) {
             handleMessage(msg);
         } else if (!Thread.currentThread().isInterrupted()) { // do not send messages if request has been cancelled
             handler.sendMessage(msg);
@@ -323,9 +322,6 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         boolean missingLooper = null == Looper.myLooper();
         if (missingLooper) {
             Looper.prepare();
-        }
-        if (null == handler) {
-            handler = new ResponderHandler(this);
         }
         if (null != runnable) {
             handler.post(runnable);
@@ -343,17 +339,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @return Message instance, should not be null
      */
     protected Message obtainMessage(int responseMessageId, Object responseMessageData) {
-        Message msg;
-        if (handler != null) {
-            msg = handler.obtainMessage(responseMessageId, responseMessageData);
-        } else {
-            msg = Message.obtain();
-            if (msg != null) {
-                msg.what = responseMessageId;
-                msg.obj = responseMessageData;
-            }
-        }
-        return msg;
+        return handler.obtainMessage(responseMessageId, responseMessageData);
     }
 
     @Override
