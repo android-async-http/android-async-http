@@ -5,7 +5,7 @@ import java.lang.ref.WeakReference;
 /**
  * A Handle to an AsyncRequest which can be used to cancel a running request.
  */
-public class RequestHandle {
+class RequestHandle {
     private final WeakReference<AsyncHttpRequest> request;
 
     public RequestHandle(AsyncHttpRequest request) {
