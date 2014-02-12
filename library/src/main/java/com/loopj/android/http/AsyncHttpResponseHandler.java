@@ -124,17 +124,16 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * Avoid leaks by using a non-anonymous handler class with a weak reference
      */
     static class ResponderHandler extends Handler {
-        private final WeakReference<AsyncHttpResponseHandler> mResponder;
+        private final AsyncHttpResponseHandler mResponder;
 
         ResponderHandler(AsyncHttpResponseHandler service) {
-            mResponder = new WeakReference<AsyncHttpResponseHandler>(service);
+            mResponder =service;
         }
 
         @Override
         public void handleMessage(Message msg) {
-            AsyncHttpResponseHandler service = mResponder.get();
-            if (null != service) {
-                service.handleMessage(msg);
+            if (mResponder != null) {
+        	mResponder.handleMessage(msg);
             }
         }
     }
