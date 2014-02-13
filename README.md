@@ -49,3 +49,7 @@ Documentation, Features and Examples
 Full details and documentation can be found on the project page here:
 
 http://loopj.com/android-async-http/
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/loopj/android-async-http/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
