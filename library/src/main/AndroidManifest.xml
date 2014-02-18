@@ -4,9 +4,6 @@
     android:versionName="1.4.5-SNAPSHOT"
     android:versionCode="145">
 
-    <uses-sdk
-        android:minSdkVersion="3" />
-
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application />
