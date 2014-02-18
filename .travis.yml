@@ -16,9 +16,9 @@ before_install:
   # for gradle output style
   - export TERM=dumb
   # newer version of gradle
-  - wget http://services.gradle.org/distributions/gradle-1.9-bin.zip
-  - unzip -qq gradle-1.9-bin.zip
-  - export GRADLE_HOME=$PWD/gradle-1.9
+  - wget http://services.gradle.org/distributions/gradle-1.10-bin.zip
+  - unzip -qq gradle-1.10-bin.zip
+  - export GRADLE_HOME=$PWD/gradle-1.10
   - export PATH=$GRADLE_HOME/bin:$PATH
   # just to test gradle version, against our provided one
   - gradle -v
@@ -31,7 +31,7 @@ before_install:
   - echo "sdk.dir=$ANDROID_HOME" > local.properties
   # list packages for debug purpose
   - android list sdk -a -e -u
-  - echo yes | android update sdk -t tools,platform-tools,extra-android-support,extra-android-m2repository,android-19,build-tools-19.0.0 --force --no-ui
+  - echo yes | android update sdk -t tools,platform-tools,extra-android-support,extra-android-m2repository,android-19,build-tools-19.0.1 --force --no-ui
   # Sonatype bypass
   - echo "nexusUsername=dummy" >> library/gradle.properties
   - echo "nexusPassword=dummy" >> library/gradle.properties
