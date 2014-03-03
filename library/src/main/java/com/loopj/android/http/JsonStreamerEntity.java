@@ -90,11 +90,11 @@ class JsonStreamerEntity implements HttpEntity {
         kvParams.put(key, value);
     }
 
-    public void addPart(String key, InputStream inputStream, String name, String type) {
+    public void addPart(String key, InputStream inputStream, String name, String type, boolean autoClose) {
         if (type == null) {
             type = APPLICATION_OCTET_STREAM;
         }
-        streamParams.put(key, new RequestParams.StreamWrapper(inputStream, name, type));
+        streamParams.put(key, new RequestParams.StreamWrapper(inputStream, name, type, autoClose));
     }
 
     @Override
@@ -148,6 +148,9 @@ class JsonStreamerEntity implements HttpEntity {
         // Keys used by the HashMaps.
         Set<String> keys;
 
+        // Each stream entry in the request.
+        RequestParams.StreamWrapper entry;
+
         // Use GZIP compression when sending streams, otherwise just use
         // a buffered output stream to speed things up a bit.
         OutputStream upload;
@@ -190,10 +193,12 @@ class JsonStreamerEntity implements HttpEntity {
         // Buffer used for reading from input streams.
         byte[] buffer = new byte[BUFFER_SIZE];
 
-        // Send the stream params.
+        // Retrieve keys of all streams.
         keys = streamParams.keySet();
+        
+        // Send the stream params.
         for (String key : keys) {
-            RequestParams.StreamWrapper entry = streamParams.get(key);
+            entry = streamParams.get(key);
 
             // Write the JSON object's key.
             upload.write(escape(key));
@@ -251,6 +256,14 @@ class JsonStreamerEntity implements HttpEntity {
         // Flush the contents up the stream.
         upload.flush();
         upload.close();
+
+        // Close input streams.
+        for (String key : keys) {
+            entry = streamParams.get(key);
+            if(entry.autoClose) {
+                entry.inputStream.close();
+            }
+        }
     }
 
     // Curtosy of Simple-JSON: http://goo.gl/XoW8RF
