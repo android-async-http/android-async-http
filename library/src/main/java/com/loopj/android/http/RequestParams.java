@@ -90,26 +90,15 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RequestParams {
 
-    private static boolean autoCloseInputStreams;
-    
     protected final static String LOG_TAG = "RequestParams";
     protected boolean isRepeatable;
     protected boolean useJsonStreamer;
+    protected boolean autoCloseInputStreams;
     protected ConcurrentHashMap<String, String> urlParams;
     protected ConcurrentHashMap<String, StreamWrapper> streamParams;
     protected ConcurrentHashMap<String, FileWrapper> fileParams;
     protected ConcurrentHashMap<String, Object> urlParamsWithObjects;
     protected String contentEncoding = HTTP.UTF_8;
-
-    /**
-     * Set global flag which determines whether to automatically close input
-     * streams on successful upload.
-     *
-     * @param flag boolean whether to automatically close input streams
-     */
-    public static void setAutoCloseInputStreams(boolean flag) {
-        autoCloseInputStreams = flag;
-    }
 
     /**
      * Sets content encoding for return value of {@link #getParamString()} and {@link
@@ -362,6 +351,16 @@ public class RequestParams {
 
     public void setUseJsonStreamer(boolean useJsonStreamer) {
         this.useJsonStreamer = useJsonStreamer;
+    }
+
+    /**
+     * Set global flag which determines whether to automatically close input
+     * streams on successful upload.
+     *
+     * @param flag boolean whether to automatically close input streams
+     */
+    public void setAutoCloseInputStreams(boolean flag) {
+        autoCloseInputStreams = flag;
     }
 
     /**
