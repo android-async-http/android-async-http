@@ -93,6 +93,7 @@ public class RequestParams {
     protected final static String LOG_TAG = "RequestParams";
     protected boolean isRepeatable;
     protected boolean useJsonStreamer;
+    protected boolean autoCloseInputStreams;
     protected ConcurrentHashMap<String, String> urlParams;
     protected ConcurrentHashMap<String, StreamWrapper> streamParams;
     protected ConcurrentHashMap<String, FileWrapper> fileParams;
@@ -237,8 +238,21 @@ public class RequestParams {
      * @param contentType the content type of the file, eg. application/json
      */
     public void put(String key, InputStream stream, String name, String contentType) {
+        put(key, stream, name, contentType, autoCloseInputStreams);
+    }
+
+    /**
+     * Adds an input stream to the request.
+     *
+     * @param key         the key name for the new param.
+     * @param stream      the input stream to add.
+     * @param name        the name of the stream.
+     * @param contentType the content type of the file, eg. application/json
+     * @param autoClose   close input stream automatically on successful upload
+     */
+    public void put(String key, InputStream stream, String name, String contentType, boolean autoClose) {
         if (key != null && stream != null) {
-            streamParams.put(key, new StreamWrapper(stream, name, contentType));
+            streamParams.put(key, new StreamWrapper(stream, name, contentType, autoClose));
         }
     }
 
@@ -340,6 +354,16 @@ public class RequestParams {
     }
 
     /**
+     * Set global flag which determines whether to automatically close input
+     * streams on successful upload.
+     *
+     * @param flag boolean whether to automatically close input streams
+     */
+    public void setAutoCloseInputStreams(boolean flag) {
+        autoCloseInputStreams = flag;
+    }
+
+    /**
      * Returns an HttpEntity containing all request parameters
      *
      * @param progressHandler HttpResponseHandler for reporting progress on entity submit
@@ -376,7 +400,8 @@ public class RequestParams {
             entity.addPart(entry.getKey(),
                     new FileInputStream(fileWrapper.file),
                     fileWrapper.file.getName(),
-                    fileWrapper.contentType);
+                    fileWrapper.contentType,
+                    autoCloseInputStreams);
         }
 
         // Add stream params
@@ -386,7 +411,8 @@ public class RequestParams {
                 entity.addPart(entry.getKey(),
                         stream.inputStream,
                         stream.name,
-                        stream.contentType);
+                        stream.contentType,
+                        stream.autoClose);
             }
         }
 
@@ -507,11 +533,13 @@ public class RequestParams {
         public InputStream inputStream;
         public String name;
         public String contentType;
+        public boolean autoClose;
 
-        public StreamWrapper(InputStream inputStream, String name, String contentType) {
+        public StreamWrapper(InputStream inputStream, String name, String contentType, boolean autoClose) {
             this.inputStream = inputStream;
             this.name = name;
             this.contentType = contentType;
+            this.autoClose = autoClose;
         }
     }
 }
