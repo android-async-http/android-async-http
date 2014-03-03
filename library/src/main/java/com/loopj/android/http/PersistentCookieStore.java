@@ -179,8 +179,8 @@ public class PersistentCookieStore implements CookieStore {
         try {
             ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
             cookie = ((SerializableCookie) objectInputStream.readObject()).getCookie();
-        } catch (Exception exception) {
-            Log.d(LOG_TAG, "decodeCookie failed", exception);
+        } catch (Exception e) {
+            Log.d(LOG_TAG, "decodeCookie failed", e);
         }
 
         return cookie;

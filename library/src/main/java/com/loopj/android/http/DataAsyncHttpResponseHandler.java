@@ -41,6 +41,8 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
 
     /**
      * Fired when the request progress, override to handle in your own code
+     *
+     * @param responseBody response body received thus far
      */
     public void onProgressData(byte[] responseBody) {
     }
@@ -146,4 +148,3 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
         return result;
     }
 }
-
