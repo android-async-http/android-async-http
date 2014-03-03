@@ -53,18 +53,18 @@ class SimpleMultipartEntity implements HttpEntity {
 
     private final static char[] MULTIPART_CHARS = "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
-    private String boundary;
-    private byte[] boundaryLine;
-    private byte[] boundaryEnd;
-    private boolean isRepeatable = false;
+    private final String boundary;
+    private final byte[] boundaryLine;
+    private final byte[] boundaryEnd;
+    private boolean isRepeatable;
 
-    private List<FilePart> fileParts = new ArrayList<FilePart>();
+    private final List<FilePart> fileParts = new ArrayList<FilePart>();
 
     // The buffer we use for building the message excluding files and the last
     // boundary
-    private ByteArrayOutputStream out = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-    private ResponseHandlerInterface progressHandler;
+    private final ResponseHandlerInterface progressHandler;
 
     private int bytesWritten;
 
