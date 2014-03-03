@@ -67,7 +67,8 @@ public class MySSLSocketFactory extends SSLSocketFactory {
  
         sslContext.init(null, new TrustManager[] { tm }, null);
     }
-    
+
+    @Override
     public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException, UnknownHostException {
         return sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
     }
@@ -103,7 +104,9 @@ public class MySSLSocketFactory extends SSLSocketFactory {
 			e1.printStackTrace();
 		} finally {
 			try {
-				caInput.close();
+				if (caInput != null) {
+					caInput.close();
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
