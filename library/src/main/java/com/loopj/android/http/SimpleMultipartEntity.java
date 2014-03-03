@@ -46,25 +46,28 @@ class SimpleMultipartEntity implements HttpEntity {
 
     private static final String LOG_TAG = "SimpleMultipartEntity";
 
-    private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
-    private static final byte[] CR_LF = ("\r\n").getBytes();
-    private static final byte[] TRANSFER_ENCODING_BINARY = "Content-Transfer-Encoding: binary\r\n"
-            .getBytes();
+    private static final String APPLICATION_OCTET_STREAM = 
+        "application/octet-stream";
+    private static final String STR_CR_LF = "\r\n";
+    private static final byte[] CR_LF = STR_CR_LF.getBytes();
+    private static final byte[] TRANSFER_ENCODING_BINARY = 
+        ("Content-Transfer-Encoding: binary" + STR_CR_LF).getBytes();
 
-    private final static char[] MULTIPART_CHARS = "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+    private final static char[] MULTIPART_CHARS = 
+        "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
-    private String boundary;
-    private byte[] boundaryLine;
-    private byte[] boundaryEnd;
-    private boolean isRepeatable = false;
+    private final String boundary;
+    private final byte[] boundaryLine;
+    private final byte[] boundaryEnd;
+    private boolean isRepeatable;
 
-    private List<FilePart> fileParts = new ArrayList<FilePart>();
+    private final List<FilePart> fileParts = new ArrayList<FilePart>();
 
     // The buffer we use for building the message excluding files and the last
     // boundary
-    private ByteArrayOutputStream out = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-    private ResponseHandlerInterface progressHandler;
+    private final ResponseHandlerInterface progressHandler;
 
     private int bytesWritten;
 
@@ -78,8 +81,8 @@ class SimpleMultipartEntity implements HttpEntity {
         }
 
         boundary = buf.toString();
-        boundaryLine = ("--" + boundary + "\r\n").getBytes();
-        boundaryEnd = ("--" + boundary + "--\r\n").getBytes();
+        boundaryLine = ("--" + boundary + STR_CR_LF).getBytes();
+        boundaryEnd = ("--" + boundary + "--" + STR_CR_LF).getBytes();
 
         this.progressHandler = progressHandler;
     }
@@ -144,17 +147,17 @@ class SimpleMultipartEntity implements HttpEntity {
     }
 
     private byte[] createContentType(String type) {
-        String result = "Content-Type: " + type + "\r\n";
+        String result = "Content-Type: " + type + STR_CR_LF;
         return result.getBytes();
     }
 
     private byte[] createContentDisposition(final String key) {
-        return ("Content-Disposition: form-data; name=\"" + key + "\"\r\n")
+        return ("Content-Disposition: form-data; name=\"" + key + "\"" + STR_CR_LF)
                 .getBytes();
     }
 
     private byte[] createContentDisposition(final String key, final String fileName) {
-        return ("Content-Disposition: form-data; name=\"" + key + "\"; filename=\"" + fileName + "\"\r\n")
+        return ("Content-Disposition: form-data; name=\"" + key + "\"; filename=\"" + fileName + "\"" + STR_CR_LF)
                 .getBytes();
     }
 
