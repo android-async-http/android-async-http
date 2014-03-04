@@ -63,6 +63,7 @@ import org.apache.http.protocol.SyncBasicHttpContext;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -147,6 +148,38 @@ public class AsyncHttpClient {
      */
     public AsyncHttpClient(boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
         this(getDefaultSchemeRegistry(fixNoHttpResponseException, httpPort, httpsPort));
+    }
+
+    /**
+     * A utility function to close an input stream without raising an exception.
+     * 
+     * @param is input stream to safely close
+     */
+    public static void closeInputStream(InputStream is) {
+        try {
+            if (is != null) {
+                is.close();
+            }
+        } catch (IOException e) {
+            // Not important, just log it
+            Log.w(LOG_TAG, "Cannot close input stream", e);
+        }
+    }
+
+    /**
+     * A utility function to close an output stream without raising an exception.
+     * 
+     * @param os output stream to safely close
+     */
+    public static void closeOutputStream(OutputStream os) {
+        try {
+            if (os != null) {
+                os.close();
+            }
+        } catch (IOException e) {
+            // Not important, just log it
+            Log.w(LOG_TAG, "Cannot close output stream", e);
+        }
     }
 
     /**
