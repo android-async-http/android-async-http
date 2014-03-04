@@ -46,25 +46,26 @@ class SimpleMultipartEntity implements HttpEntity {
 
     private static final String LOG_TAG = "SimpleMultipartEntity";
 
-    private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
-    private static final byte[] CR_LF = ("\r\n").getBytes();
-    private static final byte[] TRANSFER_ENCODING_BINARY = "Content-Transfer-Encoding: binary\r\n"
-            .getBytes();
+    private static final String STR_CR_LF = "\r\n";
+    private static final byte[] CR_LF = STR_CR_LF.getBytes();
+    private static final byte[] TRANSFER_ENCODING_BINARY =
+        ("Content-Transfer-Encoding: binary" + STR_CR_LF).getBytes();
 
-    private final static char[] MULTIPART_CHARS = "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+    private final static char[] MULTIPART_CHARS =
+        "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
-    private String boundary;
-    private byte[] boundaryLine;
-    private byte[] boundaryEnd;
-    private boolean isRepeatable = false;
+    private final String boundary;
+    private final byte[] boundaryLine;
+    private final byte[] boundaryEnd;
+    private boolean isRepeatable;
 
-    private List<FilePart> fileParts = new ArrayList<FilePart>();
+    private final List<FilePart> fileParts = new ArrayList<FilePart>();
 
     // The buffer we use for building the message excluding files and the last
     // boundary
-    private ByteArrayOutputStream out = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-    private ResponseHandlerInterface progressHandler;
+    private final ResponseHandlerInterface progressHandler;
 
     private int bytesWritten;
 
@@ -78,17 +79,17 @@ class SimpleMultipartEntity implements HttpEntity {
         }
 
         boundary = buf.toString();
-        boundaryLine = ("--" + boundary + "\r\n").getBytes();
-        boundaryEnd = ("--" + boundary + "--\r\n").getBytes();
+        boundaryLine = ("--" + boundary + STR_CR_LF).getBytes();
+        boundaryEnd = ("--" + boundary + "--" + STR_CR_LF).getBytes();
 
         this.progressHandler = progressHandler;
     }
 
-    public void addPart(final String key, final String value, final String contentType) {
+    public void addPart(String key, String value, String type) {
         try {
             out.write(boundaryLine);
             out.write(createContentDisposition(key));
-            out.write(createContentType(contentType));
+            out.write(createContentType(type));
             out.write(CR_LF);
             out.write(value.getBytes());
             out.write(CR_LF);
@@ -98,7 +99,7 @@ class SimpleMultipartEntity implements HttpEntity {
         }
     }
 
-    public void addPart(final String key, final String value) {
+    public void addPart(String key, String value) {
         addPart(key, value, "text/plain; charset=UTF-8");
     }
 
@@ -106,18 +107,13 @@ class SimpleMultipartEntity implements HttpEntity {
         addPart(key, file, null);
     }
 
-    public void addPart(final String key, File file, String type) {
-        if (type == null) {
-            type = APPLICATION_OCTET_STREAM;
-        }
-        fileParts.add(new FilePart(key, file, type));
+    public void addPart(String key, File file, String type) {
+        fileParts.add(new FilePart(key, file, normalizeContentType(type)));
     }
 
     public void addPart(String key, String streamName, InputStream inputStream, String type)
             throws IOException {
-        if (type == null) {
-            type = APPLICATION_OCTET_STREAM;
-        }
+
         out.write(boundaryLine);
 
         // Headers
@@ -135,26 +131,25 @@ class SimpleMultipartEntity implements HttpEntity {
 
         out.write(CR_LF);
         out.flush();
-        try {
-            inputStream.close();
-        } catch (final IOException e) {
-            // Not important, just log it
-            Log.w(LOG_TAG, "Cannot close input stream", e);
-        }
+        AsyncHttpClient.closeOutputStream(out);
+    }
+
+    private String normalizeContentType(String type) {
+        return type == null ? RequestParams.APPLICATION_OCTET_STREAM : type;
     }
 
     private byte[] createContentType(String type) {
-        String result = "Content-Type: " + type + "\r\n";
+        String result = "Content-Type: " + normalizeContentType(type) + STR_CR_LF;
         return result.getBytes();
     }
 
-    private byte[] createContentDisposition(final String key) {
-        return ("Content-Disposition: form-data; name=\"" + key + "\"\r\n")
+    private byte[] createContentDisposition(String key) {
+        return ("Content-Disposition: form-data; name=\"" + key + "\"" + STR_CR_LF)
                 .getBytes();
     }
 
-    private byte[] createContentDisposition(final String key, final String fileName) {
-        return ("Content-Disposition: form-data; name=\"" + key + "\"; filename=\"" + fileName + "\"\r\n")
+    private byte[] createContentDisposition(String key, String fileName) {
+        return ("Content-Disposition: form-data; name=\"" + key + "\"; filename=\"" + fileName + "\"" + STR_CR_LF)
                 .getBytes();
     }
 
@@ -200,20 +195,15 @@ class SimpleMultipartEntity implements HttpEntity {
 
             FileInputStream inputStream = new FileInputStream(file);
             final byte[] tmp = new byte[4096];
-            int l;
-            while ((l = inputStream.read(tmp)) != -1) {
-                out.write(tmp, 0, l);
-                updateProgress(l);
+            int bytesRead;
+            while ((bytesRead = inputStream.read(tmp)) != -1) {
+                out.write(tmp, 0, bytesRead);
+                updateProgress(bytesRead);
             }
             out.write(CR_LF);
             updateProgress(CR_LF.length);
             out.flush();
-            try {
-                inputStream.close();
-            } catch (final IOException e) {
-                // Not important, just log it
-                Log.w(LOG_TAG, "Cannot close input stream", e);
-            }
+            AsyncHttpClient.closeInputStream(inputStream);
         }
     }
 
