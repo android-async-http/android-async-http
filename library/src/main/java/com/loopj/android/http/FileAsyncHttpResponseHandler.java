@@ -14,7 +14,7 @@ import java.io.InputStream;
 
 public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
 
-    private File mFile;
+    private final File mFile;
     private static final String LOG_TAG = "FileAsyncHttpResponseHandler";
 
     /**
@@ -120,9 +120,9 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
                         sendProgressMessage(count, (int) contentLength);
                     }
                 } finally {
-                    instream.close();
+                    AsyncHttpClient.closeInputStream(instream);
                     buffer.flush();
-                    buffer.close();
+                    AsyncHttpClient.closeOutputStream(buffer);
                 }
             }
         }

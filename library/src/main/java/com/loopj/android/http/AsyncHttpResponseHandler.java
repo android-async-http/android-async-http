@@ -389,7 +389,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                             sendProgressMessage(count, (int) contentLength);
                         }
                     } finally {
-                        instream.close();
+                        AsyncHttpClient.closeInputStream(instream);
                     }
                     responseBody = buffer.toByteArray();
                 } catch (OutOfMemoryError e) {
