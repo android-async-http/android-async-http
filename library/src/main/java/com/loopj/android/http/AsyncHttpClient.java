@@ -222,7 +222,9 @@ public class AsyncHttpClient {
                     request.addHeader(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
                 }
                 for (String header : clientHeaderMap.keySet()) {
-                    request.addHeader(header, clientHeaderMap.get(header));
+                    if (!request.containsHeader(header)) {
+                        request.addHeader(header, clientHeaderMap.get(header));
+                    }
                 }
             }
         });
