@@ -30,8 +30,6 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.util.ByteArrayBuffer;
 
-import com.heyzap.http.AsyncHttpResponseHandler.ResponderHandler;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
