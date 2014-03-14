@@ -893,6 +893,8 @@ public class AsyncHttpClient {
             uriRequest.setHeader("Content-Type", contentType);
         }
 
+		if (responseHandler instanceof RangeFileAsyncHttpResponseHandler)
+			((RangeFileAsyncHttpResponseHandler)responseHandler).updateRequestHeaders(uriRequest);
         responseHandler.setRequestHeaders(uriRequest.getAllHeaders());
         responseHandler.setRequestURI(uriRequest.getURI());
 

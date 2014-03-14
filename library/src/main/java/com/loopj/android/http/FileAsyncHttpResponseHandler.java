@@ -14,7 +14,7 @@ import java.io.InputStream;
 
 public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
 
-    private File mFile;
+    protected File mFile;
     private static final String LOG_TAG = "FileAsyncHttpResponseHandler";
 
     /**
