@@ -914,6 +914,9 @@ public class AsyncHttpClient {
                 requestMap.put(context, requestList);
             }
 
+            if (responseHandler instanceof RangeFileAsyncHttpResponseHandler)
+                ((RangeFileAsyncHttpResponseHandler) responseHandler).updateRequestHeaders(uriRequest);
+
             requestList.add(requestHandle);
 
             Iterator<RequestHandle> iterator = requestList.iterator();
