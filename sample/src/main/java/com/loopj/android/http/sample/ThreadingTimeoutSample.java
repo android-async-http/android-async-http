@@ -11,7 +11,7 @@ import org.apache.http.HttpEntity;
 public class ThreadingTimeoutSample extends SampleParentActivity {
 
     private static final String LOG_TAG = "ThreadingTimeoutSample";
-    private SparseArray<String> states = new SparseArray<String>();
+    private SparseArray<String> states = new SparseArray<>();
     private int counter = 0;
 
     @Override
@@ -44,7 +44,7 @@ public class ThreadingTimeoutSample extends SampleParentActivity {
         states.put(id, current == null ? status : current + "," + status);
         clearOutputs();
         for (int i = 0; i < states.size(); i++) {
-            debugResponse(LOG_TAG, states.keyAt(i) + ": " + states.get(states.keyAt(i)));
+            debugResponse(LOG_TAG, String.format("%d (from %d): %s", states.keyAt(i), getCounter(), states.get(states.keyAt(i))));
         }
     }
 
@@ -79,6 +79,10 @@ public class ThreadingTimeoutSample extends SampleParentActivity {
                 setStatus(id, "CANCEL");
             }
         };
+    }
+
+    public int getCounter() {
+        return counter;
     }
 
     @Override
