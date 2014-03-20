@@ -320,14 +320,14 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      */
     protected void postRunnable(Runnable runnable) {
         boolean missingLooper = null == Looper.myLooper();
-        if (missingLooper) {
-            Looper.prepare();
-        }
-        if (null != runnable) {
-            handler.post(runnable);
-        }
-        if (missingLooper) {
-            Looper.loop();
+        if (runnable != null) {
+            if (missingLooper) {
+                // If there is no looper, run on current thread
+                runnable.run();
+            } else {
+                // Otherwise, run on a handler we create
+                handler.post(runnable);
+            }
         }
     }
 
