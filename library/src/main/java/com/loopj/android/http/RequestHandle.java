@@ -9,7 +9,7 @@ public class RequestHandle {
     private final WeakReference<AsyncHttpRequest> request;
 
     public RequestHandle(AsyncHttpRequest request) {
-        this.request = new WeakReference<AsyncHttpRequest>(request);
+        this.request = new WeakReference<>(request);
     }
 
     /**

@@ -83,7 +83,7 @@ public abstract class SampleParentActivity extends Activity {
     };
 
     protected Header[] getRequestHeaders() {
-        List<Header> headers = new ArrayList<Header>();
+        List<Header> headers = new ArrayList<>();
         String headersRaw = headersEditText.getText() == null ? null : headersEditText.getText().toString();
 
         if (headersRaw != null && headersRaw.length() > 3) {

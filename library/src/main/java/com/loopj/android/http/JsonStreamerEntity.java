@@ -73,11 +73,11 @@ class JsonStreamerEntity implements HttpEntity {
 
     // K/V objects to be uploaded.
     private final Map<String, Object> kvParams =
-        new HashMap<String, Object>();
+        new HashMap<>();
 
     // Streams and their associated meta-data to be uploaded.
     private final Map<String, RequestParams.StreamWrapper> streamParams =
-        new HashMap<String, RequestParams.StreamWrapper>();
+        new HashMap<>();
 
     // Whether to use gzip compression while uploading
     private final Header contentEncoding;

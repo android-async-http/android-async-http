@@ -93,10 +93,10 @@ public class RequestParams {
     protected final static String LOG_TAG = "RequestParams";
     protected boolean isRepeatable;
     protected boolean useJsonStreamer;
-    protected ConcurrentHashMap<String, String> urlParams = new ConcurrentHashMap<String, String>();
-    protected ConcurrentHashMap<String, StreamWrapper> streamParams = new ConcurrentHashMap<String, StreamWrapper>();
-    protected ConcurrentHashMap<String, FileWrapper> fileParams = new ConcurrentHashMap<String, FileWrapper>();
-    protected ConcurrentHashMap<String, Object> urlParamsWithObjects = new ConcurrentHashMap<String, Object>();
+    protected ConcurrentHashMap<String, String> urlParams = new ConcurrentHashMap<>();
+    protected ConcurrentHashMap<String, StreamWrapper> streamParams = new ConcurrentHashMap<>();
+    protected ConcurrentHashMap<String, FileWrapper> fileParams = new ConcurrentHashMap<>();
+    protected ConcurrentHashMap<String, Object> urlParamsWithObjects = new ConcurrentHashMap<>();
     protected String contentEncoding = HTTP.UTF_8;
 
     /**
@@ -458,7 +458,7 @@ public class RequestParams {
     }
 
     protected List<BasicNameValuePair> getParamsList() {
-        List<BasicNameValuePair> lparams = new LinkedList<BasicNameValuePair>();
+        List<BasicNameValuePair> lparams = new LinkedList<>();
 
         for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
             lparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
@@ -470,7 +470,7 @@ public class RequestParams {
     }
 
     private List<BasicNameValuePair> getParamsList(String key, Object value) {
-        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
+        List<BasicNameValuePair> params = new LinkedList<>();
         if (value instanceof Map) {
             Map map = (Map) value;
             List list = new ArrayList<Object>(map.keySet());

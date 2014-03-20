@@ -211,8 +211,8 @@ public class AsyncHttpClient {
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
         threadPool = Executors.newCachedThreadPool();
-        requestMap = new WeakHashMap<Context, List<RequestHandle>>();
-        clientHeaderMap = new HashMap<String, String>();
+        requestMap = new WeakHashMap<>();
+        clientHeaderMap = new HashMap<>();
 
         httpContext = new SyncBasicHttpContext(new BasicHttpContext());
         httpClient = new DefaultHttpClient(cm, httpParams);
@@ -930,7 +930,7 @@ public class AsyncHttpClient {
             // Add request to request map
             List<RequestHandle> requestList = requestMap.get(context);
             if (requestList == null) {
-                requestList = new LinkedList<RequestHandle>();
+                requestList = new LinkedList<>();
                 requestMap.put(context, requestList);
             }
 
