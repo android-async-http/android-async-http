@@ -20,7 +20,6 @@ package com.loopj.android.http;
 
 import android.content.Context;
 import android.util.Log;
-
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -41,6 +40,8 @@ import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.params.CookiePolicy;
+import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.params.ConnPerRouteBean;
@@ -215,6 +216,7 @@ public class AsyncHttpClient {
 
         httpContext = new SyncBasicHttpContext(new BasicHttpContext());
         httpClient = new DefaultHttpClient(cm, httpParams);
+        HttpClientParams.setCookiePolicy(httpClient.getParams(), CookiePolicy.BROWSER_COMPATIBILITY);
         httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
             @Override
             public void process(HttpRequest request, HttpContext context) {
@@ -502,6 +504,26 @@ public class AsyncHttpClient {
             }
             requestMap.remove(context);
         }
+    }
+
+    /**
+     * Cancels all pending (or potentially active) requests.
+     * <p>&nbsp;</p> <b>Note:</b> This will only affect requests which were created with a non-null
+     * android Context. This method is intended to be used in the onDestroy method of your android
+     * activities to destroy all requests which are no longer required.
+     *
+     * @param mayInterruptIfRunning specifies if active requests should be cancelled along with
+     *                              pending requests.
+     */
+    public void cancelAllRequests(boolean mayInterruptIfRunning) {
+        for (List<RequestHandle> requestList : requestMap.values()) {
+            if (requestList != null) {
+                for (RequestHandle requestHandle : requestList) {
+                    requestHandle.cancel(mayInterruptIfRunning);
+                }
+            }
+        }
+        requestMap.clear();
     }
 
     // [+] HTTP HEAD
@@ -898,6 +920,8 @@ public class AsyncHttpClient {
             uriRequest.setHeader("Content-Type", contentType);
         }
 
+		if (responseHandler instanceof RangeFileAsyncHttpResponseHandler)
+			((RangeFileAsyncHttpResponseHandler)responseHandler).updateRequestHeaders(uriRequest);
         responseHandler.setRequestHeaders(uriRequest.getAllHeaders());
         responseHandler.setRequestURI(uriRequest.getURI());
 
