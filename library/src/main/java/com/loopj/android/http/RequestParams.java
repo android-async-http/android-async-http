@@ -93,10 +93,10 @@ public class RequestParams {
     protected final static String LOG_TAG = "RequestParams";
     protected boolean isRepeatable;
     protected boolean useJsonStreamer;
-    protected ConcurrentHashMap<String, String> urlParams;
-    protected ConcurrentHashMap<String, StreamWrapper> streamParams;
-    protected ConcurrentHashMap<String, FileWrapper> fileParams;
-    protected ConcurrentHashMap<String, Object> urlParamsWithObjects;
+    protected ConcurrentHashMap<String, String> urlParams = new ConcurrentHashMap<String, String>();
+    protected ConcurrentHashMap<String, StreamWrapper> streamParams = new ConcurrentHashMap<String, StreamWrapper>();
+    protected ConcurrentHashMap<String, FileWrapper> fileParams = new ConcurrentHashMap<String, FileWrapper>();
+    protected ConcurrentHashMap<String, Object> urlParamsWithObjects = new ConcurrentHashMap<String, Object>();
     protected String contentEncoding = HTTP.UTF_8;
 
     /**
@@ -126,7 +126,6 @@ public class RequestParams {
      * @param source the source key/value string map to add.
      */
     public RequestParams(Map<String, String> source) {
-        init();
         if (source != null) {
             for (Map.Entry<String, String> entry : source.entrySet()) {
                 put(entry.getKey(), entry.getValue());
@@ -156,7 +155,6 @@ public class RequestParams {
      * @throws IllegalArgumentException if the number of arguments isn't even.
      */
     public RequestParams(Object... keysAndValues) {
-        init();
         int len = keysAndValues.length;
         if (len % 2 != 0)
             throw new IllegalArgumentException("Supplied arguments must be even");
@@ -293,9 +291,9 @@ public class RequestParams {
                 this.put(key, params);
             }
             if (params instanceof List) {
-                ((List<Object>) params).add(value);
+                ((List) params).add(value);
             } else if (params instanceof Set) {
-                ((Set<Object>) params).add(value);
+                ((Set) params).add(value);
             }
         }
     }
@@ -459,13 +457,6 @@ public class RequestParams {
         return entity;
     }
 
-    private void init() {
-        urlParams = new ConcurrentHashMap<String, String>();
-        streamParams = new ConcurrentHashMap<String, StreamWrapper>();
-        fileParams = new ConcurrentHashMap<String, FileWrapper>();
-        urlParamsWithObjects = new ConcurrentHashMap<String, Object>();
-    }
-
     protected List<BasicNameValuePair> getParamsList() {
         List<BasicNameValuePair> lparams = new LinkedList<BasicNameValuePair>();
 
@@ -481,19 +472,21 @@ public class RequestParams {
     private List<BasicNameValuePair> getParamsList(String key, Object value) {
         List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
         if (value instanceof Map) {
-            Map<String, Object> map = (Map<String, Object>) value;
-            List<String> list = new ArrayList<String>(map.keySet());
+            Map map = (Map) value;
+            List list = new ArrayList<Object>(map.keySet());
             // Ensure consistent ordering in query string
             Collections.sort(list);
-            for (String nestedKey : list) {
-                Object nestedValue = map.get(nestedKey);
-                if (nestedValue != null) {
-                    params.addAll(getParamsList(key == null ? nestedKey : String.format("%s[%s]", key, nestedKey),
-                            nestedValue));
+            for (Object nestedKey : list) {
+                if (nestedKey instanceof String) {
+                    Object nestedValue = map.get(nestedKey);
+                    if (nestedValue != null) {
+                        params.addAll(getParamsList(key == null ? (String) nestedKey : String.format("%s[%s]", key, nestedKey),
+                                nestedValue));
+                    }
                 }
             }
         } else if (value instanceof List) {
-            List<Object> list = (List<Object>) value;
+            List list = (List) value;
             for (Object nestedValue : list) {
                 params.addAll(getParamsList(String.format("%s[]", key), nestedValue));
             }
@@ -503,7 +496,7 @@ public class RequestParams {
                 params.addAll(getParamsList(String.format("%s[]", key), nestedValue));
             }
         } else if (value instanceof Set) {
-            Set<Object> set = (Set<Object>) value;
+            Set set = (Set) value;
             for (Object nestedValue : set) {
                 params.addAll(getParamsList(key, nestedValue));
             }
