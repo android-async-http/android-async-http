@@ -125,6 +125,8 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                                     onSuccess(statusCode, headers, (JSONObject) jsonResponse);
                                 } else if (jsonResponse instanceof JSONArray) {
                                     onSuccess(statusCode, headers, (JSONArray) jsonResponse);
+                                } else if (jsonResponse instanceof String) {
+                                    onFailure(statusCode, headers, (String) jsonResponse, new JSONException("Response cannot be parsed as JSON data"));
                                 } else {
                                     onFailure(statusCode, headers, new JSONException("Unexpected response type " + jsonResponse.getClass().getName()), (JSONObject) null);
                                 }
