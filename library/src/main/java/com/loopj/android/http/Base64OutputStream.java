@@ -43,6 +43,7 @@ public class Base64OutputStream extends FilterOutputStream {
         }
     }
 
+    @Override
     public void write(int b) throws IOException {
         // To avoid invoking the encoder/decoder routines for single
         // bytes, we buffer up calls to write(int) in an internal
@@ -71,12 +72,14 @@ public class Base64OutputStream extends FilterOutputStream {
         }
     }
 
+    @Override
     public void write(byte[] b, int off, int len) throws IOException {
         if (len <= 0) return;
         flushBuffer();
         internalWrite(b, off, len, false);
     }
 
+    @Override
     public void close() throws IOException {
         IOException thrown = null;
         try {
