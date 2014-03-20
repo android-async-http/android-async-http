@@ -255,6 +255,30 @@ public class RequestParams {
     }
 
     /**
+     * Adds a int value to the request.
+     *
+     * @param key   the key name for the new param.
+     * @param value the value int for the new param.
+     */
+    public void put(String key, int value) {
+        if (key != null) {
+            urlParams.put(key, String.valueOf(value));
+        }
+    }
+
+    /**
+     * Adds a long value to the request.
+     *
+     * @param key   the key name for the new param.
+     * @param value the value long for the new param.
+     */
+    public void put(String key, long value) {
+        if (key != null) {
+            urlParams.put(key, String.valueOf(value));
+        }
+    }
+
+    /**
      * Adds string value to param which can have more than one value.
      *
      * @param key   the key name for the param, either existing or new.
