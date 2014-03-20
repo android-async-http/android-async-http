@@ -1,8 +1,10 @@
+import com.android.builder.BuilderConstants
+
 apply plugin: 'android-library'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.1'
+    buildToolsVersion '19.0.3'
 
     defaultConfig {
         minSdkVersion 3
@@ -16,7 +18,7 @@ android {
 
 android.libraryVariants.all { variant ->
   def name = variant.buildType.name
-  if (name.equals(com.android.builder.BuilderConstants.DEBUG)) {
+  if (name.equals(BuilderConstants.DEBUG)) {
     return; // Skip debug builds.
   }
   def task = project.tasks.create "android${name.capitalize()}Jar", Jar
