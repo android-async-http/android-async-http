@@ -5,13 +5,19 @@
             android:fillViewport="true">
 
     <LinearLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <requestFocus/>
+
+        <EditText
+            android:id="@+id/edit_url"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:inputType="textUri"/>
 
         <LinearLayout
             android:id="@+id/layout_url"
@@ -19,25 +25,21 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/edit_url"
-                android:layout_width="0dp"
+            <Button
+                android:id="@+id/button_cancel"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:inputType="textUri"/>
+                android:text="@string/button_cancel"/>
 
             <Button
                 android:id="@+id/button_run"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/button_run"/>
-
-            <Button
-                android:id="@+id/button_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:text="@string/button_cancel"/>
         </LinearLayout>
 
         <LinearLayout
