@@ -4,7 +4,7 @@ branches:
 language:
   - java
 jdk:
-  - openjdk6
+  - openjdk7
 before_install:
   # environment info
   - mvn -version
