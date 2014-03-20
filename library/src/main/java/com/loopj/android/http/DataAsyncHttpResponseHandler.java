@@ -106,7 +106,7 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
                             sendProgressDataMessage(copyOfRange(tmp, 0, l));
                         }
                     } finally {
-                        instream.close();
+                        AsyncHttpClient.silentCloseInputStream(instream);
                     }
                     responseBody = buffer.toByteArray();
                 } catch (OutOfMemoryError e) {
