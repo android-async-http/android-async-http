@@ -222,6 +222,14 @@ public class AsyncHttpClient {
                     request.addHeader(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
                 }
                 for (String header : clientHeaderMap.keySet()) {
+                    if (request.containsHeader(header)) {
+                        Header overwritten = request.getFirstHeader(header);
+                        Log.d(LOG_TAG,
+                                String.format("Headers were overwritten! (%s | %s) overwrites (%s | %s)",
+                                        header, clientHeaderMap.get(header),
+                                        overwritten.getName(), overwritten.getValue())
+                        );
+                    }
                     request.addHeader(header, clientHeaderMap.get(header));
                 }
             }
