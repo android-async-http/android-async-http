@@ -24,6 +24,7 @@ import android.util.Log;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
@@ -31,8 +32,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.HttpVersion;
 import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.AuthState;
+import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -50,6 +54,7 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.HttpEntityWrapper;
+import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultRedirectHandler;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -58,6 +63,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.SyncBasicHttpContext;
 
@@ -256,6 +262,24 @@ public class AsyncHttpClient {
             }
         });
 
+        httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
+            public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
+                AuthState authState = (AuthState) context.getAttribute(ClientContext.TARGET_AUTH_STATE);
+                CredentialsProvider credsProvider = (CredentialsProvider) context.getAttribute(
+                        ClientContext.CREDS_PROVIDER);
+                HttpHost targetHost = (HttpHost) context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+
+                if (authState.getAuthScheme() == null) {
+                    AuthScope authScope = new AuthScope(targetHost.getHostName(), targetHost.getPort());
+                    Credentials creds = credsProvider.getCredentials(authScope);
+                    if (creds != null) {
+                        authState.setAuthScheme(new BasicScheme());
+                        authState.setCredentials(creds);
+                    }
+                }
+            }
+        }, 0);
+
         httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES, DEFAULT_RETRY_SLEEP_TIME_MILLIS));
     }
 
@@ -414,7 +438,6 @@ public class AsyncHttpClient {
         httpParams.setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
     }
 
-
     /**
      * Sets the SSLSocketFactory to user when making requests. By default, a new, default
      * SSLSocketFactory is used.
@@ -462,8 +485,19 @@ public class AsyncHttpClient {
      * @param password Basic Auth password
      */
     public void setBasicAuth(String username, String password) {
-        AuthScope scope = AuthScope.ANY;
-        setBasicAuth(username, password, scope);
+        setBasicAuth(username, password, false);
+    }
+
+    /**
+     * Sets basic authentication for the request. Uses AuthScope.ANY. This is the same as
+     * setBasicAuth('username','password',AuthScope.ANY)
+     *
+     * @param username  Basic Auth username
+     * @param password  Basic Auth password
+     * @param preemtive sets authorization in preemtive manner
+     */
+    public void setBasicAuth(String username, String password, boolean preemtive) {
+        setBasicAuth(username, password, null, preemtive);
     }
 
     /**
@@ -475,12 +509,40 @@ public class AsyncHttpClient {
      * @param scope    - an AuthScope object
      */
     public void setBasicAuth(String username, String password, AuthScope scope) {
-        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
-        this.httpClient.getCredentialsProvider().setCredentials(scope, credentials);
+        setBasicAuth(username, password, scope, false);
     }
 
     /**
-     * Removes set basic auth credentials
+     * Sets basic authentication for the request. You should pass in your AuthScope for security. It
+     * should be like this setBasicAuth("username","password", new AuthScope("host",port,AuthScope.ANY_REALM))
+     *
+     * @param username  Basic Auth username
+     * @param password  Basic Auth password
+     * @param scope     an AuthScope object
+     * @param preemtive sets authorization in preemtive manner
+     */
+    public void setBasicAuth(String username, String password, AuthScope scope, boolean preemtive) {
+        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
+        this.httpClient.getCredentialsProvider().setCredentials(scope == null ? AuthScope.ANY : scope, credentials);
+        setAuthenticationPreemptive(preemtive);
+    }
+
+    /**
+     * Sets HttpRequestInterceptor which handles authorization in preemtive way, as workaround you
+     * can use call `AsyncHttpClient.addHeader("Authorization","Basic base64OfUsernameAndPassword==")`
+     *
+     * @param isPreemtive whether the authorization is processed in preemtive way
+     */
+    public void setAuthenticationPreemptive(boolean isPreemtive) {
+        if (isPreemtive) {
+            httpClient.addRequestInterceptor(new PreemtiveAuthorizationHttpRequestInterceptor(), 0);
+        } else {
+            httpClient.removeRequestInterceptorByClass(PreemtiveAuthorizationHttpRequestInterceptor.class);
+        }
+    }
+
+    /**
+     * Removes previously set basic auth credentials
      */
     public void clearBasicAuth() {
         this.httpClient.getCredentialsProvider().clear();
