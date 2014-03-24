@@ -131,7 +131,7 @@ class SimpleMultipartEntity implements HttpEntity {
 
         out.write(CR_LF);
         out.flush();
-        AsyncHttpClient.closeOutputStream(out);
+        AsyncHttpClient.silentCloseOutputStream(out);
     }
 
     private String normalizeContentType(String type) {
@@ -203,7 +203,7 @@ class SimpleMultipartEntity implements HttpEntity {
             out.write(CR_LF);
             updateProgress(CR_LF.length);
             out.flush();
-            AsyncHttpClient.closeInputStream(inputStream);
+            AsyncHttpClient.silentCloseInputStream(inputStream);
         }
     }
 

@@ -215,7 +215,7 @@ class JsonStreamerEntity implements HttpEntity {
 
         // Flush the contents up the stream.
         os.flush();
-        AsyncHttpClient.closeOutputStream(os);
+        AsyncHttpClient.silentCloseOutputStream(os);
     }
 
     private void writeToFromStream(OutputStream os, RequestParams.StreamWrapper entry) 
@@ -236,7 +236,7 @@ class JsonStreamerEntity implements HttpEntity {
         }
 
         // Close the Base64 output stream.
-        AsyncHttpClient.closeOutputStream(bos);
+        AsyncHttpClient.silentCloseOutputStream(bos);
 
         // End the meta data.
         endMetaData(os);
@@ -244,7 +244,7 @@ class JsonStreamerEntity implements HttpEntity {
         // Close input stream.
         if (entry.autoClose) {
             // Safely close the input stream.
-            AsyncHttpClient.closeInputStream(entry.inputStream);
+            AsyncHttpClient.silentCloseInputStream(entry.inputStream);
         }
     }
 
@@ -271,13 +271,13 @@ class JsonStreamerEntity implements HttpEntity {
         }
 
         // Close the Base64 output stream.
-        AsyncHttpClient.closeOutputStream(bos);
+        AsyncHttpClient.silentCloseOutputStream(bos);
 
         // End the meta data.
         endMetaData(os);
 
         // Safely close the input stream.
-        AsyncHttpClient.closeInputStream(in);
+        AsyncHttpClient.silentCloseInputStream(in);
     }
 
     private void writeMetaData(OutputStream os, String name, String contentType) throws IOException {
