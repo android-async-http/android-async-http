@@ -15,7 +15,7 @@ if (isReleaseBuild()) {
     println 'DEBUG BUILD'
     sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
 }
-if(isReleaseBuild()){
+
 if (ext.properties.containsKey('signing.keyId') && !ext.properties.containsKey('signing.password')) {
     if (System.console())
         ext.set('signing.password', System.console().readPassword("\n\$ Type in GPG key password: "))
@@ -97,5 +97,4 @@ afterEvaluate { project ->
         archives androidSourcesJar
         archives androidJavadocsJar
     }
-}
 }
