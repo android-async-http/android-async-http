@@ -64,6 +64,7 @@ import org.apache.http.protocol.SyncBasicHttpContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -717,7 +718,7 @@ public class AsyncHttpClient {
      * @return RequestHandle of future request process
      */
     public RequestHandle post(Context context, String url, HttpEntity entity, String contentType, ResponseHandlerInterface responseHandler) {
-        return sendRequest(httpClient, httpContext, addEntityToRequestBase(new HttpPost(url), entity), contentType, responseHandler, context);
+        return sendRequest(httpClient, httpContext, addEntityToRequestBase(new HttpPost(URI.create(url).normalize()), entity), contentType, responseHandler, context);
     }
 
     /**
@@ -735,7 +736,7 @@ public class AsyncHttpClient {
      */
     public RequestHandle post(Context context, String url, Header[] headers, RequestParams params, String contentType,
                               ResponseHandlerInterface responseHandler) {
-        HttpEntityEnclosingRequestBase request = new HttpPost(url);
+        HttpEntityEnclosingRequestBase request = new HttpPost(URI.create(url).normalize());
         if (params != null) request.setEntity(paramsToEntity(params, responseHandler));
         if (headers != null) request.setHeaders(headers);
         return sendRequest(httpClient, httpContext, request, contentType,
@@ -759,7 +760,7 @@ public class AsyncHttpClient {
      */
     public RequestHandle post(Context context, String url, Header[] headers, HttpEntity entity, String contentType,
                               ResponseHandlerInterface responseHandler) {
-        HttpEntityEnclosingRequestBase request = addEntityToRequestBase(new HttpPost(url), entity);
+        HttpEntityEnclosingRequestBase request = addEntityToRequestBase(new HttpPost(URI.create(url).normalize()), entity);
         if (headers != null) request.setHeaders(headers);
         return sendRequest(httpClient, httpContext, request, contentType, responseHandler, context);
     }
@@ -818,7 +819,7 @@ public class AsyncHttpClient {
      * @return RequestHandle of future request process
      */
     public RequestHandle put(Context context, String url, HttpEntity entity, String contentType, ResponseHandlerInterface responseHandler) {
-        return sendRequest(httpClient, httpContext, addEntityToRequestBase(new HttpPut(url), entity), contentType, responseHandler, context);
+        return sendRequest(httpClient, httpContext, addEntityToRequestBase(new HttpPut(URI.create(url).normalize()), entity), contentType, responseHandler, context);
     }
 
     /**
@@ -837,7 +838,7 @@ public class AsyncHttpClient {
      * @return RequestHandle of future request process
      */
     public RequestHandle put(Context context, String url, Header[] headers, HttpEntity entity, String contentType, ResponseHandlerInterface responseHandler) {
-        HttpEntityEnclosingRequestBase request = addEntityToRequestBase(new HttpPut(url), entity);
+        HttpEntityEnclosingRequestBase request = addEntityToRequestBase(new HttpPut(URI.create(url).normalize()), entity);
         if (headers != null) request.setHeaders(headers);
         return sendRequest(httpClient, httpContext, request, contentType, responseHandler, context);
     }
@@ -865,7 +866,7 @@ public class AsyncHttpClient {
      * @return RequestHandle of future request process
      */
     public RequestHandle delete(Context context, String url, ResponseHandlerInterface responseHandler) {
-        final HttpDelete delete = new HttpDelete(url);
+        final HttpDelete delete = new HttpDelete(URI.create(url).normalize());
         return sendRequest(httpClient, httpContext, delete, null, responseHandler, context);
     }
 
@@ -879,7 +880,7 @@ public class AsyncHttpClient {
      * @return RequestHandle of future request process
      */
     public RequestHandle delete(Context context, String url, Header[] headers, ResponseHandlerInterface responseHandler) {
-        final HttpDelete delete = new HttpDelete(url);
+        final HttpDelete delete = new HttpDelete(URI.create(url).normalize());
         if (headers != null) delete.setHeaders(headers);
         return sendRequest(httpClient, httpContext, delete, null, responseHandler, context);
     }
