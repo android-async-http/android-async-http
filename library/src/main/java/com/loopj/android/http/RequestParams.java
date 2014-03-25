@@ -27,7 +27,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -90,13 +89,17 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RequestParams {
 
+    public final static String APPLICATION_OCTET_STREAM =
+        "application/octet-stream";
+
     protected final static String LOG_TAG = "RequestParams";
     protected boolean isRepeatable;
     protected boolean useJsonStreamer;
-    protected ConcurrentHashMap<String, String> urlParams = new ConcurrentHashMap<>();
-    protected ConcurrentHashMap<String, StreamWrapper> streamParams = new ConcurrentHashMap<>();
-    protected ConcurrentHashMap<String, FileWrapper> fileParams = new ConcurrentHashMap<>();
-    protected ConcurrentHashMap<String, Object> urlParamsWithObjects = new ConcurrentHashMap<>();
+    protected boolean autoCloseInputStreams;
+    protected final ConcurrentHashMap<String, String> urlParams = new ConcurrentHashMap();
+    protected final ConcurrentHashMap<String, StreamWrapper> streamParams = new ConcurrentHashMap();
+    protected final ConcurrentHashMap<String, FileWrapper> fileParams = new ConcurrentHashMap();
+    protected final ConcurrentHashMap<String, Object> urlParamsWithObjects = new ConcurrentHashMap();
     protected String contentEncoding = HTTP.UTF_8;
 
     /**
@@ -235,8 +238,21 @@ public class RequestParams {
      * @param contentType the content type of the file, eg. application/json
      */
     public void put(String key, InputStream stream, String name, String contentType) {
+        put(key, stream, name, contentType, autoCloseInputStreams);
+    }
+
+    /**
+     * Adds an input stream to the request.
+     *
+     * @param key         the key name for the new param.
+     * @param stream      the input stream to add.
+     * @param name        the name of the stream.
+     * @param contentType the content type of the file, eg. application/json
+     * @param autoClose   close input stream automatically on successful upload
+     */
+    public void put(String key, InputStream stream, String name, String contentType, boolean autoClose) {
         if (key != null && stream != null) {
-            streamParams.put(key, new StreamWrapper(stream, name, contentType));
+            streamParams.put(key, StreamWrapper.newInstance(stream, name, contentType, autoClose));
         }
     }
 
@@ -362,7 +378,17 @@ public class RequestParams {
     }
 
     /**
-     * Returns an HttpEntity containing all request parameters
+     * Set global flag which determines whether to automatically close input
+     * streams on successful upload.
+     *
+     * @param flag boolean whether to automatically close input streams
+     */
+    public void setAutoCloseInputStreams(boolean flag) {
+        autoCloseInputStreams = flag;
+    }
+
+    /**
+     * Returns an HttpEntity containing all request parameters.
      *
      * @param progressHandler HttpResponseHandler for reporting progress on entity submit
      * @return HttpEntity resulting HttpEntity to be included along with {@link
@@ -371,7 +397,7 @@ public class RequestParams {
      */
     public HttpEntity getEntity(ResponseHandlerInterface progressHandler) throws IOException {
         if (useJsonStreamer) {
-            return createJsonStreamerEntity();
+            return createJsonStreamerEntity(progressHandler);
         } else if (streamParams.isEmpty() && fileParams.isEmpty()) {
             return createFormEntity();
         } else {
@@ -379,8 +405,9 @@ public class RequestParams {
         }
     }
 
-    private HttpEntity createJsonStreamerEntity() throws IOException {
-        JsonStreamerEntity entity = new JsonStreamerEntity(!fileParams.isEmpty() || !streamParams.isEmpty());
+    private HttpEntity createJsonStreamerEntity(ResponseHandlerInterface progressHandler) throws IOException {
+        JsonStreamerEntity entity = new JsonStreamerEntity(progressHandler,
+            !fileParams.isEmpty() || !streamParams.isEmpty());
 
         // Add string params
         for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
@@ -394,11 +421,7 @@ public class RequestParams {
 
         // Add file params
         for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
-            FileWrapper fileWrapper = entry.getValue();
-            entity.addPart(entry.getKey(),
-                    new FileInputStream(fileWrapper.file),
-                    fileWrapper.file.getName(),
-                    fileWrapper.contentType);
+            entity.addPart(entry.getKey(), entry.getValue());
         }
 
         // Add stream params
@@ -406,9 +429,11 @@ public class RequestParams {
             StreamWrapper stream = entry.getValue();
             if (stream.inputStream != null) {
                 entity.addPart(entry.getKey(),
+                    StreamWrapper.newInstance(
                         stream.inputStream,
                         stream.name,
-                        stream.contentType);
+                        stream.contentType,
+                        stream.autoClose));
             }
         }
 
@@ -458,7 +483,7 @@ public class RequestParams {
     }
 
     protected List<BasicNameValuePair> getParamsList() {
-        List<BasicNameValuePair> lparams = new LinkedList<>();
+        List<BasicNameValuePair> lparams = new LinkedList();
 
         for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
             lparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
@@ -470,7 +495,7 @@ public class RequestParams {
     }
 
     private List<BasicNameValuePair> getParamsList(String key, Object value) {
-        List<BasicNameValuePair> params = new LinkedList<>();
+        List<BasicNameValuePair> params = new LinkedList();
         if (value instanceof Map) {
             Map map = (Map) value;
             List list = new ArrayList<Object>(map.keySet());
@@ -511,8 +536,8 @@ public class RequestParams {
     }
 
     public static class FileWrapper {
-        public File file;
-        public String contentType;
+        public final File file;
+        public final String contentType;
 
         public FileWrapper(File file, String contentType) {
             this.file = file;
@@ -521,14 +546,24 @@ public class RequestParams {
     }
 
     public static class StreamWrapper {
-        public InputStream inputStream;
-        public String name;
-        public String contentType;
+        public final InputStream inputStream;
+        public final String name;
+        public final String contentType;
+        public final boolean autoClose;
 
-        public StreamWrapper(InputStream inputStream, String name, String contentType) {
+        public StreamWrapper(InputStream inputStream, String name, String contentType, boolean autoClose) {
             this.inputStream = inputStream;
             this.name = name;
             this.contentType = contentType;
+            this.autoClose = autoClose;
+        }
+
+        static StreamWrapper newInstance(InputStream inputStream, String name, String contentType, boolean autoClose) {
+            return new StreamWrapper(
+                inputStream,
+                name,
+                contentType == null ? APPLICATION_OCTET_STREAM : contentType,
+                autoClose);
         }
     }
 }
