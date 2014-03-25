@@ -376,7 +376,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 if (contentLength > Integer.MAX_VALUE) {
                     throw new IllegalArgumentException("HTTP entity too large to be buffered in memory");
                 }
-                int buffersize = (contentLength < 0) ? BUFFER_SIZE : (int) contentLength;
+                int buffersize = (contentLength <= 0) ? BUFFER_SIZE : (int) contentLength;
                 try {
                     ByteArrayBuffer buffer = new ByteArrayBuffer(buffersize);
                     try {
@@ -386,7 +386,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                         while ((l = instream.read(tmp)) != -1 && !Thread.currentThread().isInterrupted()) {
                             count += l;
                             buffer.append(tmp, 0, l);
-                            sendProgressMessage(count, (int) contentLength);
+                            sendProgressMessage(count, (int) (contentLength <= 0 ? 1 : contentLength));
                         }
                     } finally {
                         AsyncHttpClient.silentCloseInputStream(instream);
