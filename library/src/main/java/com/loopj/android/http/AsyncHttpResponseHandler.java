@@ -322,11 +322,11 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         boolean missingLooper = null == Looper.myLooper();
         if (runnable != null) {
             if (missingLooper) {
-                // If there is no looper, run on current thread
-                runnable.run();
-            } else {
-                // Otherwise, run on a handler we create
+                // If there is no looper, run on provided handler
                 handler.post(runnable);
+            } else {
+                // Otherwise, run on current thread
+                runnable.run();
             }
         }
     }
