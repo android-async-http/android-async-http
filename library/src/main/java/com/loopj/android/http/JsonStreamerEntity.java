@@ -24,7 +24,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.message.BasicHeader;
 
-import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -46,15 +46,16 @@ class JsonStreamerEntity implements HttpEntity {
     private static final UnsupportedOperationException ERR_UNSUPPORTED =
         new UnsupportedOperationException("Unsupported operation in this implementation.");
 
-    // Size of the byte-array buffer used to read from streams.
-    private static final int BUFFER_SIZE = 2048;
+    // Size of the byte-array buffer used in I/O streams.
+    private static final int BUFFER_SIZE = 4096;
+
+    // Buffer used for reading from input streams.
+    private final byte[] buffer = new byte[BUFFER_SIZE];
 
     // Reusable StringBuilder used by escape() method.
-    // Base64, at worst, will make a binary stream grow in size by approximately
-    // (n + 2 - ((n + 2) % 3)) / 3 * 4, which is roughly 1.3333333% for a
-    // large 'n'.
-    private static final StringBuilder BUILDER =
-        new StringBuilder((int)(BUFFER_SIZE * 1.35f));
+    // Its size is just initial, if more space is needed, the system will
+    // automatically enlarge the buffer.
+    private static final StringBuilder BUILDER = new StringBuilder(128);
 
     private static final byte[] JSON_TRUE = "true".getBytes();
     private static final byte[] JSON_FALSE = "false".getBytes();
@@ -68,33 +69,28 @@ class JsonStreamerEntity implements HttpEntity {
         new BasicHeader("Content-Type", "application/json");
     private static final Header HEADER_GZIP_ENCODING =
         new BasicHeader("Content-Encoding", "gzip");
-    private static final String APPLICATION_OCTET_STREAM =
-        "application/octet-stream";
 
-    // K/V objects to be uploaded.
-    private final Map<String, Object> kvParams =
-        new HashMap();
-
-    // Streams and their associated meta-data to be uploaded.
-    private final Map<String, RequestParams.StreamWrapper> streamParams =
-        new HashMap();
+    // JSON data and associated meta-data to be uploaded.
+    private final Map<String, Object> jsonParams = new HashMap();
 
     // Whether to use gzip compression while uploading
     private final Header contentEncoding;
 
-    public JsonStreamerEntity(boolean contentEncoding) {
-        this.contentEncoding = contentEncoding ? HEADER_GZIP_ENCODING : null;
+    private final ResponseHandlerInterface progressHandler;
+
+    public JsonStreamerEntity(ResponseHandlerInterface progressHandler, boolean useGZipCompression) {
+        this.progressHandler = progressHandler;
+        this.contentEncoding = useGZipCompression ? HEADER_GZIP_ENCODING : null;
     }
 
+    /**
+     * Add content parameter, identified by the given key, to the request.
+     *
+     * @param key entity's name
+     * @param value entity's value (Scalar, FileWrapper, StreamWrapper)
+     */
     public void addPart(String key, Object value) {
-        kvParams.put(key, value);
-    }
-
-    public void addPart(String key, InputStream inputStream, String name, String type) {
-        if (type == null) {
-            type = APPLICATION_OCTET_STREAM;
-        }
-        streamParams.put(key, new RequestParams.StreamWrapper(inputStream, name, type));
+        jsonParams.put(key, value);
     }
 
     @Override
@@ -137,121 +133,175 @@ class JsonStreamerEntity implements HttpEntity {
     }
 
     @Override
-    public void writeTo(final OutputStream outstream) throws IOException {
-        if (outstream == null) {
+    public void writeTo(final OutputStream out) throws IOException {
+        if (out == null) {
             throw new IllegalStateException("Output stream cannot be null.");
         }
 
         // Record the time when uploading started.
         long now = System.currentTimeMillis();
 
-        // Keys used by the HashMaps.
-        Set<String> keys;
-
         // Use GZIP compression when sending streams, otherwise just use
         // a buffered output stream to speed things up a bit.
-        OutputStream upload;
-        if (null != contentEncoding) {
-            upload = new GZIPOutputStream(new BufferedOutputStream(outstream), BUFFER_SIZE);
-        } else {
-            upload = new BufferedOutputStream(outstream);
-        }
+        OutputStream os = null != contentEncoding
+          ? new GZIPOutputStream(out, BUFFER_SIZE)
+          : out;
 
         // Always send a JSON object.
-        upload.write('{');
+        os.write('{');
 
-        // Send the K/V values.
-        keys = kvParams.keySet();
+        // Keys used by the HashMaps.
+        Set<String> keys = jsonParams.keySet();
+
+        boolean isFileWrapper;
+
+        // Go over all keys and handle each's value.
         for (String key : keys) {
-            // Write the JSON object's key.
-            upload.write(escape(key));
-            upload.write(':');
-
             // Evaluate the value (which cannot be null).
-            Object value = kvParams.get(key);
+            Object value = jsonParams.get(key);
 
-            if (value instanceof Boolean) {
-                upload.write((Boolean)value ? JSON_TRUE : JSON_FALSE);
-            } else if (value instanceof Long) {
-                upload.write((((Number)value).longValue() + "").getBytes());
-            } else if (value instanceof Double) {
-                upload.write((((Number)value).doubleValue() + "").getBytes());
-            } else if (value instanceof Float) {
-                upload.write((((Number)value).floatValue() + "").getBytes());
-            } else if (value instanceof Integer) {
-                upload.write((((Number)value).intValue() + "").getBytes());
-            } else {
-                upload.write(value.toString().getBytes());
+            // Bail out prematurely if value's null.
+            if (value == null) {
+                continue;
             }
-
-            upload.write(',');
-        }
-
-        // Buffer used for reading from input streams.
-        byte[] buffer = new byte[BUFFER_SIZE];
-
-        // Send the stream params.
-        keys = streamParams.keySet();
-        for (String key : keys) {
-            RequestParams.StreamWrapper entry = streamParams.get(key);
 
             // Write the JSON object's key.
-            upload.write(escape(key));
+            os.write(escape(key));
+            os.write(':');
 
-            // All uploads are sent as an object containing the file's details.
-            upload.write(':');
-            upload.write('{');
+            // Check if this is a FileWrapper.
+            isFileWrapper = value instanceof RequestParams.FileWrapper;
 
-            // Send the streams's name.
-            upload.write(STREAM_NAME);
-            upload.write(':');
-            upload.write(escape(entry.name));
-            upload.write(',');
+            // If a file should be uploaded.
+            if (isFileWrapper || value instanceof RequestParams.StreamWrapper) {
+                // All uploads are sent as an object containing the file's details.
+                os.write('{');
 
-            // Send the streams's content type.
-            upload.write(STREAM_TYPE);
-            upload.write(':');
-            upload.write(escape(entry.contentType));
-            upload.write(',');
+                // Determine how to handle this entry.
+                if (isFileWrapper) {
+                    writeToFromFile(os, (RequestParams.FileWrapper)value);
+                } else {
+                    writeToFromStream(os, (RequestParams.StreamWrapper)value);
+                }
 
-            // Prepare the file content's key.
-            upload.write(STREAM_CONTENTS);
-            upload.write(':');
-            upload.write('"');
-
-            // Upload the file's contents in Base64.
-            Base64OutputStream outputStream =
-                new Base64OutputStream(upload, Base64.NO_CLOSE | Base64.NO_WRAP);
-
-            // Read from input stream until no more data's left to read.
-            int bytesRead;
-            while ((bytesRead = entry.inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
+                // End the file's object and prepare for next one.
+                os.write('}');
+            } else if (value instanceof Boolean) {
+                os.write((Boolean)value ? JSON_TRUE : JSON_FALSE);
+            } else if (value instanceof Long) {
+                os.write((((Number)value).longValue() + "").getBytes());
+            } else if (value instanceof Double) {
+                os.write((((Number)value).doubleValue() + "").getBytes());
+            } else if (value instanceof Float) {
+                os.write((((Number)value).floatValue() + "").getBytes());
+            } else if (value instanceof Integer) {
+                os.write((((Number)value).intValue() + "").getBytes());
+            } else {
+                os.write(value.toString().getBytes());
             }
 
-            // Close the Base64 output stream.
-            outputStream.close();
-
-            // End the file's object and prepare for next one.
-            upload.write('"');
-            upload.write('}');
-            upload.write(',');
+            os.write(',');
         }
 
         // Include the elapsed time taken to upload everything.
         // This might be useful for somebody, but it serves us well since
         // there will almost always be a ',' as the last sent character.
-        upload.write(STREAM_ELAPSED);
-        upload.write(':');
+        os.write(STREAM_ELAPSED);
+        os.write(':');
         long elapsedTime = System.currentTimeMillis() - now;
-        upload.write((elapsedTime + "}").getBytes());
+        os.write((elapsedTime + "}").getBytes());
 
         Log.i(LOG_TAG, "Uploaded JSON in " + Math.floor(elapsedTime / 1000) + " seconds");
 
         // Flush the contents up the stream.
-        upload.flush();
-        upload.close();
+        os.flush();
+        AsyncHttpClient.silentCloseOutputStream(os);
     }
+
+    private void writeToFromStream(OutputStream os, RequestParams.StreamWrapper entry)
+            throws IOException {
+
+        // Send the meta data.
+        writeMetaData(os, entry.name, entry.contentType);
+
+        int bytesRead;
+
+        // Upload the file's contents in Base64.
+        Base64OutputStream bos =
+            new Base64OutputStream(os, Base64.NO_CLOSE | Base64.NO_WRAP);
+
+        // Read from input stream until no more data's left to read.
+        while ((bytesRead = entry.inputStream.read(buffer)) != -1) {
+            bos.write(buffer, 0, bytesRead);
+        }
+
+        // Close the Base64 output stream.
+        AsyncHttpClient.silentCloseOutputStream(bos);
+
+        // End the meta data.
+        endMetaData(os);
+
+        // Close input stream.
+        if (entry.autoClose) {
+            // Safely close the input stream.
+            AsyncHttpClient.silentCloseInputStream(entry.inputStream);
+        }
+    }
+
+    private void writeToFromFile(OutputStream os, RequestParams.FileWrapper wrapper)
+            throws IOException {
+
+        // Send the meta data.
+        writeMetaData(os, wrapper.file.getName(), wrapper.contentType);
+
+        int bytesRead, bytesWritten = 0, totalSize = (int)wrapper.file.length();
+
+        // Open the file for reading.
+        FileInputStream in = new FileInputStream(wrapper.file);
+
+        // Upload the file's contents in Base64.
+        Base64OutputStream bos =
+            new Base64OutputStream(os, Base64.NO_CLOSE | Base64.NO_WRAP);
+
+        // Read from file until no more data's left to read.
+        while ((bytesRead = in.read(buffer)) != -1) {
+            bos.write(buffer, 0, bytesRead);
+            bytesWritten += bytesRead;
+            progressHandler.sendProgressMessage(bytesWritten, totalSize);
+        }
+
+        // Close the Base64 output stream.
+        AsyncHttpClient.silentCloseOutputStream(bos);
+
+        // End the meta data.
+        endMetaData(os);
+
+        // Safely close the input stream.
+        AsyncHttpClient.silentCloseInputStream(in);
+    }
+
+    private void writeMetaData(OutputStream os, String name, String contentType) throws IOException {
+        // Send the streams's name.
+        os.write(STREAM_NAME);
+        os.write(':');
+        os.write(escape(name));
+        os.write(',');
+
+        // Send the streams's content type.
+        os.write(STREAM_TYPE);
+        os.write(':');
+        os.write(escape(contentType));
+        os.write(',');
+
+        // Prepare the file content's key.
+        os.write(STREAM_CONTENTS);
+        os.write(':');
+        os.write('"');
+    }
+
+    private void endMetaData(OutputStream os) throws IOException {
+        os.write('"');
+      }
 
     // Curtosy of Simple-JSON: http://goo.gl/XoW8RF
     // Changed a bit to suit our needs in this class.
@@ -310,11 +360,11 @@ class JsonStreamerEntity implements HttpEntity {
         BUILDER.append('"');
 
         try {
-          return BUILDER.toString().getBytes();
+            return BUILDER.toString().getBytes();
         } finally {
-          // Empty the String buffer.
-          // This is 20-30% faster than instantiating a new object.
-          BUILDER.setLength(0);
+            // Empty the String buffer.
+            // This is 20-30% faster than instantiating a new object.
+            BUILDER.setLength(0);
         }
     }
 }
