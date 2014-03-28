@@ -163,8 +163,16 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * Creates a new AsyncHttpResponseHandler
      */
     public AsyncHttpResponseHandler() {
-        // There is always a handler ready for delivering messages.
-        handler = new ResponderHandler(this);
+	boolean missingLooper = null == Looper.myLooper();
+	// Try to create handler
+	if (!missingLooper)
+		handler = new ResponderHandler(this);
+	else {
+		// There is no Looper on this thread so synchronous mode should be used.
+		handler = null;
+		setUseSynchronousMode(true);
+		Log.i(LOG_TAG, "Current thread has not called Looper.prepare(). Forcing synchronous mode.");
+	}
 
         // Init Looper by calling postRunnable without an argument.
         postRunnable(null);
@@ -319,14 +327,13 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @param runnable runnable instance, can be null
      */
     protected void postRunnable(Runnable runnable) {
-        boolean missingLooper = null == Looper.myLooper();
         if (runnable != null) {
-            if (missingLooper) {
-                // If there is no looper, run on provided handler
-                handler.post(runnable);
+            if (getUseSynchronousMode()){
+		// This response handler is synchronous, run on current thread
+		runnable.run();
             } else {
-                // Otherwise, run on current thread
-                runnable.run();
+                // Otherwise, run on provided handler
+                handler.post(runnable);
             }
         }
     }
@@ -339,7 +346,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @return Message instance, should not be null
      */
     protected Message obtainMessage(int responseMessageId, Object responseMessageData) {
-        return handler.obtainMessage(responseMessageId, responseMessageData);
+	return Message.obtain(handler, responseMessageId, responseMessageData);
     }
 
     @Override
