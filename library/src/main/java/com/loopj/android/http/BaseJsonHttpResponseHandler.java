@@ -74,7 +74,7 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
     @Override
     public final void onSuccess(final int statusCode, final Header[] headers, final String responseString) {
         if (statusCode != HttpStatus.SC_NO_CONTENT) {
-            new Thread(new Runnable() {
+	    Runnable parser = new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -95,7 +95,11 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
                         });
                     }
                 }
-            }).start();
+	    };
+            if (!getUseSynchronousMode())
+		new Thread(parser).start();
+	    else // In synchronous mode everything should be run on one thread
+		parser.run();
         } else {
             onSuccess(statusCode, headers, null, null);
         }
@@ -104,7 +108,7 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
     @Override
     public final void onFailure(final int statusCode, final Header[] headers, final String responseString, final Throwable throwable) {
         if (responseString != null) {
-            new Thread(new Runnable() {
+	    Runnable parser = new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -125,7 +129,11 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
                         });
                     }
                 }
-            }).start();
+	    };
+            if (!getUseSynchronousMode())
+		new Thread(parser).start();
+	    else // In synchronous mode everything should be run on one thread
+		parser.run();
         } else {
             onFailure(statusCode, headers, throwable, null, null);
         }
