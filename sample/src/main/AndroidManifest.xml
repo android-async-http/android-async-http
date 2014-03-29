@@ -24,8 +24,8 @@
         <activity android:name=".FileSample"/>
         <activity android:name=".BinarySample"/>
         <activity android:name=".ThreadingTimeoutSample"/>
-        <activity android:name=".CancelAllRequests"/>
-        <activity android:name=".CancelRequestHandle"/>
+        <activity android:name=".CancelAllRequestsSample"/>
+        <activity android:name=".CancelRequestHandleSample"/>
     </application>
 
 </manifest>

@@ -47,10 +47,10 @@ public class WaypointsActivity extends ListActivity {
                 targetClass = ThreadingTimeoutSample.class;
                 break;
             case 8:
-                targetClass = CancelAllRequests.class;
+                targetClass = CancelAllRequestsSample.class;
                 break;
             case 9:
-                targetClass = CancelRequestHandle.class;
+                targetClass = CancelRequestHandleSample.class;
                 break;
         }
         if (targetClass != null)

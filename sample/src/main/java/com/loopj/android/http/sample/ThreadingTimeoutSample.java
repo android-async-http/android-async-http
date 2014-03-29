@@ -17,7 +17,7 @@ public class ThreadingTimeoutSample extends SampleParentActivity {
 
     @Override
     protected int getSampleTitle() {
-        return R.string.app_name;
+        return R.string.title_threading_timeout;
     }
 
     @Override
