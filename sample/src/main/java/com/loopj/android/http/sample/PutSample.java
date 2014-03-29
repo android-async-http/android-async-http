@@ -2,6 +2,7 @@ package com.loopj.android.http.sample;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestHandle;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -10,8 +11,8 @@ public class PutSample extends SampleParentActivity {
     private static final String LOG_TAG = "PutSample";
 
     @Override
-    protected void executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler) {
-        client.put(this, URL, headers, entity, null, responseHandler);
+    protected RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler) {
+        return client.put(this, URL, headers, entity, null, responseHandler);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
+import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.sample.util.FileUtil;
 
 import org.apache.http.Header;
@@ -76,7 +77,7 @@ public class FileSample extends SampleParentActivity {
     }
 
     @Override
-    protected void executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler) {
-        client.get(this, URL, headers, null, responseHandler);
+    protected RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler) {
+        return client.get(this, URL, headers, null, responseHandler);
     }
 }

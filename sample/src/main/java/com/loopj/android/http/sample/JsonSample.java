@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
+import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.sample.util.SampleJSON;
 
 import org.apache.http.Header;
@@ -15,8 +16,8 @@ public class JsonSample extends SampleParentActivity {
     private static final String LOG_TAG = "JsonSample";
 
     @Override
-    protected void executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler) {
-        client.get(this, URL, headers, null, responseHandler);
+    protected RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler) {
+        return client.get(this, URL, headers, null, responseHandler);
     }
 
     @Override

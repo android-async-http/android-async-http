@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestHandle;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -23,6 +24,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,6 +33,7 @@ public abstract class SampleParentActivity extends Activity {
     private AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
     private EditText urlEditText, headersEditText, bodyEditText;
     private LinearLayout responseLayout;
+    private final List<RequestHandle> requestHandles = new LinkedList<>();
 
     private static final int LIGHTGREEN = Color.parseColor("#00FF66");
     private static final int LIGHTRED = Color.parseColor("#FF3300");
@@ -64,19 +67,31 @@ public abstract class SampleParentActivity extends Activity {
         }
     }
 
+    public List<RequestHandle> getRequestHandles() {
+        return requestHandles;
+    }
+
+    protected void onRunButtonPressed() {
+        requestHandles.add(executeSample(getAsyncHttpClient(),
+                (urlEditText == null || urlEditText.getText() == null) ? getDefaultURL() : urlEditText.getText().toString(),
+                getRequestHeaders(),
+                getRequestEntity(),
+                getResponseHandler()));
+    }
+
+    protected void onCancelButtonPressed() {
+        asyncHttpClient.cancelRequests(SampleParentActivity.this, true);
+    }
+
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.button_run:
-                    executeSample(getAsyncHttpClient(),
-                            (urlEditText == null || urlEditText.getText() == null) ? getDefaultURL() : urlEditText.getText().toString(),
-                            getRequestHeaders(),
-                            getRequestEntity(),
-                            getResponseHandler());
+                    onRunButtonPressed();
                     break;
                 case R.id.button_cancel:
-                    asyncHttpClient.cancelRequests(SampleParentActivity.this, true);
+                    onCancelButtonPressed();
                     break;
             }
         }
@@ -198,5 +213,5 @@ public abstract class SampleParentActivity extends Activity {
         return this.asyncHttpClient;
     }
 
-    protected abstract void executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler);
+    protected abstract RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler);
 }

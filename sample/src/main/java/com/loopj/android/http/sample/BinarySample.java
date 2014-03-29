@@ -3,6 +3,7 @@ package com.loopj.android.http.sample;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BinaryHttpResponseHandler;
+import com.loopj.android.http.RequestHandle;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -63,7 +64,7 @@ public class BinarySample extends SampleParentActivity {
     }
 
     @Override
-    protected void executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler) {
-        client.get(this, URL, headers, null, responseHandler);
+    protected RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler) {
+        return client.get(this, URL, headers, null, responseHandler);
     }
 }

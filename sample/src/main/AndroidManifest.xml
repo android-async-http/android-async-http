@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.loopj.android.http.sample"
-    android:versionCode="1"
-    android:versionName="1.0">
+          package="com.loopj.android.http.sample"
+          android:versionCode="1"
+          android:versionName="1.0">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -12,18 +12,20 @@
         android:theme="@style/AppTheme">
         <activity android:name=".WaypointsActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".GetSample" />
-        <activity android:name=".PostSample" />
-        <activity android:name=".DeleteSample" />
-        <activity android:name=".PutSample" />
-        <activity android:name=".JsonSample" />
-        <activity android:name=".FileSample" />
-        <activity android:name=".BinarySample" />
-        <activity android:name=".ThreadingTimeoutSample" />
+        <activity android:name=".GetSample"/>
+        <activity android:name=".PostSample"/>
+        <activity android:name=".DeleteSample"/>
+        <activity android:name=".PutSample"/>
+        <activity android:name=".JsonSample"/>
+        <activity android:name=".FileSample"/>
+        <activity android:name=".BinarySample"/>
+        <activity android:name=".ThreadingTimeoutSample"/>
+        <activity android:name=".CancelAllRequests"/>
+        <activity android:name=".CancelRequestHandle"/>
     </application>
 
 </manifest>
