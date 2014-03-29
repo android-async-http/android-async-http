@@ -3,9 +3,9 @@ package com.loopj.android.http.sample;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
+import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.sample.util.SampleJSON;
 
 import org.apache.http.Header;
@@ -16,32 +16,32 @@ public class JsonSample extends SampleParentActivity {
     private static final String LOG_TAG = "JsonSample";
 
     @Override
-    protected RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler) {
+    public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {
         return client.get(this, URL, headers, null, responseHandler);
     }
 
     @Override
-    protected int getSampleTitle() {
+    public int getSampleTitle() {
         return R.string.title_json_sample;
     }
 
     @Override
-    protected boolean isRequestBodyAllowed() {
+    public boolean isRequestBodyAllowed() {
         return false;
     }
 
     @Override
-    protected boolean isRequestHeadersAllowed() {
+    public boolean isRequestHeadersAllowed() {
         return false;
     }
 
     @Override
-    protected String getDefaultURL() {
+    public String getDefaultURL() {
         return "http://httpbin.org/headers";
     }
 
     @Override
-    protected AsyncHttpResponseHandler getResponseHandler() {
+    public ResponseHandlerInterface getResponseHandler() {
         return new BaseJsonHttpResponseHandler<SampleJSON>() {
 
             @Override

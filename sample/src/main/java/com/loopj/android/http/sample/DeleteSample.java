@@ -3,6 +3,7 @@ package com.loopj.android.http.sample;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
+import com.loopj.android.http.ResponseHandlerInterface;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -11,33 +12,33 @@ public class DeleteSample extends SampleParentActivity {
     private static final String LOG_TAG = "DeleteSample";
 
     @Override
-    protected RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler) {
+    public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {
         return client.delete(this, URL, headers, null, responseHandler);
     }
 
     @Override
-    protected int getSampleTitle() {
+    public int getSampleTitle() {
         return R.string.title_delete_sample;
     }
 
     @Override
-    protected boolean isRequestBodyAllowed() {
+    public boolean isRequestBodyAllowed() {
         // HttpDelete is not HttpEntityEnclosingRequestBase, thus cannot contain body
         return false;
     }
 
     @Override
-    protected boolean isRequestHeadersAllowed() {
+    public boolean isRequestHeadersAllowed() {
         return true;
     }
 
     @Override
-    protected String getDefaultURL() {
+    public String getDefaultURL() {
         return "http://httpbin.org/delete";
     }
 
     @Override
-    protected AsyncHttpResponseHandler getResponseHandler() {
+    public ResponseHandlerInterface getResponseHandler() {
         return new AsyncHttpResponseHandler() {
 
             @Override

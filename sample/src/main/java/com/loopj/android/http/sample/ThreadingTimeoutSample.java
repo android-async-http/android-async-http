@@ -5,6 +5,7 @@ import android.util.SparseArray;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
+import com.loopj.android.http.ResponseHandlerInterface;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -16,27 +17,27 @@ public class ThreadingTimeoutSample extends SampleParentActivity {
     private int counter = 0;
 
     @Override
-    protected int getSampleTitle() {
+    public int getSampleTitle() {
         return R.string.title_threading_timeout;
     }
 
     @Override
-    protected boolean isRequestBodyAllowed() {
+    public boolean isRequestBodyAllowed() {
         return false;
     }
 
     @Override
-    protected boolean isRequestHeadersAllowed() {
+    public boolean isRequestHeadersAllowed() {
         return false;
     }
 
     @Override
-    protected boolean isCancelButtonAllowed() {
+    public boolean isCancelButtonAllowed() {
         return true;
     }
 
     @Override
-    protected String getDefaultURL() {
+    public String getDefaultURL() {
         return "http://httpbin.org/delay/6";
     }
 
@@ -50,7 +51,7 @@ public class ThreadingTimeoutSample extends SampleParentActivity {
     }
 
     @Override
-    protected AsyncHttpResponseHandler getResponseHandler() {
+    public ResponseHandlerInterface getResponseHandler() {
         return new AsyncHttpResponseHandler() {
 
             private int id = counter++;
@@ -87,7 +88,7 @@ public class ThreadingTimeoutSample extends SampleParentActivity {
     }
 
     @Override
-    protected RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, AsyncHttpResponseHandler responseHandler) {
+    public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {
         return client.get(this, URL, headers, null, responseHandler);
     }
 }
