@@ -71,7 +71,7 @@ class JsonStreamerEntity implements HttpEntity {
         new BasicHeader("Content-Encoding", "gzip");
 
     // JSON data and associated meta-data to be uploaded.
-    private final Map<String, Object> jsonParams = new HashMap();
+    private final Map<String, Object> jsonParams = new HashMap<>();
 
     // Whether to use gzip compression while uploading
     private final Header contentEncoding;

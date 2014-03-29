@@ -218,8 +218,8 @@ public class AsyncHttpClient {
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
         threadPool = Executors.newCachedThreadPool();
-        requestMap = new WeakHashMap();
-        clientHeaderMap = new HashMap();
+        requestMap = new WeakHashMap<>();
+        clientHeaderMap = new HashMap<>();
 
         httpContext = new SyncBasicHttpContext(new BasicHttpContext());
         httpClient = new DefaultHttpClient(cm, httpParams);
@@ -978,9 +978,17 @@ public class AsyncHttpClient {
      * @return RequestHandle of future request process
      */
     protected RequestHandle sendRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, ResponseHandlerInterface responseHandler, Context context) {
-	if (responseHandler != null && responseHandler.getUseSynchronousMode()) {
-		throw new IllegalArgumentException("Synchronous ResponseHandler used in AsyncHttpClient. You should create your response handler in a looper thread or use SyncHttpClient instead.");
-	}
+        if (uriRequest == null) {
+            throw new IllegalArgumentException("HttpUriRequest must not be null");
+        }
+
+        if (responseHandler == null) {
+            throw new IllegalArgumentException("ResponseHandler must not be null");
+        }
+
+        if (responseHandler.getUseSynchronousMode()) {
+            throw new IllegalArgumentException("Synchronous ResponseHandler used in AsyncHttpClient. You should create your response handler in a looper thread or use SyncHttpClient instead.");
+        }
 
         if (contentType != null) {
             uriRequest.setHeader("Content-Type", contentType);
@@ -997,7 +1005,7 @@ public class AsyncHttpClient {
             // Add request to request map
             List<RequestHandle> requestList = requestMap.get(context);
             if (requestList == null) {
-                requestList = new LinkedList();
+                requestList = new LinkedList<>();
                 requestMap.put(context, requestList);
             }
 
