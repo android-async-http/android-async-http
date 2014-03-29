@@ -11,7 +11,7 @@
     <string name="title_binary_sample">GET binary data</string>
     <string name="title_cancel_all">Cancel all request</string>
     <string name="title_cancel_handle">Cancel request handle</string>
-    <string name="title_synchronous">Synchronous requests</string>
+    <string name="title_synchronous">Synchronous GET request</string>
     <string name="title_threading_timeout">Threading timeouts</string>
     <string name="button_run">Run</string>
     <string name="label_headers">Headers (key=val, one per line)</string>

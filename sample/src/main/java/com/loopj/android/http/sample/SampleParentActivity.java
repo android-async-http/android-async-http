@@ -60,9 +60,13 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         headersLayout.setVisibility(isRequestHeadersAllowed() ? View.VISIBLE : View.GONE);
 
         runButton.setOnClickListener(onClickListener);
-        if (isCancelButtonAllowed() && cancelButton != null) {
-            cancelButton.setVisibility(View.VISIBLE);
-            cancelButton.setOnClickListener(onClickListener);
+        if (cancelButton != null) {
+            if (isCancelButtonAllowed()) {
+                cancelButton.setVisibility(View.VISIBLE);
+                cancelButton.setOnClickListener(onClickListener);
+            } else {
+                cancelButton.setEnabled(false);
+            }
         }
     }
 
@@ -70,8 +74,15 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         return requestHandles;
     }
 
+    @Override
+    public void addRequestHandle(RequestHandle handle) {
+        if (null != handle) {
+            requestHandles.add(handle);
+        }
+    }
+
     public void onRunButtonPressed() {
-        requestHandles.add(executeSample(getAsyncHttpClient(),
+        addRequestHandle(executeSample(getAsyncHttpClient(),
                 (urlEditText == null || urlEditText.getText() == null) ? getDefaultURL() : urlEditText.getText().toString(),
                 getRequestHeaders(),
                 getRequestEntity(),
@@ -200,5 +211,10 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
     public AsyncHttpClient getAsyncHttpClient() {
         return this.asyncHttpClient;
+    }
+
+    @Override
+    public void setAsyncHttpClient(AsyncHttpClient client) {
+        this.asyncHttpClient = client;
     }
 }

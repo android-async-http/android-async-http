@@ -13,6 +13,8 @@ public interface SampleInterface {
 
     List<RequestHandle> getRequestHandles();
 
+    void addRequestHandle(RequestHandle handle);
+
     void onRunButtonPressed();
 
     void onCancelButtonPressed();
@@ -22,6 +24,8 @@ public interface SampleInterface {
     HttpEntity getRequestEntity();
 
     AsyncHttpClient getAsyncHttpClient();
+
+    void setAsyncHttpClient(AsyncHttpClient client);
 
     ResponseHandlerInterface getResponseHandler();
 
