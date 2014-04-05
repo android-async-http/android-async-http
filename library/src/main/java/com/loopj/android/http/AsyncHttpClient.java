@@ -986,10 +986,6 @@ public class AsyncHttpClient {
             throw new IllegalArgumentException("ResponseHandler must not be null");
         }
 
-        if (responseHandler.getUseSynchronousMode()) {
-            throw new IllegalArgumentException("Synchronous ResponseHandler used in AsyncHttpClient. You should create your response handler in a looper thread or use SyncHttpClient instead.");
-        }
-
         if (contentType != null) {
             uriRequest.setHeader("Content-Type", contentType);
         }
@@ -997,32 +993,42 @@ public class AsyncHttpClient {
         responseHandler.setRequestHeaders(uriRequest.getAllHeaders());
         responseHandler.setRequestURI(uriRequest.getURI());
 
-        AsyncHttpRequest request = new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler);
-        threadPool.submit(request);
-        RequestHandle requestHandle = new RequestHandle(request);
+        // Allow synchronous requests from AsyncHttpClient
+        if(responseHandler.getUseSynchronousMode()) {
+            new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler).run();
 
-        if (context != null) {
-            // Add request to request map
-            List<RequestHandle> requestList = requestMap.get(context);
-            if (requestList == null) {
-                requestList = new LinkedList<>();
-                requestMap.put(context, requestList);
-            }
+            // Return a Request Handle that cannot be used to cancel the request
+            // because it is already complete by the time this returns
+            return new RequestHandle(null);
+        } else {
 
-            if (responseHandler instanceof RangeFileAsyncHttpResponseHandler)
-                ((RangeFileAsyncHttpResponseHandler) responseHandler).updateRequestHeaders(uriRequest);
+            AsyncHttpRequest request = new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler);
+            threadPool.submit(request);
+            RequestHandle requestHandle = new RequestHandle(request);
 
-            requestList.add(requestHandle);
+            if (context != null) {
+                // Add request to request map
+                List<RequestHandle> requestList = requestMap.get(context);
+                if (requestList == null) {
+                    requestList = new LinkedList<>();
+                    requestMap.put(context, requestList);
+                }
 
-            Iterator<RequestHandle> iterator = requestList.iterator();
-            while (iterator.hasNext()) {
-                if (iterator.next().shouldBeGarbageCollected()) {
-                    iterator.remove();
+                if (responseHandler instanceof RangeFileAsyncHttpResponseHandler)
+                    ((RangeFileAsyncHttpResponseHandler) responseHandler).updateRequestHeaders(uriRequest);
+
+                requestList.add(requestHandle);
+
+                Iterator<RequestHandle> iterator = requestList.iterator();
+                while (iterator.hasNext()) {
+                    if (iterator.next().shouldBeGarbageCollected()) {
+                        iterator.remove();
+                    }
                 }
             }
-        }
 
-        return requestHandle;
+            return requestHandle;
+        }
     }
 
     /**
