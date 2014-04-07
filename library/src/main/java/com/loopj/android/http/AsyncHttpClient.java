@@ -218,8 +218,8 @@ public class AsyncHttpClient {
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
         threadPool = Executors.newCachedThreadPool();
-        requestMap = new WeakHashMap<>();
-        clientHeaderMap = new HashMap<>();
+        requestMap = new WeakHashMap();
+        clientHeaderMap = new HashMap();
 
         httpContext = new SyncBasicHttpContext(new BasicHttpContext());
         httpClient = new DefaultHttpClient(cm, httpParams);
@@ -263,6 +263,7 @@ public class AsyncHttpClient {
         });
 
         httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
+            @Override
             public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
                 AuthState authState = (AuthState) context.getAttribute(ClientContext.TARGET_AUTH_STATE);
                 CredentialsProvider credsProvider = (CredentialsProvider) context.getAttribute(
@@ -1005,7 +1006,7 @@ public class AsyncHttpClient {
             // Add request to request map
             List<RequestHandle> requestList = requestMap.get(context);
             if (requestList == null) {
-                requestList = new LinkedList<>();
+                requestList = new LinkedList();
                 requestMap.put(context, requestList);
             }
 

@@ -64,7 +64,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * params.put("like", set); // url params: "like=music&amp;like=art"
  *
  * List&lt;String&gt; list = new ArrayList&lt;String&gt;(); // Ordered collection
- * list.add("Java");
+ * list.add("Java");<>
  * list.add("C");
  * params.put("languages", list); // url params: "languages[]=Java&amp;languages[]=C"
  *
@@ -96,10 +96,10 @@ public class RequestParams {
     protected boolean isRepeatable;
     protected boolean useJsonStreamer;
     protected boolean autoCloseInputStreams;
-    protected final ConcurrentHashMap<String, String> urlParams = new ConcurrentHashMap<>();
-    protected final ConcurrentHashMap<String, StreamWrapper> streamParams = new ConcurrentHashMap<>();
-    protected final ConcurrentHashMap<String, FileWrapper> fileParams = new ConcurrentHashMap<>();
-    protected final ConcurrentHashMap<String, Object> urlParamsWithObjects = new ConcurrentHashMap<>();
+    protected final ConcurrentHashMap<String, String> urlParams = new ConcurrentHashMap();
+    protected final ConcurrentHashMap<String, StreamWrapper> streamParams = new ConcurrentHashMap();
+    protected final ConcurrentHashMap<String, FileWrapper> fileParams = new ConcurrentHashMap();
+    protected final ConcurrentHashMap<String, Object> urlParamsWithObjects = new ConcurrentHashMap();
     protected String contentEncoding = HTTP.UTF_8;
 
     /**
@@ -483,7 +483,7 @@ public class RequestParams {
     }
 
     protected List<BasicNameValuePair> getParamsList() {
-        List<BasicNameValuePair> lparams = new LinkedList<>();
+        List<BasicNameValuePair> lparams = new LinkedList();
 
         for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
             lparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
@@ -495,7 +495,7 @@ public class RequestParams {
     }
 
     private List<BasicNameValuePair> getParamsList(String key, Object value) {
-        List<BasicNameValuePair> params = new LinkedList<>();
+        List<BasicNameValuePair> params = new LinkedList();
         if (value instanceof Map) {
             Map map = (Map) value;
             List list = new ArrayList<Object>(map.keySet());
