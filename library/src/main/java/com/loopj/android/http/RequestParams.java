@@ -512,13 +512,13 @@ public class RequestParams {
             }
         } else if (value instanceof List) {
             List list = (List) value;
-            for (Object nestedValue : list) {
-                params.addAll(getParamsList(String.format("%s[]", key), nestedValue));
+            for (int nestedValueIndex = 0; nestedValueIndex < list.size(); nestedValueIndex++) {
+                params.addAll(getParamsList(String.format("%s[%d]", key, nestedValueIndex), list.get(nestedValueIndex)));
             }
         } else if (value instanceof Object[]) {
             Object[] array = (Object[]) value;
-            for (Object nestedValue : array) {
-                params.addAll(getParamsList(String.format("%s[]", key), nestedValue));
+            for (int nestedValueIndex = 0; nestedValueIndex < array.length; nestedValueIndex++) {
+                params.addAll(getParamsList(String.format("%s[%d]", key, nestedValueIndex), array[nestedValueIndex]));
             }
         } else if (value instanceof Set) {
             Set set = (Set) value;
