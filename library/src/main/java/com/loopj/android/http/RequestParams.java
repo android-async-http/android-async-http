@@ -525,8 +525,8 @@ public class RequestParams {
             for (Object nestedValue : set) {
                 params.addAll(getParamsList(key, nestedValue));
             }
-        } else if (value instanceof String) {
-            params.add(new BasicNameValuePair(key, (String) value));
+        } else {
+            params.add(new BasicNameValuePair(key, value.toString()));
         }
         return params;
     }
