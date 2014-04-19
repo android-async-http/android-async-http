@@ -179,7 +179,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      */
     public AsyncHttpResponseHandler() {
         // Use asynchronous mode by default.
-        setUseSynchronousMode(true);
+        setUseSynchronousMode(false);
     }
 
     /**
