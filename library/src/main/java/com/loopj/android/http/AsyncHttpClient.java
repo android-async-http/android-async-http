@@ -339,6 +339,16 @@ public class AsyncHttpClient {
     }
 
     /**
+     * Returns the current executor service used. By default,
+     * Executors.newFixedThreadPool() is used.
+     *
+     * @return current executor service used
+     */
+    public ExecutorService getThreadPool() {
+        return threadPool;
+    }
+
+    /**
      * Simple interface method, to enable or disable redirects. If you set manually RedirectHandler
      * on underlying HttpClient, effects of this method will be canceled.
      *
