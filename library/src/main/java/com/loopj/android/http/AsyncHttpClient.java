@@ -39,6 +39,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.RedirectHandler;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
@@ -46,6 +47,7 @@ import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.params.ConnPerRouteBean;
@@ -57,7 +59,6 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.HttpEntityWrapper;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.DefaultRedirectHandler;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -217,8 +218,8 @@ public class AsyncHttpClient {
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
         threadPool = getDefaultThreadPool();
-        requestMap = new WeakHashMap();
-        clientHeaderMap = new HashMap();
+        requestMap = new WeakHashMap<Context, List<RequestHandle>>();
+        clientHeaderMap = new HashMap<String, String>();
 
         httpContext = new SyncBasicHttpContext(new BasicHttpContext());
         httpClient = new DefaultHttpClient(cm, httpParams);
@@ -359,16 +360,47 @@ public class AsyncHttpClient {
     /**
      * Simple interface method, to enable or disable redirects. If you set manually RedirectHandler
      * on underlying HttpClient, effects of this method will be canceled.
+     * <p/>
+     * Default setting is to disallow redirects.
      *
+     * @param enableRedirects         boolean
+     * @param enableRelativeRedirects boolean
+     * @param enableCircularRedirects boolean
+     */
+    public void setEnableRedirects(final boolean enableRedirects, final boolean enableRelativeRedirects, final boolean enableCircularRedirects) {
+        httpClient.getParams().setBooleanParameter(ClientPNames.REJECT_RELATIVE_REDIRECT, !enableRelativeRedirects);
+        httpClient.getParams().setBooleanParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, enableCircularRedirects);
+        httpClient.setRedirectHandler(new MyRedirectHandler(enableRedirects));
+    }
+
+    /**
+     * Circular redirects are enabled by default
+     *
+     * @param enableRedirects         boolean
+     * @param enableRelativeRedirects boolean
+     * @see #setEnableRedirects(boolean, boolean, boolean)
+     */
+    public void setEnableRedirects(final boolean enableRedirects, final boolean enableRelativeRedirects) {
+        setEnableRedirects(enableRedirects, enableRelativeRedirects, true);
+    }
+
+    /**
      * @param enableRedirects boolean
+     * @see #setEnableRedirects(boolean, boolean, boolean)
      */
     public void setEnableRedirects(final boolean enableRedirects) {
-        httpClient.setRedirectHandler(new DefaultRedirectHandler() {
-            @Override
-            public boolean isRedirectRequested(HttpResponse response, HttpContext context) {
-                return enableRedirects;
-            }
-        });
+        setEnableRedirects(enableRedirects, enableRedirects, enableRedirects);
+    }
+
+    /**
+     * Allows you to set custom RedirectHandler implementation, if the default provided doesn't suit
+     * your needs
+     *
+     * @param customRedirectHandler RedirectHandler instance
+     * @see com.loopj.android.http.MyRedirectHandler
+     */
+    public void setRedirectHandler(final RedirectHandler customRedirectHandler) {
+        httpClient.setRedirectHandler(customRedirectHandler);
     }
 
     /**
