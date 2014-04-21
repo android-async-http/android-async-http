@@ -217,7 +217,7 @@ public class AsyncHttpClient {
 
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
-        threadPool = Executors.newCachedThreadPool();
+        threadPool = getDefaultThreadPool();
         requestMap = new WeakHashMap();
         clientHeaderMap = new HashMap();
 
@@ -336,6 +336,25 @@ public class AsyncHttpClient {
      */
     public void setThreadPool(ThreadPoolExecutor threadPool) {
         this.threadPool = threadPool;
+    }
+
+    /**
+     * Returns the current executor service used. By default,
+     * Executors.newFixedThreadPool() is used.
+     *
+     * @return current executor service used
+     */
+    public ExecutorService getThreadPool() {
+        return threadPool;
+    }
+
+    /**
+     * Get the default threading pool to be used for this HTTP client.
+     *
+     * @return The default threading pool to be used
+     */
+    protected ExecutorService getDefaultThreadPool()  {
+        return Executors.newCachedThreadPool();
     }
 
     /**
