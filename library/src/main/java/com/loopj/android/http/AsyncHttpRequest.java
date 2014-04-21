@@ -167,7 +167,12 @@ public class AsyncHttpRequest implements Runnable {
     public boolean cancel(boolean mayInterruptIfRunning) {
         isCancelled = true;
         if (mayInterruptIfRunning && request != null && !request.isAborted()) {
-            request.abort();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    request.abort();
+                }
+            });
         }
         return isCancelled();
     }
