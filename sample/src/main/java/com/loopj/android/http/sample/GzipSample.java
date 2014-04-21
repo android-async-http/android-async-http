@@ -1,7 +1,14 @@
 package com.loopj.android.http.sample;
 
-/**
- * Created by msebera on 21/04/14.
- */
-public class GzipSample {
+public class GzipSample extends JsonSample {
+
+    @Override
+    public int getSampleTitle() {
+        return R.string.title_gzip_sample;
+    }
+
+    @Override
+    public String getDefaultURL() {
+        return "http://httpbin.org/gzip";
+    }
 }

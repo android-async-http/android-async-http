@@ -9,7 +9,34 @@ import android.widget.ListView;
 
 public class WaypointsActivity extends ListActivity {
 
-    private static final String[] samples = new String[]{"GET", "POST", "DELETE", "PUT", "JSON", "FILE", "BINARY", "THREADING TIMEOUTS", "CANCEL ALL REQUESTS", "CANCEL REQUEST HANDLE", "SYNCHRONOUS CLIENT"};
+    private static final String[] samples = new String[]{
+            "GET",
+            "POST",
+            "DELETE",
+            "PUT",
+            "JSON",
+            "FILE",
+            "BINARY",
+            "GZIP",
+            "THREADING TIMEOUTS",
+            "CANCEL ALL REQUESTS",
+            "CANCEL REQUEST HANDLE",
+            "SYNCHRONOUS CLIENT"
+    };
+    private static final Class[] targets = {
+            GetSample.class,
+            PostSample.class,
+            DeleteSample.class,
+            PutSample.class,
+            JsonSample.class,
+            FileSample.class,
+            BinarySample.class,
+            GzipSample.class,
+            ThreadingTimeoutSample.class,
+            CancelAllRequestsSample.class,
+            CancelRequestHandleSample.class,
+            SynchronousClientSample.class
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,44 +46,7 @@ public class WaypointsActivity extends ListActivity {
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        Class<?> targetClass;
-        switch (position) {
-            case 0:
-            default:
-                targetClass = GetSample.class;
-                break;
-            case 1:
-                targetClass = PostSample.class;
-                break;
-            case 2:
-                targetClass = DeleteSample.class;
-                break;
-            case 3:
-                targetClass = PutSample.class;
-                break;
-            case 4:
-                targetClass = JsonSample.class;
-                break;
-            case 5:
-                targetClass = FileSample.class;
-                break;
-            case 6:
-                targetClass = BinarySample.class;
-                break;
-            case 7:
-                targetClass = ThreadingTimeoutSample.class;
-                break;
-            case 8:
-                targetClass = CancelAllRequestsSample.class;
-                break;
-            case 9:
-                targetClass = CancelRequestHandleSample.class;
-                break;
-            case 10:
-                targetClass = SynchronousClientSample.class;
-                break;
-        }
-        if (targetClass != null)
-            startActivity(new Intent(this, targetClass));
+        if (position >= 0 && position < targets.length)
+            startActivity(new Intent(this, targets[position]));
     }
 }
