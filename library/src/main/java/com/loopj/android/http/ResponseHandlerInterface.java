@@ -104,7 +104,7 @@ public interface ResponseHandlerInterface {
     void setUseSynchronousMode(boolean useSynchronousMode);
 
     /**
-     * Can set, whether the handler should be asynchronous or synchronous
+     * Returns whether the handler is asynchronous or synchronous
      *
      * @return boolean if the ResponseHandler is running in synchronous mode
      */
