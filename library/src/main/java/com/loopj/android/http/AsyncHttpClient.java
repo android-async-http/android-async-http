@@ -19,6 +19,7 @@
 package com.loopj.android.http;
 
 import android.content.Context;
+import android.os.Looper;
 import android.util.Log;
 
 import org.apache.http.Header;
@@ -339,8 +340,8 @@ public class AsyncHttpClient {
     }
 
     /**
-     * Returns the current executor service used. By default,
-     * Executors.newFixedThreadPool() is used.
+     * Returns the current executor service used. By default, Executors.newFixedThreadPool() is
+     * used.
      *
      * @return current executor service used
      */
@@ -353,7 +354,7 @@ public class AsyncHttpClient {
      *
      * @return The default threading pool to be used
      */
-    protected ExecutorService getDefaultThreadPool()  {
+    protected ExecutorService getDefaultThreadPool() {
         return Executors.newCachedThreadPool();
     }
 
@@ -578,13 +579,27 @@ public class AsyncHttpClient {
      * @param mayInterruptIfRunning specifies if active requests should be cancelled along with
      *                              pending requests.
      */
-    public void cancelRequests(Context context, boolean mayInterruptIfRunning) {
-        List<RequestHandle> requestList = requestMap.get(context);
-        if (requestList != null) {
-            for (RequestHandle requestHandle : requestList) {
-                requestHandle.cancel(mayInterruptIfRunning);
+    public void cancelRequests(final Context context, final boolean mayInterruptIfRunning) {
+        if (context == null) {
+            Log.e(LOG_TAG, "Passed null Context to cancelRequests");
+            return;
+        }
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                List<RequestHandle> requestList = requestMap.get(context);
+                if (requestList != null) {
+                    for (RequestHandle requestHandle : requestList) {
+                        requestHandle.cancel(mayInterruptIfRunning);
+                    }
+                    requestMap.remove(context);
+                }
             }
-            requestMap.remove(context);
+        };
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            new Thread(r).start();
+        } else {
+            r.run();
         }
     }
 
