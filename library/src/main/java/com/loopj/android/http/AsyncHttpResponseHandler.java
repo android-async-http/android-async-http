@@ -142,17 +142,17 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
 
     @Override
     public void setUseSynchronousMode(boolean value) {
-        // Test that a looper has been prepared prior to setting asynchronous mode.
-        if (value && null == Looper.myLooper()) {
-            value = false;
-            Log.i(LOG_TAG, "Current thread has not called Looper.prepare(). Forcing synchronous mode.");
+        // A looper must be prepared before setting asynchronous mode.
+        if (!value && Looper.myLooper() == null) {
+            value = true;
+            Log.w(LOG_TAG, "Current thread has not called Looper.prepare(). Forcing synchronous mode.");
         }
 
-        // If using asynchronous mode.
-        if (value && handler == null) {
+        // If using synchronous mode.
+        if (!value && handler == null) {
             // Create a handler on current thread to submit tasks
             handler = new ResponderHandler(this);
-        } else if (!value && handler != null) {
+        } else if (value && handler != null) {
             // TODO: Consider adding a flag to remove all queued messages.
             handler = null;
         }
