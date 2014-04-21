@@ -18,4 +18,5 @@
     <string name="label_headers">Headers (key=val, one per line)</string>
     <string name="label_req_body">Request body</string>
     <string name="button_cancel">Cancel</string>
+    <string name="title_redirect_302">302 Redirect handling</string>
 </resources>
