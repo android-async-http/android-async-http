@@ -29,12 +29,35 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
     }
 
     /**
+     * Obtains new FileAsyncHttpResponseHandler and stores response in passed file
+     *
+     * @param file File to store response within, must not be null
+     * @param useSynchronousMode connection mode to use by default
+     */
+    public FileAsyncHttpResponseHandler(File file, boolean useSynchronousMode) {
+        super(useSynchronousMode);
+        assert (file != null);
+        this.mFile = file;
+    }
+
+    /**
      * Obtains new FileAsyncHttpResponseHandler against context with target being temporary file
      *
      * @param context Context, must not be null
      */
     public FileAsyncHttpResponseHandler(Context context) {
         super();
+        this.mFile = getTemporaryFile(context);
+    }
+
+    /**
+     * Obtains new FileAsyncHttpResponseHandler against context with target being temporary file
+     *
+     * @param context Context, must not be null
+     * @param useSynchronousMode connection mode to use by default
+     */
+    public FileAsyncHttpResponseHandler(Context context, boolean useSynchronousMode) {
+        super(useSynchronousMode);
         this.mFile = getTemporaryFile(context);
     }
 

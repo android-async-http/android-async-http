@@ -55,6 +55,15 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
     }
 
     /**
+     * Creates new JsonHttpResponseHandler, with Json String encoding UTF-8
+     *
+     * @param useSynchronousMode connection mode to use by default
+     */
+    public JsonHttpResponseHandler(boolean useSynchronousMode) {
+        super(DEFAULT_CHARSET, useSynchronousMode);
+    }
+
+    /**
      * Returns when request succeeds
      *
      * @param statusCode http response status line
