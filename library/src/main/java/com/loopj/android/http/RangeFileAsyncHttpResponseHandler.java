@@ -23,11 +23,21 @@ public abstract class RangeFileAsyncHttpResponseHandler extends FileAsyncHttpRes
 
 	/**
 	 * Obtains new RangeFileAsyncHttpResponseHandler and stores response in passed file
-	 * 
+	 *
 	 * @param file File to store response within, must not be null
 	 */
 	public RangeFileAsyncHttpResponseHandler(File file) {
 		super(file);
+	}
+
+	/**
+	 * Obtains new RangeFileAsyncHttpResponseHandler and stores response in passed file
+	 *
+	 * @param file File to store response within, must not be null
+	 * @param useSynchronousMode connection mode to use by default
+	 */
+	public RangeFileAsyncHttpResponseHandler(File file, boolean useSynchronousMode) {
+		super(file, useSynchronousMode);
 	}
 
 	@Override

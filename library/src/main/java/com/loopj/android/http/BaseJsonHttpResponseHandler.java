@@ -51,6 +51,16 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
     }
 
     /**
+     * Creates a new JsonHttpResponseHandler with given string encoding
+     *
+     * @param encoding result string encoding, see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Charset</a>
+     * @param useSynchronousMode connection mode to use by default
+     */
+    public BaseJsonHttpResponseHandler(String encoding, boolean useSynchronousMode) {
+        super(encoding, useSynchronousMode);
+    }
+
+    /**
      * Base abstract method, handling defined generic type
      *
      * @param statusCode      HTTP status line
