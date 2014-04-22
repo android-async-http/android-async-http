@@ -95,6 +95,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     private String responseCharset = DEFAULT_CHARSET;
     private Handler handler;
     private boolean useSynchronousMode;
+    private boolean emulateAsynchronousMode;
 
     private URI requestURI = null;
     private Header[] requestHeaders = null;
@@ -161,6 +162,32 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     /**
+     * Returns the current state of emulated asynchronous mode.
+     *
+     * @return current state of emulated asynchronous mode
+     */
+    public boolean isEmulatedAsynchronousMode() {
+        return emulateAsynchronousMode;
+    }
+
+    /**
+     * In emulated asynchronous mode, no handler will be created and callbacks
+     * are executed on the current thread.
+     *
+     * @param value true to turn on the emulated mode, false otherwise
+     */
+    public void setEmulatedAsynchronousMode(boolean value) {
+        if (value) {
+            Log.i(LOG_TAG, "Emulated asynchronous mode engaged. No checks for synchronous response handlers will be made.");
+            if (handler != null) {
+                handler = null;
+            }
+            useSynchronousMode = false;
+        }
+        emulateAsynchronousMode = value;
+    }
+
+    /**
      * Sets the charset for the response string. If not set, the default is UTF-8.
      *
      * @param charset to be used for the response string.
@@ -179,7 +206,16 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      */
     public AsyncHttpResponseHandler() {
         // Use asynchronous mode by default.
-        setUseSynchronousMode(false);
+        this(false);
+    }
+
+    /**
+     * Creates a new AsyncHttpResponseHandler
+     *
+     * @param useSynchronousMode connection mode to use by default
+     */
+    public AsyncHttpResponseHandler(boolean useSynchronousMode) {
+        setUseSynchronousMode(useSynchronousMode);
     }
 
     /**

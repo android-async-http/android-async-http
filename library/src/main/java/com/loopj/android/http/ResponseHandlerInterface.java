@@ -109,4 +109,20 @@ public interface ResponseHandlerInterface {
      * @return boolean if the ResponseHandler is running in synchronous mode
      */
     boolean getUseSynchronousMode();
+
+    /**
+     * In emulated asynchronous mode, all response handlers are treated as
+     * asynchronous and no call will be made to getUseSynchronousMode() to
+     * enforce asynchronous mode
+     *
+     * @param value true to turn on the emulated mode, false otherwise
+     */
+    public void setEmulatedAsynchronousMode(boolean value);
+
+    /**
+     * Returns the current state of emulated asynchronous mode
+     *
+     * @return current state of emulated asynchronous mode
+     */
+    public boolean isEmulatedAsynchronousMode();
 }

@@ -76,6 +76,15 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
     }
 
     /**
+     * Creates a new BinaryHttpResponseHandler
+     *
+     * @param useSynchronousMode connection mode to use by default
+     */
+    public BinaryHttpResponseHandler(boolean useSynchronousMode) {
+        super(useSynchronousMode);
+    }
+
+    /**
      * Creates a new BinaryHttpResponseHandler, and overrides the default allowed content types with
      * passed String array (hopefully) of content types.
      *
@@ -83,6 +92,21 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
      */
     public BinaryHttpResponseHandler(String[] allowedContentTypes) {
         super();
+        if (allowedContentTypes != null)
+            mAllowedContentTypes = allowedContentTypes;
+        else
+            Log.e(LOG_TAG, "Constructor passed allowedContentTypes was null !");
+    }
+
+    /**
+     * Creates a new BinaryHttpResponseHandler, and overrides the default allowed content types with
+     * passed String array (hopefully) of content types.
+     *
+     * @param allowedContentTypes content types array, eg. 'image/jpeg' or pattern '.*'
+     * @param useSynchronousMode connection mode to use by default
+     */
+    public BinaryHttpResponseHandler(String[] allowedContentTypes, boolean useSynchronousMode) {
+        super(useSynchronousMode);
         if (allowedContentTypes != null)
             mAllowedContentTypes = allowedContentTypes;
         else

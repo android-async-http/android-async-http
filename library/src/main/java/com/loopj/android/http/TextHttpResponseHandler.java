@@ -58,6 +58,17 @@ public abstract class TextHttpResponseHandler extends AsyncHttpResponseHandler {
     }
 
     /**
+     * Creates new instance with given string encoding
+     *
+     * @param encoding String encoding, see {@link #setCharset(String)}
+     * @param useSynchronousMode connection mode to use by default
+     */
+    public TextHttpResponseHandler(String encoding, boolean useSynchronousMode) {
+        super(useSynchronousMode);
+        setCharset(encoding);
+    }
+
+    /**
      * Called when request fails
      *
      * @param statusCode     http response status line

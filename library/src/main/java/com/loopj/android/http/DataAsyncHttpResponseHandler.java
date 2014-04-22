@@ -40,6 +40,15 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
     }
 
     /**
+     * Creates a new AsyncHttpResponseHandler
+     *
+     * @param useSynchronousMode connection mode to use by default
+     */
+    public DataAsyncHttpResponseHandler(boolean useSynchronousMode) {
+        super(useSynchronousMode);
+    }
+
+    /**
      * Fired when the request progress, override to handle in your own code
      *
      * @param responseBody response body received so far
