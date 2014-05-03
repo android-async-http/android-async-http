@@ -19,9 +19,9 @@ before_install:
   - export PATH=$GRADLE_HOME/bin:$PATH
   # just to test gradle version, against our provided one
   - gradle -v
-  # newest android SDK 22.6.3
-  - wget http://dl.google.com/android/android-sdk_r22.6.3-linux.tgz
-  - tar -zxf android-sdk_r22.6.3-linux.tgz
+  # newest android SDK 22.6.2
+  - wget http://dl.google.com/android/android-sdk_r22.6.2-linux.tgz
+  - tar -zxf android-sdk_r22.6.2-linux.tgz
   - export ANDROID_HOME=`pwd`/android-sdk-linux
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
   # manually set sdk.dir variable, according to local paths
