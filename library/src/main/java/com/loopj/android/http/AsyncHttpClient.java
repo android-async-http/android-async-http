@@ -81,7 +81,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.zip.GZIPInputStream;
 
 
@@ -331,10 +330,10 @@ public class AsyncHttpClient {
      * Overrides the threadpool implementation used when queuing/pooling requests. By default,
      * Executors.newFixedThreadPool() is used.
      *
-     * @param threadPool an instance of {@link ThreadPoolExecutor} to use for queuing/pooling
+     * @param threadPool an instance of {@link ExecutorService} to use for queuing/pooling
      *                   requests.
      */
-    public void setThreadPool(ThreadPoolExecutor threadPool) {
+    public void setThreadPool(ExecutorService threadPool) {
         this.threadPool = threadPool;
     }
 
