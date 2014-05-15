@@ -332,7 +332,7 @@ public class RequestParams {
      * @param key the key name for the parameter to check existence.
      * @return Boolean
      */
-    public Boolean has(String key) {
+    public boolean has(String key) {
         return urlParams.get(key) != null ||
         streamParams.get(key) != null ||
         fileParams.get(key) != null ||
