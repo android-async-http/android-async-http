@@ -1030,6 +1030,22 @@ public class AsyncHttpClient {
     // [-] HTTP DELETE
 
     /**
+     * Instantiate a new asynchronous HTTP request for the passed parameters.
+     *
+     * @param client          HttpClient to be used for request, can differ in single requests
+     * @param contentType     MIME body type, for POST and PUT requests, may be null
+     * @param context         Context of Android application, to hold the reference of request
+     * @param httpContext     HttpContext in which the request will be executed
+     * @param responseHandler ResponseHandler or its subclass to put the response into
+     * @param uriRequest      instance of HttpUriRequest, which means it must be of HttpDelete,
+     *                        HttpPost, HttpGet, HttpPut, etc.
+     * @return AsyncHttpRequest ready to be dispatched
+     */
+    protected AsyncHttpRequest newAsyncHttpRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, ResponseHandlerInterface responseHandler, Context context) {
+        return new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler);
+    }
+
+    /**
      * Puts a new request in queue as a new thread in pool to be executed
      *
      * @param client          HttpClient to be used for request, can differ in single requests
@@ -1061,7 +1077,7 @@ public class AsyncHttpClient {
         responseHandler.setRequestHeaders(uriRequest.getAllHeaders());
         responseHandler.setRequestURI(uriRequest.getURI());
 
-        AsyncHttpRequest request = new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler);
+        AsyncHttpRequest request = newAsyncHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context);
         threadPool.submit(request);
         RequestHandle requestHandle = new RequestHandle(request);
 
