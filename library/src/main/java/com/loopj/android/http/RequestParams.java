@@ -64,7 +64,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * params.put("like", set); // url params: "like=music&amp;like=art"
  *
  * List&lt;String&gt; list = new ArrayList&lt;String&gt;(); // Ordered collection
- * list.add("Java");<>
+ * list.add("Java");
  * list.add("C");
  * params.put("languages", list); // url params: "languages[]=Java&amp;languages[]=C"
  *

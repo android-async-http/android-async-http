@@ -29,7 +29,7 @@ import org.apache.http.HttpStatus;
  * class, response will be then handled to implementation of abstract methods {@link #onSuccess(int,
  * org.apache.http.Header[], String, Object)} or {@link #onFailure(int, org.apache.http.Header[],
  * Throwable, String, Object)}, depending of response HTTP status line (result http code)
- * @param <JSON_TYPE>
+ * @param <JSON_TYPE> Generic type meant to be returned in callback
  */
 public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpResponseHandler {
     private static final String LOG_TAG = "BaseJsonHttpResponseHandler";

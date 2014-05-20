@@ -44,6 +44,10 @@ public class MySSLSocketFactory extends SSLSocketFactory {
      * Creates a new SSL Socket Factory with the given KeyStore.
      *
      * @param truststore A KeyStore to create the SSL Socket Factory in context of
+     * @throws NoSuchAlgorithmException NoSuchAlgorithmException
+     * @throws KeyManagementException KeyManagementException
+     * @throws KeyStoreException KeyStoreException
+     * @throws UnrecoverableKeyException UnrecoverableKeyException
      */
     public MySSLSocketFactory(KeyStore truststore) throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException, UnrecoverableKeyException {
         super(truststore);

@@ -359,7 +359,7 @@ public class AsyncHttpClient {
     /**
      * Simple interface method, to enable or disable redirects. If you set manually RedirectHandler
      * on underlying HttpClient, effects of this method will be canceled.
-     * <p/>
+     * <p>&nbsp;</p>
      * Default setting is to disallow redirects.
      *
      * @param enableRedirects         boolean
