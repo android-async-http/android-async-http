@@ -75,7 +75,7 @@ public class SyncHttpClient extends AsyncHttpClient {
 		/*
          * will execute the request directly
 		*/
-        new AsyncHttpRequest(client, httpContext, uriRequest, responseHandler).run();
+        newAsyncHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context).run();
 
         // Return a Request Handle that cannot be used to cancel the request
         // because it is already complete by the time this returns
