@@ -39,7 +39,7 @@ import java.util.zip.GZIPOutputStream;
  * This has very low memory footprint; suitable for uploading large
  * files using base64 encoding.
  */
-class JsonStreamerEntity implements HttpEntity {
+public class JsonStreamerEntity implements HttpEntity {
 
     private static final String LOG_TAG = "JsonStreamerEntity";
 
