@@ -29,6 +29,7 @@ import org.apache.http.HttpStatus;
  * class, response will be then handled to implementation of abstract methods {@link #onSuccess(int,
  * org.apache.http.Header[], String, Object)} or {@link #onFailure(int, org.apache.http.Header[],
  * Throwable, String, Object)}, depending of response HTTP status line (result http code)
+ *
  * @param <JSON_TYPE> Generic type meant to be returned in callback
  */
 public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpResponseHandler {
@@ -74,7 +75,7 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
     @Override
     public final void onSuccess(final int statusCode, final Header[] headers, final String responseString) {
         if (statusCode != HttpStatus.SC_NO_CONTENT) {
-	    Runnable parser = new Runnable() {
+            Runnable parser = new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -95,11 +96,11 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
                         });
                     }
                 }
-	    };
+            };
             if (!getUseSynchronousMode())
-		new Thread(parser).start();
-	    else // In synchronous mode everything should be run on one thread
-		parser.run();
+                new Thread(parser).start();
+            else // In synchronous mode everything should be run on one thread
+                parser.run();
         } else {
             onSuccess(statusCode, headers, null, null);
         }
@@ -108,7 +109,7 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
     @Override
     public final void onFailure(final int statusCode, final Header[] headers, final String responseString, final Throwable throwable) {
         if (responseString != null) {
-	    Runnable parser = new Runnable() {
+            Runnable parser = new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -129,11 +130,11 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
                         });
                     }
                 }
-	    };
+            };
             if (!getUseSynchronousMode())
-		new Thread(parser).start();
-	    else // In synchronous mode everything should be run on one thread
-		parser.run();
+                new Thread(parser).start();
+            else // In synchronous mode everything should be run on one thread
+                parser.run();
         } else {
             onFailure(statusCode, headers, throwable, null, null);
         }

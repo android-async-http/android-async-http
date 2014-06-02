@@ -113,7 +113,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
     @Override
     public final void onSuccess(final int statusCode, final Header[] headers, final byte[] responseBytes) {
         if (statusCode != HttpStatus.SC_NO_CONTENT) {
-	    Runnable parser = new Runnable() {
+            Runnable parser = new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -142,11 +142,11 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                         });
                     }
                 }
-	    };
-	    if (!getUseSynchronousMode())
-		new Thread(parser).start();
-	    else // In synchronous mode everything should be run on one thread
-		parser.run();
+            };
+            if (!getUseSynchronousMode())
+                new Thread(parser).start();
+            else // In synchronous mode everything should be run on one thread
+                parser.run();
         } else {
             onSuccess(statusCode, headers, new JSONObject());
         }
@@ -155,7 +155,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
     @Override
     public final void onFailure(final int statusCode, final Header[] headers, final byte[] responseBytes, final Throwable throwable) {
         if (responseBytes != null) {
-	    Runnable parser = new Runnable() {
+            Runnable parser = new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -185,11 +185,11 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
 
                     }
                 }
-	    };
-	    if (!getUseSynchronousMode())
-		new Thread(parser).start();
-	    else // In synchronous mode everything should be run on one thread
-		parser.run();
+            };
+            if (!getUseSynchronousMode())
+                new Thread(parser).start();
+            else // In synchronous mode everything should be run on one thread
+                parser.run();
         } else {
             Log.v(LOG_TAG, "response body is null, calling onFailure(Throwable, JSONObject)");
             onFailure(statusCode, headers, throwable, (JSONObject) null);

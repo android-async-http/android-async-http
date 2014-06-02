@@ -98,7 +98,8 @@ import java.util.zip.GZIPInputStream;
  *          System.out.println(response);
  *     }
  *     &#064;Override
- *     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error)
+ *     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable
+ * error)
  * {
  *          error.printStackTrace(System.out);
  *     }
