@@ -90,16 +90,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RequestParams {
 
     public final static String APPLICATION_OCTET_STREAM =
-        "application/octet-stream";
+            "application/octet-stream";
 
     protected final static String LOG_TAG = "RequestParams";
     protected boolean isRepeatable;
     protected boolean useJsonStreamer;
     protected boolean autoCloseInputStreams;
-    protected final ConcurrentHashMap<String, String> urlParams = new ConcurrentHashMap();
-    protected final ConcurrentHashMap<String, StreamWrapper> streamParams = new ConcurrentHashMap();
-    protected final ConcurrentHashMap<String, FileWrapper> fileParams = new ConcurrentHashMap();
-    protected final ConcurrentHashMap<String, Object> urlParamsWithObjects = new ConcurrentHashMap();
+    protected final ConcurrentHashMap<String, String> urlParams = new ConcurrentHashMap<String, String>();
+    protected final ConcurrentHashMap<String, StreamWrapper> streamParams = new ConcurrentHashMap<String, StreamWrapper>();
+    protected final ConcurrentHashMap<String, FileWrapper> fileParams = new ConcurrentHashMap<String, FileWrapper>();
+    protected final ConcurrentHashMap<String, Object> urlParamsWithObjects = new ConcurrentHashMap<String, Object>();
     protected String contentEncoding = HTTP.UTF_8;
 
     /**
@@ -307,9 +307,9 @@ public class RequestParams {
                 this.put(key, params);
             }
             if (params instanceof List) {
-                ((List) params).add(value);
+                ((List<Object>) params).add(value);
             } else if (params instanceof Set) {
-                ((Set) params).add(value);
+                ((Set<Object>) params).add(value);
             }
         }
     }
@@ -334,9 +334,9 @@ public class RequestParams {
      */
     public boolean has(String key) {
         return urlParams.get(key) != null ||
-        streamParams.get(key) != null ||
-        fileParams.get(key) != null ||
-        urlParamsWithObjects.get(key) != null;
+                streamParams.get(key) != null ||
+                fileParams.get(key) != null ||
+                urlParamsWithObjects.get(key) != null;
     }
 
     @Override
@@ -391,8 +391,8 @@ public class RequestParams {
     }
 
     /**
-     * Set global flag which determines whether to automatically close input
-     * streams on successful upload.
+     * Set global flag which determines whether to automatically close input streams on successful
+     * upload.
      *
      * @param flag boolean whether to automatically close input streams
      */
@@ -420,7 +420,7 @@ public class RequestParams {
 
     private HttpEntity createJsonStreamerEntity(ResponseHandlerInterface progressHandler) throws IOException {
         JsonStreamerEntity entity = new JsonStreamerEntity(progressHandler,
-            !fileParams.isEmpty() || !streamParams.isEmpty());
+                !fileParams.isEmpty() || !streamParams.isEmpty());
 
         // Add string params
         for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
@@ -442,11 +442,12 @@ public class RequestParams {
             StreamWrapper stream = entry.getValue();
             if (stream.inputStream != null) {
                 entity.addPart(entry.getKey(),
-                    StreamWrapper.newInstance(
-                        stream.inputStream,
-                        stream.name,
-                        stream.contentType,
-                        stream.autoClose));
+                        StreamWrapper.newInstance(
+                                stream.inputStream,
+                                stream.name,
+                                stream.contentType,
+                                stream.autoClose)
+                );
             }
         }
 
@@ -496,7 +497,7 @@ public class RequestParams {
     }
 
     protected List<BasicNameValuePair> getParamsList() {
-        List<BasicNameValuePair> lparams = new LinkedList();
+        List<BasicNameValuePair> lparams = new LinkedList<BasicNameValuePair>();
 
         for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
             lparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
@@ -508,12 +509,14 @@ public class RequestParams {
     }
 
     private List<BasicNameValuePair> getParamsList(String key, Object value) {
-        List<BasicNameValuePair> params = new LinkedList();
+        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
         if (value instanceof Map) {
             Map map = (Map) value;
             List list = new ArrayList<Object>(map.keySet());
             // Ensure consistent ordering in query string
-            Collections.sort(list);
+            if (list.size() > 0 && list.get(0) instanceof Comparable) {
+                Collections.sort(list);
+            }
             for (Object nestedKey : list) {
                 if (nestedKey instanceof String) {
                     Object nestedValue = map.get(nestedKey);
@@ -575,10 +578,10 @@ public class RequestParams {
 
         static StreamWrapper newInstance(InputStream inputStream, String name, String contentType, boolean autoClose) {
             return new StreamWrapper(
-                inputStream,
-                name,
-                contentType == null ? APPLICATION_OCTET_STREAM : contentType,
-                autoClose);
+                    inputStream,
+                    name,
+                    contentType == null ? APPLICATION_OCTET_STREAM : contentType,
+                    autoClose);
         }
     }
 }
