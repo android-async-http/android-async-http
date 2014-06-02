@@ -92,13 +92,22 @@ import java.util.zip.GZIPInputStream;
  * ResponseHandlerInterface} instance. <p>&nbsp;</p> For example: <p>&nbsp;</p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
- * client.get("http://www.google.com", new ResponseHandlerInterface() {
+ * client.get("http://www.google.com", new AsyncHttpResponseHandler() {
  *     &#064;Override
- *     public void onSuccess(String response) {
- *         System.out.println(response);
+ *     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+ *          System.out.println(response);
+ *     }
+ *     &#064;Override
+ *     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error)
+ * {
+ *          error.printStackTrace(System.out);
  *     }
  * });
  * </pre>
+ *
+ * @see com.loopj.android.http.AsyncHttpResponseHandler
+ * @see com.loopj.android.http.ResponseHandlerInterface
+ * @see com.loopj.android.http.RequestParams
  */
 public class AsyncHttpClient {
 
@@ -509,8 +518,8 @@ public class AsyncHttpClient {
     }
 
     /**
-     * Will, before sending, remove all headers currently present in AsyncHttpClient instance,
-     * which applies on all requests this client makes
+     * Will, before sending, remove all headers currently present in AsyncHttpClient instance, which
+     * applies on all requests this client makes
      */
     public void removeAllHeaders() {
         clientHeaderMap.clear();

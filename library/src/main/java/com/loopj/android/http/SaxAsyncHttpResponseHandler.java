@@ -25,9 +25,11 @@ import javax.xml.parsers.SAXParserFactory;
  *     AsyncHttpClient ahc = new AsyncHttpClient();
  *     FontHandler handlerInstance = ... ; // init handler instance
  *     ahc.post("https://server.tld/api/call", new SaxAsyncHttpResponseHandler<FontHandler>(handlerInstance){
+ *         &#064;Override
  *         public void onSuccess(int statusCode, Header[] headers, FontHandler t) {
  *              // Request got HTTP success statusCode
  *         }
+ *         &#064;Override
  *         public void onFailure(int statusCode, Header[] headers, T t){
  *              // Request got HTTP fail statusCode
  *         }
