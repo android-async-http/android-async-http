@@ -511,9 +511,6 @@ public class AsyncHttpClient {
     /**
      * Will, before sending, remove all headers currently present in AsyncHttpClient instance,
      * which applies on all requests this client makes
-     *
-     * @param header the name of the header
-     * @param value  the contents of the header
      */
     public void removeAllHeaders() {
         clientHeaderMap.clear();
