@@ -29,6 +29,7 @@
         <activity android:name=".CancelAllRequestsSample"/>
         <activity android:name=".CancelRequestHandleSample"/>
         <activity android:name=".SynchronousClientSample"/>
+        <activity android:name=".SaxSample"/>
     </application>
 
 </manifest>

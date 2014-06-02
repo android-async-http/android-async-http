@@ -34,10 +34,10 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     private LinearLayout responseLayout;
     private final List<RequestHandle> requestHandles = new LinkedList<>();
 
-    private static final int LIGHTGREEN = Color.parseColor("#00FF66");
-    private static final int LIGHTRED = Color.parseColor("#FF3300");
-    private static final int YELLOW = Color.parseColor("#FFFF00");
-    private static final int LIGHTBLUE = Color.parseColor("#99CCFF");
+    protected static final int LIGHTGREEN = Color.parseColor("#00FF66");
+    protected static final int LIGHTRED = Color.parseColor("#FF3300");
+    protected static final int YELLOW = Color.parseColor("#FFFF00");
+    protected static final int LIGHTBLUE = Color.parseColor("#99CCFF");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
