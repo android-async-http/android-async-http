@@ -1,5 +1,3 @@
-package com.loopj.android.http;
-
 /*
     Android Asynchronous Http Client
     Copyright (c) 2011 James Smith <james@loopj.com>
@@ -17,6 +15,8 @@ package com.loopj.android.http;
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
+package com.loopj.android.http;
 
 import android.os.Message;
 import android.util.Log;

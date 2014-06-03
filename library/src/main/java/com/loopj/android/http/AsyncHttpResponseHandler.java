@@ -62,7 +62,7 @@ import java.net.URI;
  *     }
  *
  *     &#064;Override
- *     public void onRetry() {
+ *     public void onRetry(int retryNo) {
  *         // Request was retried
  *     }
  *

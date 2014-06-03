@@ -40,8 +40,8 @@ import java.util.HashSet;
 import javax.net.ssl.SSLException;
 
 class RetryHandler implements HttpRequestRetryHandler {
-    private final static HashSet<Class<?>> exceptionWhitelist = new HashSet();
-    private final static HashSet<Class<?>> exceptionBlacklist = new HashSet();
+    private final static HashSet<Class<?>> exceptionWhitelist = new HashSet<Class<?>>();
+    private final static HashSet<Class<?>> exceptionBlacklist = new HashSet<Class<?>>();
 
     static {
         // Retry if the server dropped connection on us

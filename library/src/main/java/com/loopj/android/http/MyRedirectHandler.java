@@ -1,3 +1,21 @@
+/*
+    Android Asynchronous Http Client
+    Copyright (c) 2014 Aymon Fournier <aymon.fournier@gmail.com>
+    http://loopj.com
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
 package com.loopj.android.http;
 
 import org.apache.http.Header;
@@ -18,7 +36,12 @@ import org.apache.http.protocol.HttpContext;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-// taken from: https://stackoverflow.com/questions/3420767/httpclient-redirecting-to-url-with-spaces-throwing-exception
+/**
+ * Taken from StackOverflow
+ *
+ * @author Aymon Fournier, aymon.fournier@gmail.com
+ * @see <a href="https://stackoverflow.com/questions/3420767/httpclient-redirecting-to-url-with-spaces-throwing-exception">https://stackoverflow.com/questions/3420767/httpclient-redirecting-to-url-with-spaces-throwing-exception</a>
+ */
 class MyRedirectHandler extends DefaultRedirectHandler {
 
     private static final String REDIRECT_LOCATIONS = "http.protocol.redirect-locations";
@@ -65,7 +88,7 @@ class MyRedirectHandler extends DefaultRedirectHandler {
                             + " but no location header"
             );
         }
-//HERE IS THE MODIFIED LINE OF CODE
+        //HERE IS THE MODIFIED LINE OF CODE
         String location = locationHeader.getValue().replaceAll(" ", "%20");
 
         URI uri;

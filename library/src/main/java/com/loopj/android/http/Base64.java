@@ -90,16 +90,15 @@ public class Base64 {
 
     /**
      * Decode the Base64-encoded data in input and return the data in a new byte array.
-     * <p>&nbsp;</p>
-     * <p>The padding '=' characters at the end are considered optional, but if any are present,
-     * there must be the correct number of them.
+     * <p>&nbsp;</p> <p>The padding '=' characters at the end are considered optional, but if any
+     * are present, there must be the correct number of them.
      *
      * @param str   the input String to decode, which is converted to bytes using the default
      *              charset
      * @param flags controls certain features of the decoded output. Pass {@code DEFAULT} to decode
      *              standard Base64.
-     * @throws IllegalArgumentException if the input contains incorrect padding
      * @return decoded bytes
+     * @throws IllegalArgumentException if the input contains incorrect padding
      */
     public static byte[] decode(String str, int flags) {
         return decode(str.getBytes(), flags);
@@ -107,15 +106,14 @@ public class Base64 {
 
     /**
      * Decode the Base64-encoded data in input and return the data in a new byte array.
-     * <p>&nbsp;</p>
-     * <p>The padding '=' characters at the end are considered optional, but if any are present,
-     * there must be the correct number of them.
+     * <p>&nbsp;</p> <p>The padding '=' characters at the end are considered optional, but if any
+     * are present, there must be the correct number of them.
      *
      * @param input the input array to decode
      * @param flags controls certain features of the decoded output. Pass {@code DEFAULT} to decode
      *              standard Base64.
-     * @throws IllegalArgumentException if the input contains incorrect padding
      * @return decoded bytes
+     * @throws IllegalArgumentException if the input contains incorrect padding
      */
     public static byte[] decode(byte[] input, int flags) {
         return decode(input, 0, input.length, flags);
@@ -123,17 +121,16 @@ public class Base64 {
 
     /**
      * Decode the Base64-encoded data in input and return the data in a new byte array.
-     * <p>&nbsp;</p>
-     * <p>The padding '=' characters at the end are considered optional, but if any are present,
-     * there must be the correct number of them.
+     * <p>&nbsp;</p> <p>The padding '=' characters at the end are considered optional, but if any
+     * are present, there must be the correct number of them.
      *
      * @param input  the data to decode
      * @param offset the position within the input array at which to start
      * @param len    the number of bytes of input to decode
      * @param flags  controls certain features of the decoded output. Pass {@code DEFAULT} to decode
      *               standard Base64.
-     * @throws IllegalArgumentException if the input contains incorrect padding
      * @return decoded bytes for given offset and length
+     * @throws IllegalArgumentException if the input contains incorrect padding
      */
     public static byte[] decode(byte[] input, int offset, int len, int flags) {
         // Allocate space for the most data the input could represent.

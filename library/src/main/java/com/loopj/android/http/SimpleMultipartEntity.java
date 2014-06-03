@@ -49,17 +49,17 @@ class SimpleMultipartEntity implements HttpEntity {
     private static final String STR_CR_LF = "\r\n";
     private static final byte[] CR_LF = STR_CR_LF.getBytes();
     private static final byte[] TRANSFER_ENCODING_BINARY =
-        ("Content-Transfer-Encoding: binary" + STR_CR_LF).getBytes();
+            ("Content-Transfer-Encoding: binary" + STR_CR_LF).getBytes();
 
     private final static char[] MULTIPART_CHARS =
-        "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+            "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
     private final String boundary;
     private final byte[] boundaryLine;
     private final byte[] boundaryEnd;
     private boolean isRepeatable;
 
-    private final List<FilePart> fileParts = new ArrayList();
+    private final List<FilePart> fileParts = new ArrayList<FilePart>();
 
     // The buffer we use for building the message excluding files and the last
     // boundary
@@ -136,7 +136,7 @@ class SimpleMultipartEntity implements HttpEntity {
     }
 
     private String normalizeContentType(String type) {
-       return type == null ? RequestParams.APPLICATION_OCTET_STREAM : type;
+        return type == null ? RequestParams.APPLICATION_OCTET_STREAM : type;
     }
 
     private byte[] createContentType(String type) {
@@ -146,12 +146,12 @@ class SimpleMultipartEntity implements HttpEntity {
 
     private byte[] createContentDisposition(String key) {
         return ("Content-Disposition: form-data; name=\"" + key + "\"" + STR_CR_LF)
-            .getBytes();
+                .getBytes();
     }
 
     private byte[] createContentDisposition(String key, String fileName) {
         return ("Content-Disposition: form-data; name=\"" + key + "\"; filename=\"" + fileName + "\"" + STR_CR_LF)
-            .getBytes();
+                .getBytes();
     }
 
     private void updateProgress(int count) {

@@ -35,16 +35,15 @@ import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * HTTP entity to upload JSON data using streams.
- * This has very low memory footprint; suitable for uploading large
- * files using base64 encoding.
+ * HTTP entity to upload JSON data using streams. This has very low memory footprint; suitable for
+ * uploading large files using base64 encoding.
  */
-class JsonStreamerEntity implements HttpEntity {
+public class JsonStreamerEntity implements HttpEntity {
 
     private static final String LOG_TAG = "JsonStreamerEntity";
 
     private static final UnsupportedOperationException ERR_UNSUPPORTED =
-        new UnsupportedOperationException("Unsupported operation in this implementation.");
+            new UnsupportedOperationException("Unsupported operation in this implementation.");
 
     // Size of the byte-array buffer used in I/O streams.
     private static final int BUFFER_SIZE = 4096;
@@ -66,12 +65,12 @@ class JsonStreamerEntity implements HttpEntity {
     private static final byte[] STREAM_ELAPSED = escape("_elapsed");
 
     private static final Header HEADER_JSON_CONTENT =
-        new BasicHeader("Content-Type", "application/json");
+            new BasicHeader("Content-Type", "application/json");
     private static final Header HEADER_GZIP_ENCODING =
-        new BasicHeader("Content-Encoding", "gzip");
+            new BasicHeader("Content-Encoding", "gzip");
 
     // JSON data and associated meta-data to be uploaded.
-    private final Map<String, Object> jsonParams = new HashMap();
+    private final Map<String, Object> jsonParams = new HashMap<String, Object>();
 
     // Whether to use gzip compression while uploading
     private final Header contentEncoding;
@@ -86,7 +85,7 @@ class JsonStreamerEntity implements HttpEntity {
     /**
      * Add content parameter, identified by the given key, to the request.
      *
-     * @param key entity's name
+     * @param key   entity's name
      * @param value entity's value (Scalar, FileWrapper, StreamWrapper)
      */
     public void addPart(String key, Object value) {
@@ -144,8 +143,8 @@ class JsonStreamerEntity implements HttpEntity {
         // Use GZIP compression when sending streams, otherwise just use
         // a buffered output stream to speed things up a bit.
         OutputStream os = null != contentEncoding
-          ? new GZIPOutputStream(out, BUFFER_SIZE)
-          : out;
+                ? new GZIPOutputStream(out, BUFFER_SIZE)
+                : out;
 
         // Always send a JSON object.
         os.write('{');
@@ -179,23 +178,23 @@ class JsonStreamerEntity implements HttpEntity {
 
                 // Determine how to handle this entry.
                 if (isFileWrapper) {
-                    writeToFromFile(os, (RequestParams.FileWrapper)value);
+                    writeToFromFile(os, (RequestParams.FileWrapper) value);
                 } else {
-                    writeToFromStream(os, (RequestParams.StreamWrapper)value);
+                    writeToFromStream(os, (RequestParams.StreamWrapper) value);
                 }
 
                 // End the file's object and prepare for next one.
                 os.write('}');
             } else if (value instanceof Boolean) {
-                os.write((Boolean)value ? JSON_TRUE : JSON_FALSE);
+                os.write((Boolean) value ? JSON_TRUE : JSON_FALSE);
             } else if (value instanceof Long) {
-                os.write((((Number)value).longValue() + "").getBytes());
+                os.write((((Number) value).longValue() + "").getBytes());
             } else if (value instanceof Double) {
-                os.write((((Number)value).doubleValue() + "").getBytes());
+                os.write((((Number) value).doubleValue() + "").getBytes());
             } else if (value instanceof Float) {
-                os.write((((Number)value).floatValue() + "").getBytes());
+                os.write((((Number) value).floatValue() + "").getBytes());
             } else if (value instanceof Integer) {
-                os.write((((Number)value).intValue() + "").getBytes());
+                os.write((((Number) value).intValue() + "").getBytes());
             } else {
                 os.write(value.toString().getBytes());
             }
@@ -228,7 +227,7 @@ class JsonStreamerEntity implements HttpEntity {
 
         // Upload the file's contents in Base64.
         Base64OutputStream bos =
-            new Base64OutputStream(os, Base64.NO_CLOSE | Base64.NO_WRAP);
+                new Base64OutputStream(os, Base64.NO_CLOSE | Base64.NO_WRAP);
 
         // Read from input stream until no more data's left to read.
         while ((bytesRead = entry.inputStream.read(buffer)) != -1) {
@@ -254,14 +253,14 @@ class JsonStreamerEntity implements HttpEntity {
         // Send the meta data.
         writeMetaData(os, wrapper.file.getName(), wrapper.contentType);
 
-        int bytesRead, bytesWritten = 0, totalSize = (int)wrapper.file.length();
+        int bytesRead, bytesWritten = 0, totalSize = (int) wrapper.file.length();
 
         // Open the file for reading.
         FileInputStream in = new FileInputStream(wrapper.file);
 
         // Upload the file's contents in Base64.
         Base64OutputStream bos =
-            new Base64OutputStream(os, Base64.NO_CLOSE | Base64.NO_WRAP);
+                new Base64OutputStream(os, Base64.NO_CLOSE | Base64.NO_WRAP);
 
         // Read from file until no more data's left to read.
         while ((bytesRead = in.read(buffer)) != -1) {
@@ -301,14 +300,14 @@ class JsonStreamerEntity implements HttpEntity {
 
     private void endMetaData(OutputStream os) throws IOException {
         os.write('"');
-      }
+    }
 
     // Curtosy of Simple-JSON: http://goo.gl/XoW8RF
     // Changed a bit to suit our needs in this class.
     static byte[] escape(String string) {
         // If it's null, just return prematurely.
         if (string == null) {
-          return JSON_NULL;
+            return JSON_NULL;
         }
 
         // Surround with quotations.
@@ -341,7 +340,7 @@ class JsonStreamerEntity implements HttpEntity {
                     break;
                 default:
                     // Reference: http://www.unicode.org/versions/Unicode5.1.0/
-                    if((ch >= '\u0000' && ch <= '\u001F') || (ch >= '\u007F' && ch <= '\u009F') || (ch >= '\u2000' && ch <= '\u20FF')) {
+                    if ((ch >= '\u0000' && ch <= '\u001F') || (ch >= '\u007F' && ch <= '\u009F') || (ch >= '\u2000' && ch <= '\u20FF')) {
                         String intString = Integer.toHexString(ch);
                         BUILDER.append("\\u");
                         int intLength = 4 - intString.length();

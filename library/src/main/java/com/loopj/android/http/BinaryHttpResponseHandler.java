@@ -55,7 +55,9 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
 
     private String[] mAllowedContentTypes = new String[]{
             "image/jpeg",
-            "image/png"
+            "image/png",
+            "image/gif",
+            "application/octet-stream"
     };
 
     /**

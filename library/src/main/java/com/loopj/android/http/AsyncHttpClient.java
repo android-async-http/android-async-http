@@ -73,6 +73,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -91,13 +92,23 @@ import java.util.zip.GZIPInputStream;
  * ResponseHandlerInterface} instance. <p>&nbsp;</p> For example: <p>&nbsp;</p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
- * client.get("http://www.google.com", new ResponseHandlerInterface() {
+ * client.get("http://www.google.com", new AsyncHttpResponseHandler() {
  *     &#064;Override
- *     public void onSuccess(String response) {
- *         System.out.println(response);
+ *     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+ *          System.out.println(response);
+ *     }
+ *     &#064;Override
+ *     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable
+ * error)
+ * {
+ *          error.printStackTrace(System.out);
  *     }
  * });
  * </pre>
+ *
+ * @see com.loopj.android.http.AsyncHttpResponseHandler
+ * @see com.loopj.android.http.ResponseHandlerInterface
+ * @see com.loopj.android.http.RequestParams
  */
 public class AsyncHttpClient {
 
@@ -217,7 +228,7 @@ public class AsyncHttpClient {
         ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParams, schemeRegistry);
 
         threadPool = getDefaultThreadPool();
-        requestMap = new WeakHashMap<Context, List<RequestHandle>>();
+        requestMap = Collections.synchronizedMap(new WeakHashMap<Context, List<RequestHandle>>());
         clientHeaderMap = new HashMap<String, String>();
 
         httpContext = new SyncBasicHttpContext(new BasicHttpContext());
@@ -358,9 +369,8 @@ public class AsyncHttpClient {
 
     /**
      * Simple interface method, to enable or disable redirects. If you set manually RedirectHandler
-     * on underlying HttpClient, effects of this method will be canceled.
-     * <p>&nbsp;</p>
-     * Default setting is to disallow redirects.
+     * on underlying HttpClient, effects of this method will be canceled. <p>&nbsp;</p> Default
+     * setting is to disallow redirects.
      *
      * @param enableRedirects         boolean
      * @param enableRelativeRedirects boolean
@@ -506,6 +516,14 @@ public class AsyncHttpClient {
      */
     public void setMaxRetriesAndTimeout(int retries, int timeout) {
         this.httpClient.setHttpRequestRetryHandler(new RetryHandler(retries, timeout));
+    }
+
+    /**
+     * Will, before sending, remove all headers currently present in AsyncHttpClient instance, which
+     * applies on all requests this client makes
+     */
+    public void removeAllHeaders() {
+        clientHeaderMap.clear();
     }
 
     /**
@@ -1085,7 +1103,7 @@ public class AsyncHttpClient {
             // Add request to request map
             List<RequestHandle> requestList = requestMap.get(context);
             if (requestList == null) {
-                requestList = new LinkedList();
+                requestList = new LinkedList<RequestHandle>();
                 requestMap.put(context, requestList);
             }
 
@@ -1124,6 +1142,9 @@ public class AsyncHttpClient {
      * @return encoded url if requested with params appended if any available
      */
     public static String getUrlWithQueryString(boolean shouldEncodeUrl, String url, RequestParams params) {
+        if (url == null)
+            return null;
+
         if (shouldEncodeUrl)
             url = url.replace(" ", "%20");
 
