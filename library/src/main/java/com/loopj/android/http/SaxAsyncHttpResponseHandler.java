@@ -48,7 +48,7 @@ import javax.xml.parsers.SAXParserFactory;
  *              // Request got HTTP success statusCode
  *         }
  *         &#064;Override
- *         public void onFailure(int statusCode, Header[] headers, T t){
+ *         public void onFailure(int statusCode, Header[] headers, FontHandler t){
  *              // Request got HTTP fail statusCode
  *         }
  *     });
