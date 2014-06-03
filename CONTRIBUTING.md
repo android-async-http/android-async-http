@@ -13,8 +13,10 @@ We do require certain guidelines to be followed so that the quality of the proje
 
 PULL requests
 -------------
-When you submit a patch or a new functionality for the project, you must open a pull request. We will get to the pull request as soon as possible, investigate what functionality or bug fixes have been added and decide whether to include it in the library or not -- for the benefit of everyone.  
-You further agree that any contribution that you make to the library will be distributed further under the same license as the library itself (Apache v2.0).  
+When you submit a patch or a new functionality for the project, you must open a pull request. We will get to the pull request as soon as possible, investigate what functionality or bug fixes have been added and decide whether to include it in the library or not -- for the benefit of everyone.
+
+**You agree that all contributions that you make to the library will be distributed further under the same license as the library itself (Apache V2).**
+
 Don't be discouraged if your pull request is rejected. This is not a deadline and sometimes with a proper explanation on your side, we are persuaded to merge in the request. Just remember that this is a library for everyone and as such must meet certain, generic rules that we would like to believe are following.  
 
 ISSUES
@@ -30,10 +32,11 @@ CODING STANDARDS
 ----------------
 We need you to follow certain rules when sending source code contributions. These are the basic principles that we ourselves abide to and we require that you do so as well:
 
-1) Do not use the Tab character (it's in first place for a reason)  
-2) Indentation is 4 spaces  
-3) You must provide proper Javadoc, including description, in English for both public and protected methods, classes and properties  
-4) Group packages that belong to the same top-level package together, followed by an empty line  
-5) Add an empty line after and before class/interface declarations, methods and constructors  
-6) Add an empty line before and after a group of properties  
-7) Do not catch generic Exception/Throwable errors, but always catch the most specific type of the exception/error  
+  * Do not use the Tab character (it's in first place for a reason)
+  * Indentation is 4 spaces
+  * Include the copyright info (as in other files) at the top of the class file
+  * You must provide proper Javadoc, including description, in English for both public and protected methods, classes and properties
+  * Group packages that belong to the same top-level package together, followed by an empty line
+  * Add an empty line after and before class/interface declarations, methods and constructors
+  * Add an empty line before and after a group of properties
+  * Do not catch generic Exception/Throwable errors, but always catch the most specific type of the exception/error
