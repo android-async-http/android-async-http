@@ -25,7 +25,7 @@ The issues system is the place to report bugs and not for submitting patches or 
 
   * Report bugs in the English language only
   * Use Markdown to format your issue in a fashionable way (easier to read): [Familiarize yourself](https://help.github.com/articles/github-flavored-markdown)
-  * If the issue is due to a crash, include the stack trace -- throwable.printStackTrace() -- and any other detail that will shed light on the problem
+  * If the issue is due to a crash, include the stack trace -- `throwable.printStackTrace()` -- and any other detail that will shed light on the problem
   * We need to see the source code (minus certain details that you think are confidential) that caused the problem in the first place, so include it too
 
 Opening issues without providing us with the information necessary to debug and fix it is useless; so we will close such issues within 7 days period  
