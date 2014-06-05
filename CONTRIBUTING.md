@@ -5,8 +5,8 @@ AsyncHttpClient is an open-source project made by developers for developers!
 If you would like to contribute to the project, it's really great. You can contribute in a variety of ways:
 
   * Help us with test cases and examples for the Wiki  
-  * If you have a good idea/patch for the project, create a pull request (see PULL)  
-  * Found a bug? You're more than welcome to submit an issue (see ISSUES)  
+  * If you have a good idea/patch for the project, create a [pull request](#pull-request)
+  * Found a bug? You're more than welcome to [submit an issue](issues)
   * Help other fellow developers solve their problems, you're welcome to do so in issues
 
 We do require certain guidelines to be followed so that the quality of the project remains top-notch:
