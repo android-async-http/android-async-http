@@ -24,6 +24,7 @@ ISSUES
 The issues system is the place to report bugs and not for submitting patches or new functionality. As helpful as we would like to be, we cannot replace the developer and we certainly do not see what you're seeing. So when you come to report an issue, follow these simple rules:  
 
   * Report bugs in the English language only
+  * Use Markdown to format your issue in a fashionable way (easier to read): [Familiarize yourself](https://help.github.com/articles/github-flavored-markdown)
   * If the issue is due to a crash, include the stack trace -- throwable.printStackTrace() -- and any other detail that will shed light on the problem
   * We need to see the source code (minus certain details that you think are confidential) that caused the problem in the first place, so include it too
 
