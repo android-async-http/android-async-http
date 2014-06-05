@@ -6,7 +6,7 @@ If you would like to contribute to the project, it's really great. You can contr
 
   * Help us with test cases and examples for the Wiki  
   * If you have a good idea/patch for the project, create a [pull request](#pull-requests)
-  * Found a bug? You're more than welcome to [submit an issue](issues)
+  * Found a bug? You're more than welcome to [submit an issue](#issues)
   * Help other fellow developers solve their problems, you're welcome to do so in issues
 
 We do require certain guidelines to be followed so that the quality of the project remains top-notch:
