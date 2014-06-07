@@ -44,7 +44,8 @@ public class WaypointsActivity extends ListActivity {
             R.string.title_threading_timeout,
             R.string.title_cancel_all,
             R.string.title_cancel_handle,
-            R.string.title_synchronous
+            R.string.title_synchronous,
+            R.string.title_intent_service_sample
     };
     private static final Class[] targets = {
             GetSample.class,
@@ -60,7 +61,8 @@ public class WaypointsActivity extends ListActivity {
             ThreadingTimeoutSample.class,
             CancelAllRequestsSample.class,
             CancelRequestHandleSample.class,
-            SynchronousClientSample.class
+            SynchronousClientSample.class,
+            IntentServiceSample.class
     };
 
     @Override
