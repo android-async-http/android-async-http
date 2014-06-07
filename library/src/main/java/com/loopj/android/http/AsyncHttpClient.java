@@ -72,6 +72,7 @@ import org.apache.http.protocol.SyncBasicHttpContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PushbackInputStream;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1247,7 +1248,18 @@ public class AsyncHttpClient {
 
         @Override
         public InputStream getContent() throws IOException {
-            return new GZIPInputStream(wrappedEntity.getContent());
+            // We check if the entity stream is in fact a gzip stream
+            InputStream content = wrappedEntity.getContent();
+            PushbackInputStream pushbackStream = new PushbackInputStream(content, 2);
+            byte[] signature = new byte[2];
+            pushbackStream.read(signature);
+            pushbackStream.unread(signature);
+            if (signature[0] == (byte) 0x1f && signature[1] == (byte) 0x8b) {
+                return new GZIPInputStream(pushbackStream);
+            }
+            else {
+                return content;
+            }
         }
 
         @Override
