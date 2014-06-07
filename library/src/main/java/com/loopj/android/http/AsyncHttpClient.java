@@ -72,6 +72,7 @@ import org.apache.http.protocol.SyncBasicHttpContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PushbackInputStream;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1165,6 +1166,23 @@ public class AsyncHttpClient {
     }
 
     /**
+     * Checks the InputStream if it contains  GZIP compressed data
+     *
+     * @param inputStream InputStream to be checked
+     * @return true or false if the stream contains GZIP compressed data
+     */
+    public static boolean isInputStreamGZIPCompressed(final PushbackInputStream inputStream) throws IOException {
+        if (inputStream == null)
+            return false;
+
+        byte[] signature = new byte[2];
+        int readStatus = inputStream.read(signature);
+        inputStream.unread(signature);
+        int streamHeader = ((int) signature[0] & 0xff) | ((signature[1] << 8) & 0xff00);
+        return readStatus == 2 && GZIPInputStream.GZIP_MAGIC == streamHeader;
+    }
+
+    /**
      * A utility function to close an input stream without raising an exception.
      *
      * @param is input stream to close safely
@@ -1247,7 +1265,12 @@ public class AsyncHttpClient {
 
         @Override
         public InputStream getContent() throws IOException {
-            return new GZIPInputStream(wrappedEntity.getContent());
+            PushbackInputStream content = new PushbackInputStream(wrappedEntity.getContent(), 2);
+            if (isInputStreamGZIPCompressed(content)) {
+                return new GZIPInputStream(content);
+            } else {
+                return content;
+            }
         }
 
         @Override
