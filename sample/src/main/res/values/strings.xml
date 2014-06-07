@@ -16,6 +16,7 @@
     <string name="title_threading_timeout">Threading timeouts</string>
     <string name="title_gzip_sample">GET Gzipped JSON and parse it</string>
     <string name="title_intent_service_sample">IntentService Synchronised Request</string>
+    <string name="title_post_files">Post Multipart-encoded files</string>
     <string name="button_run">Run</string>
     <string name="label_headers">Headers (key=val, one per line)</string>
     <string name="label_req_body">Request body</string>

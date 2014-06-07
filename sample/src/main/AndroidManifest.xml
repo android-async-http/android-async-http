@@ -31,6 +31,7 @@
         <activity android:name=".SynchronousClientSample"/>
         <activity android:name=".IntentServiceSample"/>
         <activity android:name=".SaxSample"/>
+        <activity android:name=".FilesSample"/>
 
         <service android:name=".services.ExampleIntentService"/>
     </application>

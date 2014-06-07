@@ -45,7 +45,8 @@ public class WaypointsActivity extends ListActivity {
             R.string.title_cancel_all,
             R.string.title_cancel_handle,
             R.string.title_synchronous,
-            R.string.title_intent_service_sample
+            R.string.title_intent_service_sample,
+            R.string.title_post_files
     };
     private static final Class[] targets = {
             GetSample.class,
@@ -62,7 +63,8 @@ public class WaypointsActivity extends ListActivity {
             CancelAllRequestsSample.class,
             CancelRequestHandleSample.class,
             SynchronousClientSample.class,
-            IntentServiceSample.class
+            IntentServiceSample.class,
+            FilesSample.class
     };
 
     @Override
