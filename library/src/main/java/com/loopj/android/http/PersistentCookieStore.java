@@ -165,7 +165,7 @@ public class PersistentCookieStore implements CookieStore {
      * @param cookie cookie to be removed
      */
     public void deleteCookie(Cookie cookie) {
-        String name = cookie.getName();
+        String name = cookie.getName() + cookie.getDomain();
         cookies.remove(name);
         SharedPreferences.Editor prefsWriter = cookiePrefs.edit();
         prefsWriter.remove(COOKIE_NAME_PREFIX + name);
