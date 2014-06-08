@@ -52,6 +52,7 @@ class MyRedirectHandler extends DefaultRedirectHandler {
         this.enableRedirects = allowRedirects;
     }
 
+    @Override
     public boolean isRedirectRequested(
             final HttpResponse response,
             final HttpContext context) {
@@ -73,6 +74,7 @@ class MyRedirectHandler extends DefaultRedirectHandler {
         } //end of switch
     }
 
+    @Override
     public URI getLocationURI(
             final HttpResponse response,
             final HttpContext context) throws ProtocolException {
