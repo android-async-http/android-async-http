@@ -74,8 +74,8 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
         assert (context != null);
         try {
             return File.createTempFile("temp_", "_handled", context.getCacheDir());
-        } catch (Throwable t) {
-            Log.e(LOG_TAG, "Cannot create temporary file", t);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Cannot create temporary file", e);
         }
         return null;
     }

@@ -54,6 +54,7 @@ import javax.xml.parsers.SAXParserFactory;
  *     });
  * <pre/>
  *
+ * @param <T> Handler extending {@link org.xml.sax.helpers.DefaultHandler}
  * @see org.xml.sax.helpers.DefaultHandler
  * @see com.loopj.android.http.AsyncHttpResponseHandler
  */
@@ -83,6 +84,8 @@ public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> exte
      * Deconstructs response into given content handler
      *
      * @param entity returned HttpEntity
+     * @return deconstructed response
+     * @throws java.io.IOException
      * @see org.apache.http.HttpEntity
      */
     @Override

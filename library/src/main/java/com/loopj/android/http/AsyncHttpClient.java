@@ -1170,6 +1170,7 @@ public class AsyncHttpClient {
      *
      * @param inputStream InputStream to be checked
      * @return true or false if the stream contains GZIP compressed data
+     * @throws java.io.IOException
      */
     public static boolean isInputStreamGZIPCompressed(final PushbackInputStream inputStream) throws IOException {
         if (inputStream == null)
@@ -1226,11 +1227,11 @@ public class AsyncHttpClient {
             if (params != null) {
                 entity = params.getEntity(responseHandler);
             }
-        } catch (Throwable t) {
+        } catch (IOException e) {
             if (responseHandler != null)
-                responseHandler.sendFailureMessage(0, null, null, t);
+                responseHandler.sendFailureMessage(0, null, null, e);
             else
-                t.printStackTrace();
+                e.printStackTrace();
         }
 
         return entity;
