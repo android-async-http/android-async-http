@@ -33,11 +33,12 @@ public class FilesSample extends PostSample {
     public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {
         try {
             RequestParams params = new RequestParams();
-            params.put("fileOne", createTempFile("fileOne", 20));
-            params.put("fileTwo", createTempFile("fileTwo", 30));
-            params.put("fileThree", createTempFile("fileThree", 40));
-            params.put("fileFour", createTempFile("fileFour", 50));
-            params.put("fileFive", createTempFile("fileFive", 60));
+            final String contentType = "application/octet-stream";
+            params.put("fileOne", createTempFile("fileOne", 1020), contentType);
+            params.put("fileTwo", createTempFile("fileTwo", 1030), contentType);
+            params.put("fileThree", createTempFile("fileThree", 1040), contentType);
+            params.put("fileFour", createTempFile("fileFour", 1050), contentType);
+            params.put("fileFive", createTempFile("fileFive", 1060), contentType);
             return client.post(this, URL, params, responseHandler);
         } catch (FileNotFoundException fnfException) {
             Log.e(LOG_TAG, "executeSample failed with FileNotFoundException", fnfException);
