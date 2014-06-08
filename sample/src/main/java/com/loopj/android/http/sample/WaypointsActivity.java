@@ -30,41 +30,23 @@ import java.util.List;
 
 public class WaypointsActivity extends ListActivity {
 
-    private static final int[] samples = new int[]{
-            R.string.title_get_sample,
-            R.string.title_post_sample,
-            R.string.title_delete_sample,
-            R.string.title_put_sample,
-            R.string.title_json_sample,
-            R.string.title_sax_example,
-            R.string.title_file_sample,
-            R.string.title_binary_sample,
-            R.string.title_gzip_sample,
-            R.string.title_redirect_302,
-            R.string.title_threading_timeout,
-            R.string.title_cancel_all,
-            R.string.title_cancel_handle,
-            R.string.title_synchronous,
-            R.string.title_intent_service_sample,
-            R.string.title_post_files
-    };
-    private static final Class[] targets = {
-            GetSample.class,
-            PostSample.class,
-            DeleteSample.class,
-            PutSample.class,
-            JsonSample.class,
-            SaxSample.class,
-            FileSample.class,
-            BinarySample.class,
-            GzipSample.class,
-            Redirect302Sample.class,
-            ThreadingTimeoutSample.class,
-            CancelAllRequestsSample.class,
-            CancelRequestHandleSample.class,
-            SynchronousClientSample.class,
-            IntentServiceSample.class,
-            FilesSample.class
+    private static final SampleConfig[] samplesConfig = new SampleConfig[] {
+        new SampleConfig(R.string.title_get_sample, GetSample.class),
+        new SampleConfig(R.string.title_post_sample, PostSample.class),
+        new SampleConfig(R.string.title_delete_sample, DeleteSample.class),
+        new SampleConfig(R.string.title_put_sample, PutSample.class),
+        new SampleConfig(R.string.title_json_sample, JsonSample.class),
+        new SampleConfig(R.string.title_sax_example, SaxSample.class),
+        new SampleConfig(R.string.title_file_sample, FileSample.class),
+        new SampleConfig(R.string.title_binary_sample, BinarySample.class),
+        new SampleConfig(R.string.title_gzip_sample, GzipSample.class),
+        new SampleConfig(R.string.title_redirect_302, Redirect302Sample.class),
+        new SampleConfig(R.string.title_threading_timeout, ThreadingTimeoutSample.class),
+        new SampleConfig(R.string.title_cancel_all, CancelAllRequestsSample.class),
+        new SampleConfig(R.string.title_cancel_handle, CancelRequestHandleSample.class),
+        new SampleConfig(R.string.title_synchronous, SynchronousClientSample.class),
+        new SampleConfig(R.string.title_intent_service_sample, IntentServiceSample.class),
+        new SampleConfig(R.string.title_post_files, FilesSample.class)
     };
 
     @Override
@@ -75,15 +57,28 @@ public class WaypointsActivity extends ListActivity {
 
     private List<String> getTitlesList() {
         List<String> titles = new ArrayList<String>();
-        for (int title : samples) {
-            titles.add(getString(title));
+        for (SampleConfig config : samplesConfig) {
+            titles.add(getString(config.titleId));
         }
         return titles;
     }
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        if (position >= 0 && position < targets.length)
-            startActivity(new Intent(this, targets[position]));
+        if (position >= 0 && position < samplesConfig.length)
+            startActivity(new Intent(this, samplesConfig[position].targetClass));
     }
+
+    private static class SampleConfig {
+
+        final int titleId;
+        final Class targetClass;
+
+        SampleConfig(int titleId, Class targetClass) {
+          this.titleId = titleId;
+          this.targetClass = targetClass;
+        }
+
+    }
+
 }
