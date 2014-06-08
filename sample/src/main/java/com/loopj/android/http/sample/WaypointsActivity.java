@@ -71,13 +71,13 @@ public class WaypointsActivity extends ListActivity {
 
     private static class SampleConfig {
 
-      final int titleId;
-      final Class targetClass;
+        final int titleId;
+        final Class targetClass;
 
-      SampleConfig(int titleId, Class targetClass) {
-        this.titleId = titleId;
-        this.targetClass = targetClass;
-      }
+        SampleConfig(int titleId, Class targetClass) {
+          this.titleId = titleId;
+          this.targetClass = targetClass;
+        }
 
     }
 
