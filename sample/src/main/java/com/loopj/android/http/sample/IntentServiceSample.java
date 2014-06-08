@@ -25,33 +25,31 @@ public class IntentServiceSample extends SampleParentActivity {
     public static final String ACTION_FINISH = "SYNC_FINISH";
     public static final String[] ALLOWED_ACTIONS = {ACTION_START,
             ACTION_RETRY, ACTION_CANCEL, ACTION_SUCCESS, ACTION_FAILURE, ACTION_FINISH};
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            switch (intent.getAction()) {
-                case ACTION_START:
-                    clearOutputs();
-                    addView(getColoredView(LIGHTBLUE, "Request started"));
-                    break;
-                case ACTION_FINISH:
-                    addView(getColoredView(LIGHTBLUE, "Request finished"));
-                    break;
-                case ACTION_CANCEL:
-                    addView(getColoredView(LIGHTBLUE, "Request cancelled"));
-                    break;
-                case ACTION_RETRY:
-                    addView(getColoredView(LIGHTBLUE, "Request retried"));
-                    break;
-                case ACTION_FAILURE:
-                    debugThrowable(LOG_TAG, (Throwable) intent.getSerializableExtra(ExampleIntentService.INTENT_THROWABLE));
-                case ACTION_SUCCESS:
+            String action = intent.getAction();
+
+            // switch() doesn't support strings in older JDK.
+            if(ACTION_START.equals(action)) {
+                clearOutputs();
+                addView(getColoredView(LIGHTBLUE, "Request started"));
+            } else if(ACTION_FINISH.equals(action)) {
+                addView(getColoredView(LIGHTBLUE, "Request finished"));
+            } else if(ACTION_CANCEL.equals(action)) {
+                addView(getColoredView(LIGHTBLUE, "Request cancelled"));
+            } else if(ACTION_RETRY.equals(action)) {
+                addView(getColoredView(LIGHTBLUE, "Request retried"));
+            } else if(ACTION_FAILURE.equals(action) || ACTION_SUCCESS.equals(action)) {
+                debugThrowable(LOG_TAG, (Throwable) intent.getSerializableExtra(ExampleIntentService.INTENT_THROWABLE));
+                if(ACTION_SUCCESS.equals(action)) {
                     debugStatusCode(LOG_TAG, intent.getIntExtra(ExampleIntentService.INTENT_STATUS_CODE, 0));
                     debugHeaders(LOG_TAG, IntentUtil.deserializeHeaders(intent.getStringArrayExtra(ExampleIntentService.INTENT_HEADERS)));
                     byte[] returnedBytes = intent.getByteArrayExtra(ExampleIntentService.INTENT_DATA);
                     if (returnedBytes != null) {
                         debugResponse(LOG_TAG, new String(returnedBytes));
                     }
-                    break;
+                }
             }
         }
     };

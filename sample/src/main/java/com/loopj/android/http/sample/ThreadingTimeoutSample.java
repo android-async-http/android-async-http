@@ -31,7 +31,7 @@ import org.apache.http.HttpEntity;
 public class ThreadingTimeoutSample extends SampleParentActivity {
 
     private static final String LOG_TAG = "ThreadingTimeoutSample";
-    private SparseArray<String> states = new SparseArray<>();
+    private final SparseArray<String> states = new SparseArray<String>();
     private int counter = 0;
 
     @Override
@@ -72,7 +72,7 @@ public class ThreadingTimeoutSample extends SampleParentActivity {
     public ResponseHandlerInterface getResponseHandler() {
         return new AsyncHttpResponseHandler() {
 
-            private int id = counter++;
+            private final int id = counter++;
 
             @Override
             public void onStart() {

@@ -50,7 +50,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     private AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
     private EditText urlEditText, headersEditText, bodyEditText;
     private LinearLayout responseLayout;
-    private final List<RequestHandle> requestHandles = new LinkedList<>();
+    private final List<RequestHandle> requestHandles = new LinkedList<RequestHandle>();
 
     protected static final int LIGHTGREEN = Color.parseColor("#00FF66");
     protected static final int LIGHTRED = Color.parseColor("#FF3300");
@@ -126,7 +126,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     };
 
     public Header[] getRequestHeaders() {
-        List<Header> headers = new ArrayList<>();
+        List<Header> headers = new ArrayList<Header>();
         String headersRaw = headersEditText.getText() == null ? null : headersEditText.getText().toString();
 
         if (headersRaw != null && headersRaw.length() > 3) {
