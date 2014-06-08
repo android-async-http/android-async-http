@@ -98,7 +98,9 @@ public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> exte
                     rssReader.setContentHandler(handler);
                     inputStreamReader = new InputStreamReader(instream, DEFAULT_CHARSET);
                     rssReader.parse(new InputSource(inputStreamReader));
-                } catch (SAXException | ParserConfigurationException e) {
+                } catch (SAXException e) {
+                    Log.e(LOG_TAG, "getResponseData exception", e);
+                } catch (ParserConfigurationException e) {
                     Log.e(LOG_TAG, "getResponseData exception", e);
                 } finally {
                     AsyncHttpClient.silentCloseInputStream(instream);
@@ -107,7 +109,6 @@ public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> exte
                             inputStreamReader.close();
                         } catch (IOException e) { /*ignore*/ }
                     }
-
                 }
             }
         }
