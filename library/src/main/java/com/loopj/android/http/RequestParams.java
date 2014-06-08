@@ -469,13 +469,13 @@ public class RequestParams {
 
         // Add string params
         for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
-            entity.addPart(entry.getKey(), entry.getValue());
+            entity.addPartWithCharset(entry.getKey(), entry.getValue(), contentEncoding);
         }
 
         // Add non-string params
         List<BasicNameValuePair> params = getParamsList(null, urlParamsWithObjects);
         for (BasicNameValuePair kv : params) {
-            entity.addPart(kv.getName(), kv.getValue());
+            entity.addPartWithCharset(kv.getName(), kv.getValue(), contentEncoding);
         }
 
         // Add stream params

@@ -28,6 +28,7 @@ import android.util.Log;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -99,8 +100,13 @@ class SimpleMultipartEntity implements HttpEntity {
         }
     }
 
+    public void addPartWithCharset(String key, String value, String charset) {
+        if (charset == null) charset = HTTP.UTF_8;
+        addPart(key, value, "text/plain; charset=" + charset);
+    }
+
     public void addPart(String key, String value) {
-        addPart(key, value, "text/plain; charset=UTF-8");
+        addPartWithCharset(key, value, null);
     }
 
     public void addPart(String key, File file) {
