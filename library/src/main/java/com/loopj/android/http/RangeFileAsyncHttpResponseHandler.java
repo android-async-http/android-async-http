@@ -33,8 +33,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-
 public abstract class RangeFileAsyncHttpResponseHandler extends FileAsyncHttpResponseHandler {
+
     private static final String LOG_TAG = "RangeFileAsyncHttpResponseHandler";
 
     private long current = 0;
@@ -67,7 +67,7 @@ public abstract class RangeFileAsyncHttpResponseHandler extends FileAsyncHttpRes
                         append = false;
                         current = 0;
                     } else
-                        Log.v(LOG_TAG, "Content-Rnage: " + header.getValue());
+                        Log.v(LOG_TAG, "Content-Range: " + header.getValue());
                     sendSuccessMessage(status.getStatusCode(), response.getAllHeaders(), getResponseData(response.getEntity()));
                 }
             }
@@ -107,4 +107,5 @@ public abstract class RangeFileAsyncHttpResponseHandler extends FileAsyncHttpRes
             uriRequest.setHeader("Range", "bytes=" + current + "-");
         }
     }
+
 }
