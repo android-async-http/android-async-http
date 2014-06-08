@@ -30,7 +30,10 @@ android {
     }
 
     lintOptions {
-        abortOnError false
+        xmlReport false
+        warningsAsErrors true
+        quiet false
+        showAll true
     }
 
     packagingOptions {
