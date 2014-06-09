@@ -24,4 +24,5 @@
     <string name="title_intent_service_sample">IntentService Synchronised Request</string>
     <string name="title_post_files">Post Multipart-encoded files</string>
     <string name="title_redirect_302">302 Redirect handling</string>
+    <string name="title_persistent_cookies">Handling persistent cookies</string>
 </resources>
