@@ -32,6 +32,7 @@
         <activity android:name=".IntentServiceSample"/>
         <activity android:name=".SaxSample"/>
         <activity android:name=".FilesSample"/>
+        <activity android:name=".CustomCASample"/>
 
         <service android:name=".services.ExampleIntentService"/>
     </application>
