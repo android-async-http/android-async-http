@@ -15,7 +15,7 @@
     <string name="title_delete_sample">DELETE</string>
     <string name="title_file_sample">GET to File</string>
     <string name="title_binary_sample">GET binary data</string>
-    <string name="title_cancel_all">Cancel all request</string>
+    <string name="title_cancel_all">Cancel all requests</string>
     <string name="title_sax_example">SAX Example</string>
     <string name="title_cancel_handle">Cancel request handle</string>
     <string name="title_synchronous">Synchronous GET request</string>
@@ -25,4 +25,5 @@
     <string name="title_post_files">Post Multipart-encoded files</string>
     <string name="title_redirect_302">302 Redirect handling</string>
     <string name="title_persistent_cookies">Handling persistent cookies</string>
+    <string name="title_custom_ca">Custom CA Example</string>
 </resources>
