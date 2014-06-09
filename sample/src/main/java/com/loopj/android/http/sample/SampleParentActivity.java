@@ -125,7 +125,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         }
     };
 
-    public Header[] getRequestHeaders() {
+    public List<Header> getRequestHeadersList() {
         List<Header> headers = new ArrayList<Header>();
         String headersRaw = headersEditText.getText() == null ? null : headersEditText.getText().toString();
 
@@ -133,15 +133,25 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
             String[] lines = headersRaw.split("\\r?\\n");
             for (String line : lines) {
                 try {
-                    String[] kv = line.split("=");
-                    if (kv.length != 2)
+                    int equalSignPos = line.indexOf('=');
+                    if (1 > equalSignPos) {
                         throw new IllegalArgumentException("Wrong header format, may be 'Key=Value' only");
-                    headers.add(new BasicHeader(kv[0].trim(), kv[1].trim()));
+                    }
+
+                    String headerName = line.substring(0, equalSignPos).trim();
+                    String headerValue = line.substring(1 + equalSignPos).trim();
+
+                    headers.add(new BasicHeader(headerName, headerValue));
                 } catch (Throwable t) {
                     Log.e("SampleParentActivity", "Not a valid header line: " + line, t);
                 }
             }
         }
+        return headers;
+    }
+
+    public Header[] getRequestHeaders() {
+        List<Header> headers = getRequestHeadersList();
         return headers.toArray(new Header[headers.size()]);
     }
 
