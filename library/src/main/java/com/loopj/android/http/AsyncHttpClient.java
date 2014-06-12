@@ -350,7 +350,7 @@ public class AsyncHttpClient {
     }
 
     /**
-     * Returns the current executor service used. By default, Executors.newFixedThreadPool() is
+     * Returns the current executor service used. By default, Executors.newCachedThreadPool() is
      * used.
      *
      * @return current executor service used
