@@ -340,7 +340,7 @@ public class AsyncHttpClient {
 
     /**
      * Overrides the threadpool implementation used when queuing/pooling requests. By default,
-     * Executors.newFixedThreadPool() is used.
+     * Executors.newCachedThreadPool() is used.
      *
      * @param threadPool an instance of {@link ExecutorService} to use for queuing/pooling
      *                   requests.
