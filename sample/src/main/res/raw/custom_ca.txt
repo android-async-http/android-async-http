@@ -1,6 +1,8 @@
 This is a short HOW-TO documenting the steps necessary to create a key store
 file that Android could use to connect to servers with a custom CA.
 
+This file's location is: 'res/raw/custom_ca.txt'
+
 Prerequisities:
 ---------------
 
@@ -22,6 +24,9 @@ Let's see the fun part:
    you already have a self-signed CA from before:
 
    openssl req -newkey rsa:4096 -days 3650 -x509 -nodes -out ca.pem
+
+   This instructs openssl to create a 4096-bit RSA key and set its expiration
+   date 10 years later.
 
    You will be asked to provide details of the CA. When you're finished, a file
    called 'ca.pem' will exist in current directory.
