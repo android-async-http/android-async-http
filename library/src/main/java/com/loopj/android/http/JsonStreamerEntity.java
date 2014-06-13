@@ -65,9 +65,14 @@ public class JsonStreamerEntity implements HttpEntity {
     private static final byte[] STREAM_ELAPSED = escape("_elapsed");
 
     private static final Header HEADER_JSON_CONTENT =
-            new BasicHeader("Content-Type", "application/json");
+            new BasicHeader(
+                AsyncHttpClient.HEADER_CONTENT_TYPE,
+                RequestParams.APPLICATION_JSON);
+
     private static final Header HEADER_GZIP_ENCODING =
-            new BasicHeader("Content-Encoding", "gzip");
+            new BasicHeader(
+                AsyncHttpClient.HEADER_CONTENT_ENCODING,
+                AsyncHttpClient.ENCODING_GZIP);
 
     // JSON data and associated meta-data to be uploaded.
     private final Map<String, Object> jsonParams = new HashMap<String, Object>();

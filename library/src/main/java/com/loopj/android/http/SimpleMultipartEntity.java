@@ -146,18 +146,21 @@ class SimpleMultipartEntity implements HttpEntity {
     }
 
     private byte[] createContentType(String type) {
-        String result = "Content-Type: " + normalizeContentType(type) + STR_CR_LF;
+        String result = AsyncHttpClient.HEADER_CONTENT_TYPE + ": " + normalizeContentType(type) + STR_CR_LF;
         return result.getBytes();
     }
 
     private byte[] createContentDisposition(String key) {
-        return ("Content-Disposition: form-data; name=\"" + key + "\"" + STR_CR_LF)
-                .getBytes();
+        return (
+            AsyncHttpClient.HEADER_CONTENT_DISPOSITION +
+            ": form-data; name=\"" + key + "\"" + STR_CR_LF).getBytes();
     }
 
     private byte[] createContentDisposition(String key, String fileName) {
-        return ("Content-Disposition: form-data; name=\"" + key + "\"; filename=\"" + fileName + "\"" + STR_CR_LF)
-                .getBytes();
+        return (
+            AsyncHttpClient.HEADER_CONTENT_DISPOSITION +
+            ": form-data; name=\"" + key + "\"" +
+            "; filename=\"" + fileName + "\"" + STR_CR_LF).getBytes();
     }
 
     private void updateProgress(int count) {
@@ -232,7 +235,9 @@ class SimpleMultipartEntity implements HttpEntity {
 
     @Override
     public Header getContentType() {
-        return new BasicHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
+        return new BasicHeader(
+            AsyncHttpClient.HEADER_CONTENT_TYPE,
+            "multipart/form-data; boundary=" + boundary);
     }
 
     @Override
