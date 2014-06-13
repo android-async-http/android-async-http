@@ -9,6 +9,7 @@
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
+        android:name=".SampleApplication"
         android:theme="@style/AppTheme">
         <activity android:name=".WaypointsActivity">
             <intent-filter>

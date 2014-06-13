@@ -18,7 +18,7 @@
 
 package com.loopj.android.http.sample.util;
 
-import android.annotation.TargetApi;
+import android.os.Build;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -181,10 +181,9 @@ public class SecureSocketFactory extends SSLSocketFactory {
      * @param host   Hostname to connect to
      * @see <a href="https://code.google.com/p/android/issues/detail?id=13117#c14">https://code.google.com/p/android/issues/detail?id=13117#c14</a>
      */
-    @TargetApi(4)
     private void injectHostname(Socket socket, String host) {
         try {
-            if (android.os.Build.VERSION.SDK_INT < 14) {
+            if (Integer.valueOf(Build.VERSION.SDK) >= 4) {
                 Field field = InetAddress.class.getDeclaredField("hostName");
                 field.setAccessible(true);
                 field.set(socket.getInetAddress(), host);
