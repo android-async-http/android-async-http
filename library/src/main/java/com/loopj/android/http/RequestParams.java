@@ -92,6 +92,9 @@ public class RequestParams {
     public final static String APPLICATION_OCTET_STREAM =
             "application/octet-stream";
 
+    public final static String APPLICATION_JSON =
+            "application/json";
+
     protected final static String LOG_TAG = "RequestParams";
     protected boolean isRepeatable;
     protected boolean useJsonStreamer;

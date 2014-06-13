@@ -62,12 +62,12 @@ public abstract class RangeFileAsyncHttpResponseHandler extends FileAsyncHttpRes
                     sendFailureMessage(status.getStatusCode(), response.getAllHeaders(), null, new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()));
             } else {
                 if (!Thread.currentThread().isInterrupted()) {
-                    Header header = response.getFirstHeader("Content-Range");
+                    Header header = response.getFirstHeader(AsyncHttpClient.HEADER_CONTENT_RANGE);
                     if (header == null) {
                         append = false;
                         current = 0;
                     } else
-                        Log.v(LOG_TAG, "Content-Range: " + header.getValue());
+                        Log.v(LOG_TAG, AsyncHttpClient.HEADER_CONTENT_RANGE + ": " + header.getValue());
                     sendSuccessMessage(status.getStatusCode(), response.getAllHeaders(), getResponseData(response.getEntity()));
                 }
             }
