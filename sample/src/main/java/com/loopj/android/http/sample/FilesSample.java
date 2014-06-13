@@ -33,7 +33,7 @@ public class FilesSample extends PostSample {
     public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {
         try {
             RequestParams params = new RequestParams();
-            final String contentType = "application/octet-stream";
+            final String contentType = RequestParams.APPLICATION_OCTET_STREAM;
             params.put("fileOne", createTempFile("fileOne", 1020), contentType);
             params.put("fileTwo", createTempFile("fileTwo", 1030), contentType);
             params.put("fileThree", createTempFile("fileThree", 1040), contentType);
