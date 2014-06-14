@@ -27,4 +27,5 @@
     <string name="title_persistent_cookies">Handling persistent cookies</string>
     <string name="title_custom_ca">Custom CA Example</string>
     <string name="title_retry_handler">Retrying requests by Exception</string>
+    <string name="title_range_sample">Range response handling</string>
 </resources>
