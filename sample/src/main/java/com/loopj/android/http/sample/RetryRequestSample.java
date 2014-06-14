@@ -29,6 +29,14 @@ import java.net.UnknownHostException;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ConnectionPoolTimeoutException;
 
+/**
+ * This sample demonstrates use of
+ * {@link AsyncHttpClient#allowRetryExceptionClass(java.lang.Class)} and
+ * {@link AsyncHttpClient#blockRetryExceptionClass(java.lang.Class)} to whitelist
+ * and blacklist certain Exceptions, respectively.
+ *
+ * @author Noor Dawod <github@fineswap.com>
+ */
 public class RetryRequestSample extends GetSample {
 
     private static boolean wasToastShown;
