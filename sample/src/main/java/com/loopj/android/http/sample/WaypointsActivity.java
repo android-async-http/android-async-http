@@ -48,7 +48,8 @@ public class WaypointsActivity extends ListActivity {
         new SampleConfig(R.string.title_intent_service_sample, IntentServiceSample.class),
         new SampleConfig(R.string.title_post_files, FilesSample.class),
         new SampleConfig(R.string.title_persistent_cookies, PersistentCookiesSample.class),
-        new SampleConfig(R.string.title_custom_ca, CustomCASample.class)
+        new SampleConfig(R.string.title_custom_ca, CustomCASample.class),
+        new SampleConfig(R.string.title_retry_handler, RetryRequestSample.class)
     };
 
     @Override

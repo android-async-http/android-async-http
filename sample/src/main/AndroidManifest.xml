@@ -33,6 +33,7 @@
         <activity android:name=".SaxSample"/>
         <activity android:name=".FilesSample"/>
         <activity android:name=".CustomCASample"/>
+        <activity android:name=".RetryRequestSample"/>
 
         <service android:name=".services.ExampleIntentService"/>
     </application>
