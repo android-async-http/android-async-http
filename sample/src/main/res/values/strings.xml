@@ -3,10 +3,15 @@
 <resources>
     <string name="app_name">Android Async Http Samples</string>
 
+    <string name="field_username">Username</string>
+    <string name="field_password">Password</string>
+
     <string name="button_run">Run</string>
+    <string name="button_cancel">Cancel</string>
+
     <string name="label_headers">Headers (key=val, one per line)</string>
     <string name="label_req_body">Request body</string>
-    <string name="button_cancel">Cancel</string>
+    <string name="label_credentials">Server requests authentication.\nTo gain access, enter:\n\nUsername: %1$s\nPassword: %2$s</string>
 
     <string name="title_get_sample">GET</string>
     <string name="title_json_sample">GET JSON and parse it</string>
@@ -28,4 +33,5 @@
     <string name="title_custom_ca">Custom CA Example</string>
     <string name="title_retry_handler">Retrying requests by Exception</string>
     <string name="title_range_sample">Range response handling</string>
+    <string name="title_401_unauth">401 basic authentication</string>
 </resources>
