@@ -148,7 +148,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
             Log.w(LOG_TAG, "Current thread has not called Looper.prepare(). Forcing synchronous mode.");
         }
 
-        // If using synchronous mode.
+        // If using asynchronous mode.
         if (!value && handler == null) {
             // Create a handler on current thread to submit tasks
             handler = new ResponderHandler(this);

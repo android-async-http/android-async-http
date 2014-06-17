@@ -39,14 +39,14 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
     private static final String LOG_TAG = "JsonHttpResponseHandler";
 
     /**
-     * Creates new JsonHttpResponseHandler, with Json String encoding UTF-8
+     * Creates new JsonHttpResponseHandler, with JSON String encoding UTF-8
      */
     public JsonHttpResponseHandler() {
         super(DEFAULT_CHARSET);
     }
 
     /**
-     * Creates new JsonHttpRespnseHandler with given Json String encoding
+     * Creates new JsonHttpRespnseHandler with given JSON String encoding
      *
      * @param encoding String encoding to be used when parsing JSON
      */
@@ -208,7 +208,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
         if (null == responseBody)
             return null;
         Object result = null;
-        //trim the string to prevent start with blank, and test if the string is valid JSON, because the parser don't do this :(. If Json is not valid this will return null
+        //trim the string to prevent start with blank, and test if the string is valid JSON, because the parser don't do this :(. If JSON is not valid this will return null
         String jsonString = getResponseString(responseBody, getCharset());
         if (jsonString != null) {
             jsonString = jsonString.trim();

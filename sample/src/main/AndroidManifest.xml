@@ -34,6 +34,8 @@
         <activity android:name=".SaxSample"/>
         <activity android:name=".FilesSample"/>
         <activity android:name=".CustomCASample"/>
+        <activity android:name=".RetryRequestSample"/>
+        <activity android:name=".RangeResponseSample"/>
 
         <service android:name=".services.ExampleIntentService"/>
     </application>
