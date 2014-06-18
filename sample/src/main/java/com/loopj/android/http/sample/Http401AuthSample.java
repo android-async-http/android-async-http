@@ -35,6 +35,7 @@ import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.sample.util.SampleJSON;
 import java.util.List;
+import java.util.Locale;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.message.BasicHeader;
@@ -44,7 +45,7 @@ import org.apache.http.message.BasicHeader;
  *
  * @author Noor Dawod <github@fineswap.com>
  */
-public class Http401Auth extends GetSample {
+public class Http401AuthSample extends GetSample {
 
     private static final String LOG_TAG = "Http401Auth";
     private static final String HEADER_WWW_AUTHENTICATE = "WWW-Authenticate";
@@ -129,7 +130,7 @@ public class Http401Auth extends GetSample {
                         String headerName = header.getName();
                         if (HEADER_WWW_AUTHENTICATE.equalsIgnoreCase(headerName)) {
                             String headerValue = header.getValue().trim();
-                            String headerValueLowerCase = headerValue.toLowerCase();
+                            String headerValueLowerCase = headerValue.toLowerCase(Locale.US);
 
                             // Get the type of auth requested.
                             int charPos = headerValueLowerCase.indexOf(' ');
@@ -175,7 +176,9 @@ public class Http401Auth extends GetSample {
 
         public DialogRunnable(String realm) {
             this.realm = realm;
-            this.dialogView = LayoutInflater.from(Http401Auth.this).inflate(R.layout.credentials, null);
+            this.dialogView = LayoutInflater
+                .from(Http401AuthSample.this)
+                .inflate(R.layout.credentials, null, false);
 
             // Update the preface text with correct credentials.
             TextView preface = (TextView)dialogView.findViewById(R.id.label_credentials);
@@ -187,7 +190,7 @@ public class Http401Auth extends GetSample {
 
         @Override
         public void run() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(Http401Auth.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(Http401AuthSample.this);
             builder.setTitle(realm);
             builder.setView(dialogView);
             builder.setPositiveButton(android.R.string.ok, this);

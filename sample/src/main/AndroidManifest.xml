@@ -35,7 +35,7 @@
         <activity android:name=".CustomCASample"/>
         <activity android:name=".RetryRequestSample"/>
         <activity android:name=".RangeResponseSample"/>
-        <activity android:name=".Http401Auth"/>
+        <activity android:name=".Http401AuthSample"/>
 
         <service android:name=".services.ExampleIntentService"/>
     </application>
