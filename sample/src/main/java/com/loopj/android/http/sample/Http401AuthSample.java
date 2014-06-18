@@ -134,11 +134,11 @@ public class Http401AuthSample extends GetSample {
 
                             // Get the type of auth requested.
                             int charPos = headerValueLowerCase.indexOf(' ');
-                            if(0 < charPos) {
+                            if (0 < charPos) {
                                 authType = headerValueLowerCase.substring(0, charPos);
 
                                 // The second part should begin with a "realm=" prefix.
-                                if(headerValueLowerCase.substring(1 + charPos).startsWith(HEADER_REALM_PREFIX)) {
+                                if (headerValueLowerCase.substring(1 + charPos).startsWith(HEADER_REALM_PREFIX)) {
                                     // The new realm value, including any possible wrapping quotation.
                                     realm = headerValue.substring(1 + charPos + HEADER_REALM_PREFIX.length());
 
@@ -154,7 +154,7 @@ public class Http401AuthSample extends GetSample {
                     // We will support basic auth in this sample.
                     if (authType != null && HEADER_BASIC.equals(authType)) {
                         // Show a dialog for the user and request user/pass.
-                        Log.d(LOG_TAG, "realm=" + realm);
+                        Log.d(LOG_TAG, HEADER_REALM_PREFIX + realm);
 
                         // Present the dialog.
                         postRunnable(new DialogRunnable(realm));
