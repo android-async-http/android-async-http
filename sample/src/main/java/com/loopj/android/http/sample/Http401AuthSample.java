@@ -24,21 +24,24 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.Base64;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.sample.util.SampleJSON;
-import java.util.List;
-import java.util.Locale;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.message.BasicHeader;
+
+import java.util.List;
+import java.util.Locale;
 
 /**
  * This sample demonstrates how to implement HTTP 401 Basic Authentication.
@@ -86,8 +89,8 @@ public class Http401AuthSample extends GetSample {
         // Add authentication header.
         if (userName != null && passWord != null) {
             byte[] base64bytes = Base64.encode(
-                (userName + ":" + passWord).getBytes(),
-                Base64.DEFAULT
+                    (userName + ":" + passWord).getBytes(),
+                    Base64.DEFAULT
             );
             String credentials = new String(base64bytes);
             headers.add(new BasicHeader(HEADER_AUTHORIZATION, HEADER_BASIC + " " + credentials));
@@ -177,11 +180,11 @@ public class Http401AuthSample extends GetSample {
         public DialogRunnable(String realm) {
             this.realm = realm;
             this.dialogView = LayoutInflater
-                .from(Http401AuthSample.this)
-                .inflate(R.layout.credentials, null, false);
+                    .from(Http401AuthSample.this)
+                    .inflate(R.layout.credentials, new LinearLayout(Http401AuthSample.this), false);
 
             // Update the preface text with correct credentials.
-            TextView preface = (TextView)dialogView.findViewById(R.id.label_credentials);
+            TextView preface = (TextView) dialogView.findViewById(R.id.label_credentials);
             String prefaceText = preface.getText().toString();
 
             // Substitute placeholders, and re-set the value.
