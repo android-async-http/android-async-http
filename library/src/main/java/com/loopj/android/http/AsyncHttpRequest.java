@@ -33,7 +33,7 @@ import java.net.UnknownHostException;
 /**
  * Internal class, representing the HttpRequest, done in asynchronous manner
  */
-class AsyncHttpRequest implements Runnable {
+public class AsyncHttpRequest implements Runnable {
     private final AbstractHttpClient client;
     private final HttpContext context;
     private final HttpUriRequest request;
@@ -166,9 +166,7 @@ class AsyncHttpRequest implements Runnable {
 
     public boolean cancel(boolean mayInterruptIfRunning) {
         isCancelled = true;
-        if (mayInterruptIfRunning && request != null && !request.isAborted()) {
-            request.abort();
-        }
+        request.abort();
         return isCancelled();
     }
 }

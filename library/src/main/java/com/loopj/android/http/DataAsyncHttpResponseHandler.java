@@ -1,5 +1,3 @@
-package com.loopj.android.http;
-
 /*
     Android Asynchronous Http Client
     Copyright (c) 2011 James Smith <james@loopj.com>
@@ -17,6 +15,8 @@ package com.loopj.android.http;
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
+package com.loopj.android.http;
 
 import android.os.Message;
 import android.util.Log;
@@ -41,6 +41,8 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
 
     /**
      * Fired when the request progress, override to handle in your own code
+     *
+     * @param responseBody response body received so far
      */
     public void onProgressData(byte[] responseBody) {
     }
@@ -104,7 +106,7 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
                             sendProgressDataMessage(copyOfRange(tmp, 0, l));
                         }
                     } finally {
-                        instream.close();
+                        AsyncHttpClient.silentCloseInputStream(instream);
                     }
                     responseBody = buffer.toByteArray();
                 } catch (OutOfMemoryError e) {

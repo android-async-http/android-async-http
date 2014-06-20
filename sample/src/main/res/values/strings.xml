@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
 
+<resources>
     <string name="app_name">Android Async Http Samples</string>
+
+    <string name="field_username">Username</string>
+    <string name="field_password">Password</string>
+
+    <string name="button_run">Run</string>
+    <string name="button_cancel">Cancel</string>
+
+    <string name="label_headers">Headers (key=val, one per line)</string>
+    <string name="label_req_body">Request body</string>
+    <string name="label_credentials">Server requests authentication.\nTo gain access, enter:\n\nUsername: %1$s\nPassword: %2$s</string>
+
     <string name="title_get_sample">GET</string>
-    <string name="title_json_sample">GET and JSON parse</string>
+    <string name="title_json_sample">GET JSON and parse it</string>
     <string name="title_post_sample">POST</string>
     <string name="title_put_sample">PUT</string>
     <string name="title_delete_sample">DELETE</string>
     <string name="title_file_sample">GET to File</string>
     <string name="title_binary_sample">GET binary data</string>
-    <string name="button_run">Run</string>
-    <string name="label_headers">Headers (key=val, one per line)</string>
-    <string name="label_req_body">Request body</string>
-    <string name="button_cancel">Cancel</string>
+    <string name="title_cancel_all">Cancel all requests</string>
+    <string name="title_sax_example">SAX Example</string>
+    <string name="title_cancel_handle">Cancel request handle</string>
+    <string name="title_synchronous">Synchronous GET request</string>
+    <string name="title_threading_timeout">Threading timeouts</string>
+    <string name="title_gzip_sample">GET Gzipped JSON and parse it</string>
+    <string name="title_intent_service_sample">IntentService Synchronised Request</string>
+    <string name="title_post_files">Post Multipart-encoded files</string>
+    <string name="title_redirect_302">302 Redirect handling</string>
+    <string name="title_persistent_cookies">Handling persistent cookies</string>
+    <string name="title_custom_ca">Custom CA Example</string>
+    <string name="title_retry_handler">Retrying requests by Exception</string>
+    <string name="title_range_sample">Range response handling</string>
+    <string name="title_401_unauth">401 basic authentication</string>
 </resources>
