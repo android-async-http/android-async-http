@@ -21,6 +21,9 @@ Don't be discouraged if your pull request is rejected. This is not a deadline an
 
 ISSUES
 ---------
+
+![Read the ISSUES?](http://i.imgur.com/LPWyLe7.jpg)
+
 The issues system is the place to report bugs and not for submitting patches or new functionality. As helpful as we would like to be, we cannot replace the developer and we certainly do not see what you're seeing. So when you come to report an issue, follow these simple rules:  
 
   * Report bugs in the English language only
