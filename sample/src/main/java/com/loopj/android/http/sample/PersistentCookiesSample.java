@@ -115,6 +115,7 @@ public class PersistentCookiesSample extends SampleParentActivity {
 
     @Override
     public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {
+        client.setEnableRedirects(true);
         return client.get(this, URL, headers, null, responseHandler);
     }
 

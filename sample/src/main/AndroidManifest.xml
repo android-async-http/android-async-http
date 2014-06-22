@@ -37,6 +37,7 @@
         <activity android:name=".RetryRequestSample"/>
         <activity android:name=".RangeResponseSample"/>
         <activity android:name=".Http401AuthSample"/>
+        <activity android:name=".PersistentCookiesSample"/>
 
         <service android:name=".services.ExampleIntentService"/>
     </application>
