@@ -73,6 +73,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1263,26 +1264,71 @@ public class AsyncHttpClient {
     }
 
     /**
+     * This horrible hack is required on Android, due to implementation of BasicManagedEntity, which
+     * doesn't chain call consumeContent on underlying wrapped HttpEntity
+     *
+     * @param entity HttpEntity, may be null
+     */
+    public static void endEntityViaReflection(HttpEntity entity) {
+        if (entity instanceof HttpEntityWrapper) {
+            try {
+                Field f = null;
+                Field[] fields = HttpEntityWrapper.class.getDeclaredFields();
+                for (Field ff : fields) {
+                    if (ff.getName().equals("wrappedEntity")) {
+                        f = ff;
+                        break;
+                    }
+                }
+                if (f != null) {
+                    f.setAccessible(true);
+                    HttpEntity wrapped = (HttpEntity) f.get(entity);
+                    if (wrapped != null) {
+                        wrapped.consumeContent();
+                    }
+                }
+            } catch (Throwable t) {
+                Log.e(LOG_TAG, "wrappedEntity consume", t);
+            }
+        }
+    }
+
+    /**
      * Enclosing entity to hold stream of gzip decoded data for accessing HttpEntity contents
      */
     private static class InflatingEntity extends HttpEntityWrapper {
+
         public InflatingEntity(HttpEntity wrapped) {
             super(wrapped);
         }
 
+        InputStream wrappedStream;
+        PushbackInputStream pushbackStream;
+        GZIPInputStream gzippedStream;
+
         @Override
         public InputStream getContent() throws IOException {
-            PushbackInputStream content = new PushbackInputStream(wrappedEntity.getContent(), 2);
-            if (isInputStreamGZIPCompressed(content)) {
-                return new GZIPInputStream(content);
+            wrappedStream = wrappedEntity.getContent();
+            pushbackStream = new PushbackInputStream(wrappedStream, 2);
+            if (isInputStreamGZIPCompressed(pushbackStream)) {
+                gzippedStream = new GZIPInputStream(pushbackStream);
+                return gzippedStream;
             } else {
-                return content;
+                return pushbackStream;
             }
         }
 
         @Override
         public long getContentLength() {
             return -1;
+        }
+
+        @Override
+        public void consumeContent() throws IOException {
+            AsyncHttpClient.silentCloseInputStream(wrappedStream);
+            AsyncHttpClient.silentCloseInputStream(pushbackStream);
+            AsyncHttpClient.silentCloseInputStream(gzippedStream);
+            super.consumeContent();
         }
     }
 }
