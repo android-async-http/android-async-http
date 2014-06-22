@@ -2,9 +2,9 @@
 layout: project
 title: Android Asynchronous Http Client
 tagline: A Callback-Based Http Client Library for Android
-version: 1.4.4
+version: 1.4.5
 github_repo: android-async-http
-download_url: https://github.com/loopj/android-async-http/raw/master/releases/android-async-http-1.4.4.jar
+download_url: http://search.maven.org/remotecontent?filepath=com/loopj/android/android-async-http/1.4.5/android-async-http-1.4.5.jar
 ---
 
 
@@ -14,7 +14,8 @@ An asynchronous callback-based Http client for Android built on top of Apache's
 [HttpClient](http://hc.apache.org/httpcomponents-client-ga/) libraries.
 All requests are made outside of your app's main UI thread, but any callback
 logic will be executed on the same thread as the callback was created using
-Android's Handler message passing.
+Android's Handler message passing. You can also use it in Service or background thread,
+library will automatically recognize in which context is ran.
 
 
 Features
@@ -24,13 +25,18 @@ Features
 - Requests use a **threadpool** to cap concurrent resource usage
 - GET/POST **params builder** (RequestParams)
 - **Multipart file uploads** with no additional third party libraries
-- Tiny size overhead to your application, only **25kb** for everything
+- **Streamed JSON uploads** with no additional libraries
+- Handling circular and relative redirects
+- Tiny size overhead to your application, only **90kb** for everything
 - Automatic smart **request retries** optimized for spotty mobile connections
 - Automatic **gzip** response decoding support for super-fast requests
-- Binary file (images etc) downloading with `BinaryHttpResponseHandler`
+- Binary protocol communication with `BinaryHttpResponseHandler`
 - Built-in response parsing into **JSON**  with `JsonHttpResponseHandler`
+- Saving response directly into file with `FileAsyncHttpResponseHandler`
 - **Persistent cookie store**, saves cookies into your app's SharedPreferences
-
+- Integration with Jackson JSON, Gson or other JSON (de)serializing libraries with `BaseJsonHttpResponseHandler`
+- Support for SAX parser with `SaxAsyncHttpResponseHandler`
+- Support for languages and content encodings, not just UTF-8
 
 Used in Production By Top Apps and Developers
 ---------------------------------------------
@@ -55,8 +61,13 @@ Used in Production By Top Apps and Developers
 
 Installation & Basic Usage
 --------------------------
-Download the latest .jar file from github and place it in your Android app's
-`libs/` folder.
+Add maven dependency using Gradle buildscript in format 
+
+{% highlight groovy %}
+dependencies {
+  compile 'com.loopj.android:android-async-http:1.4.5'
+}
+{% endhighlight %}
 
 Import the http package.
 
@@ -68,10 +79,26 @@ Create a new `AsyncHttpClient` instance and make a request:
 {% highlight java %}
 AsyncHttpClient client = new AsyncHttpClient();
 client.get("http://www.google.com", new AsyncHttpResponseHandler() {
+
     @Override
-    public void onSuccess(String response) {
-        System.out.println(response);
+    public void onStart() {
+        // called before request is started
     }
+
+    @Override
+    public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+        // called when response HTTP status is "200 OK"
+    }
+
+    @Override
+    public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+        // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+    }
+
+    @Override
+    public void onRetry(int retryNo) {
+        // called when request is retried
+	}
 });
 {% endhighlight %}
 
@@ -112,7 +139,12 @@ class TwitterRestClientUsage {
     public void getPublicTimeline() throws JSONException {
         TwitterRestClient.get("statuses/public_timeline.json", null, new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(JSONArray timeline) {
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // If the response is JSONObject instead of expected JSONArray
+            }
+            
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
                 // Pull out the first event on the public timeline
                 JSONObject firstEvent = timeline.get(0);
                 String tweetText = firstEvent.getString("text");
@@ -231,23 +263,22 @@ params.put("soundtrack", new ByteArrayInputStream(myByteArray), "she-wolf.mp3");
 See the [RequestParams Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html)
 for more information.
 
-Downloading Binary Data with `BinaryHttpResponseHandler`
+Downloading Binary Data with `FileAsyncHttpResponseHandler`
 --------------------------------------------------------
-The `BinaryHttpResponseHandler` class can be used to fetch binary data such
+The `FileAsyncHttpResponseHandler` class can be used to fetch binary data such
 as images and other files. For example:
 
 {% highlight java %}
 AsyncHttpClient client = new AsyncHttpClient();
-String[] allowedContentTypes = new String[] { "image/png", "image/jpeg" };
-client.get("http://example.com/file.png", new BinaryHttpResponseHandler(allowedContentTypes) {
+client.get("http://example.com/file.png", new FileAsyncHttpResponseHandler() {
     @Override
-    public void onSuccess(byte[] fileData) {
-        // Do something with the file
+    public void onSuccess(int statusCode, Header[] headers, File response) {
+        // Do something with the file `response`
     }
 });
 {% endhighlight %}
 
-See the [BinaryHttpResponseHandler Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/BinaryHttpResponseHandler.html)
+See the [FileAsyncHttpResponseHandler Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/FileAsyncHttpResponseHandler.html)
 for more information.
 
 Adding HTTP Basic Auth credentials
@@ -255,7 +286,9 @@ Adding HTTP Basic Auth credentials
 Some requests may need username/password credentials when dealing with API services that use HTTP Basic Access Authentication requests. 
 You can use the method `setBasicAuth()` to provide your credentials.
 
-Set username/password for any host and realm for a particular request. By default the Authentication Scope is for any host, port and realm.
+Set username/password for any host and realm for a particular request.
+By default the Authentication Scope is for any host, port and realm.
+
 {% highlight java %}
 AsyncHttpClient client = new AsyncHttpClient();
 client.setBasicAuth("username","password/token");
@@ -272,19 +305,34 @@ client.get("http://example.com");
 See the [RequestParams Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpClient.html)
 for more information.
 
+Testing on device
+-----------------
+
+You can test the library on real device or emulator using provided Sample Application.
+Sample application implements all important functions of library, you can use it as source of inspiration.
+
+Source code of sample application: <https://github.com/loopj/android-async-http/tree/master/sample>
+
+To run sample application, clone the android-async-http github repository and run command in it's root:
+
+{% highlight bash %}
+gradle :sample:installDebug
+{% endhighlight %}
+
+Which will install Sample application on connected device, all examples do work immediately, if not
+please file bug report on <https://github.com/loopj/android-async-http/issues>
+
 Building from Source
 --------------------
 To build a `.jar` file from source, first make a clone of the 
-android-async-http github repository. You'll then need to copy the 
-`local.properties.dist` file to `local.properties` and edit the `sdk.dir` 
-setting to point to where you have the android sdk installed. You can then run:
+android-async-http github repository. Then you have to have installed
+Android SDK and Gradle buildscript, then just run:
 
 {% highlight bash %}
-ant package
+gradle :library:jarRelease
 {% endhighlight %}
 
-This will generate a file named `android-async-http-version.jar`.
-
+This will generate a file in path `{repository_root}/library/build/libs/library-1.4.5.jar`.
 
 Reporting Bugs or Feature Requests
 ----------------------------------
@@ -302,6 +350,15 @@ James Smith (<http://github.com/loopj>)
 Marek Sebera (<http://github.com/smarek>)
 :   Maintainer since 1.4.4 release
 
+Noor Dawod (<https://github.com/fineswap>)
+:	Maintainer since 1.4.5 release
+
+Luciano Vitti (<https://github.com/xAnubiSx>)
+:	Collaborated on Sample Application
+
+Jason Choy (<https://github.com/jjwchoy>)
+:	Added support for RequestHandle feature
+
 Micah Fivecoate (<http://github.com/m5>)
 :   Major Contributor, including the original `RequestParams`
 
@@ -316,6 +373,10 @@ Anthony Persaud (<http://github.com/apersaud>)
 
 Linden Darling (<http://github.com/coreform>)
 :   Added support for binary/image responses
+
+And many others, contributions are listed in each file in license header.
+You can also find contributors by looking on project commits, issues and pull-requests 
+on [Github](https://github.com/loopj/android-async-http/commits/master)
 
 License
 -------
