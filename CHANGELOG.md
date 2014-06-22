@@ -1,5 +1,4 @@
 # CHANGELOG
-----
 
 ## 1.4.5 (released 22.6.2014)
 
