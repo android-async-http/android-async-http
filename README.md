@@ -28,9 +28,10 @@ https://oss.sonatype.org/content/repositories/snapshots/com/loopj/android/androi
 Maven URL: https://oss.sonatype.org/content/repositories/snapshots/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
-Version: 1.4.5-SNAPSHOT
+Version: 1.4.6-SNAPSHOT
 Packaging: JAR or AAR
 ```
+Gradle: `com.loopj.android:async-http-client:1.4.6-SNAPSHOT`
 
 **releases, maven central**
 
@@ -39,9 +40,10 @@ http://central.maven.org/maven2/com/loopj/android/android-async-http/
 Maven URL: http://repo1.maven.org/maven2/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
-Version: 1.4.4
+Version: 1.4.5
 Packaging: JAR or AAR
 ```
+Gradle: `com.loopj.android:async-http-client:1.4.5`
 
 Documentation, Features and Examples
 ------------------------------------
