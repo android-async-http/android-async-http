@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.4.5 (released 22.6.2014)
+## 1.4.5 (released 22. 6. 2014)
 
 Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.5](https://github.com/loopj/android-async-http/commits/1.4.5)  
 List of closed issues is here [https://github.com/loopj/android-async-http/issues?milestone=2&state=closed](https://github.com/loopj/android-async-http/issues?milestone=2&state=closed)
@@ -46,7 +46,7 @@ List of closed issues is here [https://github.com/loopj/android-async-http/issue
     - Post multi-part encoded Files (SimpleMultipartEntity)
     - Jackson JSON integration
 
-## 1.4.4 (released 28.10.2013)
+## 1.4.4 (released 28. 10. 2013)
 
 Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.4](https://github.com/loopj/android-async-http/commits/1.4.4)  
 List of closed issues is here [https://github.com/loopj/android-async-http/issues?milestone=1&state=closed](https://github.com/loopj/android-async-http/issues?milestone=1&state=closed)
