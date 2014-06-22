@@ -11,6 +11,13 @@ See what is new in version 1.4.5 released on 22th June 2014
 
 https://github.com/loopj/android-async-http/blob/1.4.5/CHANGELOG.md
 
+Javadoc
+-------
+
+Latest Javadoc for 1.4.5 release are available here (also included in Maven repository):
+
+http://loopj.com/android-async-http/doc/
+
 Features
 --------
 - Make **asynchronous** HTTP requests, handle responses in **anonymous callbacks**
@@ -29,7 +36,11 @@ Examples
 
 For inspiration and testing on device we've provided Sample Application.  
 See individual samples [here on Github](https://github.com/loopj/android-async-http/tree/1.4.5/sample/src/main/java/com/loopj/android/http/sample)  
-To run Sample application, simply clone the repository and run command: `gradle :sample:installDebug` to install on connected device  
+To run Sample application, simply clone the repository and run this command, to install it on connected device  
+
+```java
+gradle :sample:installDebug
+```
 
 Maven
 -----
@@ -48,6 +59,7 @@ Packaging: JAR or AAR
 Gradle: `com.loopj.android:async-http-client:1.4.5`
 
 **development snapshots**
+
 https://oss.sonatype.org/content/repositories/snapshots/com/loopj/android/android-async-http/
 ```
 Maven URL: https://oss.sonatype.org/content/repositories/snapshots/
