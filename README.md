@@ -56,7 +56,7 @@ ArtifactId: android-async-http
 Version: 1.4.5
 Packaging: JAR or AAR
 ```
-Gradle: `com.loopj.android:async-http-client:1.4.5`
+Gradle: `com.loopj.android:android-async-http:1.4.5`
 
 **development snapshots**
 
@@ -68,7 +68,7 @@ ArtifactId: android-async-http
 Version: 1.4.6-SNAPSHOT
 Packaging: JAR or AAR
 ```
-Gradle: `com.loopj.android:async-http-client:1.4.6-SNAPSHOT`
+Gradle: `com.loopj.android:android-async-http:1.4.6-SNAPSHOT`
 
 Documentation, Features and Examples
 ------------------------------------
