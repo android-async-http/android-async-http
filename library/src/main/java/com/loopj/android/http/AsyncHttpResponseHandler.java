@@ -196,6 +196,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * Fired when the request is started, override to handle in your own code
      */
     public void onStart() {
+        // default log warning is not necessary, because this method is just optional notification
     }
 
     /**
@@ -203,6 +204,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * handle in your own code
      */
     public void onFinish() {
+        // default log warning is not necessary, because this method is just optional notification
     }
 
     /**

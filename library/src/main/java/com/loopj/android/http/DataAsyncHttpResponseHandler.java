@@ -45,6 +45,7 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
      * @param responseBody response body received so far
      */
     public void onProgressData(byte[] responseBody) {
+        Log.d(LOG_TAG, "onProgressData(byte[]) was not overriden, but callback was received");
     }
 
 
