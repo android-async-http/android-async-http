@@ -9,8 +9,6 @@ android:
   licenses:
     - '.+'
 script:
-  # for gradle output style
-  - export TERM=dumb
   # Sonatype bypass
   - echo "nexusUsername=dummy" >> library/gradle.properties
   - echo "nexusPassword=dummy" >> library/gradle.properties
