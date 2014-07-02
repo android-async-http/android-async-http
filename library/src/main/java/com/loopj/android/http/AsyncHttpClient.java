@@ -1110,9 +1110,11 @@ public class AsyncHttpClient {
         if (context != null) {
             // Add request to request map
             List<RequestHandle> requestList = requestMap.get(context);
-            if (requestList == null) {
-                requestList = new LinkedList<RequestHandle>();
-                requestMap.put(context, requestList);
+            synchronized (requestMap) {
+                if (requestList == null) {
+                    requestList = Collections.synchronizedList(new LinkedList<RequestHandle>());
+                    requestMap.put(context, requestList);
+                }
             }
 
             if (responseHandler instanceof RangeFileAsyncHttpResponseHandler)
