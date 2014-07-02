@@ -7,7 +7,7 @@ android:
     - extra-android-m2repository
     - android-19
   licenses:
-    - '*'
+    - *
 script:
   # for gradle output style
   - export TERM=dumb
