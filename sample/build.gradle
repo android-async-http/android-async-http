@@ -6,7 +6,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:0.+'
     }
 }
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
@@ -34,6 +34,7 @@ android {
         warningsAsErrors true
         quiet false
         showAll true
+	disable 'OldTargetApi'
     }
 
     packagingOptions {

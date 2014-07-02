@@ -1,4 +1,4 @@
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 19
@@ -14,6 +14,7 @@ android {
         warningsAsErrors true
         quiet false
         showAll true
+	disable 'OldTargetApi'
     }
 
     compileOptions {
