@@ -15,6 +15,7 @@
 
     <string name="title_get_sample">GET</string>
     <string name="title_json_sample">GET JSON and parse it</string>
+    <string name="title_json_streamer_sample">POST JSON using streamer</string>
     <string name="title_post_sample">POST</string>
     <string name="title_put_sample">PUT</string>
     <string name="title_delete_sample">DELETE</string>

@@ -101,7 +101,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
     public void onRunButtonPressed() {
         addRequestHandle(executeSample(getAsyncHttpClient(),
-                (urlEditText == null || urlEditText.getText() == null) ? getDefaultURL() : urlEditText.getText().toString(),
+                getUrlText(getDefaultURL()),
                 getRequestHeaders(),
                 getRequestEntity(),
                 getResponseHandler()));
@@ -156,14 +156,45 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     }
 
     public HttpEntity getRequestEntity() {
-        if (isRequestBodyAllowed() && bodyEditText.getText() != null) {
+        String bodyText;
+        if (isRequestBodyAllowed() && (bodyText = getBodyText()) != null) {
             try {
-                return new StringEntity(bodyEditText.getText().toString());
+                return new StringEntity(bodyText);
             } catch (UnsupportedEncodingException e) {
                 Log.e("SampleParentActivity", "cannot create String entity", e);
             }
         }
         return null;
+    }
+
+    public String getUrlText() {
+        return getUrlText(null);
+    }
+
+    public String getUrlText(String defaultText) {
+        return urlEditText != null && urlEditText.getText() != null
+            ? urlEditText.getText().toString()
+            : defaultText;
+    }
+
+    public String getBodyText() {
+        return getBodyText(null);
+    }
+
+    public String getBodyText(String defaultText) {
+        return bodyEditText != null && bodyEditText.getText() != null
+            ? bodyEditText.getText().toString()
+            : defaultText;
+    }
+
+    public String getHeadersText() {
+        return getHeadersText(null);
+    }
+
+    public String getHeadersText(String defaultText) {
+        return headersEditText != null && headersEditText.getText() != null
+            ? headersEditText.getText().toString()
+            : defaultText;
     }
 
     protected final void debugHeaders(String TAG, Header[] headers) {
