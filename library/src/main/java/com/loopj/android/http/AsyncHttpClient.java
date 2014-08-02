@@ -255,6 +255,9 @@ public class AsyncHttpClient {
                                         header, clientHeaderMap.get(header),
                                         overwritten.getName(), overwritten.getValue())
                         );
+                        
+                        //remove the overwritten header
+                        request.removeHeader(overwritten);
                     }
                     request.addHeader(header, clientHeaderMap.get(header));
                 }
