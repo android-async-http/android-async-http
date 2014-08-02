@@ -52,7 +52,8 @@ public class WaypointsActivity extends ListActivity {
         new SampleConfig(R.string.title_custom_ca, CustomCASample.class),
         new SampleConfig(R.string.title_retry_handler, RetryRequestSample.class),
         new SampleConfig(R.string.title_range_sample, RangeResponseSample.class),
-        new SampleConfig(R.string.title_401_unauth, Http401AuthSample.class)
+        new SampleConfig(R.string.title_401_unauth, Http401AuthSample.class),
+        new SampleConfig(R.string.title_async_background_thread, AsyncBackgroundThreadSample.class)
     };
 
     @Override

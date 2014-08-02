@@ -98,6 +98,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
 
     private URI requestURI = null;
     private Header[] requestHeaders = null;
+    private Looper looper = null;
 
     @Override
     public URI getRequestURI() {
@@ -125,7 +126,8 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     private static class ResponderHandler extends Handler {
         private final AsyncHttpResponseHandler mResponder;
 
-        ResponderHandler(AsyncHttpResponseHandler mResponder) {
+        ResponderHandler(AsyncHttpResponseHandler mResponder, Looper looper) {
+            super(looper);
             this.mResponder = mResponder;
         }
 
@@ -143,7 +145,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     @Override
     public void setUseSynchronousMode(boolean value) {
         // A looper must be prepared before setting asynchronous mode.
-        if (!value && Looper.myLooper() == null) {
+        if (!value && this.looper == null) {
             value = true;
             Log.w(LOG_TAG, "Current thread has not called Looper.prepare(). Forcing synchronous mode.");
         }
@@ -151,7 +153,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         // If using asynchronous mode.
         if (!value && handler == null) {
             // Create a handler on current thread to submit tasks
-            handler = new ResponderHandler(this);
+            handler = new ResponderHandler(this, this.looper);
         } else if (value && handler != null) {
             // TODO: Consider adding a flag to remove all queued messages.
             handler = null;
@@ -178,6 +180,14 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * Creates a new AsyncHttpResponseHandler
      */
     public AsyncHttpResponseHandler() {
+        this(null);
+    }
+
+    /**
+     * Creates a new AsyncHttpResponseHandler
+     */
+    public AsyncHttpResponseHandler(Looper looper) {
+        this.looper = looper == null ? Looper.myLooper() : looper;
         // Use asynchronous mode by default.
         setUseSynchronousMode(false);
     }
