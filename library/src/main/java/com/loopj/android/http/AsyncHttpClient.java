@@ -506,20 +506,20 @@ public class AsyncHttpClient {
     }
 
     /**
-     * Returns current connection timeout limit (milliseconds). By default, this
+     * Returns current response timeout limit (milliseconds). By default, this
      * is set to 10 seconds.
      *
-     * @return Connection timeout limit in milliseconds
+     * @return Response timeout limit in milliseconds
      */
     public int getResponseTimeout() {
         return responseTimeout;
     }
 
     /**
-     * Set connection timeout limit (milliseconds). By default, this is set to
+     * Set response timeout limit (milliseconds). By default, this is set to
      * 10 seconds.
      *
-     * @param value Connection timeout in milliseconds, minimal value is 1000 (1 second).
+     * @param value Response  timeout in milliseconds, minimal value is 1000 (1 second).
      */
     public void setResponseTimeout(int value) {
         responseTimeout = value < 1000 ? DEFAULT_SOCKET_TIMEOUT : value;
