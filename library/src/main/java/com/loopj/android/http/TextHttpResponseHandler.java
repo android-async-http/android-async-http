@@ -18,10 +18,6 @@
 
 package com.loopj.android.http;
 
-import android.util.Log;
-
-import org.apache.http.Header;
-
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -71,7 +67,7 @@ public abstract class TextHttpResponseHandler extends AsyncHttpResponseHandler {
      * @param encoding String encoding, see {@link #setCharset(String)}
      */
     public TextHttpResponseHandler(String encoding) {
-        super();
+        super(Looper.getMainLooper());
         setCharset(encoding);
     }
 
