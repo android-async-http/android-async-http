@@ -19,6 +19,7 @@
 package com.loopj.android.http.sample;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,7 +31,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpRequest;
 import com.loopj.android.http.RequestHandle;
+import com.loopj.android.http.ResponseHandlerInterface;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -44,10 +47,22 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HttpContext;
 
 public abstract class SampleParentActivity extends Activity implements SampleInterface {
 
-    private AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+    private AsyncHttpClient asyncHttpClient = new AsyncHttpClient() {
+
+      @Override
+      protected AsyncHttpRequest newAsyncHttpRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, ResponseHandlerInterface responseHandler, Context context) {
+        AsyncHttpRequest httpRequest = getHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context);
+        return httpRequest == null
+            ? super.newAsyncHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context)
+            : httpRequest;
+      }
+    };
     private EditText urlEditText, headersEditText, bodyEditText;
     private LinearLayout responseLayout;
     private final List<RequestHandle> requestHandles = new LinkedList<RequestHandle>();
@@ -86,6 +101,11 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
                 cancelButton.setEnabled(false);
             }
         }
+    }
+
+    @Override
+    public AsyncHttpRequest getHttpRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, ResponseHandlerInterface responseHandler, Context context) {
+        return null;
     }
 
     public List<RequestHandle> getRequestHandles() {

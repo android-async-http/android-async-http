@@ -18,7 +18,9 @@
 
 package com.loopj.android.http.sample;
 
+import android.content.Context;
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpRequest;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 
@@ -26,6 +28,9 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 
 import java.util.List;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HttpContext;
 
 public interface SampleInterface {
 
@@ -44,6 +49,8 @@ public interface SampleInterface {
     AsyncHttpClient getAsyncHttpClient();
 
     void setAsyncHttpClient(AsyncHttpClient client);
+
+    AsyncHttpRequest getHttpRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, ResponseHandlerInterface responseHandler, Context context);
 
     ResponseHandlerInterface getResponseHandler();
 
