@@ -27,7 +27,7 @@ import java.net.URI;
 /**
  * Interface to standardize implementations
  */
-public interface ResponseHandlerInterface extends PreProcessInterface {
+public interface ResponseHandlerInterface {
 
     /**
      * Returns data whether request completed successfully
@@ -127,4 +127,24 @@ public interface ResponseHandlerInterface extends PreProcessInterface {
      * @return boolean if the ResponseHandler is running in synchronous mode
      */
     boolean getUseSynchronousMode();
+
+    /**
+     * This method is called once by the system when the response is about to be
+     * processed by the system. The library makes sure that a single response
+     * is pre-processed only once.
+     *
+     * @param instance An instance of this response object
+     * @param response The response to pre-processed
+     */
+    void onPreProcessResponse(ResponseHandlerInterface instance, HttpResponse response);
+
+    /**
+     * This method is called once by the system when the request has been fully
+     * sent, handled and finished. The library makes sure that a single response
+     * is post-processed only once.
+     *
+     * @param instance An instance of this response object
+     * @param response The response to post-process
+     */
+    public void onPostProcessResponse(ResponseHandlerInterface instance, HttpResponse response);
 }

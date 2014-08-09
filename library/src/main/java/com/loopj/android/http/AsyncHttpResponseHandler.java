@@ -219,7 +219,12 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     @Override
-    public void onPreProcess() {
+    public void onPreProcessResponse(ResponseHandlerInterface instance, HttpResponse response) {
+        // default action is to do nothing...
+    }
+
+    @Override
+    public void onPostProcessResponse(ResponseHandlerInterface instance, HttpResponse response) {
         // default action is to do nothing...
     }
 

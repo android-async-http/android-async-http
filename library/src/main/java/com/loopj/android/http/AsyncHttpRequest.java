@@ -33,7 +33,7 @@ import java.net.UnknownHostException;
 /**
  * Internal class, representing the HttpRequest, done in asynchronous manner
  */
-public class AsyncHttpRequest implements PreProcessInterface, Runnable {
+public class AsyncHttpRequest implements Runnable {
     private final AbstractHttpClient client;
     private final HttpContext context;
     private final HttpUriRequest request;
@@ -51,8 +51,26 @@ public class AsyncHttpRequest implements PreProcessInterface, Runnable {
         this.responseHandler = responseHandler;
     }
 
-    @Override
-    public void onPreProcess() {
+    /**
+     * This method is called once by the system when the request is about to be
+     * processed by the system. The library makes sure that a single request
+     * is pre-processed only once.
+     *
+     * @param request The request to pre-process
+     */
+    public void onPreProcessRequest(AsyncHttpRequest request) {
+        // default action is to do nothing...
+    }
+
+    /**
+     * This method is called once by the system when the request has been fully
+     * sent, handled and finished. The library makes sure that a single request
+     * is post-processed only once.
+     *
+     * @param request The request to post-process
+     */
+    public void onPostProcessRequest(AsyncHttpRequest request) {
+        // default action is to do nothing...
     }
 
     @Override
@@ -64,7 +82,7 @@ public class AsyncHttpRequest implements PreProcessInterface, Runnable {
         // Carry out pre-processing for this request only once.
         if (!isRequestPreProcessed) {
             isRequestPreProcessed = true;
-            onPreProcess();
+            onPreProcessRequest(this);
         }
 
         if (isCancelled()) {
@@ -97,6 +115,13 @@ public class AsyncHttpRequest implements PreProcessInterface, Runnable {
             responseHandler.sendFinishMessage();
         }
 
+        if (isCancelled()) {
+            return;
+        }
+
+        // Carry out post-processing for this request.
+        onPostProcessRequest(this);
+
         isFinished = true;
     }
 
@@ -104,6 +129,7 @@ public class AsyncHttpRequest implements PreProcessInterface, Runnable {
         if (isCancelled()) {
             return;
         }
+
         // Fixes #115
         if (request.getURI().getScheme() == null) {
             // subclass of IOException so processed in the caller
@@ -112,12 +138,27 @@ public class AsyncHttpRequest implements PreProcessInterface, Runnable {
 
         HttpResponse response = client.execute(request, context);
 
-        if (!isCancelled() && responseHandler != null) {
+        if(isCancelled()) {
+            return;
+        }
+
+        if (responseHandler != null) {
             // Carry out pre-processing for this response.
-            responseHandler.onPreProcess();
+            responseHandler.onPreProcessResponse(responseHandler, response);
+
+            if(isCancelled()) {
+                return;
+            }
 
             // The response is ready, handle it.
             responseHandler.sendResponseMessage(response);
+
+            if(isCancelled()) {
+                return;
+            }
+
+            // Carry out post-processing for this response.
+            responseHandler.onPostProcessResponse(responseHandler, response);
         }
     }
 
