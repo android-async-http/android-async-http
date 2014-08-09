@@ -133,6 +133,10 @@ public interface ResponseHandlerInterface {
      * processed by the system. The library makes sure that a single response
      * is pre-processed only once.
      *
+     * Please note: pre-processing does NOT run on the main thread, and thus
+     * any UI activities that you must perform should be properly dispatched to
+     * the app's UI thread.
+     *
      * @param instance An instance of this response object
      * @param response The response to pre-processed
      */
@@ -142,6 +146,10 @@ public interface ResponseHandlerInterface {
      * This method is called once by the system when the request has been fully
      * sent, handled and finished. The library makes sure that a single response
      * is post-processed only once.
+     *
+     * Please note: post-processing does NOT run on the main thread, and thus
+     * any UI activities that you must perform should be properly dispatched to
+     * the app's UI thread.
      *
      * @param instance An instance of this response object
      * @param response The response to post-process
