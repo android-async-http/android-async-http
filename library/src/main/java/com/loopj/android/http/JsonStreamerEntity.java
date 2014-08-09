@@ -200,6 +200,8 @@ public class JsonStreamerEntity implements HttpEntity {
                 os.write((((Number) value).floatValue() + "").getBytes());
             } else if (value instanceof Integer) {
                 os.write((((Number) value).intValue() + "").getBytes());
+            } else if (value instanceof String) {
+                os.write(escape(value));
             } else {
                 os.write(value.toString().getBytes());
             }
