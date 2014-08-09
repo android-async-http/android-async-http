@@ -33,15 +33,16 @@ import java.net.UnknownHostException;
 /**
  * Internal class, representing the HttpRequest, done in asynchronous manner
  */
-public class AsyncHttpRequest implements Runnable {
+public class AsyncHttpRequest implements PreProcessInterface, Runnable {
     private final AbstractHttpClient client;
     private final HttpContext context;
     private final HttpUriRequest request;
     private final ResponseHandlerInterface responseHandler;
     private int executionCount;
-    private boolean isCancelled = false;
-    private boolean cancelIsNotified = false;
-    private boolean isFinished = false;
+    private boolean isCancelled;
+    private boolean cancelIsNotified;
+    private boolean isFinished;
+    private boolean isRequestPreProcessed;
 
     public AsyncHttpRequest(AbstractHttpClient client, HttpContext context, HttpUriRequest request, ResponseHandlerInterface responseHandler) {
         this.client = client;
@@ -51,7 +52,21 @@ public class AsyncHttpRequest implements Runnable {
     }
 
     @Override
+    public void onPreProcess() {
+    }
+
+    @Override
     public void run() {
+        if (isCancelled()) {
+            return;
+        }
+
+        // Carry out pre-processing for this request only once.
+        if (!isRequestPreProcessed) {
+            isRequestPreProcessed = true;
+            onPreProcess();
+        }
+
         if (isCancelled()) {
             return;
         }
@@ -98,6 +113,10 @@ public class AsyncHttpRequest implements Runnable {
         HttpResponse response = client.execute(request, context);
 
         if (!isCancelled() && responseHandler != null) {
+            // Carry out pre-processing for this response.
+            responseHandler.onPreProcess();
+
+            // The response is ready, handle it.
             responseHandler.sendResponseMessage(response);
         }
     }

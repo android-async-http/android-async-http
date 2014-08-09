@@ -56,8 +56,8 @@ public class JsonStreamerEntity implements HttpEntity {
     // automatically enlarge the buffer.
     private static final StringBuilder BUILDER = new StringBuilder(128);
 
-    private static final byte[] JSON_TRUE = AsyncHttpClient.TRUE.getBytes();
-    private static final byte[] JSON_FALSE = AsyncHttpClient.FALSE.getBytes();
+    private static final byte[] JSON_TRUE = "true".getBytes();
+    private static final byte[] JSON_FALSE = "false".getBytes();
     private static final byte[] JSON_NULL = "null".getBytes();
     private static final byte[] STREAM_NAME = escape("name");
     private static final byte[] STREAM_TYPE = escape("type");

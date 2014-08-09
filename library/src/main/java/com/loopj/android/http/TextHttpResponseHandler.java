@@ -56,6 +56,7 @@ import java.io.UnsupportedEncodingException;
  * </pre>
  */
 public abstract class TextHttpResponseHandler extends AsyncHttpResponseHandler {
+
     private static final String LOG_TAG = "TextHttpResponseHandler";
 
     /**
@@ -119,5 +120,4 @@ public abstract class TextHttpResponseHandler extends AsyncHttpResponseHandler {
             return null;
         }
     }
-
 }

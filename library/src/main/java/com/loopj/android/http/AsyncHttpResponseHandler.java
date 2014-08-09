@@ -79,6 +79,7 @@ import java.net.URI;
  * </pre>
  */
 public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterface {
+
     private static final String LOG_TAG = "AsyncHttpResponseHandler";
 
     protected static final int SUCCESS_MESSAGE = 0;
@@ -215,6 +216,11 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      */
     public void onFinish() {
         // default log warning is not necessary, because this method is just optional notification
+    }
+
+    @Override
+    public void onPreProcess() {
+        // default action is to do nothing...
     }
 
     /**

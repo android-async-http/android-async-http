@@ -27,7 +27,7 @@ import java.net.URI;
 /**
  * Interface to standardize implementations
  */
-public interface ResponseHandlerInterface {
+public interface ResponseHandlerInterface extends PreProcessInterface {
 
     /**
      * Returns data whether request completed successfully

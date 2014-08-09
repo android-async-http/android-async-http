@@ -122,9 +122,6 @@ public class AsyncHttpClient {
     public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
     public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     public static final String ENCODING_GZIP = "gzip";
-    public static final String ATTR_PRE_PROCESSED = "ahc.pre-processed";
-    public static final String TRUE = "true";
-    public static final String FALSE = "false";
 
     public static final int DEFAULT_MAX_CONNECTIONS = 10;
     public static final int DEFAULT_SOCKET_TIMEOUT = 10 * 1000;
@@ -141,7 +138,6 @@ public class AsyncHttpClient {
     private ExecutorService threadPool;
     private final Map<Context, List<RequestHandle>> requestMap;
     private final Map<String, String> clientHeaderMap;
-    private PreProcessingInterface preProcessor;
     private boolean isUrlEncodingEnabled = true;
 
     /**
@@ -276,7 +272,6 @@ public class AsyncHttpClient {
                 if (entity == null) {
                     return;
                 }
-
                 final Header encoding = entity.getContentEncoding();
                 if (encoding != null) {
                     for (HeaderElement element : encoding.getElements()) {
@@ -284,18 +279,6 @@ public class AsyncHttpClient {
                             response.setEntity(new InflatingEntity(entity));
                             break;
                         }
-                    }
-                }
-
-                if (preProcessor != null) {
-                    // Handle pre-processing only once.
-                    Object isPreProcessed = context.getAttribute(ATTR_PRE_PROCESSED);
-                    if (isPreProcessed != null && isPreProcessed.equals(TRUE)) {
-                        // Pre-process this request.
-                        preProcessor.onPreProcessResponse(response);
-
-                        // Indicate that this request has passed pre-processing.
-                        context.removeAttribute(ATTR_PRE_PROCESSED);
                     }
                 }
             }
@@ -315,18 +298,6 @@ public class AsyncHttpClient {
                     if (creds != null) {
                         authState.setAuthScheme(new BasicScheme());
                         authState.setCredentials(creds);
-                    }
-                }
-
-                if (preProcessor != null) {
-                    // Handle pre-processing only once.
-                    Object isPreProcessed = context.getAttribute(ATTR_PRE_PROCESSED);
-                    if (isPreProcessed == null || !isPreProcessed.equals(TRUE)) {
-                        // Pre-process this request.
-                        preProcessor.onPreProcessRequest(request);
-
-                        // Indicate that this request has passed pre-processing.
-                        context.setAttribute(ATTR_PRE_PROCESSED, TRUE);
                     }
                 }
             }
@@ -397,25 +368,6 @@ public class AsyncHttpClient {
      */
     public ExecutorService getThreadPool() {
         return threadPool;
-    }
-
-    /**
-     * Sets a handler to be used for pre-processing requests and responses.
-     *
-     * @param handler an instance of {@link PreProcessingInterface} to use for
-     *        pre-processing requests and responses
-     */
-    public void setPreProcessor(PreProcessingInterface handler) {
-        this.preProcessor = handler;
-    }
-
-    /**
-     * Returns the current handler for pre-processing requests and responses.
-     *
-     * @return current handler used, or null if none is defined
-     */
-    public PreProcessingInterface getPreProcessor() {
-        return preProcessor;
     }
 
     /**
