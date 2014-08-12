@@ -36,6 +36,7 @@ import org.json.JSONTokener;
  * Additionally, you can override the other event methods from the parent class.
  */
 public class JsonHttpResponseHandler extends TextHttpResponseHandler {
+
     private static final String LOG_TAG = "JsonHttpResponseHandler";
 
     /**

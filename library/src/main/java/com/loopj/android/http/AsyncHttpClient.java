@@ -519,7 +519,7 @@ public class AsyncHttpClient {
      * Set response timeout limit (milliseconds). By default, this is set to
      * 10 seconds.
      *
-     * @param value Response  timeout in milliseconds, minimal value is 1000 (1 second).
+     * @param value Response timeout in milliseconds, minimal value is 1000 (1 second).
      */
     public void setResponseTimeout(int value) {
         responseTimeout = value < 1000 ? DEFAULT_SOCKET_TIMEOUT : value;
