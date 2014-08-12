@@ -23,6 +23,8 @@ import android.util.Log;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.message.BasicHeader;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -200,6 +202,10 @@ public class JsonStreamerEntity implements HttpEntity {
                 os.write((((Number) value).floatValue() + "").getBytes());
             } else if (value instanceof Integer) {
                 os.write((((Number) value).intValue() + "").getBytes());
+            } else if (value instanceof JSONObject) {
+                os.write(value.toString().getBytes());
+            } else if (value instanceof JSONArray) {
+                os.write(value.toString().getBytes());
             } else {
                 os.write(escape(value.toString()));
             }
