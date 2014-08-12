@@ -112,10 +112,11 @@ public class RequestParams {
      * @param encoding String constant from {@link org.apache.http.protocol.HTTP}
      */
     public void setContentEncoding(final String encoding) {
-        if (encoding != null)
+        if (encoding != null) {
             this.contentEncoding = encoding;
-        else
+        } else {
             Log.d(LOG_TAG, "setContentEncoding called with null attribute");
+        }
     }
 
     /**

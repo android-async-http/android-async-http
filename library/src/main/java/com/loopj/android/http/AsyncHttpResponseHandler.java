@@ -330,10 +330,11 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 break;
             case RETRY_MESSAGE:
                 response = (Object[]) message.obj;
-                if (response != null && response.length == 1)
+                if (response != null && response.length == 1) {
                     onRetry((Integer) response[0]);
-                else
+                } else {
                     Log.e(LOG_TAG, "RETRY_MESSAGE didn't get enough params");
+                }
                 break;
             case CANCEL_MESSAGE:
                 onCancel();

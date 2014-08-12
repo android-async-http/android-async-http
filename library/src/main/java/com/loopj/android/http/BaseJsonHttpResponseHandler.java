@@ -97,10 +97,12 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
                     }
                 }
             };
-            if (!getUseSynchronousMode())
+            if (!getUseSynchronousMode()) {
                 new Thread(parser).start();
-            else // In synchronous mode everything should be run on one thread
+            } else {
+                // In synchronous mode everything should be run on one thread
                 parser.run();
+            }
         } else {
             onSuccess(statusCode, headers, null, null);
         }
@@ -131,10 +133,12 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
                     }
                 }
             };
-            if (!getUseSynchronousMode())
+            if (!getUseSynchronousMode()) {
                 new Thread(parser).start();
-            else // In synchronous mode everything should be run on one thread
+            } else {
+                // In synchronous mode everything should be run on one thread
                 parser.run();
+            }
         } else {
             onFailure(statusCode, headers, throwable, null, null);
         }

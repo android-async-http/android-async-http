@@ -66,8 +66,9 @@ public abstract class RangeFileAsyncHttpResponseHandler extends FileAsyncHttpRes
                     if (header == null) {
                         append = false;
                         current = 0;
-                    } else
+                    } else {
                         Log.v(LOG_TAG, AsyncHttpClient.HEADER_CONTENT_RANGE + ": " + header.getValue());
+                    }
                     sendSuccessMessage(status.getStatusCode(), response.getAllHeaders(), getResponseData(response.getEntity()));
                 }
             }

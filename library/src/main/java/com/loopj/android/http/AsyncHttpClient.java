@@ -202,10 +202,11 @@ public class AsyncHttpClient {
         // Fix to SSL flaw in API < ICS
         // See https://code.google.com/p/android/issues/detail?id=13117
         SSLSocketFactory sslSocketFactory;
-        if (fixNoHttpResponseException)
+        if (fixNoHttpResponseException) {
             sslSocketFactory = MySSLSocketFactory.getFixedSocketFactory();
-        else
+        } else {
             sslSocketFactory = SSLSocketFactory.getSocketFactory();
+        }
 
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), httpPort));
@@ -472,9 +473,9 @@ public class AsyncHttpClient {
      * Set both the connection and socket timeouts. By default, both are set to
      * 10 seconds.
      *
-     * @see If you need further refinement for either value, you can use {@link #setConnectTimeout(int)}
-     *      or {@link #setResponseTimeout(int)} methods.
      * @param value the connect/socket timeout in milliseconds, at least 1 second
+     * @see {@link #setConnectTimeout(int)} if you need further refinement for either value or
+     * or {@link #setResponseTimeout(int)} methods.
      */
     public void setTimeout(int value) {
         value = value < 1000 ? DEFAULT_SOCKET_TIMEOUT : value;
@@ -1287,10 +1288,11 @@ public class AsyncHttpClient {
                 entity = params.getEntity(responseHandler);
             }
         } catch (IOException e) {
-            if (responseHandler != null)
+            if (responseHandler != null) {
                 responseHandler.sendFailureMessage(0, null, null, e);
-            else
+            } else {
                 e.printStackTrace();
+            }
         }
 
         return entity;
