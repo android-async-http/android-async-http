@@ -55,7 +55,7 @@ public class AsyncBackgroundThreadSample extends SampleParentActivity {
         FutureTask<RequestHandle> future = new FutureTask<>(new Callable<RequestHandle>() {
             public RequestHandle call() {
                 Log.d(LOG_TAG, "Executing GET request on background thread");
-                return client.get(null, URL, headers, null, responseHandler);
+                return client.get(ctx, URL, headers, null, responseHandler);
             }
         });
 
@@ -66,7 +66,7 @@ public class AsyncBackgroundThreadSample extends SampleParentActivity {
             handle = future.get(5, TimeUnit.SECONDS);
             Log.d(LOG_TAG, "Background thread for GET request has finished");
         } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(ctx, e.getMessage(), Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
 
