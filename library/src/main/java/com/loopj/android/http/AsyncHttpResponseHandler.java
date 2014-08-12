@@ -93,6 +93,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     protected static final int BUFFER_SIZE = 4096;
 
     public static final String DEFAULT_CHARSET = "UTF-8";
+    public static final String UTF8_BOM = "\uFEFF";
     private String responseCharset = DEFAULT_CHARSET;
     private Handler handler;
     private boolean useSynchronousMode;

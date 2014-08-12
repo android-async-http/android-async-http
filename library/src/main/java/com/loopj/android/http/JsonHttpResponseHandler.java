@@ -213,6 +213,9 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
         String jsonString = getResponseString(responseBody, getCharset());
         if (jsonString != null) {
             jsonString = jsonString.trim();
+            if (jsonString.startsWith(UTF8_BOM)) {
+                jsonString = jsonString.substring(1);
+            }
             if (jsonString.startsWith("{") || jsonString.startsWith("[")) {
                 result = new JSONTokener(jsonString).nextValue();
             }
