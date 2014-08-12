@@ -146,28 +146,26 @@ public class AsyncHttpRequest implements Runnable {
 
         HttpResponse response = client.execute(request, context);
 
+        if (isCancelled() || responseHandler == null) {
+            return;
+        }
+
+        // Carry out pre-processing for this response.
+        responseHandler.onPreProcessResponse(responseHandler, response);
+
         if (isCancelled()) {
             return;
         }
 
-        if (responseHandler != null) {
-            // Carry out pre-processing for this response.
-            responseHandler.onPreProcessResponse(responseHandler, response);
+        // The response is ready, handle it.
+        responseHandler.sendResponseMessage(response);
 
-            if (isCancelled()) {
-                return;
-            }
-
-            // The response is ready, handle it.
-            responseHandler.sendResponseMessage(response);
-
-            if (isCancelled()) {
-                return;
-            }
-
-            // Carry out post-processing for this response.
-            responseHandler.onPostProcessResponse(responseHandler, response);
+        if (isCancelled()) {
+            return;
         }
+
+        // Carry out post-processing for this response.
+        responseHandler.onPostProcessResponse(responseHandler, response);
     }
 
     private void makeRequestWithRetries() throws IOException {
