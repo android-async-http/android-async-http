@@ -154,5 +154,5 @@ public interface ResponseHandlerInterface {
      * @param instance An instance of this response object
      * @param response The response to post-process
      */
-    public void onPostProcessResponse(ResponseHandlerInterface instance, HttpResponse response);
+    void onPostProcessResponse(ResponseHandlerInterface instance, HttpResponse response);
 }
