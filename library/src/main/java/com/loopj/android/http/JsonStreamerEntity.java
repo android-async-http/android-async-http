@@ -192,6 +192,10 @@ public class JsonStreamerEntity implements HttpEntity {
                 os.write('}');
             } else if (value instanceof JsonValueInterface) {
                 os.write(((JsonValueInterface) value).getEscapedJsonValue());
+            } else if (value instanceof org.json.JSONObject) {
+                os.write(((org.json.JSONObject) value).toString().getBytes());
+            } else if (value instanceof org.json.JSONArray) {
+                os.write(((org.json.JSONArray) value).toString().getBytes());
             } else if (value instanceof Boolean) {
                 os.write((Boolean) value ? JSON_TRUE : JSON_FALSE);
             } else if (value instanceof Long) {
