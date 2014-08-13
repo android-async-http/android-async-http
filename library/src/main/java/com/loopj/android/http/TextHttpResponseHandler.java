@@ -115,8 +115,9 @@ public abstract class TextHttpResponseHandler extends AsyncHttpResponseHandler {
     public static String getResponseString(byte[] stringBytes, String charset) {
         try {
             String toReturn = (stringBytes == null) ? null : new String(stringBytes, charset);
-            if (toReturn != null && toReturn.startsWith(UTF8_BOM))
+            if (toReturn != null && toReturn.startsWith(UTF8_BOM)) {
                 return toReturn.substring(1);
+            }
             return toReturn;
         } catch (UnsupportedEncodingException e) {
             Log.e(LOG_TAG, "Encoding response into string failed", e);

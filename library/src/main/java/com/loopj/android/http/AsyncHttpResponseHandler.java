@@ -186,7 +186,11 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     /**
-     * Creates a new AsyncHttpResponseHandler
+     * Creates a new AsyncHttpResponseHandler with a user-supplied looper. If
+     * the passed looper is null, the looper attached to the current thread will
+     * be used.
+     *
+     * @param looper The looper to work with
      */
     public AsyncHttpResponseHandler(Looper looper) {
         this.looper = looper == null ? Looper.myLooper() : looper;
@@ -261,30 +265,37 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         Log.d(LOG_TAG, "Request got cancelled");
     }
 
+    @Override
     final public void sendProgressMessage(int bytesWritten, int bytesTotal) {
         sendMessage(obtainMessage(PROGRESS_MESSAGE, new Object[]{bytesWritten, bytesTotal}));
     }
 
+    @Override
     final public void sendSuccessMessage(int statusCode, Header[] headers, byte[] responseBytes) {
         sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{statusCode, headers, responseBytes}));
     }
 
+    @Override
     final public void sendFailureMessage(int statusCode, Header[] headers, byte[] responseBody, Throwable throwable) {
         sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{statusCode, headers, responseBody, throwable}));
     }
 
+    @Override
     final public void sendStartMessage() {
         sendMessage(obtainMessage(START_MESSAGE, null));
     }
 
+    @Override
     final public void sendFinishMessage() {
         sendMessage(obtainMessage(FINISH_MESSAGE, null));
     }
 
+    @Override
     final public void sendRetryMessage(int retryNo) {
         sendMessage(obtainMessage(RETRY_MESSAGE, new Object[]{retryNo}));
     }
 
+    @Override
     final public void sendCancelMessage() {
         sendMessage(obtainMessage(CANCEL_MESSAGE, null));
     }
