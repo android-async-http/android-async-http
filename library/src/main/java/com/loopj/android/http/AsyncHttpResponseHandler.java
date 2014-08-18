@@ -145,23 +145,23 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     @Override
-    public void setUseSynchronousMode(boolean value) {
+    public void setUseSynchronousMode(boolean sync) {
         // A looper must be prepared before setting asynchronous mode.
-        if (!value && this.looper == null) {
-            value = true;
+        if (!sync && looper == null) {
+            sync = true;
             Log.w(LOG_TAG, "Current thread has not called Looper.prepare(). Forcing synchronous mode.");
         }
 
         // If using asynchronous mode.
-        if (!value && handler == null) {
+        if (!sync && handler == null) {
             // Create a handler on current thread to submit tasks
-            handler = new ResponderHandler(this, this.looper);
-        } else if (value && handler != null) {
+            handler = new ResponderHandler(this, looper);
+        } else if (sync && handler != null) {
             // TODO: Consider adding a flag to remove all queued messages.
             handler = null;
         }
 
-        useSynchronousMode = value;
+        useSynchronousMode = sync;
     }
 
     /**
@@ -357,6 +357,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         if (getUseSynchronousMode() || handler == null) {
             handleMessage(msg);
         } else if (!Thread.currentThread().isInterrupted()) { // do not send messages if request has been cancelled
+            AssertUtils.asserts(handler != null, "handler should not be null!");
             handler.sendMessage(msg);
         }
     }
@@ -373,6 +374,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 runnable.run();
             } else {
                 // Otherwise, run on provided handler
+                AssertUtils.asserts(handler != null, "handler should not be null!");
                 handler.post(runnable);
             }
         }
@@ -386,17 +388,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @return Message instance, should not be null
      */
     protected Message obtainMessage(int responseMessageId, Object responseMessageData) {
-        Message msg;
-        if (handler == null) {
-            msg = Message.obtain();
-            if (msg != null) {
-                msg.what = responseMessageId;
-                msg.obj = responseMessageData;
-            }
-        } else {
-            msg = Message.obtain(handler, responseMessageId, responseMessageData);
-        }
-        return msg;
+        return Message.obtain(handler, responseMessageId, responseMessageData);
     }
 
     @Override

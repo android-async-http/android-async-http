@@ -169,7 +169,7 @@ public class AsyncHttpClient {
     /**
      * Creates new AsyncHttpClient using given params
      *
-     * @param fixNoHttpResponseException Whether to fix or not issue, by ommiting SSL verification
+     * @param fixNoHttpResponseException Whether to fix issue or not, by omitting SSL verification
      * @param httpPort                   HTTP port to be used, must be greater than 0
      * @param httpsPort                  HTTPS port to be used, must be greater than 0
      */
@@ -180,7 +180,7 @@ public class AsyncHttpClient {
     /**
      * Returns default instance of SchemeRegistry
      *
-     * @param fixNoHttpResponseException Whether to fix or not issue, by ommiting SSL verification
+     * @param fixNoHttpResponseException Whether to fix issue or not, by omitting SSL verification
      * @param httpPort                   HTTP port to be used, must be greater than 0
      * @param httpsPort                  HTTPS port to be used, must be greater than 0
      */
