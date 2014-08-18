@@ -357,7 +357,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         if (getUseSynchronousMode() || handler == null) {
             handleMessage(msg);
         } else if (!Thread.currentThread().isInterrupted()) { // do not send messages if request has been cancelled
-            assert handler != null;
+            AssertUtils.asserts(handler != null, "handler should not be null!");
             handler.sendMessage(msg);
         }
     }
@@ -374,7 +374,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 runnable.run();
             } else {
                 // Otherwise, run on provided handler
-                assert handler != null;
+                AssertUtils.asserts(handler != null, "handler should not be null!");
                 handler.post(runnable);
             }
         }
