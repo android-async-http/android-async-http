@@ -33,7 +33,7 @@ import java.net.UnknownHostException;
 /**
  * Internal class, representing the HttpRequest, done in asynchronous manner
  */
-public class AsyncHttpRequest implements Runnable {
+class AsyncHttpRequest implements Runnable {
     private final AbstractHttpClient client;
     private final HttpContext context;
     private final HttpUriRequest request;
@@ -45,10 +45,10 @@ public class AsyncHttpRequest implements Runnable {
     private boolean isRequestPreProcessed;
 
     public AsyncHttpRequest(AbstractHttpClient client, HttpContext context, HttpUriRequest request, ResponseHandlerInterface responseHandler) {
-        this.client = client;
-        this.context = context;
-        this.request = request;
-        this.responseHandler = responseHandler;
+        this.client = ArgsUtils.notNull(client, "client");
+        this.context = ArgsUtils.notNull(context, "context");
+        this.request = ArgsUtils.notNull(request, "request");
+        this.responseHandler = ArgsUtils.notNull(responseHandler, "responseHandler");
     }
 
     /**
@@ -97,9 +97,7 @@ public class AsyncHttpRequest implements Runnable {
             return;
         }
 
-        if (responseHandler != null) {
-            responseHandler.sendStartMessage();
-        }
+        responseHandler.sendStartMessage();
 
         if (isCancelled()) {
             return;
@@ -108,10 +106,10 @@ public class AsyncHttpRequest implements Runnable {
         try {
             makeRequestWithRetries();
         } catch (IOException e) {
-            if (!isCancelled() && responseHandler != null) {
+            if (!isCancelled()) {
                 responseHandler.sendFailureMessage(0, null, null, e);
             } else {
-                Log.e("AsyncHttpRequest", "makeRequestWithRetries returned error, but handler is null", e);
+                Log.e("AsyncHttpRequest", "makeRequestWithRetries returned error", e);
             }
         }
 
@@ -119,9 +117,7 @@ public class AsyncHttpRequest implements Runnable {
             return;
         }
 
-        if (responseHandler != null) {
-            responseHandler.sendFinishMessage();
-        }
+        responseHandler.sendFinishMessage();
 
         if (isCancelled()) {
             return;
@@ -130,7 +126,7 @@ public class AsyncHttpRequest implements Runnable {
         // Carry out post-processing for this request.
         onPostProcessRequest(this);
 
-        isFinished = true;
+        setFinished(true);
     }
 
     private void makeRequest() throws IOException {
@@ -146,7 +142,7 @@ public class AsyncHttpRequest implements Runnable {
 
         HttpResponse response = client.execute(request, context);
 
-        if (isCancelled() || responseHandler == null) {
+        if (isCancelled()) {
             return;
         }
 
@@ -197,7 +193,7 @@ public class AsyncHttpRequest implements Runnable {
                     cause = e;
                     retry = retryHandler.retryRequest(cause, ++executionCount, context);
                 }
-                if (retry && (responseHandler != null)) {
+                if (retry) {
                     responseHandler.sendRetryMessage(executionCount);
                 }
             }
@@ -211,7 +207,7 @@ public class AsyncHttpRequest implements Runnable {
         throw (cause);
     }
 
-    public boolean isCancelled() {
+    public synchronized boolean isCancelled() {
         if (isCancelled) {
             sendCancelNotification();
         }
@@ -221,16 +217,19 @@ public class AsyncHttpRequest implements Runnable {
     private synchronized void sendCancelNotification() {
         if (!isFinished && isCancelled && !cancelIsNotified) {
             cancelIsNotified = true;
-            if (responseHandler != null)
-                responseHandler.sendCancelMessage();
+            responseHandler.sendCancelMessage();
         }
     }
 
-    public boolean isDone() {
+    private synchronized void setFinished(boolean finished) {
+        isFinished = finished;
+    }
+
+    public synchronized boolean isDone() {
         return isCancelled() || isFinished;
     }
 
-    public boolean cancel(boolean mayInterruptIfRunning) {
+    public synchronized boolean cancel(boolean mayInterruptIfRunning) {
         isCancelled = true;
         request.abort();
         return isCancelled();
