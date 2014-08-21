@@ -28,6 +28,7 @@ import org.apache.http.cookie.Cookie;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class PersistentCookieStore implements CookieStore {
     private static final String COOKIE_PREFS = "CookiePrefsFile";
     private static final String COOKIE_NAME_STORE = "names";
     private static final String COOKIE_NAME_PREFIX = "cookie_";
+    private boolean omitNonPersistentCookies = false;
 
     private final ConcurrentHashMap<String, Cookie> cookies;
     private final SharedPreferences cookiePrefs;
@@ -82,6 +84,8 @@ public class PersistentCookieStore implements CookieStore {
 
     @Override
     public void addCookie(Cookie cookie) {
+        if (omitNonPersistentCookies && !cookie.isPersistent())
+            return;
         String name = cookie.getName() + cookie.getDomain();
 
         // Save cookie into local store, or remove if expired
@@ -147,6 +151,29 @@ public class PersistentCookieStore implements CookieStore {
     }
 
     /**
+     * Will make PersistentCookieStore instance ignore Cookies, which are non-persistent by
+     * signature (`Cookie.isPersistent`)
+     *
+     * @param omitNonPersistentCookies true if non-persistent cookies should be omited
+     */
+    public void setOmitNonPersistentCookies(boolean omitNonPersistentCookies) {
+        this.omitNonPersistentCookies = omitNonPersistentCookies;
+    }
+
+    /**
+     * Non-standard helper method, to delete cookie
+     *
+     * @param cookie cookie to be removed
+     */
+    public void deleteCookie(Cookie cookie) {
+        String name = cookie.getName() + cookie.getDomain();
+        cookies.remove(name);
+        SharedPreferences.Editor prefsWriter = cookiePrefs.edit();
+        prefsWriter.remove(COOKIE_NAME_PREFIX + name);
+        prefsWriter.commit();
+    }
+
+    /**
      * Serializes Cookie object into String
      *
      * @param cookie cookie to be encoded, can be null
@@ -159,7 +186,8 @@ public class PersistentCookieStore implements CookieStore {
         try {
             ObjectOutputStream outputStream = new ObjectOutputStream(os);
             outputStream.writeObject(cookie);
-        } catch (Exception e) {
+        } catch (IOException e) {
+            Log.d(LOG_TAG, "IOException in encodeCookie", e);
             return null;
         }
 
@@ -179,8 +207,10 @@ public class PersistentCookieStore implements CookieStore {
         try {
             ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
             cookie = ((SerializableCookie) objectInputStream.readObject()).getCookie();
-        } catch (Exception exception) {
-            Log.d(LOG_TAG, "decodeCookie failed", exception);
+        } catch (IOException e) {
+            Log.d(LOG_TAG, "IOException in decodeCookie", e);
+        } catch (ClassNotFoundException e) {
+            Log.d(LOG_TAG, "ClassNotFoundException in decodeCookie", e);
         }
 
         return cookie;

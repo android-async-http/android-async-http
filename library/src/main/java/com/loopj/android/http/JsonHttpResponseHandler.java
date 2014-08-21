@@ -36,17 +36,18 @@ import org.json.JSONTokener;
  * Additionally, you can override the other event methods from the parent class.
  */
 public class JsonHttpResponseHandler extends TextHttpResponseHandler {
+
     private static final String LOG_TAG = "JsonHttpResponseHandler";
 
     /**
-     * Creates new JsonHttpResponseHandler, with Json String encoding UTF-8
+     * Creates new JsonHttpResponseHandler, with JSON String encoding UTF-8
      */
     public JsonHttpResponseHandler() {
         super(DEFAULT_CHARSET);
     }
 
     /**
-     * Creates new JsonHttpRespnseHandler with given Json String encoding
+     * Creates new JsonHttpRespnseHandler with given JSON String encoding
      *
      * @param encoding String encoding to be used when parsing JSON
      */
@@ -62,7 +63,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
      * @param response   parsed response if any
      */
     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
+        Log.w(LOG_TAG, "onSuccess(int, Header[], JSONObject) was not overriden, but callback was received");
     }
 
     /**
@@ -73,7 +74,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
      * @param response   parsed response if any
      */
     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-
+        Log.w(LOG_TAG, "onSuccess(int, Header[], JSONArray) was not overriden, but callback was received");
     }
 
     /**
@@ -85,7 +86,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
      * @param errorResponse parsed response if any
      */
     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-
+        Log.w(LOG_TAG, "onFailure(int, Header[], Throwable, JSONObject) was not overriden, but callback was received", throwable);
     }
 
     /**
@@ -97,23 +98,23 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
      * @param errorResponse parsed response if any
      */
     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-
+        Log.w(LOG_TAG, "onFailure(int, Header[], Throwable, JSONArray) was not overriden, but callback was received", throwable);
     }
 
     @Override
     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
+        Log.w(LOG_TAG, "onFailure(int, Header[], String, Throwable) was not overriden, but callback was received", throwable);
     }
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, String responseString) {
-
+        Log.w(LOG_TAG, "onSuccess(int, Header[], String) was not overriden, but callback was received");
     }
 
     @Override
     public final void onSuccess(final int statusCode, final Header[] headers, final byte[] responseBytes) {
         if (statusCode != HttpStatus.SC_NO_CONTENT) {
-            new Thread(new Runnable() {
+            Runnable parser = new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -125,6 +126,8 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                                     onSuccess(statusCode, headers, (JSONObject) jsonResponse);
                                 } else if (jsonResponse instanceof JSONArray) {
                                     onSuccess(statusCode, headers, (JSONArray) jsonResponse);
+                                } else if (jsonResponse instanceof String) {
+                                    onFailure(statusCode, headers, (String) jsonResponse, new JSONException("Response cannot be parsed as JSON data"));
                                 } else {
                                     onFailure(statusCode, headers, new JSONException("Unexpected response type " + jsonResponse.getClass().getName()), (JSONObject) null);
                                 }
@@ -140,7 +143,13 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                         });
                     }
                 }
-            }).start();
+            };
+            if (!getUseSynchronousMode()) {
+                new Thread(parser).start();
+            } else {
+                // In synchronous mode everything should be run on one thread
+                parser.run();
+            }
         } else {
             onSuccess(statusCode, headers, new JSONObject());
         }
@@ -149,7 +158,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
     @Override
     public final void onFailure(final int statusCode, final Header[] headers, final byte[] responseBytes, final Throwable throwable) {
         if (responseBytes != null) {
-            new Thread(new Runnable() {
+            Runnable parser = new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -179,7 +188,13 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
 
                     }
                 }
-            }).start();
+            };
+            if (!getUseSynchronousMode()) {
+                new Thread(parser).start();
+            } else {
+                // In synchronous mode everything should be run on one thread
+                parser.run();
+            }
         } else {
             Log.v(LOG_TAG, "response body is null, calling onFailure(Throwable, JSONObject)");
             onFailure(statusCode, headers, throwable, (JSONObject) null);
@@ -198,10 +213,13 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
         if (null == responseBody)
             return null;
         Object result = null;
-        //trim the string to prevent start with blank, and test if the string is valid JSON, because the parser don't do this :(. If Json is not valid this will return null
+        //trim the string to prevent start with blank, and test if the string is valid JSON, because the parser don't do this :(. If JSON is not valid this will return null
         String jsonString = getResponseString(responseBody, getCharset());
         if (jsonString != null) {
             jsonString = jsonString.trim();
+            if (jsonString.startsWith(UTF8_BOM)) {
+                jsonString = jsonString.substring(1);
+            }
             if (jsonString.startsWith("{") || jsonString.startsWith("[")) {
                 result = new JSONTokener(jsonString).nextValue();
             }

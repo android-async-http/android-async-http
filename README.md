@@ -1,10 +1,22 @@
 Asynchronous Http Client for Android
 ====================================
-
-Travis CI state : [![Build Status](https://travis-ci.org/loopj/android-async-http.png?branch=master)](https://travis-ci.org/loopj/android-async-http)
+[![Build Status](https://travis-ci.org/loopj/android-async-http.png?branch=master)](https://travis-ci.org/loopj/android-async-http)
 
 An asynchronous, callback-based Http client for Android built on top of Apache's [HttpClient](http://hc.apache.org/httpcomponents-client-ga/) libraries.
 
+Changelog
+---------
+
+See what is new in version 1.4.5 released on 22th June 2014
+
+https://github.com/loopj/android-async-http/blob/1.4.5/CHANGELOG.md
+
+Javadoc
+-------
+
+Latest Javadoc for 1.4.5 release are available here (also included in Maven repository):
+
+http://loopj.com/android-async-http/doc/
 
 Features
 --------
@@ -13,25 +25,26 @@ Features
 - Requests use a **threadpool** to cap concurrent resource usage
 - GET/POST **params builder** (RequestParams)
 - **Multipart file uploads** with no additional third party libraries
-- Tiny size overhead to your application, only **19kb** for everything
+- Tiny size overhead to your application, only **60kb** for everything
 - Automatic smart **request retries** optimized for spotty mobile connections
 - Automatic **gzip** response decoding support for super-fast requests
 - Optional built-in response parsing into **JSON** (JsonHttpResponseHandler)
 - Optional **persistent cookie store**, saves cookies into your app's SharedPreferences
 
+Examples
+--------
+
+For inspiration and testing on device we've provided Sample Application.  
+See individual samples [here on Github](https://github.com/loopj/android-async-http/tree/1.4.5/sample/src/main/java/com/loopj/android/http/sample)  
+To run Sample application, simply clone the repository and run this command, to install it on connected device  
+
+```java
+gradle :sample:installDebug
+```
+
 Maven
 -----
 You can now integrate this library in your project via Maven. There are available two kind of builds.
-
-**development snapshots**
-https://oss.sonatype.org/content/repositories/snapshots/com/loopj/android/android-async-http/
-```
-Maven URL: https://oss.sonatype.org/content/repositories/snapshots/
-GroupId: com.loopj.android
-ArtifactId: async-http-client
-Version: 1.4.5-SNAPSHOT
-Packaging: JAR or AAR
-```
 
 **releases, maven central**
 
@@ -40,9 +53,22 @@ http://central.maven.org/maven2/com/loopj/android/android-async-http/
 Maven URL: http://repo1.maven.org/maven2/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
-Version: 1.4.4
+Version: 1.4.5
 Packaging: JAR or AAR
 ```
+Gradle: `com.loopj.android:android-async-http:1.4.5`
+
+**development snapshots**
+
+https://oss.sonatype.org/content/repositories/snapshots/com/loopj/android/android-async-http/
+```
+Maven URL: https://oss.sonatype.org/content/repositories/snapshots/
+GroupId: com.loopj.android
+ArtifactId: android-async-http
+Version: 1.4.6-SNAPSHOT
+Packaging: JAR or AAR
+```
+Gradle: `com.loopj.android:android-async-http:1.4.6-SNAPSHOT`
 
 Documentation, Features and Examples
 ------------------------------------

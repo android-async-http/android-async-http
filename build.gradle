@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:+'
+        classpath 'com.android.tools.build:gradle:0.12.2'
     }
 }
 
@@ -14,7 +14,7 @@ def isReleaseBuild() {
 
 allprojects {
     group = 'com.loopj.android'
-    version = '1.4.5-SNAPSHOT'
+    version = '1.4.5'
 
     repositories {
         mavenCentral()
@@ -22,6 +22,7 @@ allprojects {
 
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"
+        options.compilerArgs << "-Xlint:unchecked"
     }
 }
 

@@ -1,0 +1,60 @@
+This is a short HOW-TO documenting the steps necessary to create a key store
+file that Android could use to connect to servers with a custom CA.
+
+This file's location is: 'res/raw/custom_ca.txt'
+
+Prerequisities:
+---------------
+
+1) Access to a computer with 'openssl' command;
+2) The 'keytool' command available in Java SE 6 and above;
+3) BouncyCastle jar version 1.46 (http://www.bouncycastle.org/download/bcprov-jdk15on-146.jar)
+
+Important:
+----------
+
+If you use the wrong BouncyCastle jar (for example, a newer version), older
+Android handsets might fail with the error "Wrong version of key store". So we
+advise to use an older BouncyCastle jar to cover older handsets.
+
+Let's see the fun part:
+-----------------------
+
+1) Create a self-signed CA using the openssl tool. You may bypass this step if
+   you already have a self-signed CA from before:
+
+   openssl req -newkey rsa:4096 -days 3650 -x509 -nodes -out ca.pem
+
+   This instructs openssl to create a 4096-bit RSA key and set its expiration
+   date 10 years later.
+
+   You will be asked to provide details of the CA. When you're finished, a file
+   called 'ca.pem' will exist in current directory.
+
+2) Android has built-in support for the Bouncy Castle key store format (BKS).
+   You should have downloaded BouncyCastle's jar; we assume the path to that jar
+   is 'path/to/jar/bcprov.jar'. Now create a key store file containing your
+   self-signed CA:
+
+   keytool \
+      -import \
+      -v \
+      -trustcacerts \
+      -file ca.pem \
+      -keystore store.bks \
+      -storetype BKS \
+      -provider org.bouncycastle.jce.provider.BouncyCastleProvider \
+      -providerpath path/to/jar/bcprov.jar \
+      -alias TheAlias \
+      -storepass ThePass
+
+   keytool will ask to verify the certificate, naturally you should do so by
+   typing "yes" (without parentheses) and hitting Enter.
+
+   Note the alias and the password at the last two lines; you will need to enter
+   both in CustomCASample.java before running the sample app.
+
+3) If all went smoothly, you should have a file named store.bks which contains
+   the self-signed CA that we prepared in step 1. Move the resulting file to the
+   'res/raw/' directory, adjust the alias and password in CustomCASample.java
+   file, rebuild the app and run it.
