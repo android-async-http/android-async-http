@@ -28,6 +28,7 @@ import android.util.Log;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -49,17 +50,17 @@ class SimpleMultipartEntity implements HttpEntity {
     private static final String STR_CR_LF = "\r\n";
     private static final byte[] CR_LF = STR_CR_LF.getBytes();
     private static final byte[] TRANSFER_ENCODING_BINARY =
-        ("Content-Transfer-Encoding: binary" + STR_CR_LF).getBytes();
+            ("Content-Transfer-Encoding: binary" + STR_CR_LF).getBytes();
 
     private final static char[] MULTIPART_CHARS =
-        "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+            "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
     private final String boundary;
     private final byte[] boundaryLine;
     private final byte[] boundaryEnd;
     private boolean isRepeatable;
 
-    private final List<FilePart> fileParts = new ArrayList();
+    private final List<FilePart> fileParts = new ArrayList<FilePart>();
 
     // The buffer we use for building the message excluding files and the last
     // boundary
@@ -99,8 +100,13 @@ class SimpleMultipartEntity implements HttpEntity {
         }
     }
 
+    public void addPartWithCharset(String key, String value, String charset) {
+        if (charset == null) charset = HTTP.UTF_8;
+        addPart(key, value, "text/plain; charset=" + charset);
+    }
+
     public void addPart(String key, String value) {
-        addPart(key, value, "text/plain; charset=UTF-8");
+        addPartWithCharset(key, value, null);
     }
 
     public void addPart(String key, File file) {
@@ -136,22 +142,25 @@ class SimpleMultipartEntity implements HttpEntity {
     }
 
     private String normalizeContentType(String type) {
-       return type == null ? RequestParams.APPLICATION_OCTET_STREAM : type;
+        return type == null ? RequestParams.APPLICATION_OCTET_STREAM : type;
     }
 
     private byte[] createContentType(String type) {
-        String result = "Content-Type: " + normalizeContentType(type) + STR_CR_LF;
+        String result = AsyncHttpClient.HEADER_CONTENT_TYPE + ": " + normalizeContentType(type) + STR_CR_LF;
         return result.getBytes();
     }
 
     private byte[] createContentDisposition(String key) {
-        return ("Content-Disposition: form-data; name=\"" + key + "\"" + STR_CR_LF)
-            .getBytes();
+        return (
+                AsyncHttpClient.HEADER_CONTENT_DISPOSITION +
+                        ": form-data; name=\"" + key + "\"" + STR_CR_LF).getBytes();
     }
 
     private byte[] createContentDisposition(String key, String fileName) {
-        return ("Content-Disposition: form-data; name=\"" + key + "\"; filename=\"" + fileName + "\"" + STR_CR_LF)
-            .getBytes();
+        return (
+                AsyncHttpClient.HEADER_CONTENT_DISPOSITION +
+                        ": form-data; name=\"" + key + "\"" +
+                        "; filename=\"" + fileName + "\"" + STR_CR_LF).getBytes();
     }
 
     private void updateProgress(int count) {
@@ -226,7 +235,9 @@ class SimpleMultipartEntity implements HttpEntity {
 
     @Override
     public Header getContentType() {
-        return new BasicHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
+        return new BasicHeader(
+                AsyncHttpClient.HEADER_CONTENT_TYPE,
+                "multipart/form-data; boundary=" + boundary);
     }
 
     @Override

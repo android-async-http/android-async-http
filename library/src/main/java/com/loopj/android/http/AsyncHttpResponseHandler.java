@@ -62,7 +62,7 @@ import java.net.URI;
  *     }
  *
  *     &#064;Override
- *     public void onRetry() {
+ *     public void onRetry(int retryNo) {
  *         // Request was retried
  *     }
  *
@@ -79,6 +79,7 @@ import java.net.URI;
  * </pre>
  */
 public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterface {
+
     private static final String LOG_TAG = "AsyncHttpResponseHandler";
 
     protected static final int SUCCESS_MESSAGE = 0;
@@ -92,12 +93,14 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     protected static final int BUFFER_SIZE = 4096;
 
     public static final String DEFAULT_CHARSET = "UTF-8";
+    public static final String UTF8_BOM = "\uFEFF";
     private String responseCharset = DEFAULT_CHARSET;
     private Handler handler;
     private boolean useSynchronousMode;
 
     private URI requestURI = null;
     private Header[] requestHeaders = null;
+    private Looper looper = null;
 
     @Override
     public URI getRequestURI() {
@@ -125,7 +128,8 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     private static class ResponderHandler extends Handler {
         private final AsyncHttpResponseHandler mResponder;
 
-        ResponderHandler(AsyncHttpResponseHandler mResponder) {
+        ResponderHandler(AsyncHttpResponseHandler mResponder, Looper looper) {
+            super(looper);
             this.mResponder = mResponder;
         }
 
@@ -141,23 +145,23 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     @Override
-    public void setUseSynchronousMode(boolean value) {
+    public void setUseSynchronousMode(boolean sync) {
         // A looper must be prepared before setting asynchronous mode.
-        if (!value && Looper.myLooper() == null) {
-            value = true;
+        if (!sync && looper == null) {
+            sync = true;
             Log.w(LOG_TAG, "Current thread has not called Looper.prepare(). Forcing synchronous mode.");
         }
 
-        // If using synchronous mode.
-        if (!value && handler == null) {
+        // If using asynchronous mode.
+        if (!sync && handler == null) {
             // Create a handler on current thread to submit tasks
-            handler = new ResponderHandler(this);
-        } else if (value && handler != null) {
+            handler = new ResponderHandler(this, looper);
+        } else if (sync && handler != null) {
             // TODO: Consider adding a flag to remove all queued messages.
             handler = null;
         }
 
-        useSynchronousMode = value;
+        useSynchronousMode = sync;
     }
 
     /**
@@ -178,6 +182,18 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * Creates a new AsyncHttpResponseHandler
      */
     public AsyncHttpResponseHandler() {
+        this(null);
+    }
+
+    /**
+     * Creates a new AsyncHttpResponseHandler with a user-supplied looper. If
+     * the passed looper is null, the looper attached to the current thread will
+     * be used.
+     *
+     * @param looper The looper to work with
+     */
+    public AsyncHttpResponseHandler(Looper looper) {
+        this.looper = looper == null ? Looper.myLooper() : looper;
         // Use asynchronous mode by default.
         setUseSynchronousMode(false);
     }
@@ -196,6 +212,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * Fired when the request is started, override to handle in your own code
      */
     public void onStart() {
+        // default log warning is not necessary, because this method is just optional notification
     }
 
     /**
@@ -203,6 +220,17 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * handle in your own code
      */
     public void onFinish() {
+        // default log warning is not necessary, because this method is just optional notification
+    }
+
+    @Override
+    public void onPreProcessResponse(ResponseHandlerInterface instance, HttpResponse response) {
+        // default action is to do nothing...
+    }
+
+    @Override
+    public void onPostProcessResponse(ResponseHandlerInterface instance, HttpResponse response) {
+        // default action is to do nothing...
     }
 
     /**
@@ -237,30 +265,37 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         Log.d(LOG_TAG, "Request got cancelled");
     }
 
+    @Override
     final public void sendProgressMessage(int bytesWritten, int bytesTotal) {
         sendMessage(obtainMessage(PROGRESS_MESSAGE, new Object[]{bytesWritten, bytesTotal}));
     }
 
+    @Override
     final public void sendSuccessMessage(int statusCode, Header[] headers, byte[] responseBytes) {
         sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{statusCode, headers, responseBytes}));
     }
 
+    @Override
     final public void sendFailureMessage(int statusCode, Header[] headers, byte[] responseBody, Throwable throwable) {
         sendMessage(obtainMessage(FAILURE_MESSAGE, new Object[]{statusCode, headers, responseBody, throwable}));
     }
 
+    @Override
     final public void sendStartMessage() {
         sendMessage(obtainMessage(START_MESSAGE, null));
     }
 
+    @Override
     final public void sendFinishMessage() {
         sendMessage(obtainMessage(FINISH_MESSAGE, null));
     }
 
+    @Override
     final public void sendRetryMessage(int retryNo) {
         sendMessage(obtainMessage(RETRY_MESSAGE, new Object[]{retryNo}));
     }
 
+    @Override
     final public void sendCancelMessage() {
         sendMessage(obtainMessage(CANCEL_MESSAGE, null));
     }
@@ -306,10 +341,11 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 break;
             case RETRY_MESSAGE:
                 response = (Object[]) message.obj;
-                if (response != null && response.length == 1)
+                if (response != null && response.length == 1) {
                     onRetry((Integer) response[0]);
-                else
+                } else {
                     Log.e(LOG_TAG, "RETRY_MESSAGE didn't get enough params");
+                }
                 break;
             case CANCEL_MESSAGE:
                 onCancel();
@@ -321,6 +357,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         if (getUseSynchronousMode() || handler == null) {
             handleMessage(msg);
         } else if (!Thread.currentThread().isInterrupted()) { // do not send messages if request has been cancelled
+            AssertUtils.asserts(handler != null, "handler should not be null!");
             handler.sendMessage(msg);
         }
     }
@@ -337,6 +374,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 runnable.run();
             } else {
                 // Otherwise, run on provided handler
+                AssertUtils.asserts(handler != null, "handler should not be null!");
                 handler.post(runnable);
             }
         }
@@ -350,17 +388,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @return Message instance, should not be null
      */
     protected Message obtainMessage(int responseMessageId, Object responseMessageData) {
-        Message msg;
-        if (handler == null) {
-            msg = Message.obtain();
-            if (msg != null) {
-                msg.what = responseMessageId;
-                msg.obj = responseMessageData;
-            }
-        } else {
-            msg = Message.obtain(handler, responseMessageId, responseMessageData);
-        }
-        return msg;
+        return Message.obtain(handler, responseMessageId, responseMessageData);
     }
 
     @Override
@@ -411,6 +439,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                         }
                     } finally {
                         AsyncHttpClient.silentCloseInputStream(instream);
+                        AsyncHttpClient.endEntityViaReflection(entity);
                     }
                     responseBody = buffer.toByteArray();
                 } catch (OutOfMemoryError e) {

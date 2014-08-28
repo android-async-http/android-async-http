@@ -28,6 +28,7 @@ import org.apache.http.cookie.Cookie;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class PersistentCookieStore implements CookieStore {
      */
     public PersistentCookieStore(Context context) {
         cookiePrefs = context.getSharedPreferences(COOKIE_PREFS, 0);
-        cookies = new ConcurrentHashMap();
+        cookies = new ConcurrentHashMap<String, Cookie>();
 
         // Load any previously stored cookies into the store
         String storedCookieNames = cookiePrefs.getString(COOKIE_NAME_STORE, null);
@@ -146,7 +147,7 @@ public class PersistentCookieStore implements CookieStore {
 
     @Override
     public List<Cookie> getCookies() {
-        return new ArrayList(cookies.values());
+        return new ArrayList<Cookie>(cookies.values());
     }
 
     /**
@@ -165,7 +166,7 @@ public class PersistentCookieStore implements CookieStore {
      * @param cookie cookie to be removed
      */
     public void deleteCookie(Cookie cookie) {
-        String name = cookie.getName();
+        String name = cookie.getName() + cookie.getDomain();
         cookies.remove(name);
         SharedPreferences.Editor prefsWriter = cookiePrefs.edit();
         prefsWriter.remove(COOKIE_NAME_PREFIX + name);
@@ -185,7 +186,8 @@ public class PersistentCookieStore implements CookieStore {
         try {
             ObjectOutputStream outputStream = new ObjectOutputStream(os);
             outputStream.writeObject(cookie);
-        } catch (Exception e) {
+        } catch (IOException e) {
+            Log.d(LOG_TAG, "IOException in encodeCookie", e);
             return null;
         }
 
@@ -205,8 +207,10 @@ public class PersistentCookieStore implements CookieStore {
         try {
             ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
             cookie = ((SerializableCookie) objectInputStream.readObject()).getCookie();
-        } catch (Exception exception) {
-            Log.d(LOG_TAG, "decodeCookie failed", exception);
+        } catch (IOException e) {
+            Log.d(LOG_TAG, "IOException in decodeCookie", e);
+        } catch (ClassNotFoundException e) {
+            Log.d(LOG_TAG, "ClassNotFoundException in decodeCookie", e);
         }
 
         return cookie;

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.loopj.android.http.sample"
           android:versionCode="1"
@@ -21,6 +22,7 @@
         <activity android:name=".DeleteSample"/>
         <activity android:name=".PutSample"/>
         <activity android:name=".JsonSample"/>
+        <activity android:name=".JsonStreamerSample"/>
         <activity android:name=".FileSample"/>
         <activity android:name=".BinarySample"/>
         <activity android:name=".GzipSample"/>
@@ -29,6 +31,17 @@
         <activity android:name=".CancelAllRequestsSample"/>
         <activity android:name=".CancelRequestHandleSample"/>
         <activity android:name=".SynchronousClientSample"/>
+        <activity android:name=".IntentServiceSample"/>
+        <activity android:name=".SaxSample"/>
+        <activity android:name=".FilesSample"/>
+        <activity android:name=".PersistentCookiesSample"/>
+        <activity android:name=".CustomCASample"/>
+        <activity android:name=".RetryRequestSample"/>
+        <activity android:name=".RangeResponseSample"/>
+        <activity android:name=".Http401AuthSample"/>
+        <activity android:name=".AsyncBackgroundThreadSample"/>
+
+        <service android:name=".services.ExampleIntentService"/>
     </application>
 
 </manifest>

@@ -39,9 +39,10 @@ public class AsyncHttpRequest implements Runnable {
     private final HttpUriRequest request;
     private final ResponseHandlerInterface responseHandler;
     private int executionCount;
-    private boolean isCancelled = false;
-    private boolean cancelIsNotified = false;
-    private boolean isFinished = false;
+    private boolean isCancelled;
+    private boolean cancelIsNotified;
+    private boolean isFinished;
+    private boolean isRequestPreProcessed;
 
     public AsyncHttpRequest(AbstractHttpClient client, HttpContext context, HttpUriRequest request, ResponseHandlerInterface responseHandler) {
         this.client = client;
@@ -50,8 +51,48 @@ public class AsyncHttpRequest implements Runnable {
         this.responseHandler = responseHandler;
     }
 
+    /**
+     * This method is called once by the system when the request is about to be
+     * processed by the system. The library makes sure that a single request
+     * is pre-processed only once.
+     *
+     * Please note: pre-processing does NOT run on the main thread, and thus
+     * any UI activities that you must perform should be properly dispatched to
+     * the app's UI thread.
+     *
+     * @param request The request to pre-process
+     */
+    public void onPreProcessRequest(AsyncHttpRequest request) {
+        // default action is to do nothing...
+    }
+
+    /**
+     * This method is called once by the system when the request has been fully
+     * sent, handled and finished. The library makes sure that a single request
+     * is post-processed only once.
+     *
+     * Please note: post-processing does NOT run on the main thread, and thus
+     * any UI activities that you must perform should be properly dispatched to
+     * the app's UI thread.
+     *
+     * @param request The request to post-process
+     */
+    public void onPostProcessRequest(AsyncHttpRequest request) {
+        // default action is to do nothing...
+    }
+
     @Override
     public void run() {
+        if (isCancelled()) {
+            return;
+        }
+
+        // Carry out pre-processing for this request only once.
+        if (!isRequestPreProcessed) {
+            isRequestPreProcessed = true;
+            onPreProcessRequest(this);
+        }
+
         if (isCancelled()) {
             return;
         }
@@ -82,6 +123,13 @@ public class AsyncHttpRequest implements Runnable {
             responseHandler.sendFinishMessage();
         }
 
+        if (isCancelled()) {
+            return;
+        }
+
+        // Carry out post-processing for this request.
+        onPostProcessRequest(this);
+
         isFinished = true;
     }
 
@@ -89,6 +137,7 @@ public class AsyncHttpRequest implements Runnable {
         if (isCancelled()) {
             return;
         }
+
         // Fixes #115
         if (request.getURI().getScheme() == null) {
             // subclass of IOException so processed in the caller
@@ -97,9 +146,26 @@ public class AsyncHttpRequest implements Runnable {
 
         HttpResponse response = client.execute(request, context);
 
-        if (!isCancelled() && responseHandler != null) {
-            responseHandler.sendResponseMessage(response);
+        if (isCancelled() || responseHandler == null) {
+            return;
         }
+
+        // Carry out pre-processing for this response.
+        responseHandler.onPreProcessResponse(responseHandler, response);
+
+        if (isCancelled()) {
+            return;
+        }
+
+        // The response is ready, handle it.
+        responseHandler.sendResponseMessage(response);
+
+        if (isCancelled()) {
+            return;
+        }
+
+        // Carry out post-processing for this response.
+        responseHandler.onPostProcessResponse(responseHandler, response);
     }
 
     private void makeRequestWithRetries() throws IOException {
