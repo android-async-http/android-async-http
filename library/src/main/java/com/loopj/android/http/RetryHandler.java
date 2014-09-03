@@ -92,9 +92,6 @@ class RetryHandler implements HttpRequestRetryHandler {
             if (currentReq == null) {
                 return false;
             }
-            
-            if (context instanceof RangeFileAsyncHttpResponseHandler)
-                ((RangeFileAsyncHttpResponseHandler) context).updateRequestHeaders(currentReq);
         }
 
         if (retry) {

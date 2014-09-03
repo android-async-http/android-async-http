@@ -1178,9 +1178,6 @@ public class AsyncHttpClient {
             }
         }
         
-        if (responseHandler instanceof RangeFileAsyncHttpResponseHandler)
-            ((RangeFileAsyncHttpResponseHandler) responseHandler).updateRequestHeaders(uriRequest);
-        
         return requestHandle;
     }
 
