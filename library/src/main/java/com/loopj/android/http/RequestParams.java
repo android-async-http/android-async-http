@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,7 +88,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * client.post("http://myendpoint.com", params, responseHandler);
  * </pre>
  */
-public class RequestParams {
+public class RequestParams implements Serializable {
 
     public final static String APPLICATION_OCTET_STREAM =
             "application/octet-stream";
