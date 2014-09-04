@@ -30,30 +30,31 @@ import java.util.List;
 
 public class WaypointsActivity extends ListActivity {
 
-    private static final SampleConfig[] samplesConfig = new SampleConfig[] {
-        new SampleConfig(R.string.title_get_sample, GetSample.class),
-        new SampleConfig(R.string.title_post_sample, PostSample.class),
-        new SampleConfig(R.string.title_delete_sample, DeleteSample.class),
-        new SampleConfig(R.string.title_put_sample, PutSample.class),
-        new SampleConfig(R.string.title_json_sample, JsonSample.class),
-        new SampleConfig(R.string.title_json_streamer_sample, JsonStreamerSample.class),
-        new SampleConfig(R.string.title_sax_example, SaxSample.class),
-        new SampleConfig(R.string.title_file_sample, FileSample.class),
-        new SampleConfig(R.string.title_binary_sample, BinarySample.class),
-        new SampleConfig(R.string.title_gzip_sample, GzipSample.class),
-        new SampleConfig(R.string.title_redirect_302, Redirect302Sample.class),
-        new SampleConfig(R.string.title_threading_timeout, ThreadingTimeoutSample.class),
-        new SampleConfig(R.string.title_cancel_all, CancelAllRequestsSample.class),
-        new SampleConfig(R.string.title_cancel_handle, CancelRequestHandleSample.class),
-        new SampleConfig(R.string.title_synchronous, SynchronousClientSample.class),
-        new SampleConfig(R.string.title_intent_service_sample, IntentServiceSample.class),
-        new SampleConfig(R.string.title_post_files, FilesSample.class),
-        new SampleConfig(R.string.title_persistent_cookies, PersistentCookiesSample.class),
-        new SampleConfig(R.string.title_custom_ca, CustomCASample.class),
-        new SampleConfig(R.string.title_retry_handler, RetryRequestSample.class),
-        new SampleConfig(R.string.title_range_sample, RangeResponseSample.class),
-        new SampleConfig(R.string.title_401_unauth, Http401AuthSample.class),
-        new SampleConfig(R.string.title_pre_post_processing, PrePostProcessingSample.class)
+    private static final SampleConfig[] samplesConfig = new SampleConfig[]{
+            new SampleConfig(R.string.title_get_sample, GetSample.class),
+            new SampleConfig(R.string.title_post_sample, PostSample.class),
+            new SampleConfig(R.string.title_delete_sample, DeleteSample.class),
+            new SampleConfig(R.string.title_put_sample, PutSample.class),
+            new SampleConfig(R.string.title_json_sample, JsonSample.class),
+            new SampleConfig(R.string.title_json_streamer_sample, JsonStreamerSample.class),
+            new SampleConfig(R.string.title_sax_example, SaxSample.class),
+            new SampleConfig(R.string.title_file_sample, FileSample.class),
+            new SampleConfig(R.string.title_binary_sample, BinarySample.class),
+            new SampleConfig(R.string.title_gzip_sample, GzipSample.class),
+            new SampleConfig(R.string.title_redirect_302, Redirect302Sample.class),
+            new SampleConfig(R.string.title_threading_timeout, ThreadingTimeoutSample.class),
+            new SampleConfig(R.string.title_cancel_all, CancelAllRequestsSample.class),
+            new SampleConfig(R.string.title_cancel_handle, CancelRequestHandleSample.class),
+            new SampleConfig(R.string.title_synchronous, SynchronousClientSample.class),
+            new SampleConfig(R.string.title_intent_service_sample, IntentServiceSample.class),
+            new SampleConfig(R.string.title_post_files, FilesSample.class),
+            new SampleConfig(R.string.title_persistent_cookies, PersistentCookiesSample.class),
+            new SampleConfig(R.string.title_custom_ca, CustomCASample.class),
+            new SampleConfig(R.string.title_retry_handler, RetryRequestSample.class),
+            new SampleConfig(R.string.title_range_sample, RangeResponseSample.class),
+            new SampleConfig(R.string.title_401_unauth, Http401AuthSample.class),
+            new SampleConfig(R.string.title_pre_post_processing, PrePostProcessingSample.class),
+            new SampleConfig(R.string.title_content_type_http_entity, ContentTypeForHttpEntitySample.class)
     };
 
     @Override
@@ -82,8 +83,8 @@ public class WaypointsActivity extends ListActivity {
         final Class targetClass;
 
         SampleConfig(int titleId, Class targetClass) {
-          this.titleId = titleId;
-          this.targetClass = targetClass;
+            this.titleId = titleId;
+            this.targetClass = targetClass;
         }
 
     }

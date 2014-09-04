@@ -37,4 +37,5 @@
     <string name="title_401_unauth">401 basic authentication</string>
     <string name="title_pre_post_processing">Pre-/Post-processing</string>
     <string name="title_async_background_thread">Async on background thread</string>
+    <string name="title_content_type_http_entity">Content-Type with HttpEntity</string>
 </resources>

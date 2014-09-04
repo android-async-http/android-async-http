@@ -40,6 +40,7 @@
         <activity android:name=".RangeResponseSample"/>
         <activity android:name=".Http401AuthSample"/>
         <activity android:name=".AsyncBackgroundThreadSample"/>
+        <activity android:name=".ContentTypeForHttpEntitySample"/>
 
         <service android:name=".services.ExampleIntentService"/>
     </application>
