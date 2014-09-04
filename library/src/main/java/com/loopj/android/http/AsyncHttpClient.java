@@ -1378,7 +1378,7 @@ public class AsyncHttpClient {
 
         @Override
         public long getContentLength() {
-            return -1;
+            return wrappedEntity == null ? 0 : wrappedEntity.getContentLength();
         }
 
         @Override
