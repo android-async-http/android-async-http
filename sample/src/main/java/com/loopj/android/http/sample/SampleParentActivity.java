@@ -37,8 +37,11 @@ import com.loopj.android.http.ResponseHandlerInterface;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HttpContext;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -47,21 +50,18 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HttpContext;
 
 public abstract class SampleParentActivity extends Activity implements SampleInterface {
 
     private AsyncHttpClient asyncHttpClient = new AsyncHttpClient() {
 
-      @Override
-      protected AsyncHttpRequest newAsyncHttpRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, ResponseHandlerInterface responseHandler, Context context) {
-        AsyncHttpRequest httpRequest = getHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context);
-        return httpRequest == null
-            ? super.newAsyncHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context)
-            : httpRequest;
-      }
+        @Override
+        protected AsyncHttpRequest newAsyncHttpRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, ResponseHandlerInterface responseHandler, Context context) {
+            AsyncHttpRequest httpRequest = getHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context);
+            return httpRequest == null
+                    ? super.newAsyncHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context)
+                    : httpRequest;
+        }
     };
     private EditText urlEditText, headersEditText, bodyEditText;
     private LinearLayout responseLayout;
@@ -193,8 +193,8 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
     public String getUrlText(String defaultText) {
         return urlEditText != null && urlEditText.getText() != null
-            ? urlEditText.getText().toString()
-            : defaultText;
+                ? urlEditText.getText().toString()
+                : defaultText;
     }
 
     public String getBodyText() {
@@ -203,8 +203,8 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
     public String getBodyText(String defaultText) {
         return bodyEditText != null && bodyEditText.getText() != null
-            ? bodyEditText.getText().toString()
-            : defaultText;
+                ? bodyEditText.getText().toString()
+                : defaultText;
     }
 
     public String getHeadersText() {
@@ -213,8 +213,8 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
     public String getHeadersText(String defaultText) {
         return headersEditText != null && headersEditText.getText() != null
-            ? headersEditText.getText().toString()
-            : defaultText;
+                ? headersEditText.getText().toString()
+                : defaultText;
     }
 
     protected final void debugHeaders(String TAG, Header[] headers) {
