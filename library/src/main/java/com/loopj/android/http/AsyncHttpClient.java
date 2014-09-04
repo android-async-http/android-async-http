@@ -1148,7 +1148,11 @@ public class AsyncHttpClient {
         }
 
         if (contentType != null) {
-            uriRequest.setHeader(HEADER_CONTENT_TYPE, contentType);
+            if (uriRequest instanceof HttpEntityEnclosingRequestBase && ((HttpEntityEnclosingRequestBase) uriRequest).getEntity() != null) {
+                Log.w(LOG_TAG, "Passed contentType will be ignored because HttpEntity sets content type");
+            } else {
+                uriRequest.setHeader(HEADER_CONTENT_TYPE, contentType);
+            }
         }
 
         responseHandler.setRequestHeaders(uriRequest.getAllHeaders());
