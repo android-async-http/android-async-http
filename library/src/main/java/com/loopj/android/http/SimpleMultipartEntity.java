@@ -23,6 +23,7 @@
 
 package com.loopj.android.http;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.apache.http.Header;
@@ -116,6 +117,9 @@ class SimpleMultipartEntity implements HttpEntity {
     public void addPart(String key, File file, String type) {
         fileParts.add(new FilePart(key, file, normalizeContentType(type)));
     }
+    public void addPart(String key, File file, String type, String customFileName) {
+        fileParts.add(new FilePart(key, file, normalizeContentType(type), customFileName));
+    }
 
     public void addPart(String key, String streamName, InputStream inputStream, String type)
             throws IOException {
@@ -171,6 +175,11 @@ class SimpleMultipartEntity implements HttpEntity {
     private class FilePart {
         public File file;
         public byte[] header;
+
+        public FilePart(String key, File file, String type, String customFileName) {
+            header = createHeader(key, TextUtils.isEmpty(customFileName) ? file.getName() : customFileName, type);
+            this.file = file;
+        }
 
         public FilePart(String key, File file, String type) {
             header = createHeader(key, file.getName(), type);

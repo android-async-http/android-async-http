@@ -193,11 +193,23 @@ public class RequestParams implements Serializable {
      * @throws java.io.FileNotFoundException throws if wrong File argument was passed
      */
     public void put(String key, File file) throws FileNotFoundException {
-        put(key, file, null);
+        put(key, file, null, null);
     }
 
     /**
-     * Adds a file to the request.
+     * Adds a file to the request with custom provided file name
+     *
+     * @param key            the key name for the new param.
+     * @param file           the file to add.
+     * @param customFileName file name to use instead of real file name
+     * @throws java.io.FileNotFoundException throws if wrong File argument was passed
+     */
+    public void put(String key, String customFileName, File file) throws FileNotFoundException {
+        put(key, file, null, customFileName);
+    }
+
+    /**
+     * Adds a file to the request with custom provided file content-type
      *
      * @param key         the key name for the new param.
      * @param file        the file to add.
@@ -205,11 +217,24 @@ public class RequestParams implements Serializable {
      * @throws java.io.FileNotFoundException throws if wrong File argument was passed
      */
     public void put(String key, File file, String contentType) throws FileNotFoundException {
+        put(key, file, contentType, null);
+    }
+
+    /**
+     * Adds a file to the request with both custom provided file content-type and file name
+     *
+     * @param key            the key name for the new param.
+     * @param file           the file to add.
+     * @param contentType    the content type of the file, eg. application/json
+     * @param customFileName file name to use instead of real file name
+     * @throws java.io.FileNotFoundException throws if wrong File argument was passed
+     */
+    public void put(String key, File file, String contentType, String customFileName) throws FileNotFoundException {
         if (file == null || !file.exists()) {
             throw new FileNotFoundException();
         }
         if (key != null) {
-            fileParams.put(key, new FileWrapper(file, contentType));
+            fileParams.put(key, new FileWrapper(file, contentType, customFileName));
         }
     }
 
@@ -495,7 +520,7 @@ public class RequestParams implements Serializable {
         // Add file params
         for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
             FileWrapper fileWrapper = entry.getValue();
-            entity.addPart(entry.getKey(), fileWrapper.file, fileWrapper.contentType);
+            entity.addPart(entry.getKey(), fileWrapper.file, fileWrapper.contentType, fileWrapper.customFileName);
         }
 
         return entity;
@@ -561,10 +586,12 @@ public class RequestParams implements Serializable {
     public static class FileWrapper {
         public final File file;
         public final String contentType;
+        public final String customFileName;
 
-        public FileWrapper(File file, String contentType) {
+        public FileWrapper(File file, String contentType, String customFileName) {
             this.file = file;
             this.contentType = contentType;
+            this.customFileName = customFileName;
         }
     }
 
