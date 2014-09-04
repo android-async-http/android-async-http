@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## 1.4.6 (future version)
+
+Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.6](https://github.com/loopj/android-async-http/commits/1.4.6)  
+List of closed issues is here [https://github.com/loopj/android-async-http/issues?milestone=4&state=closed](https://github.com/loopj/android-async-http/issues?milestone=2&state=closed)
+
+  - Fixed missing boundary when passing content-type as call param along with HttpEntity
+  - Added warnings for not overriden calls in JsonHttpResponseHandler (and others)
+  - RequestParams now implement Serializable, to support storing them and passing them along
+  - Added option to add File part with custom file name (overriding the real file name)
+  - Fixed not-escaped contents in JsonStreamEntity
+  - Separated connect and response timeout settings
+  - Allowed to pass Looper into *HttpResponseHandler classes
+  - Fixed reporting progress on GZIP compressed down-streams
+  - Added more samples (eg. AsyncBackgroundThreadSample.java, ContentTypeForHttpEntitySample.java, PrePostProcessingSample.java)
+  - Added option to pre- and post- process data in AsyncHttpRequest.java via subclass (see PrePostProcessingSample.java)
+  - Fixed ConcurrentModificationException on AsyncHttpClient.cancelRequests
+  - Fixed handling BOM in decoding response in TextHttpResponseHandler and JsonHttpResponseHandler
+
 ## 1.4.5 (released 22. 6. 2014)
 
 Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.5](https://github.com/loopj/android-async-http/commits/1.4.5)  
