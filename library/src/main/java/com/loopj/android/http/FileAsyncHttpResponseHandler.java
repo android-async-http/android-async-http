@@ -41,7 +41,7 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
      */
     public FileAsyncHttpResponseHandler(File file) {
         super();
-        assert (file != null);
+        AssertUtils.asserts(file != null, "File passed into FileAsyncHttpResponseHandler constructor must not be null");
         this.mFile = file;
     }
 
@@ -71,8 +71,10 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
      * @return temporary file or null if creating file failed
      */
     protected File getTemporaryFile(Context context) {
-        assert (context != null);
+        AssertUtils.asserts(context != null, "Tried creating temporary file without having Context");
         try {
+            // not effective in release mode
+            assert context != null;
             return File.createTempFile("temp_", "_handled", context.getCacheDir());
         } catch (IOException e) {
             Log.e(LOG_TAG, "Cannot create temporary file", e);
