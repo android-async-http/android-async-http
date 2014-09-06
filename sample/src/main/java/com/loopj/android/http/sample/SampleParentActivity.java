@@ -18,9 +18,11 @@
 
 package com.loopj.android.http.sample;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -90,6 +92,8 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         setContentView(R.layout.parent_layout);
         setTitle(getSampleTitle());
 
+        setHomeAsUpEnabled();
+
         urlEditText = (EditText) findViewById(R.id.edit_url);
         headersEditText = (EditText) findViewById(R.id.edit_headers);
         bodyEditText = (EditText) findViewById(R.id.edit_body);
@@ -127,8 +131,8 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, MENU_USE_HTTPS, R.string.menu_use_https, Menu.NONE).setCheckable(true);
-        menu.add(Menu.NONE, MENU_CLEAR_VIEW, R.string.menu_clear_view, Menu.NONE);
+        menu.add(Menu.NONE, MENU_USE_HTTPS, Menu.NONE, R.string.menu_use_https).setCheckable(true);
+        menu.add(Menu.NONE, MENU_CLEAR_VIEW, Menu.NONE, R.string.menu_clear_view);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -141,6 +145,9 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
                 return true;
             case MENU_CLEAR_VIEW:
                 clearOutputs();
+                return true;
+            case android.R.id.home:
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -344,5 +351,13 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     @Override
     public void setAsyncHttpClient(AsyncHttpClient client) {
         this.asyncHttpClient = client;
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void setHomeAsUpEnabled() {
+        if (Integer.valueOf(Build.VERSION.SDK) >= 11) {
+            if (getActionBar() != null)
+                getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 }
