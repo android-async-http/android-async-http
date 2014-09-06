@@ -650,8 +650,16 @@ public class AsyncHttpClient {
      */
     public void setBasicAuth(String username, String password, AuthScope scope, boolean preemtive) {
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
-        this.httpClient.getCredentialsProvider().setCredentials(scope == null ? AuthScope.ANY : scope, credentials);
+        setCredentials(scope, credentials);
         setAuthenticationPreemptive(preemtive);
+    }
+
+    public void setCredentials(AuthScope authScope, Credentials credentials) {
+        if (credentials == null) {
+            Log.d(LOG_TAG, "Provided credentials are null, not setting");
+            return;
+        }
+        this.httpClient.getCredentialsProvider().setCredentials(authScope == null ? AuthScope.ANY : authScope, credentials);
     }
 
     /**
@@ -670,8 +678,18 @@ public class AsyncHttpClient {
 
     /**
      * Removes previously set basic auth credentials
+     *
+     * @deprecated
      */
+    @Deprecated
     public void clearBasicAuth() {
+        clearCredentialsProvider();
+    }
+
+    /**
+     * Removes previously set auth credentials
+     */
+    public void clearCredentialsProvider() {
         this.httpClient.getCredentialsProvider().clear();
     }
 
