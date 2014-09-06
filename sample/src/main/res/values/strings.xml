@@ -9,6 +9,9 @@
     <string name="button_run">Run</string>
     <string name="button_cancel">Cancel</string>
 
+    <string name="menu_use_https">Use HTTPS</string>
+    <string name="menu_clear_view">Clear Outputs</string>
+
     <string name="label_headers">Headers (key=val, one per line)</string>
     <string name="label_req_body">Request body</string>
     <string name="label_credentials">Server requests authentication.\nTo gain access, enter:\n\nUsername: %1$s\nPassword: %2$s</string>

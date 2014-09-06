@@ -23,6 +23,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -68,7 +70,15 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     private final List<RequestHandle> requestHandles = new LinkedList<RequestHandle>();
     private static final String LOG_TAG = "SampleParentActivity";
 
-    protected static final String PROTOCOL = "https://";
+    private static final int MENU_USE_HTTPS = 0;
+    private static final int MENU_CLEAR_VIEW = 1;
+
+    private boolean useHttps = true;
+
+    protected static final String PROTOCOL_HTTP = "http://";
+    protected static final String PROTOCOL_HTTPS = "https://";
+
+    protected static String PROTOCOL = PROTOCOL_HTTPS;
     protected static final int LIGHTGREEN = Color.parseColor("#00FF66");
     protected static final int LIGHTRED = Color.parseColor("#FF3300");
     protected static final int YELLOW = Color.parseColor("#FFFF00");
@@ -104,6 +114,36 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
                 cancelButton.setEnabled(false);
             }
         }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem useHttpsMenuItem = menu.findItem(MENU_USE_HTTPS);
+        if (useHttpsMenuItem != null) {
+            useHttpsMenuItem.setChecked(useHttps);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(Menu.NONE, MENU_USE_HTTPS, R.string.menu_use_https, Menu.NONE).setCheckable(true);
+        menu.add(Menu.NONE, MENU_CLEAR_VIEW, R.string.menu_clear_view, Menu.NONE);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_USE_HTTPS:
+                useHttps = !useHttps;
+                PROTOCOL = useHttps ? PROTOCOL_HTTPS : PROTOCOL_HTTP;
+                return true;
+            case MENU_CLEAR_VIEW:
+                clearOutputs();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
