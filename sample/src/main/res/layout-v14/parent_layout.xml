@@ -85,6 +85,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_custom"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/layout_response"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

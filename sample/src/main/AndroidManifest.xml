@@ -42,6 +42,8 @@
         <activity android:name=".AsyncBackgroundThreadSample"/>
         <activity android:name=".ContentTypeForHttpEntitySample"/>
         <activity android:name=".ResumeDownloadSample"/>
+        <activity android:name=".PrePostProcessingSample"/>
+        <activity android:name=".DigestAuthSample"/>
 
         <service android:name=".services.ExampleIntentService"/>
     </application>

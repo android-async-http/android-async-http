@@ -69,6 +69,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     };
     private EditText urlEditText, headersEditText, bodyEditText;
     private LinearLayout responseLayout;
+    public LinearLayout customFieldsLayout;
     private final List<RequestHandle> requestHandles = new LinkedList<RequestHandle>();
     private static final String LOG_TAG = "SampleParentActivity";
 
@@ -97,6 +98,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         urlEditText = (EditText) findViewById(R.id.edit_url);
         headersEditText = (EditText) findViewById(R.id.edit_headers);
         bodyEditText = (EditText) findViewById(R.id.edit_body);
+        customFieldsLayout = (LinearLayout) findViewById(R.id.layout_custom);
         Button runButton = (Button) findViewById(R.id.button_run);
         Button cancelButton = (Button) findViewById(R.id.button_cancel);
         LinearLayout headersLayout = (LinearLayout) findViewById(R.id.layout_headers);
@@ -142,6 +144,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
             case MENU_USE_HTTPS:
                 useHttps = !useHttps;
                 PROTOCOL = useHttps ? PROTOCOL_HTTPS : PROTOCOL_HTTP;
+                urlEditText.setText(getDefaultURL());
                 return true;
             case MENU_CLEAR_VIEW:
                 clearOutputs();
