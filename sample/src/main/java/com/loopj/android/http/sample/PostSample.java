@@ -51,7 +51,7 @@ public class PostSample extends SampleParentActivity {
 
     @Override
     public String getDefaultURL() {
-        return "http://httpbin.org/post";
+        return PROTOCOL + "httpbin.org/post";
     }
 
     @Override

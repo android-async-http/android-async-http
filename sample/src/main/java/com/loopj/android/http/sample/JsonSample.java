@@ -55,7 +55,7 @@ public class JsonSample extends SampleParentActivity {
 
     @Override
     public String getDefaultURL() {
-        return "http://httpbin.org/headers";
+        return PROTOCOL + "httpbin.org/headers";
     }
 
     @Override

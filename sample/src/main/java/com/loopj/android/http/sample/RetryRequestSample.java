@@ -74,7 +74,7 @@ public class RetryRequestSample extends GetSample {
 
     @Override
     public String getDefaultURL() {
-        return "http://httpbin.org/ip";
+        return PROTOCOL + "httpbin.org/ip";
     }
 
     @Override

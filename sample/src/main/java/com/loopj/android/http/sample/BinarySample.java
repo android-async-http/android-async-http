@@ -46,7 +46,7 @@ public class BinarySample extends SampleParentActivity {
 
     @Override
     public String getDefaultURL() {
-        return "http://httpbin.org/gzip";
+        return "https://httpbin.org/gzip";
     }
 
     @Override

@@ -67,6 +67,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     private LinearLayout responseLayout;
     private final List<RequestHandle> requestHandles = new LinkedList<RequestHandle>();
 
+    protected static final String PROTOCOL = "https://";
     protected static final int LIGHTGREEN = Color.parseColor("#00FF66");
     protected static final int LIGHTRED = Color.parseColor("#FF3300");
     protected static final int YELLOW = Color.parseColor("#FFFF00");

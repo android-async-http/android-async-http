@@ -56,7 +56,7 @@ public class ThreadingTimeoutSample extends SampleParentActivity {
 
     @Override
     public String getDefaultURL() {
-        return "http://httpbin.org/delay/6";
+        return PROTOCOL + "httpbin.org/delay/6";
     }
 
     private synchronized void setStatus(int id, String status) {

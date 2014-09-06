@@ -69,7 +69,7 @@ public class Http401AuthSample extends GetSample {
 
     @Override
     public String getDefaultURL() {
-        return "http://httpbin.org/basic-auth/" + SECRET_USERNAME + "/" + SECRET_PASSWORD;
+        return PROTOCOL + "httpbin.org/basic-auth/" + SECRET_USERNAME + "/" + SECRET_PASSWORD;
     }
 
     @Override

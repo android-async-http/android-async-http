@@ -72,7 +72,7 @@ public class Redirect302Sample extends GetSample {
 
     @Override
     public String getDefaultURL() {
-        return "http://httpbin.org/redirect/6";
+        return PROTOCOL + "httpbin.org/redirect/6";
     }
 
     @Override

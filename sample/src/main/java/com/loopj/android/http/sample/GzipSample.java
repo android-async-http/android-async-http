@@ -27,6 +27,6 @@ public class GzipSample extends JsonSample {
 
     @Override
     public String getDefaultURL() {
-        return "http://httpbin.org/gzip";
+        return PROTOCOL + "httpbin.org/gzip";
     }
 }

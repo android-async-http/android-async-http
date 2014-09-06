@@ -69,7 +69,7 @@ public class PersistentCookiesSample extends SampleParentActivity {
     @Override
     public String getDefaultURL() {
         // The base URL for testing cookies.
-        String url = "http://httpbin.org/cookies";
+        String url = PROTOCOL + "httpbin.org/cookies";
 
         // If the cookie store is empty, suggest a cookie.
         if(cookieStore.getCookies().isEmpty()) {

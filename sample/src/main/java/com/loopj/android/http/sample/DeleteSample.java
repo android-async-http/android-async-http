@@ -52,7 +52,7 @@ public class DeleteSample extends SampleParentActivity {
 
     @Override
     public String getDefaultURL() {
-        return "http://httpbin.org/delete";
+        return PROTOCOL + "httpbin.org/delete";
     }
 
     @Override

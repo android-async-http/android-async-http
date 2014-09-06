@@ -39,7 +39,7 @@ public class ContentTypeForHttpEntitySample extends SampleParentActivity {
 
     @Override
     public String getDefaultURL() {
-        return "http://httpbin.org/post";
+        return "https://httpbin.org/post";
     }
 
     @Override

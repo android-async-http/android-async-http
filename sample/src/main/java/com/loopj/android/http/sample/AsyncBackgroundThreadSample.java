@@ -90,7 +90,7 @@ public class AsyncBackgroundThreadSample extends SampleParentActivity {
 
     @Override
     public String getDefaultURL() {
-        return "https://httpbin.org/get";
+        return PROTOCOL + "httpbin.org/get";
     }
 
     @Override
