@@ -66,6 +66,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     private EditText urlEditText, headersEditText, bodyEditText;
     private LinearLayout responseLayout;
     private final List<RequestHandle> requestHandles = new LinkedList<RequestHandle>();
+    private static final String LOG_TAG = "SampleParentActivity";
 
     protected static final String PROTOCOL = "https://";
     protected static final int LIGHTGREEN = Color.parseColor("#00FF66");
@@ -89,6 +90,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         responseLayout = (LinearLayout) findViewById(R.id.layout_response);
 
         urlEditText.setText(getDefaultURL());
+        headersEditText.setText(getDefaultHeaders());
 
         bodyLayout.setVisibility(isRequestBodyAllowed() ? View.VISIBLE : View.GONE);
         headersLayout.setVisibility(isRequestHeadersAllowed() ? View.VISIBLE : View.GONE);
@@ -161,10 +163,11 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
                     String headerName = line.substring(0, equalSignPos).trim();
                     String headerValue = line.substring(1 + equalSignPos).trim();
+                    Log.d(LOG_TAG, String.format("Added header: [%s:%s]", headerName, headerValue));
 
                     headers.add(new BasicHeader(headerName, headerValue));
                 } catch (Throwable t) {
-                    Log.e("SampleParentActivity", "Not a valid header line: " + line, t);
+                    Log.e(LOG_TAG, "Not a valid header line: " + line, t);
                 }
             }
         }
@@ -182,7 +185,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
             try {
                 return new StringEntity(bodyText);
             } catch (UnsupportedEncodingException e) {
-                Log.e("SampleParentActivity", "cannot create String entity", e);
+                Log.e(LOG_TAG, "cannot create String entity", e);
             }
         }
         return null;
@@ -275,6 +278,11 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         tv.setPadding(10, 10, 10, 10);
         tv.setTextColor(getContrastColor(bgColor));
         return tv;
+    }
+
+    @Override
+    public String getDefaultHeaders() {
+        return null;
     }
 
     protected final void addView(View v) {

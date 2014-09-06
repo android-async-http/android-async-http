@@ -41,6 +41,7 @@
         <activity android:name=".Http401AuthSample"/>
         <activity android:name=".AsyncBackgroundThreadSample"/>
         <activity android:name=".ContentTypeForHttpEntitySample"/>
+        <activity android:name=".ResumeDownloadSample"/>
 
         <service android:name=".services.ExampleIntentService"/>
     </application>

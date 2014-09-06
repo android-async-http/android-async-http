@@ -56,6 +56,8 @@ public interface SampleInterface {
 
     String getDefaultURL();
 
+    String getDefaultHeaders();
+
     boolean isRequestHeadersAllowed();
 
     boolean isRequestBodyAllowed();
