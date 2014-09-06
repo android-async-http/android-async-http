@@ -19,16 +19,18 @@
 package com.loopj.android.http.sample;
 
 import android.util.Log;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.ResponseHandlerInterface;
-import java.util.Iterator;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Iterator;
 
 /**
  * This sample demonstrates how to upload JSON data using streams, resulting
@@ -52,10 +54,10 @@ public class JsonStreamerSample extends PostSample {
         JSONObject body;
         if (isRequestBodyAllowed() && (body = getBodyTextAsJSON()) != null) {
             try {
-                Iterator<String> keys = body.keys();
+                Iterator keys = body.keys();
                 Log.d(LOG_TAG, "JSON data:");
                 while (keys.hasNext()) {
-                    String key = keys.next();
+                    String key = (String) keys.next();
                     Log.d(LOG_TAG, "  " + key + ": " + body.get(key));
                     params.put(key, body.get(key).toString());
                 }
@@ -64,7 +66,7 @@ public class JsonStreamerSample extends PostSample {
             }
         }
         return client.post(this, URL, headers, params,
-            RequestParams.APPLICATION_JSON, responseHandler);
+                RequestParams.APPLICATION_JSON, responseHandler);
     }
 
     @Override
@@ -88,7 +90,7 @@ public class JsonStreamerSample extends PostSample {
         if (bodyText != null) {
             try {
                 return new JSONObject(bodyText);
-            } catch(JSONException e) {
+            } catch (JSONException e) {
                 Log.e(LOG_TAG, "User's data is not a valid JSON object", e);
             }
         }
