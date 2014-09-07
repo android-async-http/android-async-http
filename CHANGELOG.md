@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.4.6 (future version)
+## 1.4.6 (released 7. 9. 2014)
 
 Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.6](https://github.com/loopj/android-async-http/commits/1.4.6)  
 List of closed issues is here [https://github.com/loopj/android-async-http/issues?milestone=4&state=closed](https://github.com/loopj/android-async-http/issues?milestone=2&state=closed)
