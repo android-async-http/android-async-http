@@ -2,9 +2,9 @@
 layout: project
 title: Android Asynchronous Http Client
 tagline: A Callback-Based Http Client Library for Android
-version: 1.4.5
+version: 1.4.6
 github_repo: android-async-http
-download_url: http://search.maven.org/remotecontent?filepath=com/loopj/android/android-async-http/1.4.5/android-async-http-1.4.5.jar
+download_url: http://search.maven.org/remotecontent?filepath=com/loopj/android/android-async-http/1.4.6/android-async-http-1.4.6.jar
 ---
 
 
@@ -332,7 +332,7 @@ Android SDK and Gradle buildscript, then just run:
 gradle :library:jarRelease
 {% endhighlight %}
 
-This will generate a file in path `{repository_root}/library/build/libs/library-1.4.5.jar`.
+This will generate a file in path `{repository_root}/library/build/libs/library-1.4.6.jar`.
 
 Reporting Bugs or Feature Requests
 ----------------------------------
