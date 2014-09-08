@@ -144,6 +144,10 @@ public class AsyncHttpRequest implements Runnable {
             throw new MalformedURLException("No valid URI scheme was provided");
         }
 
+        if (responseHandler instanceof RangeFileAsyncHttpResponseHandler) {
+            ((RangeFileAsyncHttpResponseHandler) responseHandler).updateRequestHeaders(request);
+        }
+
         HttpResponse response = client.execute(request, context);
 
         if (isCancelled() || responseHandler == null) {

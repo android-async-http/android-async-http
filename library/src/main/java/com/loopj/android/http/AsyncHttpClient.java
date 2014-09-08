@@ -1190,9 +1190,6 @@ public class AsyncHttpClient {
                 }
             }
 
-            if (responseHandler instanceof RangeFileAsyncHttpResponseHandler)
-                ((RangeFileAsyncHttpResponseHandler) responseHandler).updateRequestHeaders(uriRequest);
-
             requestList.add(requestHandle);
 
             Iterator<RequestHandle> iterator = requestList.iterator();
