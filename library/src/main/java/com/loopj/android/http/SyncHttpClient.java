@@ -86,7 +86,7 @@ public class SyncHttpClient extends AsyncHttpClient {
         if (contentType != null) {
             uriRequest.addHeader(AsyncHttpClient.HEADER_CONTENT_TYPE, contentType);
         }
-
+        
         responseHandler.setUseSynchronousMode(true);
 
 		/*
