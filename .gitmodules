@@ -1,6 +1,6 @@
 [submodule "_layouts"]
 	path = _layouts
-	url = git://github.com/loopj/jekyll_layouts.git
+	url = https://github.com/loopj/jekyll_layouts.git
 [submodule "_includes"]
 	path = _includes
-	url = git://github.com/loopj/jekyll_includes.git
+	url = https://github.com/loopj/jekyll_includes.git
