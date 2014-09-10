@@ -18,6 +18,8 @@
 
 package com.loopj.android.http;
 
+import android.os.Looper;
+
 import java.lang.ref.WeakReference;
 
 /**
@@ -45,9 +47,21 @@ public class RequestHandle {
      * @return false if the request could not be cancelled, typically because it has already
      * completed normally; true otherwise
      */
-    public boolean cancel(boolean mayInterruptIfRunning) {
-        AsyncHttpRequest _request = request.get();
-        return _request == null || _request.cancel(mayInterruptIfRunning);
+    public boolean cancel(final boolean mayInterruptIfRunning) {
+        final AsyncHttpRequest _request = request.get();
+        if (_request != null) {
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        _request.cancel(mayInterruptIfRunning);
+                    }
+                }).start();
+            } else {
+                _request.cancel(mayInterruptIfRunning);
+            }
+        }
+        return false;
     }
 
     /**
