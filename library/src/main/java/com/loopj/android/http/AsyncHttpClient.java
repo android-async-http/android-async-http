@@ -73,8 +73,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1225,8 +1227,14 @@ public class AsyncHttpClient {
         if (url == null)
             return null;
 
-        if (shouldEncodeUrl)
-            url = url.replace(" ", "%20");
+        if (shouldEncodeUrl) {
+            try {
+                url = URLEncoder.encode(url, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                // Should not really happen, added just for sake of validity
+                Log.e(LOG_TAG, "getUrlWithQueryString encoding URL", e);
+            }
+        }
 
         if (params != null) {
             // Construct the query string and trim it, in case it
