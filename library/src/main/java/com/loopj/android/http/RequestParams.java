@@ -583,7 +583,7 @@ public class RequestParams implements Serializable {
         return URLEncodedUtils.format(getParamsList(), contentEncoding);
     }
 
-    public static class FileWrapper {
+    public static class FileWrapper implements Serializable {
         public final File file;
         public final String contentType;
         public final String customFileName;
