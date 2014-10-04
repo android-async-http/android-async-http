@@ -100,11 +100,12 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
                     ByteArrayBuffer buffer = new ByteArrayBuffer((int) contentLength);
                     try {
                         byte[] tmp = new byte[BUFFER_SIZE];
-                        int l;
+                        int l, count = 0;
                         // do not send messages if request has been cancelled
                         while ((l = instream.read(tmp)) != -1 && !Thread.currentThread().isInterrupted()) {
                             buffer.append(tmp, 0, l);
                             sendProgressDataMessage(copyOfRange(tmp, 0, l));
+                            sendProgressMessage(count, (int) contentLength);
                         }
                     } finally {
                         AsyncHttpClient.silentCloseInputStream(instream);
