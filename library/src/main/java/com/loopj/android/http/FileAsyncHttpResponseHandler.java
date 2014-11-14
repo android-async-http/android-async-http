@@ -53,6 +53,7 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
     public FileAsyncHttpResponseHandler(File file, boolean append) {
         super();
         AssertUtils.asserts(file != null, "File passed into FileAsyncHttpResponseHandler constructor must not be null");
+        AssertUtils.asserts(getTargetFile().getParentFile().mkdirs(), "Cannot create parent directories for requested File location");
         this.mFile = file;
         this.append = append;
     }
