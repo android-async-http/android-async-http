@@ -3,6 +3,9 @@
 ## 1.4.7 (future version)
 
   - Fixed crash when canceling through RequestHandle from UI Thread (NetworkOnMainThreadException)
+  - Fixed URL encoding feature, that was breaking whole URL, not just path and query parts
+  - FileAsyncHttpResponseHandler now checks that target file path is available or can be created
+  - DataAsyncHttpResponseHandler was sending cancel notification instead of progress notification, fixed
 
 ## 1.4.6 (released 7. 9. 2014)
 
