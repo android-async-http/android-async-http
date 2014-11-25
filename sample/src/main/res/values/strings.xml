@@ -21,6 +21,7 @@
     <string name="title_json_streamer_sample">POST JSON using streamer</string>
     <string name="title_post_sample">POST</string>
     <string name="title_put_sample">PUT</string>
+    <string name="title_patch_sample">PATCH</string>
     <string name="title_delete_sample">DELETE</string>
     <string name="title_file_sample">GET to File</string>
     <string name="title_binary_sample">GET binary data</string>
