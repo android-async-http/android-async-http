@@ -21,6 +21,7 @@
         <activity android:name=".PostSample"/>
         <activity android:name=".DeleteSample"/>
         <activity android:name=".PutSample"/>
+        <activity android:name=".PatchSample"/>
         <activity android:name=".JsonSample"/>
         <activity android:name=".JsonStreamerSample"/>
         <activity android:name=".FileSample"/>
@@ -32,6 +33,7 @@
         <activity android:name=".CancelRequestHandleSample"/>
         <activity android:name=".SynchronousClientSample"/>
         <activity android:name=".IntentServiceSample"/>
+
         <activity android:name=".SaxSample"/>
         <activity android:name=".FilesSample"/>
         <activity android:name=".PersistentCookiesSample"/>
@@ -44,8 +46,8 @@
         <activity android:name=".ResumeDownloadSample"/>
         <activity android:name=".PrePostProcessingSample"/>
         <activity android:name=".DigestAuthSample"/>
-
         <service android:name=".services.ExampleIntentService"/>
+        
     </application>
 
 </manifest>
