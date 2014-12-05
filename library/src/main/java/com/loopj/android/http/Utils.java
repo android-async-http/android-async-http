@@ -18,17 +18,21 @@
 
 package com.loopj.android.http;
 
-/**
- * Internal class, used to make some asserts, throw AssertError if asserts fail.
- */
-class AssertUtils {
+class Utils {
 
-    private AssertUtils() {
+    private Utils() {
     }
 
     public static void asserts(final boolean expression, final String failedMessage) {
         if (!expression) {
             throw new AssertionError(failedMessage);
         }
+    }
+
+    public static <T> T notNull(final T argument, final String name) {
+        if (argument == null) {
+            throw new IllegalArgumentException(name + " should not be null!");
+        }
+        return argument;
     }
 }
