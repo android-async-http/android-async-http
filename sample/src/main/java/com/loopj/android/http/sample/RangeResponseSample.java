@@ -21,15 +21,18 @@ package com.loopj.android.http.sample;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RangeFileAsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
-import java.io.File;
-import java.io.IOException;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpUriRequest;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * This sample demonstrates use of {@link RangeFileAsyncHttpResponseHandler} to
@@ -71,7 +74,9 @@ public class RangeResponseSample extends GetSample {
 
         // Remove temporary file.
         if (file != null) {
-            file.delete();
+            if (!file.delete()) {
+                Log.e(LOG_TAG, String.format("Couldn't remove temporary file in path: %s", file.getAbsolutePath()));
+            }
             file = null;
         }
     }
@@ -133,9 +138,9 @@ public class RangeResponseSample extends GetSample {
                     // Is the content length known?
                     if (!supportsRange || fileSize < 1) {
                         Toast.makeText(
-                            RangeResponseSample.this,
-                            "Unable to determine remote file's size, or\nremote server doesn't support ranges",
-                            Toast.LENGTH_LONG
+                                RangeResponseSample.this,
+                                "Unable to determine remote file's size, or\nremote server doesn't support ranges",
+                                Toast.LENGTH_LONG
                         ).show();
                     }
                 }
