@@ -1,0 +1,6 @@
+Android Async Http Client library
+Copyright (c) 2011-2014 James Smith <james@loopj.com>
+http://loopj.com
+
+This product includes software developed by
+The Apache Software Foundation (http://www.apache.org/).
