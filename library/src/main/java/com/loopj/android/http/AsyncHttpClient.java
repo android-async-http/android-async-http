@@ -67,7 +67,6 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.SyncBasicHttpContext;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;

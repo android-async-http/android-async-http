@@ -24,7 +24,8 @@ import java.net.URI;
 
 /**
  * The current Android (API level 21) bundled version of the Apache Http Client does not implement
- * the HTTP PATCH method. Until the Android version is updated this can serve in it's stead. 
+ * a HttpEntityEnclosingRequestBase type of HTTP GET method.
+ * Until the Android version is updated this can serve in it's stead.
  * This implementation can and should go away when the official solution arrives.
  */
 public final class HttpGet extends HttpEntityEnclosingRequestBase {
