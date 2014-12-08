@@ -270,7 +270,7 @@ as images and other files. For example:
 
 {% highlight java %}
 AsyncHttpClient client = new AsyncHttpClient();
-client.get("http://example.com/file.png", new FileAsyncHttpResponseHandler() {
+client.get("http://example.com/file.png", new FileAsyncHttpResponseHandler(/* Context */ this) {
     @Override
     public void onSuccess(int statusCode, Header[] headers, File response) {
         // Do something with the file `response`
