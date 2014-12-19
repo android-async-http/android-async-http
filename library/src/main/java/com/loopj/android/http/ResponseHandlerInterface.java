@@ -129,6 +129,22 @@ public interface ResponseHandlerInterface {
     boolean getUseSynchronousMode();
 
     /**
+     * Sets whether the handler should be executed on the pool's thread or the
+     * UI thread
+     *
+     * @param usePoolThread if the ResponseHandler should run on pool's thread
+     */
+    void setUsePoolThread(boolean usePoolThread);
+
+    /**
+     * Returns whether the handler should be executed on the pool's thread
+     * or the UI thread
+     *
+     * @return boolean if the ResponseHandler should run on pool's thread
+     */
+    boolean getUsePoolThread();
+
+    /**
      * This method is called once by the system when the response is about to be
      * processed by the system. The library makes sure that a single response
      * is pre-processed only once.

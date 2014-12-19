@@ -1245,7 +1245,7 @@ public class AsyncHttpClient {
             throw new IllegalArgumentException("ResponseHandler must not be null");
         }
 
-        if (responseHandler.getUseSynchronousMode()) {
+        if (responseHandler.getUseSynchronousMode() && !responseHandler.getUsePoolThread()) {
             throw new IllegalArgumentException("Synchronous ResponseHandler used in AsyncHttpClient. You should create your response handler in a looper thread or use SyncHttpClient instead.");
         }
 

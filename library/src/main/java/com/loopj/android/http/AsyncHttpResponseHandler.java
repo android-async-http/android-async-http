@@ -97,6 +97,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     private String responseCharset = DEFAULT_CHARSET;
     private Handler handler;
     private boolean useSynchronousMode;
+    private boolean usePoolThread;
 
     private URI requestURI = null;
     private Header[] requestHeaders = null;
@@ -164,6 +165,23 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         useSynchronousMode = sync;
     }
 
+    @Override
+    public boolean getUsePoolThread() {
+        return usePoolThread;
+    }
+
+    @Override
+    public void setUsePoolThread(boolean pool) {
+        // If pool thread is to be used, there's no point in keeping a reference
+        // to the looper and no need for a handler.
+        if (pool) {
+            looper = null;
+            handler = null;
+        }
+
+        usePoolThread = pool;
+    }
+
     /**
      * Sets the charset for the response string. If not set, the default is UTF-8.
      *
@@ -196,6 +214,8 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         this.looper = looper == null ? Looper.myLooper() : looper;
         // Use asynchronous mode by default.
         setUseSynchronousMode(false);
+        // Do not use the pool's thread to run the handler.
+        setUsePoolThread(false);
     }
 
     /**
