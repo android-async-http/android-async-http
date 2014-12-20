@@ -57,7 +57,8 @@ public class WaypointsActivity extends ListActivity {
             new SampleConfig(R.string.title_pre_post_processing, PrePostProcessingSample.class),
             new SampleConfig(R.string.title_content_type_http_entity, ContentTypeForHttpEntitySample.class),
             new SampleConfig(R.string.title_resume_download, ResumeDownloadSample.class),
-            new SampleConfig(R.string.title_digest_auth, DigestAuthSample.class)
+            new SampleConfig(R.string.title_digest_auth, DigestAuthSample.class),
+            new SampleConfig(R.string.title_use_pool_thread, UsePoolThreadSample.class)
     };
 
     @Override

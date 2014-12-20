@@ -11,12 +11,14 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
         <activity android:name=".WaypointsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity android:name=".GetSample"/>
         <activity android:name=".PostSample"/>
         <activity android:name=".DeleteSample"/>
@@ -46,8 +48,10 @@
         <activity android:name=".ResumeDownloadSample"/>
         <activity android:name=".PrePostProcessingSample"/>
         <activity android:name=".DigestAuthSample"/>
+        <activity android:name=".UsePoolThreadSample"/>
+
         <service android:name=".services.ExampleIntentService"/>
-        
+
     </application>
 
 </manifest>
