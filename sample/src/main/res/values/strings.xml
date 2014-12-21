@@ -44,4 +44,5 @@
     <string name="title_content_type_http_entity">Content-Type with HttpEntity</string>
     <string name="title_resume_download">Resuming Download</string>
     <string name="title_digest_auth">Digest Authentication</string>
+    <string name="title_use_pool_thread">Use Pool Thread in Response</string>
 </resources>
