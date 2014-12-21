@@ -144,7 +144,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                     }
                 }
             };
-            if (!getUseSynchronousMode()) {
+            if (!getUseSynchronousMode() && !getUsePoolThread()) {
                 new Thread(parser).start();
             } else {
                 // In synchronous mode everything should be run on one thread
@@ -189,7 +189,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                     }
                 }
             };
-            if (!getUseSynchronousMode()) {
+            if (!getUseSynchronousMode() && !getUsePoolThread()) {
                 new Thread(parser).start();
             } else {
                 // In synchronous mode everything should be run on one thread
