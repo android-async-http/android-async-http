@@ -1,12 +1,13 @@
 package com.loopj.android.http.sample;
 
 import android.util.Log;
+
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.ResponseHandlerInterface;
-import static com.loopj.android.http.sample.SampleParentActivity.LIGHTGREEN;
-import java.io.File;
 
 import org.apache.http.Header;
+
+import java.io.File;
 
 public class UsePoolThreadSample extends GetSample {
 
@@ -95,12 +96,9 @@ public class UsePoolThreadSample extends GetSample {
         }
 
         private File getRandomCacheFile() {
-            File dir = getExternalCacheDir();
-            if(dir == null) {
-                dir = getCacheDir();
-                if(dir == null) {
-                    dir = getFilesDir();
-                }
+            File dir = getCacheDir();
+            if (dir == null) {
+                dir = getFilesDir();
             }
 
             return new File(dir, "sample-" + System.currentTimeMillis() + ".bin");
@@ -108,7 +106,7 @@ public class UsePoolThreadSample extends GetSample {
 
         private void saveBytesOnDisk(File destination, byte[] bytes) {
             // TODO: Spin your own implementation to save the bytes on disk/SD card.
-            if(bytes != null && destination != null) {
+            if (bytes != null && destination != null) {
                 Log.d(LOG_TAG, "Saved " + bytes.length + " bytes into file: " + destination.getAbsolutePath());
             }
         }
