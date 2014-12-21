@@ -103,6 +103,50 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     private Header[] requestHeaders = null;
     private Looper looper = null;
 
+    /**
+     * Creates a new AsyncHttpResponseHandler
+     */
+    public AsyncHttpResponseHandler() {
+        this(null);
+    }
+
+    /**
+     * Creates a new AsyncHttpResponseHandler with a user-supplied looper. If
+     * the passed looper is null, the looper attached to the current thread will
+     * be used.
+     *
+     * @param looper The looper to work with
+     */
+    public AsyncHttpResponseHandler(Looper looper) {
+        this.looper = looper == null ? Looper.myLooper() : looper;
+
+        // Use asynchronous mode by default.
+        setUseSynchronousMode(false);
+
+        // Do not use the pool's thread to fire callbacks by default.
+        setUsePoolThread(false);
+    }
+
+    /**
+     * Creates a new AsyncHttpResponseHandler and decide whether the callbacks
+     * will be fired on current thread's looper or the pool thread's.
+     *
+     * @param usePoolThread Whether to use the pool's thread to fire callbacks
+     */
+    public AsyncHttpResponseHandler(boolean usePoolThread) {
+        // Whether to use the pool's thread to fire callbacks.
+        setUsePoolThread(usePoolThread);
+
+        // When using the pool's thread, there's no sense in having a looper.
+        if (!getUsePoolThread()) {
+            // Use the current thread's looper.
+            this.looper = Looper.myLooper();
+
+            // Use asynchronous mode by default.
+            setUseSynchronousMode(false);
+        }
+    }
+
     @Override
     public URI getRequestURI() {
         return this.requestURI;
@@ -194,28 +238,6 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
 
     public String getCharset() {
         return this.responseCharset == null ? DEFAULT_CHARSET : this.responseCharset;
-    }
-
-    /**
-     * Creates a new AsyncHttpResponseHandler
-     */
-    public AsyncHttpResponseHandler() {
-        this(null);
-    }
-
-    /**
-     * Creates a new AsyncHttpResponseHandler with a user-supplied looper. If
-     * the passed looper is null, the looper attached to the current thread will
-     * be used.
-     *
-     * @param looper The looper to work with
-     */
-    public AsyncHttpResponseHandler(Looper looper) {
-        this.looper = looper == null ? Looper.myLooper() : looper;
-        // Use asynchronous mode by default.
-        setUseSynchronousMode(false);
-        // Do not use the pool's thread to run the handler.
-        setUsePoolThread(false);
     }
 
     /**
