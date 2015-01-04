@@ -286,7 +286,7 @@ public class RequestParams implements Serializable {
         }
     }
 
-    /**
+    /**o
      * Adds param with non-string value (e.g. Map, List, Set).
      *
      * @param key   the key name for the new param.

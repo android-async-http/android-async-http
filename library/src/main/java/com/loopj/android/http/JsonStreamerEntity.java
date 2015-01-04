@@ -227,7 +227,7 @@ public class JsonStreamerEntity implements HttpEntity {
         os.flush();
         AsyncHttpClient.silentCloseOutputStream(os);
     }
-
+    
     private void writeToFromStream(OutputStream os, RequestParams.StreamWrapper entry)
             throws IOException {
 

@@ -35,8 +35,8 @@ public class SyncHttpClient extends AsyncHttpClient {
     /**
      * Creates a new SyncHttpClient with default constructor arguments values
      */
-    public SyncHttpClient() {
-        super(false, 80, 443);
+    public SyncHttpClient(Context context) {
+        super(context,false, 80, 443);
     }
 
     /**
@@ -44,8 +44,8 @@ public class SyncHttpClient extends AsyncHttpClient {
      *
      * @param httpPort non-standard HTTP-only port
      */
-    public SyncHttpClient(int httpPort) {
-        super(false, httpPort, 443);
+    public SyncHttpClient(Context context,int httpPort) {
+        super(context,false, httpPort, 443);
     }
 
     /**
@@ -54,8 +54,8 @@ public class SyncHttpClient extends AsyncHttpClient {
      * @param httpPort  non-standard HTTP-only port
      * @param httpsPort non-standard HTTPS-only port
      */
-    public SyncHttpClient(int httpPort, int httpsPort) {
-        super(false, httpPort, httpsPort);
+    public SyncHttpClient(Context context,int httpPort, int httpsPort) {
+        super(context,false, httpPort, httpsPort);
     }
 
     /**
@@ -65,8 +65,8 @@ public class SyncHttpClient extends AsyncHttpClient {
      * @param httpPort                   HTTP port to be used, must be greater than 0
      * @param httpsPort                  HTTPS port to be used, must be greater than 0
      */
-    public SyncHttpClient(boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
-        super(fixNoHttpResponseException, httpPort, httpsPort);
+    public SyncHttpClient(Context context,boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
+        super(context,fixNoHttpResponseException, httpPort, httpsPort);
     }
 
     /**
@@ -74,15 +74,15 @@ public class SyncHttpClient extends AsyncHttpClient {
      *
      * @param schemeRegistry SchemeRegistry to be used
      */
-    public SyncHttpClient(SchemeRegistry schemeRegistry) {
-        super(schemeRegistry);
+    public SyncHttpClient(Context context,SchemeRegistry schemeRegistry) {
+        super(context,schemeRegistry);
     }
 
     @Override
     protected RequestHandle sendRequest(DefaultHttpClient client,
                                         HttpContext httpContext, HttpUriRequest uriRequest,
                                         String contentType, ResponseHandlerInterface responseHandler,
-                                        Context context) {
+                                        Context context,boolean openCache) {
         if (contentType != null) {
             uriRequest.addHeader(AsyncHttpClient.HEADER_CONTENT_TYPE, contentType);
         }
@@ -92,7 +92,7 @@ public class SyncHttpClient extends AsyncHttpClient {
 		/*
          * will execute the request directly
 		*/
-        newAsyncHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context).run();
+        newAsyncHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context,openCache).run();
 
         // Return a Request Handle that cannot be used to cancel the request
         // because it is already complete by the time this returns

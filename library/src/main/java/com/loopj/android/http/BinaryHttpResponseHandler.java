@@ -24,6 +24,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.methods.HttpUriRequest;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
