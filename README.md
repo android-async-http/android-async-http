@@ -55,7 +55,6 @@ Recommended Usage
 Codes Example:
 
 public final class AsyncHttpUtil {
-
 	private static final AsyncHttpClient mClient = new AsyncHttpClient();
 	private static PersistentCookieStore mCookie;
 
@@ -94,4 +93,4 @@ public final class AsyncHttpUtil {
 			AsyncHttpResponseHandler responseHandler) {
 		return mClient.post(url, params, responseHandler);
 	}
-}
+	}
