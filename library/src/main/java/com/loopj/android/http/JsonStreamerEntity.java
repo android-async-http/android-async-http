@@ -170,50 +170,50 @@ public class JsonStreamerEntity implements HttpEntity {
                 // Evaluate the value (which cannot be null).
                 Object value = jsonParams.get(key);
 
-                // Bail out prematurely if value's null.
-                if (value == null) {
-                    continue;
-                }
-
                 // Write the JSON object's key.
                 os.write(escape(key));
                 os.write(':');
 
-                // Check if this is a FileWrapper.
-                isFileWrapper = value instanceof RequestParams.FileWrapper;
-
-                // If a file should be uploaded.
-                if (isFileWrapper || value instanceof RequestParams.StreamWrapper) {
-                    // All uploads are sent as an object containing the file's details.
-                    os.write('{');
-
-                    // Determine how to handle this entry.
-                    if (isFileWrapper) {
-                        writeToFromFile(os, (RequestParams.FileWrapper) value);
-                    } else {
-                        writeToFromStream(os, (RequestParams.StreamWrapper) value);
-                    }
-
-                    // End the file's object and prepare for next one.
-                    os.write('}');
-                } else if (value instanceof JsonValueInterface) {
-                    os.write(((JsonValueInterface) value).getEscapedJsonValue());
-                } else if (value instanceof org.json.JSONObject) {
-                    os.write(((org.json.JSONObject) value).toString().getBytes());
-                } else if (value instanceof org.json.JSONArray) {
-                    os.write(((org.json.JSONArray) value).toString().getBytes());
-                } else if (value instanceof Boolean) {
-                    os.write((Boolean) value ? JSON_TRUE : JSON_FALSE);
-                } else if (value instanceof Long) {
-                    os.write((((Number) value).longValue() + "").getBytes());
-                } else if (value instanceof Double) {
-                    os.write((((Number) value).doubleValue() + "").getBytes());
-                } else if (value instanceof Float) {
-                    os.write((((Number) value).floatValue() + "").getBytes());
-                } else if (value instanceof Integer) {
-                    os.write((((Number) value).intValue() + "").getBytes());
+                // Bail out prematurely if value's null.
+                if (value == null) {
+                    os.write(JSON_NULL);
                 } else {
-                    os.write(escape(value.toString()));
+                    // Check if this is a FileWrapper.
+                    isFileWrapper = value instanceof RequestParams.FileWrapper;
+
+                    // If a file should be uploaded.
+                    if (isFileWrapper || value instanceof RequestParams.StreamWrapper) {
+                        // All uploads are sent as an object containing the file's details.
+                        os.write('{');
+
+                        // Determine how to handle this entry.
+                        if (isFileWrapper) {
+                            writeToFromFile(os, (RequestParams.FileWrapper) value);
+                        } else {
+                            writeToFromStream(os, (RequestParams.StreamWrapper) value);
+                        }
+
+                        // End the file's object and prepare for next one.
+                        os.write('}');
+                    } else if (value instanceof JsonValueInterface) {
+                        os.write(((JsonValueInterface) value).getEscapedJsonValue());
+                    } else if (value instanceof org.json.JSONObject) {
+                        os.write(((org.json.JSONObject) value).toString().getBytes());
+                    } else if (value instanceof org.json.JSONArray) {
+                        os.write(((org.json.JSONArray) value).toString().getBytes());
+                    } else if (value instanceof Boolean) {
+                        os.write((Boolean) value ? JSON_TRUE : JSON_FALSE);
+                    } else if (value instanceof Long) {
+                        os.write((((Number) value).longValue() + "").getBytes());
+                    } else if (value instanceof Double) {
+                        os.write((((Number) value).doubleValue() + "").getBytes());
+                    } else if (value instanceof Float) {
+                        os.write((((Number) value).floatValue() + "").getBytes());
+                    } else if (value instanceof Integer) {
+                        os.write((((Number) value).intValue() + "").getBytes());
+                    } else {
+                        os.write(escape(value.toString()));
+                    }
                 }
             } finally {
                 // Separate each K:V with a comma, except the last one.
