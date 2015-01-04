@@ -113,8 +113,8 @@ public class AsyncHttpClient {
     private final Map<String, String> clientHeaderMap;
     private boolean isUrlEncodingEnabled = true;
     // Session stuff
-	private static boolean keepSessionId = false;
-	private static String sessionId;
+    private static boolean keepSessionId = false;
+    private static String sessionId;
 
     /**
      * Creates a new AsyncHttpClient with default constructor arguments values
@@ -241,8 +241,8 @@ public class AsyncHttpClient {
                     Header[] headers = response.getHeaders("Set-Cookie");
                     if (headers != null && headers.length == 1) {
                         sessionId = headers[0].getValue();
-					}
-				}
+                    }	
+                }
                 final HttpEntity entity = response.getEntity();
                 if (entity == null) {
                     return;
@@ -950,23 +950,23 @@ public class AsyncHttpClient {
     }
     
     /**
-	 * @Title: setKeepSessionId
-	 * @Description: set HttpClient communicate with server through the same session or not. By default, not.
-	 * @param keepSession
-	 * @return void
-	 */
-	public static void setKeepSessionId(boolean keepSession) {
-	    keepSessionId = keepSession;
-	}
-
-	/**
-	 * @Title: isKeepSessionId
-	 * @Description: returns boolean keepSessionId which implys whether keeps the session continueous or not.
-	 * @return boolean
-	 */
-	public static boolean isKeepSessionId() {
-	    return keepSessionId;
-	}
+     * @Title: setKeepSessionId
+     * @Description: set HttpClient communicate with server through the same session or not. By default, not.
+     * @param keepSession
+     * @return void
+     */
+     public static void setKeepSessionId(boolean keepSession) {
+     	keepSessionId = keepSession;
+     }
+     
+     /**
+      * @Title: isKeepSessionId
+      * @Description: returns boolean keepSessionId which implys whether keeps the session continueous or not.
+      * @return boolean
+      */
+      public static boolean isKeepSessionId() {
+      	return keepSessionId;
+      }
 
     /**
      * Returns HttpEntity containing data from RequestParams included with request declaration.
