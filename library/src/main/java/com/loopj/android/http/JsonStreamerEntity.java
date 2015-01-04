@@ -18,6 +18,7 @@
 
 package com.loopj.android.http;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.apache.http.Header;
@@ -51,18 +52,12 @@ public class JsonStreamerEntity implements HttpEntity {
     // Buffer used for reading from input streams.
     private final byte[] buffer = new byte[BUFFER_SIZE];
 
-    // Reusable StringBuilder used by escape() method.
-    // Its size is just initial, if more space is needed, the system will
-    // automatically enlarge the buffer.
-    private static final StringBuilder BUILDER = new StringBuilder(128);
-
     private static final byte[] JSON_TRUE = "true".getBytes();
     private static final byte[] JSON_FALSE = "false".getBytes();
     private static final byte[] JSON_NULL = "null".getBytes();
     private static final byte[] STREAM_NAME = escape("name");
     private static final byte[] STREAM_TYPE = escape("type");
     private static final byte[] STREAM_CONTENTS = escape("contents");
-    private static final byte[] STREAM_ELAPSED = escape("_elapsed");
 
     private static final Header HEADER_JSON_CONTENT =
             new BasicHeader(
@@ -80,11 +75,16 @@ public class JsonStreamerEntity implements HttpEntity {
     // Whether to use gzip compression while uploading
     private final Header contentEncoding;
 
+    private final byte[] elapsedField;
+
     private final ResponseHandlerInterface progressHandler;
 
-    public JsonStreamerEntity(ResponseHandlerInterface progressHandler, boolean useGZipCompression) {
+    public JsonStreamerEntity(ResponseHandlerInterface progressHandler, boolean useGZipCompression, String elapsedField) {
         this.progressHandler = progressHandler;
         this.contentEncoding = useGZipCompression ? HEADER_GZIP_ENCODING : null;
+        this.elapsedField = TextUtils.isEmpty(elapsedField)
+          ? null
+          : escape(elapsedField);
     }
 
     /**
@@ -147,7 +147,7 @@ public class JsonStreamerEntity implements HttpEntity {
 
         // Use GZIP compression when sending streams, otherwise just use
         // a buffered output stream to speed things up a bit.
-        OutputStream os = null != contentEncoding
+        OutputStream os = contentEncoding != null
                 ? new GZIPOutputStream(out, BUFFER_SIZE)
                 : out;
 
@@ -157,71 +157,90 @@ public class JsonStreamerEntity implements HttpEntity {
         // Keys used by the HashMaps.
         Set<String> keys = jsonParams.keySet();
 
-        boolean isFileWrapper;
+        int keysCount = keys.size();
+        if (0 < keysCount) {
+            int keysProcessed = 0;
+            boolean isFileWrapper;
 
-        // Go over all keys and handle each's value.
-        for (String key : keys) {
-            // Evaluate the value (which cannot be null).
-            Object value = jsonParams.get(key);
+            // Go over all keys and handle each's value.
+            for (String key : keys) {
+                // Indicate that this key has been processed.
+                keysProcessed++;
 
-            // Bail out prematurely if value's null.
-            if (value == null) {
-                continue;
-            }
+                try {
+                    // Evaluate the value (which cannot be null).
+                    Object value = jsonParams.get(key);
 
-            // Write the JSON object's key.
-            os.write(escape(key));
-            os.write(':');
+                    // Write the JSON object's key.
+                    os.write(escape(key));
+                    os.write(':');
 
-            // Check if this is a FileWrapper.
-            isFileWrapper = value instanceof RequestParams.FileWrapper;
+                    // Bail out prematurely if value's null.
+                    if (value == null) {
+                        os.write(JSON_NULL);
+                    } else {
+                        // Check if this is a FileWrapper.
+                        isFileWrapper = value instanceof RequestParams.FileWrapper;
 
-            // If a file should be uploaded.
-            if (isFileWrapper || value instanceof RequestParams.StreamWrapper) {
-                // All uploads are sent as an object containing the file's details.
-                os.write('{');
+                        // If a file should be uploaded.
+                        if (isFileWrapper || value instanceof RequestParams.StreamWrapper) {
+                            // All uploads are sent as an object containing the file's details.
+                            os.write('{');
 
-                // Determine how to handle this entry.
-                if (isFileWrapper) {
-                    writeToFromFile(os, (RequestParams.FileWrapper) value);
-                } else {
-                    writeToFromStream(os, (RequestParams.StreamWrapper) value);
+                            // Determine how to handle this entry.
+                            if (isFileWrapper) {
+                                writeToFromFile(os, (RequestParams.FileWrapper) value);
+                            } else {
+                                writeToFromStream(os, (RequestParams.StreamWrapper) value);
+                            }
+
+                            // End the file's object and prepare for next one.
+                            os.write('}');
+                        } else if (value instanceof JsonValueInterface) {
+                            os.write(((JsonValueInterface) value).getEscapedJsonValue());
+                        } else if (value instanceof org.json.JSONObject) {
+                            os.write(((org.json.JSONObject) value).toString().getBytes());
+                        } else if (value instanceof org.json.JSONArray) {
+                            os.write(((org.json.JSONArray) value).toString().getBytes());
+                        } else if (value instanceof Boolean) {
+                            os.write((Boolean) value ? JSON_TRUE : JSON_FALSE);
+                        } else if (value instanceof Long) {
+                            os.write((((Number) value).longValue() + "").getBytes());
+                        } else if (value instanceof Double) {
+                            os.write((((Number) value).doubleValue() + "").getBytes());
+                        } else if (value instanceof Float) {
+                            os.write((((Number) value).floatValue() + "").getBytes());
+                        } else if (value instanceof Integer) {
+                            os.write((((Number) value).intValue() + "").getBytes());
+                        } else {
+                            os.write(escape(value.toString()));
+                        }
+                    }
+                } finally {
+                    // Separate each K:V with a comma, except the last one.
+                    if (elapsedField != null || keysProcessed < keysCount) {
+                        os.write(',');
+                    }
                 }
-
-                // End the file's object and prepare for next one.
-                os.write('}');
-            } else if (value instanceof JsonValueInterface) {
-                os.write(((JsonValueInterface) value).getEscapedJsonValue());
-            } else if (value instanceof org.json.JSONObject) {
-                os.write(((org.json.JSONObject) value).toString().getBytes());
-            } else if (value instanceof org.json.JSONArray) {
-                os.write(((org.json.JSONArray) value).toString().getBytes());
-            } else if (value instanceof Boolean) {
-                os.write((Boolean) value ? JSON_TRUE : JSON_FALSE);
-            } else if (value instanceof Long) {
-                os.write((((Number) value).longValue() + "").getBytes());
-            } else if (value instanceof Double) {
-                os.write((((Number) value).doubleValue() + "").getBytes());
-            } else if (value instanceof Float) {
-                os.write((((Number) value).floatValue() + "").getBytes());
-            } else if (value instanceof Integer) {
-                os.write((((Number) value).intValue() + "").getBytes());
-            } else {
-                os.write(escape(value.toString()));
             }
 
-            os.write(',');
+            // Calculate how many milliseconds it took to upload the contents.
+            long elapsedTime = System.currentTimeMillis() - now;
+
+            // Include the elapsed time taken to upload everything.
+            // This might be useful for somebody, but it serves us well since
+            // there will almost always be a ',' as the last sent character.
+            if (elapsedField != null) {
+                os.write(elapsedField);
+                os.write(':');
+                os.write((elapsedTime + "").getBytes());
+            }
+
+            Log.i(LOG_TAG, "Uploaded JSON in " + Math.floor(elapsedTime / 1000) + " seconds");
         }
 
-        // Include the elapsed time taken to upload everything.
-        // This might be useful for somebody, but it serves us well since
-        // there will almost always be a ',' as the last sent character.
-        os.write(STREAM_ELAPSED);
-        os.write(':');
-        long elapsedTime = System.currentTimeMillis() - now;
-        os.write((elapsedTime + "}").getBytes());
-
-        Log.i(LOG_TAG, "Uploaded JSON in " + Math.floor(elapsedTime / 1000) + " seconds");
+        // Close the JSON object.
+        os.write('}');
 
         // Flush the contents up the stream.
         os.flush();
@@ -321,60 +340,57 @@ public class JsonStreamerEntity implements HttpEntity {
             return JSON_NULL;
         }
 
+        // Create a string builder to generate the escaped string.
+        StringBuilder sb = new StringBuilder(128);
+
         // Surround with quotations.
-        BUILDER.append('"');
+        sb.append('"');
 
         int length = string.length(), pos = -1;
         while (++pos < length) {
             char ch = string.charAt(pos);
             switch (ch) {
                 case '"':
-                    BUILDER.append("\\\"");
+                    sb.append("\\\"");
                     break;
                 case '\\':
-                    BUILDER.append("\\\\");
+                    sb.append("\\\\");
                     break;
                 case '\b':
-                    BUILDER.append("\\b");
+                    sb.append("\\b");
                     break;
                 case '\f':
-                    BUILDER.append("\\f");
+                    sb.append("\\f");
                     break;
                 case '\n':
-                    BUILDER.append("\\n");
+                    sb.append("\\n");
                     break;
                 case '\r':
-                    BUILDER.append("\\r");
+                    sb.append("\\r");
                     break;
                 case '\t':
-                    BUILDER.append("\\t");
+                    sb.append("\\t");
                     break;
                 default:
                     // Reference: http://www.unicode.org/versions/Unicode5.1.0/
                     if ((ch >= '\u0000' && ch <= '\u001F') || (ch >= '\u007F' && ch <= '\u009F') || (ch >= '\u2000' && ch <= '\u20FF')) {
                         String intString = Integer.toHexString(ch);
-                        BUILDER.append("\\u");
+                        sb.append("\\u");
                         int intLength = 4 - intString.length();
                         for (int zero = 0; zero < intLength; zero++) {
-                            BUILDER.append('0');
+                            sb.append('0');
                         }
-                        BUILDER.append(intString.toUpperCase(Locale.US));
+                        sb.append(intString.toUpperCase(Locale.US));
                     } else {
-                        BUILDER.append(ch);
+                        sb.append(ch);
                     }
                     break;
             }
         }
 
         // Surround with quotations.
-        BUILDER.append('"');
+        sb.append('"');
 
-        try {
-            return BUILDER.toString().getBytes();
-        } finally {
-            // Empty the String buffer.
-            // This is 20-30% faster than instantiating a new object.
-            BUILDER.setLength(0);
-        }
+        return sb.toString().getBytes();
     }
 }
