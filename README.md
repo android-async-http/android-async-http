@@ -53,9 +53,9 @@ http://loopj.com/android-async-http/
 Recommended Usage
 ------------------------------------
 Codes Example:
-
+```
 public final class AsyncHttpUtil {
-private static final AsyncHttpClient mClient = new AsyncHttpClient();
+	private static final AsyncHttpClient mClient = new AsyncHttpClient();
 	private static PersistentCookieStore mCookie;
 
 	private AsyncHttpUtil() {
@@ -93,4 +93,5 @@ private static final AsyncHttpClient mClient = new AsyncHttpClient();
 			AsyncHttpResponseHandler responseHandler) {
 		return mClient.post(url, params, responseHandler);
 	}
-	}
+}
+```
