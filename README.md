@@ -49,3 +49,48 @@ Documentation, Features and Examples
 Full details and documentation can be found on the project page here:
 
 http://loopj.com/android-async-http/
+
+Recommended Usage
+------------------------------------
+
+public final class AsyncHttpUtil {
+
+	private static final AsyncHttpClient mClient = new AsyncHttpClient();
+	private static PersistentCookieStore mCookie;
+
+	private AsyncHttpUtil() {
+	}
+	
+	public static void setSessionAvailable(boolean sessionAvailable){
+	  mClient.setKeepSessionId(sessionAvailable);
+	}
+
+	public static void addCookie(Context context) {
+		mCookie = new PersistentCookieStore(context);
+		mClient.setCookieStore(mCookie);
+	}
+
+	public static void addHeader(String header, String value) {
+		mClient.addHeader(header, value);
+	}
+
+	public static RequestHandle get(String url,
+			AsyncHttpResponseHandler responseHandler) {
+		return get(url, null, responseHandler);
+	}
+
+	public static RequestHandle get(String url, RequestParams params,
+			AsyncHttpResponseHandler responseHandler) {
+		return mClient.get(url, params, responseHandler);
+	}
+
+	public static RequestHandle post(String url,
+			AsyncHttpResponseHandler responseHandler) {
+		return post(url, null, responseHandler);
+	}
+
+	public static RequestHandle post(String url, RequestParams params,
+			AsyncHttpResponseHandler responseHandler) {
+		return mClient.post(url, params, responseHandler);
+	}
+}
