@@ -40,9 +40,7 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.RedirectHandler;
-import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -901,6 +899,23 @@ public class AsyncHttpClient {
                 context);
     }
 
+    /**
+     * Perform a HTTP GET request and track the Android Context which initiated the request.
+     *
+     * @param context         the Android Context which initiated the request.
+     * @param url             the URL to send the request to.
+     * @param entity          a raw {@link org.apache.http.HttpEntity} to send with the request, for
+     *                        example, use this to send string/json/xml payloads to a server by
+     *                        passing a {@link org.apache.http.entity.StringEntity}.
+     * @param contentType     the content type of the payload you are sending, for example
+     *                        application/json if sending a json payload.
+     * @param responseHandler the response ha   ndler instance that should handle the response.
+     * @return RequestHandle of future request process
+     */
+    public RequestHandle get(Context context, String url, HttpEntity entity, String contentType, ResponseHandlerInterface responseHandler) {
+        return sendRequest(httpClient, httpContext, addEntityToRequestBase(new HttpGet(URI.create(url).normalize()), entity), contentType, responseHandler, context);
+    }
+
     // [-] HTTP GET
     // [+] HTTP POST
 
@@ -1216,6 +1231,23 @@ public class AsyncHttpClient {
         HttpDelete httpDelete = new HttpDelete(getUrlWithQueryString(isUrlEncodingEnabled, url, params));
         if (headers != null) httpDelete.setHeaders(headers);
         return sendRequest(httpClient, httpContext, httpDelete, null, responseHandler, context);
+    }
+
+    /**
+     * Perform a HTTP DELETE request and track the Android Context which initiated the request.
+     *
+     * @param context         the Android Context which initiated the request.
+     * @param url             the URL to send the request to.
+     * @param entity          a raw {@link org.apache.http.HttpEntity} to send with the request, for
+     *                        example, use this to send string/json/xml payloads to a server by
+     *                        passing a {@link org.apache.http.entity.StringEntity}.
+     * @param contentType     the content type of the payload you are sending, for example
+     *                        application/json if sending a json payload.
+     * @param responseHandler the response ha   ndler instance that should handle the response.
+     * @return RequestHandle of future request process
+     */
+    public RequestHandle delete(Context context, String url, HttpEntity entity, String contentType, ResponseHandlerInterface responseHandler) {
+        return sendRequest(httpClient, httpContext, addEntityToRequestBase(new HttpDelete(URI.create(url).normalize()), entity), contentType, responseHandler, context);
     }
 
     // [-] HTTP DELETE
