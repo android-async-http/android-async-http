@@ -158,87 +158,89 @@ public class JsonStreamerEntity implements HttpEntity {
         Set<String> keys = jsonParams.keySet();
 
         int keysCount = keys.size();
-        int keysProcessed = -1;
-        boolean isFileWrapper;
+        if (0 < keysCount) {
+            int keysProcessed = 0;
+            boolean isFileWrapper;
 
-        // Go over all keys and handle each's value.
-        for (String key : keys) {
-            // Indicate that this key has been processed.
-            keysProcessed++;
+            // Go over all keys and handle each's value.
+            for (String key : keys) {
+                // Indicate that this key has been processed.
+                keysProcessed++;
 
-            try {
-                // Evaluate the value (which cannot be null).
-                Object value = jsonParams.get(key);
+                try {
+                    // Evaluate the value (which cannot be null).
+                    Object value = jsonParams.get(key);
 
-                // Write the JSON object's key.
-                os.write(escape(key));
-                os.write(':');
+                    // Write the JSON object's key.
+                    os.write(escape(key));
+                    os.write(':');
 
-                // Bail out prematurely if value's null.
-                if (value == null) {
-                    os.write(JSON_NULL);
-                } else {
-                    // Check if this is a FileWrapper.
-                    isFileWrapper = value instanceof RequestParams.FileWrapper;
-
-                    // If a file should be uploaded.
-                    if (isFileWrapper || value instanceof RequestParams.StreamWrapper) {
-                        // All uploads are sent as an object containing the file's details.
-                        os.write('{');
-
-                        // Determine how to handle this entry.
-                        if (isFileWrapper) {
-                            writeToFromFile(os, (RequestParams.FileWrapper) value);
-                        } else {
-                            writeToFromStream(os, (RequestParams.StreamWrapper) value);
-                        }
-
-                        // End the file's object and prepare for next one.
-                        os.write('}');
-                    } else if (value instanceof JsonValueInterface) {
-                        os.write(((JsonValueInterface) value).getEscapedJsonValue());
-                    } else if (value instanceof org.json.JSONObject) {
-                        os.write(((org.json.JSONObject) value).toString().getBytes());
-                    } else if (value instanceof org.json.JSONArray) {
-                        os.write(((org.json.JSONArray) value).toString().getBytes());
-                    } else if (value instanceof Boolean) {
-                        os.write((Boolean) value ? JSON_TRUE : JSON_FALSE);
-                    } else if (value instanceof Long) {
-                        os.write((((Number) value).longValue() + "").getBytes());
-                    } else if (value instanceof Double) {
-                        os.write((((Number) value).doubleValue() + "").getBytes());
-                    } else if (value instanceof Float) {
-                        os.write((((Number) value).floatValue() + "").getBytes());
-                    } else if (value instanceof Integer) {
-                        os.write((((Number) value).intValue() + "").getBytes());
+                    // Bail out prematurely if value's null.
+                    if (value == null) {
+                        os.write(JSON_NULL);
                     } else {
-                        os.write(escape(value.toString()));
+                        // Check if this is a FileWrapper.
+                        isFileWrapper = value instanceof RequestParams.FileWrapper;
+
+                        // If a file should be uploaded.
+                        if (isFileWrapper || value instanceof RequestParams.StreamWrapper) {
+                            // All uploads are sent as an object containing the file's details.
+                            os.write('{');
+
+                            // Determine how to handle this entry.
+                            if (isFileWrapper) {
+                                writeToFromFile(os, (RequestParams.FileWrapper) value);
+                            } else {
+                                writeToFromStream(os, (RequestParams.StreamWrapper) value);
+                            }
+
+                            // End the file's object and prepare for next one.
+                            os.write('}');
+                        } else if (value instanceof JsonValueInterface) {
+                            os.write(((JsonValueInterface) value).getEscapedJsonValue());
+                        } else if (value instanceof org.json.JSONObject) {
+                            os.write(((org.json.JSONObject) value).toString().getBytes());
+                        } else if (value instanceof org.json.JSONArray) {
+                            os.write(((org.json.JSONArray) value).toString().getBytes());
+                        } else if (value instanceof Boolean) {
+                            os.write((Boolean) value ? JSON_TRUE : JSON_FALSE);
+                        } else if (value instanceof Long) {
+                            os.write((((Number) value).longValue() + "").getBytes());
+                        } else if (value instanceof Double) {
+                            os.write((((Number) value).doubleValue() + "").getBytes());
+                        } else if (value instanceof Float) {
+                            os.write((((Number) value).floatValue() + "").getBytes());
+                        } else if (value instanceof Integer) {
+                            os.write((((Number) value).intValue() + "").getBytes());
+                        } else {
+                            os.write(escape(value.toString()));
+                        }
+                    }
+                } finally {
+                    // Separate each K:V with a comma, except the last one.
+                    if (elapsedField != null || keysProcessed < keysCount) {
+                        os.write(',');
                     }
                 }
-            } finally {
-                // Separate each K:V with a comma, except the last one.
-                if (elapsedField != null || keysProcessed < keysCount) {
-                    os.write(',');
-                }
             }
-        }
 
-        // Calculate how many milliseconds it took to upload the contents.
-        long elapsedTime = System.currentTimeMillis() - now;
+            // Calculate how many milliseconds it took to upload the contents.
+            long elapsedTime = System.currentTimeMillis() - now;
 
-        // Include the elapsed time taken to upload everything.
-        // This might be useful for somebody, but it serves us well since
-        // there will almost always be a ',' as the last sent character.
-        if (elapsedField != null) {
-            os.write(elapsedField);
-            os.write(':');
-            os.write((elapsedTime + "").getBytes());
+            // Include the elapsed time taken to upload everything.
+            // This might be useful for somebody, but it serves us well since
+            // there will almost always be a ',' as the last sent character.
+            if (elapsedField != null) {
+                os.write(elapsedField);
+                os.write(':');
+                os.write((elapsedTime + "").getBytes());
+            }
+
+            Log.i(LOG_TAG, "Uploaded JSON in " + Math.floor(elapsedTime / 1000) + " seconds");
         }
 
         // Close the JSON object.
         os.write('}');
-
-        Log.i(LOG_TAG, "Uploaded JSON in " + Math.floor(elapsedTime / 1000) + " seconds");
 
         // Flush the contents up the stream.
         os.flush();
