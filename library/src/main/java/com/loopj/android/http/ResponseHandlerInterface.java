@@ -20,6 +20,7 @@ package com.loopj.android.http;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
 
 import java.io.IOException;
 import java.net.URI;
@@ -28,7 +29,8 @@ import java.net.URI;
  * Interface to standardize implementations
  */
 public interface ResponseHandlerInterface {
-
+	
+	
     /**
      * Returns data whether request completed successfully
      *
@@ -92,6 +94,8 @@ public interface ResponseHandlerInterface {
      * @return uri of origin request
      */
     public URI getRequestURI();
+    
+  
 
     /**
      * Returns Header[] which were used to request
@@ -113,7 +117,16 @@ public interface ResponseHandlerInterface {
      * @param requestHeaders Headers, claimed to be from original request
      */
     public void setRequestHeaders(Header[] requestHeaders);
-
+    /**
+     * settings cache is open
+     * @param status
+     */
+     void setOpenCache(boolean status);
+    /**
+     * get cache status
+     * @return
+     */
+    public boolean getCacheStatus();
     /**
      * Can set, whether the handler should be asynchronous or synchronous
      *
