@@ -58,7 +58,6 @@ public class JsonStreamerEntity implements HttpEntity {
     private static final byte[] STREAM_NAME = escape("name");
     private static final byte[] STREAM_TYPE = escape("type");
     private static final byte[] STREAM_CONTENTS = escape("contents");
-    private static final byte[] STREAM_ELAPSED = escape("_elapsed");
 
     private static final Header HEADER_JSON_CONTENT =
             new BasicHeader(
@@ -76,14 +75,16 @@ public class JsonStreamerEntity implements HttpEntity {
     // Whether to use gzip compression while uploading
     private final Header contentEncoding;
 
-    private final String elapsedField;
+    private final byte[] elapsedField;
 
     private final ResponseHandlerInterface progressHandler;
 
     public JsonStreamerEntity(ResponseHandlerInterface progressHandler, boolean useGZipCompression, String elapsedField) {
         this.progressHandler = progressHandler;
         this.contentEncoding = useGZipCompression ? HEADER_GZIP_ENCODING : null;
-        this.elapsedField = elapsedField;
+        this.elapsedField = TextUtils.isEmpty(elapsedField)
+          ? null
+          : escape(elapsedField);
     }
 
     /**
@@ -146,7 +147,7 @@ public class JsonStreamerEntity implements HttpEntity {
 
         // Use GZIP compression when sending streams, otherwise just use
         // a buffered output stream to speed things up a bit.
-        OutputStream os = null != contentEncoding
+        OutputStream os = contentEncoding != null
                 ? new GZIPOutputStream(out, BUFFER_SIZE)
                 : out;
 
@@ -216,7 +217,7 @@ public class JsonStreamerEntity implements HttpEntity {
                 }
             } finally {
                 // Separate each K:V with a comma, except the last one.
-                if (!TextUtils.isEmpty(elapsedField) || keysProcessed < keysCount) {
+                if (elapsedField != null || keysProcessed < keysCount) {
                     os.write(',');
                 }
             }
@@ -228,8 +229,8 @@ public class JsonStreamerEntity implements HttpEntity {
         // Include the elapsed time taken to upload everything.
         // This might be useful for somebody, but it serves us well since
         // there will almost always be a ',' as the last sent character.
-        if (!TextUtils.isEmpty(elapsedField)) {
-            os.write(STREAM_ELAPSED);
+        if (elapsedField != null) {
+            os.write(elapsedField);
             os.write(':');
             os.write((elapsedTime + "").getBytes());
         }
