@@ -99,6 +99,7 @@ public class RequestParams implements Serializable {
     protected final static String LOG_TAG = "RequestParams";
     protected boolean isRepeatable;
     protected boolean useJsonStreamer;
+    protected String elapsedFieldInJsonStreamer = "_elapsed";
     protected boolean autoCloseInputStreams;
     protected final ConcurrentHashMap<String, String> urlParams = new ConcurrentHashMap<String, String>();
     protected final ConcurrentHashMap<String, StreamWrapper> streamParams = new ConcurrentHashMap<String, StreamWrapper>();
@@ -412,12 +413,25 @@ public class RequestParams implements Serializable {
         return result.toString();
     }
 
-    public void setHttpEntityIsRepeatable(boolean isRepeatable) {
-        this.isRepeatable = isRepeatable;
+    public void setHttpEntityIsRepeatable(boolean flag) {
+        this.isRepeatable = flag;
     }
 
-    public void setUseJsonStreamer(boolean useJsonStreamer) {
-        this.useJsonStreamer = useJsonStreamer;
+    public void setUseJsonStreamer(boolean flag) {
+        this.useJsonStreamer = flag;
+    }
+
+    /**
+     * Sets an additional field when upload a JSON object through the streamer
+     * to hold the time, in milliseconds, it took to upload the payload. By
+     * default, this field is set to "_elapsed".
+     *
+     * To disable this feature, call this method with null as the field value.
+     *
+     * @param value field name to add elapsed time, or null to disable
+     */
+    public void setElapsedFieldInJsonStreamer(String value) {
+        this.elapsedFieldInJsonStreamer = value;
     }
 
     /**
@@ -449,8 +463,10 @@ public class RequestParams implements Serializable {
     }
 
     private HttpEntity createJsonStreamerEntity(ResponseHandlerInterface progressHandler) throws IOException {
-        JsonStreamerEntity entity = new JsonStreamerEntity(progressHandler,
-                !fileParams.isEmpty() || !streamParams.isEmpty());
+        JsonStreamerEntity entity = new JsonStreamerEntity(
+            progressHandler,
+            !fileParams.isEmpty() || !streamParams.isEmpty(),
+            elapsedFieldInJsonStreamer);
 
         // Add string params
         for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
