@@ -21,6 +21,7 @@ package com.loopj.android.http;
 import android.util.Log;
 
 import org.apache.http.Header;
+import org.apache.http.HttpException;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -79,6 +80,18 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
 
     /**
      * Returns when request failed
+     * This is called on every request that fails. No matter the error type.
+     *
+     * @param statusCode    http response status line
+     * @param headers       response headers if any
+     * @param throwable     throwable describing the way request failed
+     */
+    public void onFailure(int statusCode, Header[] headers, Throwable throwable) {
+        Log.w(LOG_TAG, "onFailure(int, Header[], Throwable) was not overriden, but callback was received", throwable);
+    }
+
+    /**
+     * Returns when request failed
      *
      * @param statusCode    http response status line
      * @param headers       response headers if any
@@ -122,16 +135,25 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                         postRunnable(new Runnable() {
                             @Override
                             public void run() {
+                                boolean requestFailed = false;
+
                                 if (jsonResponse instanceof JSONObject) {
                                     onSuccess(statusCode, headers, (JSONObject) jsonResponse);
                                 } else if (jsonResponse instanceof JSONArray) {
                                     onSuccess(statusCode, headers, (JSONArray) jsonResponse);
                                 } else if (jsonResponse instanceof String) {
                                     onFailure(statusCode, headers, (String) jsonResponse, new JSONException("Response cannot be parsed as JSON data"));
+                                    requestFailed = true;
                                 } else {
                                     onFailure(statusCode, headers, new JSONException("Unexpected response type " + jsonResponse.getClass().getName()), (JSONObject) null);
+                                    requestFailed = true;
                                 }
 
+                                if (requestFailed) {
+                                    // Call handler for every failure case
+                                    // Response might not be important in some error cases
+                                    onFailure(statusCode, headers, new HttpException("Request could not be completed"));
+                                }
                             }
                         });
                     } catch (final JSONException ex) {
@@ -139,6 +161,9 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                             @Override
                             public void run() {
                                 onFailure(statusCode, headers, ex, (JSONObject) null);
+                                // Call handler for every failure case
+                                // Response might not be important in some error cases
+                                onFailure(statusCode, headers, ex);
                             }
                         });
                     }
@@ -187,6 +212,10 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                         });
 
                     }
+
+                    // Call handler for every failure case
+                    // Response might not be important in some error cases
+                    onFailure(statusCode, headers, throwable);
                 }
             };
             if (!getUseSynchronousMode() && !getUsePoolThread()) {
