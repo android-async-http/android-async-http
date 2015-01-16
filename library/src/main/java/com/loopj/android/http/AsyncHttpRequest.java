@@ -152,21 +152,33 @@ public class AsyncHttpRequest implements Runnable {
         }
 
         // Carry out pre-processing for this response.
-        responseHandler.onPreProcessResponse(responseHandler, response);
+        try {
+          responseHandler.onPreProcessResponse(responseHandler, response);
+        } catch(Throwable error) {
+          reportUserCodeError("onPreProcessResponse", error);
+        }
 
         if (isCancelled()) {
             return;
         }
 
         // The response is ready, handle it.
-        responseHandler.sendResponseMessage(response);
+        try {
+          responseHandler.sendResponseMessage(response);
+        } catch(Throwable error) {
+          reportUserCodeError("sendResponseMessage", error);
+        }
 
         if (isCancelled()) {
             return;
         }
 
         // Carry out post-processing for this response.
-        responseHandler.onPostProcessResponse(responseHandler, response);
+        try {
+          responseHandler.onPostProcessResponse(responseHandler, response);
+        } catch(Throwable error) {
+          reportUserCodeError("onPostProcessResponse", error);
+        }
     }
 
     private void makeRequestWithRetries() throws IOException {
@@ -210,6 +222,16 @@ public class AsyncHttpRequest implements Runnable {
 
         // cleaned up to throw IOException
         throw (cause);
+    }
+
+    private void reportUserCodeError(String where, Throwable error) {
+        Log.e(
+            "AsyncHttpRequest",
+            "Unhandled exception in user code while processing '" +
+                where +
+            "' handler",
+            error
+        );
     }
 
     public boolean isCancelled() {
