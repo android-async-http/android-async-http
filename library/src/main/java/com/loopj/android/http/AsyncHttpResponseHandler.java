@@ -307,6 +307,11 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         Log.d(LOG_TAG, "Request got cancelled");
     }
 
+    public void onUserException(Throwable error) {
+        Log.e(LOG_TAG, "User-space exception detected!", error);
+        throw new RuntimeException(error);
+    }
+
     @Override
     final public void sendProgressMessage(int bytesWritten, int bytesTotal) {
         sendMessage(obtainMessage(PROGRESS_MESSAGE, new Object[]{bytesWritten, bytesTotal}));
@@ -346,52 +351,56 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     protected void handleMessage(Message message) {
         Object[] response;
 
-        switch (message.what) {
-            case SUCCESS_MESSAGE:
-                response = (Object[]) message.obj;
-                if (response != null && response.length >= 3) {
-                    onSuccess((Integer) response[0], (Header[]) response[1], (byte[]) response[2]);
-                } else {
-                    Log.e(LOG_TAG, "SUCCESS_MESSAGE didn't got enough params");
-                }
-                break;
-            case FAILURE_MESSAGE:
-                response = (Object[]) message.obj;
-                if (response != null && response.length >= 4) {
-                    onFailure((Integer) response[0], (Header[]) response[1], (byte[]) response[2], (Throwable) response[3]);
-                } else {
-                    Log.e(LOG_TAG, "FAILURE_MESSAGE didn't got enough params");
-                }
-                break;
-            case START_MESSAGE:
-                onStart();
-                break;
-            case FINISH_MESSAGE:
-                onFinish();
-                break;
-            case PROGRESS_MESSAGE:
-                response = (Object[]) message.obj;
-                if (response != null && response.length >= 2) {
-                    try {
-                        onProgress((Integer) response[0], (Integer) response[1]);
-                    } catch (Throwable t) {
-                        Log.e(LOG_TAG, "custom onProgress contains an error", t);
+        try {
+            switch (message.what) {
+                case SUCCESS_MESSAGE:
+                    response = (Object[]) message.obj;
+                    if (response != null && response.length >= 3) {
+                        onSuccess((Integer) response[0], (Header[]) response[1], (byte[]) response[2]);
+                    } else {
+                        Log.e(LOG_TAG, "SUCCESS_MESSAGE didn't got enough params");
                     }
-                } else {
-                    Log.e(LOG_TAG, "PROGRESS_MESSAGE didn't got enough params");
-                }
-                break;
-            case RETRY_MESSAGE:
-                response = (Object[]) message.obj;
-                if (response != null && response.length == 1) {
-                    onRetry((Integer) response[0]);
-                } else {
-                    Log.e(LOG_TAG, "RETRY_MESSAGE didn't get enough params");
-                }
-                break;
-            case CANCEL_MESSAGE:
-                onCancel();
-                break;
+                    break;
+                case FAILURE_MESSAGE:
+                    response = (Object[]) message.obj;
+                    if (response != null && response.length >= 4) {
+                        onFailure((Integer) response[0], (Header[]) response[1], (byte[]) response[2], (Throwable) response[3]);
+                    } else {
+                        Log.e(LOG_TAG, "FAILURE_MESSAGE didn't got enough params");
+                    }
+                    break;
+                case START_MESSAGE:
+                    onStart();
+                    break;
+                case FINISH_MESSAGE:
+                    onFinish();
+                    break;
+                case PROGRESS_MESSAGE:
+                    response = (Object[]) message.obj;
+                    if (response != null && response.length >= 2) {
+                        try {
+                            onProgress((Integer) response[0], (Integer) response[1]);
+                        } catch (Throwable t) {
+                            Log.e(LOG_TAG, "custom onProgress contains an error", t);
+                        }
+                    } else {
+                        Log.e(LOG_TAG, "PROGRESS_MESSAGE didn't got enough params");
+                    }
+                    break;
+                case RETRY_MESSAGE:
+                    response = (Object[]) message.obj;
+                    if (response != null && response.length == 1) {
+                        onRetry((Integer) response[0]);
+                    } else {
+                        Log.e(LOG_TAG, "RETRY_MESSAGE didn't get enough params");
+                    }
+                    break;
+                case CANCEL_MESSAGE:
+                    onCancel();
+                    break;
+            }
+        } catch(Throwable error) {
+            onUserException(error);
         }
     }
 
