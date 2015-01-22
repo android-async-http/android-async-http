@@ -122,16 +122,17 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                         postRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                if (jsonResponse instanceof JSONObject) {
+                                if(jsonResponse == null){
+                                    onSuccess(statusCode, headers, (String) jsonResponse);
+                                }else if (jsonResponse instanceof JSONObject) {
                                     onSuccess(statusCode, headers, (JSONObject) jsonResponse);
                                 } else if (jsonResponse instanceof JSONArray) {
                                     onSuccess(statusCode, headers, (JSONArray) jsonResponse);
                                 } else if (jsonResponse instanceof String) {
-                                    onFailure(statusCode, headers, (String) jsonResponse, new JSONException("Response cannot be parsed as JSON data"));
+                                    onSuccess(statusCode, headers, (String) jsonResponse);
                                 } else {
                                     onFailure(statusCode, headers, new JSONException("Unexpected response type " + jsonResponse.getClass().getName()), (JSONObject) null);
                                 }
-
                             }
                         });
                     } catch (final JSONException ex) {
@@ -166,7 +167,9 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                         postRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                if (jsonResponse instanceof JSONObject) {
+                                if (jsonResponse == null){
+                                    onFailure(statusCode, headers, (String) jsonResponse, throwable);
+                                }else if (jsonResponse instanceof JSONObject) {
                                     onFailure(statusCode, headers, throwable, (JSONObject) jsonResponse);
                                 } else if (jsonResponse instanceof JSONArray) {
                                     onFailure(statusCode, headers, throwable, (JSONArray) jsonResponse);
@@ -220,13 +223,20 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
             if (jsonString.startsWith(UTF8_BOM)) {
                 jsonString = jsonString.substring(1);
             }
-            if (jsonString.startsWith("{") || jsonString.startsWith("[")) {
+            // Check if the string is an JSONObject style {} or JSONArray style []
+            // If not we consider this as a string
+            if (( jsonString.startsWith("{") && jsonString.endsWith("}") )
+                    || jsonString.startsWith("[") && jsonString.endsWith("]") ) {
                 result = new JSONTokener(jsonString).nextValue();
+                return result;
+            }
+            // Check if this is a String "my String value" and remove quote
+            // Other value type (numerical, boolean) should be without quote
+            else if ( jsonString.startsWith("\"") && jsonString.endsWith("\"") ){
+                result = jsonString.substring(1,jsonString.length()-1);
+                return result;
             }
         }
-        if (result == null) {
-            result = jsonString;
-        }
-        return result;
+        return jsonString;
     }
 }
