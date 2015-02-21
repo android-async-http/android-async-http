@@ -425,7 +425,6 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 runnable.run();
             } else {
                 // Otherwise, run on provided handler
-                Utils.asserts(handler != null, "handler should not be null!");
                 handler.post(runnable);
             }
         }
