@@ -71,7 +71,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
     /**
      * Creates new JsonHttpResponseHandler with given JSON String encoding and RFC5179CompatibilityMode
      *
-     * @param encoding String encoding to be used when parsing JSON
+     * @param encoding                    String encoding to be used when parsing JSON
      * @param useRFC5179CompatibilityMode Boolean mode to use RFC5179 or latest
      */
     public JsonHttpResponseHandler(String encoding, boolean useRFC5179CompatibilityMode) {
@@ -147,17 +147,17 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                             @Override
                             public void run() {
                                 // In RFC5179 a null value is not a valid JSON
-                                if(!useRFC5179CompatibilityMode && jsonResponse == null){
+                                if (!useRFC5179CompatibilityMode && jsonResponse == null) {
                                     onSuccess(statusCode, headers, (String) jsonResponse);
-                                }else if (jsonResponse instanceof JSONObject) {
+                                } else if (jsonResponse instanceof JSONObject) {
                                     onSuccess(statusCode, headers, (JSONObject) jsonResponse);
                                 } else if (jsonResponse instanceof JSONArray) {
                                     onSuccess(statusCode, headers, (JSONArray) jsonResponse);
                                 } else if (jsonResponse instanceof String) {
                                     // In RFC5179 a simple string value is not a valid JSON
-                                    if ( useRFC5179CompatibilityMode){
+                                    if (useRFC5179CompatibilityMode) {
                                         onFailure(statusCode, headers, (String) jsonResponse, new JSONException("Response cannot be parsed as JSON data"));
-                                    }else{
+                                    } else {
                                         onSuccess(statusCode, headers, (String) jsonResponse);
                                     }
                                 } else {
@@ -198,9 +198,9 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                             @Override
                             public void run() {
                                 // In RFC5179 a null value is not a valid JSON
-                                if (!useRFC5179CompatibilityMode && jsonResponse == null){
+                                if (!useRFC5179CompatibilityMode && jsonResponse == null) {
                                     onFailure(statusCode, headers, (String) jsonResponse, throwable);
-                                }else if (jsonResponse instanceof JSONObject) {
+                                } else if (jsonResponse instanceof JSONObject) {
                                     onFailure(statusCode, headers, throwable, (JSONObject) jsonResponse);
                                 } else if (jsonResponse instanceof JSONArray) {
                                     onFailure(statusCode, headers, throwable, (JSONArray) jsonResponse);
@@ -251,24 +251,21 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
         String jsonString = getResponseString(responseBody, getCharset());
         if (jsonString != null) {
             jsonString = jsonString.trim();
-            if (jsonString.startsWith(UTF8_BOM)) {
-                jsonString = jsonString.substring(1);
-            }
-            if ( useRFC5179CompatibilityMode){
+            if (useRFC5179CompatibilityMode) {
                 if (jsonString.startsWith("{") || jsonString.startsWith("[")) {
                     result = new JSONTokener(jsonString).nextValue();
                 }
-            }else{
+            } else {
                 // Check if the string is an JSONObject style {} or JSONArray style []
                 // If not we consider this as a string
-                if (( jsonString.startsWith("{") && jsonString.endsWith("}") )
-                        || jsonString.startsWith("[") && jsonString.endsWith("]") ) {
+                if ((jsonString.startsWith("{") && jsonString.endsWith("}"))
+                        || jsonString.startsWith("[") && jsonString.endsWith("]")) {
                     result = new JSONTokener(jsonString).nextValue();
                 }
                 // Check if this is a String "my String value" and remove quote
                 // Other value type (numerical, boolean) should be without quote
-                else if ( jsonString.startsWith("\"") && jsonString.endsWith("\"") ){
-                    result = jsonString.substring(1,jsonString.length()-1);
+                else if (jsonString.startsWith("\"") && jsonString.endsWith("\"")) {
+                    result = jsonString.substring(1, jsonString.length() - 1);
                 }
             }
         }
