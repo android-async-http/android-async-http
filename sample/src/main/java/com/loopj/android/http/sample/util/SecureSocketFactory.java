@@ -45,6 +45,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
@@ -166,7 +167,12 @@ public class SecureSocketFactory extends SSLSocketFactory {
             throws IOException {
 
         injectHostname(socket, host);
-        return sslCtx.getSocketFactory().createSocket(socket, host, port, autoClose);
+        Socket sslSocket = sslCtx.getSocketFactory().createSocket(socket, host, port, autoClose);
+        
+        // throw an exception if the hostname does not match the certificate
+        getHostnameVerifier().verify(host, (SSLSocket) sslSocket);
+        
+        return sslSocket;
     }
 
     @Override
