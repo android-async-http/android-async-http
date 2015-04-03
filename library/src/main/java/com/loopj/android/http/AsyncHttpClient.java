@@ -1309,9 +1309,10 @@ public class AsyncHttpClient {
         RequestHandle requestHandle = new RequestHandle(request);
 
         if (context != null) {
+            List<RequestHandle> requestList;
             // Add request to request map
-            List<RequestHandle> requestList = requestMap.get(context);
             synchronized (requestMap) {
+                requestList = requestMap.get(context);
                 if (requestList == null) {
                     requestList = Collections.synchronizedList(new LinkedList<RequestHandle>());
                     requestMap.put(context, requestList);
