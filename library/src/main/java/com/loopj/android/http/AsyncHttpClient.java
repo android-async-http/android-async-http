@@ -634,10 +634,10 @@ public class AsyncHttpClient {
      *
      * @param username  Basic Auth username
      * @param password  Basic Auth password
-     * @param preemtive sets authorization in preemtive manner
+     * @param preemptive sets authorization in preemptive manner
      */
-    public void setBasicAuth(String username, String password, boolean preemtive) {
-        setBasicAuth(username, password, null, preemtive);
+    public void setBasicAuth(String username, String password, boolean preemptive) {
+        setBasicAuth(username, password, null, preemptive);
     }
 
     /**
@@ -659,12 +659,12 @@ public class AsyncHttpClient {
      * @param username  Basic Auth username
      * @param password  Basic Auth password
      * @param scope     an AuthScope object
-     * @param preemtive sets authorization in preemtive manner
+     * @param preemptive sets authorization in preemptive manner
      */
-    public void setBasicAuth(String username, String password, AuthScope scope, boolean preemtive) {
+    public void setBasicAuth(String username, String password, AuthScope scope, boolean preemptive) {
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
         setCredentials(scope, credentials);
-        setAuthenticationPreemptive(preemtive);
+        setAuthenticationPreemptive(preemptive);
     }
 
     public void setCredentials(AuthScope authScope, Credentials credentials) {
@@ -676,16 +676,16 @@ public class AsyncHttpClient {
     }
 
     /**
-     * Sets HttpRequestInterceptor which handles authorization in preemtive way, as workaround you
+     * Sets HttpRequestInterceptor which handles authorization in preemptive way, as workaround you
      * can use call `AsyncHttpClient.addHeader("Authorization","Basic base64OfUsernameAndPassword==")`
      *
-     * @param isPreemtive whether the authorization is processed in preemtive way
+     * @param isPreemptive whether the authorization is processed in preemptive way
      */
-    public void setAuthenticationPreemptive(boolean isPreemtive) {
-        if (isPreemtive) {
-            httpClient.addRequestInterceptor(new PreemtiveAuthorizationHttpRequestInterceptor(), 0);
+    public void setAuthenticationPreemptive(boolean isPreemptive) {
+        if (isPreemptive) {
+            httpClient.addRequestInterceptor(new PreemptiveAuthorizationHttpRequestInterceptor(), 0);
         } else {
-            httpClient.removeRequestInterceptorByClass(PreemtiveAuthorizationHttpRequestInterceptor.class);
+            httpClient.removeRequestInterceptorByClass(PreemptiveAuthorizationHttpRequestInterceptor.class);
         }
     }
 
