@@ -33,7 +33,7 @@ import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
 
-public class PreemtiveAuthorizationHttpRequestInterceptor implements HttpRequestInterceptor {
+public class PreemptiveAuthorizationHttpRequestInterceptor implements HttpRequestInterceptor {
 
     public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
         AuthState authState = (AuthState) context.getAttribute(ClientContext.TARGET_AUTH_STATE);
