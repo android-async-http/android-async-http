@@ -721,22 +721,28 @@ public class AsyncHttpClient {
             Log.e(LOG_TAG, "Passed null Context to cancelRequests");
             return;
         }
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                List<RequestHandle> requestList = requestMap.get(context);
-                if (requestList != null) {
-                    for (RequestHandle requestHandle : requestList) {
-                        requestHandle.cancel(mayInterruptIfRunning);
-                    }
-                    requestMap.remove(context);
-                }
-            }
-        };
+
+        final List<RequestHandle> requestList = requestMap.get(context);
+        requestMap.remove(context);
+
         if (Looper.myLooper() == Looper.getMainLooper()) {
-            new Thread(r).start();
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    cancelRequests(requestList, mayInterruptIfRunning);
+                }
+            };
+            threadPool.submit(runnable);
         } else {
-            r.run();
+            cancelRequests(requestList, mayInterruptIfRunning);
+        }
+    }
+
+    private void cancelRequests(final List<RequestHandle> requestList, final boolean mayInterruptIfRunning) {
+        if (requestList != null) {
+            for (RequestHandle requestHandle : requestList) {
+                requestHandle.cancel(mayInterruptIfRunning);
+            }
         }
     }
 
