@@ -78,6 +78,7 @@ import java.net.URI;
  * });
  * </pre>
  */
+@SuppressWarnings("ALL")
 public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterface {
 
     private static final String LOG_TAG = "AsyncHttpResponseHandler";
@@ -246,7 +247,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @param bytesWritten offset from start of file
      * @param totalSize    total size of file
      */
-    public void onProgress(int bytesWritten, int totalSize) {
+    public void onProgress(long bytesWritten, long totalSize) {
         Log.v(LOG_TAG, String.format("Progress %d from %d (%2.0f%%)", bytesWritten, totalSize, (totalSize > 0) ? (bytesWritten * 1.0 / totalSize) * 100 : -1));
     }
 
@@ -313,7 +314,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     @Override
-    final public void sendProgressMessage(int bytesWritten, int bytesTotal) {
+    final public void sendProgressMessage(long bytesWritten, long bytesTotal) {
         sendMessage(obtainMessage(PROGRESS_MESSAGE, new Object[]{bytesWritten, bytesTotal}));
     }
 
@@ -379,7 +380,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                     response = (Object[]) message.obj;
                     if (response != null && response.length >= 2) {
                         try {
-                            onProgress((Integer) response[0], (Integer) response[1]);
+                            onProgress((Long) response[0], (Long) response[1]);
                         } catch (Throwable t) {
                             Log.e(LOG_TAG, "custom onProgress contains an error", t);
                         }
@@ -480,12 +481,13 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                     ByteArrayBuffer buffer = new ByteArrayBuffer(buffersize);
                     try {
                         byte[] tmp = new byte[BUFFER_SIZE];
-                        int l, count = 0;
+                        long count = 0;
+                        int l;
                         // do not send messages if request has been cancelled
                         while ((l = instream.read(tmp)) != -1 && !Thread.currentThread().isInterrupted()) {
                             count += l;
                             buffer.append(tmp, 0, l);
-                            sendProgressMessage(count, (int) (contentLength <= 0 ? 1 : contentLength));
+                            sendProgressMessage(count, (contentLength <= 0 ? 1 : contentLength));
                         }
                     } finally {
                         AsyncHttpClient.silentCloseInputStream(instream);

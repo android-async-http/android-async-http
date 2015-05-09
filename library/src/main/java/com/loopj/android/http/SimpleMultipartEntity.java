@@ -69,9 +69,9 @@ class SimpleMultipartEntity implements HttpEntity {
 
     private final ResponseHandlerInterface progressHandler;
 
-    private int bytesWritten;
+    private long bytesWritten;
 
-    private int totalSize;
+    private long totalSize;
 
     public SimpleMultipartEntity(ResponseHandlerInterface progressHandler) {
         final StringBuilder buf = new StringBuilder();
@@ -117,6 +117,7 @@ class SimpleMultipartEntity implements HttpEntity {
     public void addPart(String key, File file, String type) {
         fileParts.add(new FilePart(key, file, normalizeContentType(type)));
     }
+
     public void addPart(String key, File file, String type, String customFileName) {
         fileParts.add(new FilePart(key, file, normalizeContentType(type), customFileName));
     }
@@ -167,7 +168,7 @@ class SimpleMultipartEntity implements HttpEntity {
                         "; filename=\"" + fileName + "\"" + STR_CR_LF).getBytes();
     }
 
-    private void updateProgress(int count) {
+    private void updateProgress(long count) {
         bytesWritten += count;
         progressHandler.sendProgressMessage(bytesWritten, totalSize);
     }

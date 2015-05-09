@@ -153,7 +153,7 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
                     while ((l = instream.read(tmp)) != -1 && !Thread.currentThread().isInterrupted()) {
                         count += l;
                         buffer.write(tmp, 0, l);
-                        sendProgressMessage(count, (int) contentLength);
+                        sendProgressMessage(count, contentLength);
                     }
                 } finally {
                     AsyncHttpClient.silentCloseInputStream(instream);

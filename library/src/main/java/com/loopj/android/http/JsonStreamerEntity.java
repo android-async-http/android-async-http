@@ -83,8 +83,8 @@ public class JsonStreamerEntity implements HttpEntity {
         this.progressHandler = progressHandler;
         this.contentEncoding = useGZipCompression ? HEADER_GZIP_ENCODING : null;
         this.elapsedField = TextUtils.isEmpty(elapsedField)
-          ? null
-          : escape(elapsedField);
+                ? null
+                : escape(elapsedField);
     }
 
     /**
@@ -283,7 +283,8 @@ public class JsonStreamerEntity implements HttpEntity {
         // Send the meta data.
         writeMetaData(os, wrapper.file.getName(), wrapper.contentType);
 
-        int bytesRead, bytesWritten = 0, totalSize = (int) wrapper.file.length();
+        int bytesRead;
+        long bytesWritten = 0, totalSize = wrapper.file.length();
 
         // Open the file for reading.
         FileInputStream in = new FileInputStream(wrapper.file);

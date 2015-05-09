@@ -88,7 +88,7 @@ public abstract class RangeFileAsyncHttpResponseHandler extends FileAsyncHttpRes
                     while (current < contentLength && (l = instream.read(tmp)) != -1 && !Thread.currentThread().isInterrupted()) {
                         current += l;
                         buffer.write(tmp, 0, l);
-                        sendProgressMessage((int) current, (int) contentLength);
+                        sendProgressMessage(current, contentLength);
                     }
                 } finally {
                     instream.close();
