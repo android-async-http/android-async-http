@@ -35,17 +35,21 @@ public final class HttpDelete extends HttpEntityEnclosingRequestBase {
         super();
     }
 
+    /**
+     * @param uri target url as URI
+     */
     public HttpDelete(final URI uri) {
         super();
         setURI(uri);
     }
 
     /**
+     * @param uri target url as String
      * @throws IllegalArgumentException if the uri is invalid.
-    */
+     */
     public HttpDelete(final String uri) {
-            super();
-            setURI(URI.create(uri));
+        super();
+        setURI(URI.create(uri));
     }
 
     @Override

@@ -109,7 +109,7 @@ public class RequestParams implements Serializable {
     protected final ConcurrentHashMap<String, String> urlParams = new ConcurrentHashMap<String, String>();
     protected final ConcurrentHashMap<String, StreamWrapper> streamParams = new ConcurrentHashMap<String, StreamWrapper>();
     protected final ConcurrentHashMap<String, FileWrapper> fileParams = new ConcurrentHashMap<String, FileWrapper>();
-    protected final ConcurrentHashMap<String, List<FileWrapper> >fileArrayParams = new ConcurrentHashMap<String, List<FileWrapper>>();
+    protected final ConcurrentHashMap<String, List<FileWrapper>> fileArrayParams = new ConcurrentHashMap<String, List<FileWrapper>>();
     protected final ConcurrentHashMap<String, Object> urlParamsWithObjects = new ConcurrentHashMap<String, Object>();
     protected String contentEncoding = HTTP.UTF_8;
 
@@ -130,7 +130,7 @@ public class RequestParams implements Serializable {
     /**
      * If set to true will force Content-Type header to `multipart/form-data`
      * even if there are not Files or Streams to be send
-     *
+     * <p>&nbsp;</p>
      * Default value is false
      *
      * @param force boolean, should declare content-type multipart/form-data even without files or streams present
@@ -207,35 +207,34 @@ public class RequestParams implements Serializable {
     /**
      * Adds files array to the request.
      *
-     * @param key the key name for the new param.
+     * @param key   the key name for the new param.
      * @param files the files array to add.
-     * @throws FileNotFoundException
+     * @throws FileNotFoundException if one of passed files is not found at time of assembling the requestparams into request
      */
     public void put(String key, File files[]) throws FileNotFoundException {
         put(key, files, null, null);
     }
 
     /**
-     *
      * Adds files array to the request with both custom provided file content-type and files name
      *
      * @param key            the key name for the new param.
-     * @param files           the files array to add.
+     * @param files          the files array to add.
      * @param contentType    the content type of the file, eg. application/json
      * @param customFileName file name to use instead of real file name
      * @throws FileNotFoundException throws if wrong File argument was passed
      */
     public void put(String key, File files[], String contentType, String customFileName) throws FileNotFoundException {
 
-        if(key != null){
+        if (key != null) {
             List<FileWrapper> fileWrappers = new ArrayList<FileWrapper>();
-            for (int i=0;i<files.length;i++){
-                if(files[i] == null || !files[i].exists()){
+            for (int i = 0; i < files.length; i++) {
+                if (files[i] == null || !files[i].exists()) {
                     throw new FileNotFoundException();
                 }
                 fileWrappers.add(new FileWrapper(files[i], contentType, customFileName));
             }
-            fileArrayParams.put(key,fileWrappers);
+            fileArrayParams.put(key, fileWrappers);
         }
     }
 
@@ -489,7 +488,7 @@ public class RequestParams implements Serializable {
      * Sets an additional field when upload a JSON object through the streamer
      * to hold the time, in milliseconds, it took to upload the payload. By
      * default, this field is set to "_elapsed".
-     *
+     * <p>&nbsp;</p>
      * To disable this feature, call this method with null as the field value.
      *
      * @param value field name to add elapsed time, or null to disable
@@ -606,7 +605,7 @@ public class RequestParams implements Serializable {
         // Add file collection
         for (ConcurrentHashMap.Entry<String, List<FileWrapper>> entry : fileArrayParams.entrySet()) {
             List<FileWrapper> fileWrapper = entry.getValue();
-            for (FileWrapper fw:fileWrapper){
+            for (FileWrapper fw : fileWrapper) {
                 entity.addPart(entry.getKey(), fw.file, fw.contentType, fw.customFileName);
             }
         }

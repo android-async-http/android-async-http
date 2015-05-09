@@ -632,8 +632,8 @@ public class AsyncHttpClient {
      * Sets basic authentication for the request. Uses AuthScope.ANY. This is the same as
      * setBasicAuth('username','password',AuthScope.ANY)
      *
-     * @param username  Basic Auth username
-     * @param password  Basic Auth password
+     * @param username   Basic Auth username
+     * @param password   Basic Auth password
      * @param preemptive sets authorization in preemptive manner
      */
     public void setBasicAuth(String username, String password, boolean preemptive) {
@@ -656,9 +656,9 @@ public class AsyncHttpClient {
      * Sets basic authentication for the request. You should pass in your AuthScope for security. It
      * should be like this setBasicAuth("username","password", new AuthScope("host",port,AuthScope.ANY_REALM))
      *
-     * @param username  Basic Auth username
-     * @param password  Basic Auth password
-     * @param scope     an AuthScope object
+     * @param username   Basic Auth username
+     * @param password   Basic Auth password
+     * @param scope      an AuthScope object
      * @param preemptive sets authorization in preemptive manner
      */
     public void setBasicAuth(String username, String password, AuthScope scope, boolean preemptive) {
@@ -1095,7 +1095,8 @@ public class AsyncHttpClient {
     }
 
     /**
-     * Perform a HTTP PATCH request, without any parameters.
+     * Perform a HTTP
+     * request, without any parameters.
      *
      * @param url             the URL to send the request to.
      * @param responseHandler the response handler instance that should handle the response.
@@ -1136,6 +1137,11 @@ public class AsyncHttpClient {
      * @param context         the Android Context which initiated the request.
      * @param url             the URL to send the request to.
      * @param responseHandler the response handler instance that should handle the response.
+     * @param entity          a raw {@link HttpEntity} to send with the request, for example, use
+     *                        this to send string/json/xml payloads to a server by passing a {@link
+     *                        org.apache.http.entity.StringEntity}
+     * @param contentType     the content type of the payload you are sending, for example
+     *                        "application/json" if sending a json payload.
      * @return RequestHandle of future request process
      */
     public RequestHandle patch(Context context, String url, HttpEntity entity, String contentType, ResponseHandlerInterface responseHandler) {
@@ -1397,7 +1403,7 @@ public class AsyncHttpClient {
      *
      * @param inputStream InputStream to be checked
      * @return true or false if the stream contains GZIP compressed data
-     * @throws java.io.IOException
+     * @throws java.io.IOException if read from inputStream fails
      */
     public static boolean isInputStreamGZIPCompressed(final PushbackInputStream inputStream) throws IOException {
         if (inputStream == null)

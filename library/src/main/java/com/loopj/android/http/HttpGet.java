@@ -36,17 +36,21 @@ public final class HttpGet extends HttpEntityEnclosingRequestBase {
         super();
     }
 
+    /**
+     * @param uri target url as URI
+     */
     public HttpGet(final URI uri) {
         super();
         setURI(uri);
     }
 
     /**
+     * @param uri target url as String
      * @throws IllegalArgumentException if the uri is invalid.
-    */
+     */
     public HttpGet(final String uri) {
-            super();
-            setURI(URI.create(uri));
+        super();
+        setURI(URI.create(uri));
     }
 
     @Override

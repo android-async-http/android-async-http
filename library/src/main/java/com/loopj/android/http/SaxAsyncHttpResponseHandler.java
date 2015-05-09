@@ -38,11 +38,11 @@ import javax.xml.parsers.SAXParserFactory;
 /**
  * Provides interface to deserialize SAX responses, using AsyncHttpResponseHandler. Can be used like
  * this
- *
+ * <p>&nbsp;</p>
  * <pre>
  *     AsyncHttpClient ahc = new AsyncHttpClient();
  *     FontHandler handlerInstance = ... ; // init handler instance
- *     ahc.post("https://server.tld/api/call", new SaxAsyncHttpResponseHandler<FontHandler>(handlerInstance){
+ *     ahc.post("https://server.tld/api/call", new SaxAsyncHttpResponseHandler{@literal <}FontHandler{@literal >}(handlerInstance){
  *         &#064;Override
  *         public void onSuccess(int statusCode, Header[] headers, FontHandler t) {
  *              // Request got HTTP success statusCode
@@ -52,7 +52,7 @@ import javax.xml.parsers.SAXParserFactory;
  *              // Request got HTTP fail statusCode
  *         }
  *     });
- * <pre/>
+ * </pre>
  *
  * @param <T> Handler extending {@link org.xml.sax.helpers.DefaultHandler}
  * @see org.xml.sax.helpers.DefaultHandler
@@ -85,7 +85,7 @@ public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> exte
      *
      * @param entity returned HttpEntity
      * @return deconstructed response
-     * @throws java.io.IOException
+     * @throws java.io.IOException if there is problem assembling SAX response from stream
      * @see org.apache.http.HttpEntity
      */
     @Override

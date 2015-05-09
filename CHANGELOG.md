@@ -9,6 +9,12 @@
   - Added support for HTTP PATCH requests
   - Fixed Assert exception when mkdirs in FileAsyncHttpResponseHandler tries to create dirs that already exists
   - Provided option to easily override ClientConnectionManager provision in AsyncHttpClient
+  - Changed onProgress from (int,int) to (long,long) for dealing with large transfers
+  - Renamed typo of `preemtive` to `preemptive` (preemptive basic auth)
+  - Added option to put File array in RequestParams
+  - RequestParams now support forcing Content-Type into `multipart/form-data` even if there are no files/streams to be multiparted
+  - Gradle added support for installing to local maven repository, through `gradle installArchives` task
+  - Added support for Json RFC5179 in JsonHttpResponseHandler
 
 ## 1.4.6 (released 7. 9. 2014)
 
