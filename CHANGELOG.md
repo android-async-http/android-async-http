@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.4.7 (future version)
+## 1.4.7 (released 9. 5. 2015)
 
   - Fixed crash when canceling through RequestHandle from UI Thread (NetworkOnMainThreadException)
   - Fixed URL encoding feature, that was breaking whole URL, not just path and query parts
