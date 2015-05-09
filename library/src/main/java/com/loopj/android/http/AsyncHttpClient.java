@@ -1298,9 +1298,9 @@ public class AsyncHttpClient {
         if (responseHandler.getUseSynchronousMode() && !responseHandler.getUsePoolThread()) {
             throw new IllegalArgumentException("Synchronous ResponseHandler used in AsyncHttpClient. You should create your response handler in a looper thread or use SyncHttpClient instead.");
         }
-
+        
         if (contentType != null) {
-            if (uriRequest instanceof HttpEntityEnclosingRequestBase && ((HttpEntityEnclosingRequestBase) uriRequest).getEntity() != null) {
+            if (uriRequest instanceof HttpEntityEnclosingRequestBase && ((HttpEntityEnclosingRequestBase) uriRequest).getEntity() != null && uriRequest.containsHeader(HEADER_CONTENT_TYPE)) {
                 Log.w(LOG_TAG, "Passed contentType will be ignored because HttpEntity sets content type");
             } else {
                 uriRequest.setHeader(HEADER_CONTENT_TYPE, contentType);
