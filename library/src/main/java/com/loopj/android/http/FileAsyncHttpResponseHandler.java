@@ -31,7 +31,7 @@ import java.io.InputStream;
 
 public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
 
-    protected final File mFile;
+    protected final File file;
     protected final boolean append;
     private static final String LOG_TAG = "FileAsyncHttpResponseHandler";
 
@@ -57,7 +57,7 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
         if (!file.getParentFile().isDirectory()) {
             Utils.asserts(file.getParentFile().mkdirs(), "Cannot create parent directories for requested File location");
         }
-        this.mFile = file;
+        this.file = file;
         this.append = append;
     }
 
@@ -68,7 +68,7 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
      */
     public FileAsyncHttpResponseHandler(Context context) {
         super();
-        this.mFile = getTemporaryFile(context);
+        this.file = getTemporaryFile(context);
         this.append = false;
     }
 
@@ -105,8 +105,8 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
      * @return File file in which the response is stored
      */
     protected File getTargetFile() {
-        assert (mFile != null);
-        return mFile;
+        assert (file != null);
+        return file;
     }
 
     @Override
