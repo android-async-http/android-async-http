@@ -99,7 +99,7 @@ public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> exte
                     SAXParser sparser = sfactory.newSAXParser();
                     XMLReader rssReader = sparser.getXMLReader();
                     rssReader.setContentHandler(handler);
-                    inputStreamReader = new InputStreamReader(instream, DEFAULT_CHARSET);
+                    inputStreamReader = new InputStreamReader(instream, getCharset());
                     rssReader.parse(new InputSource(inputStreamReader));
                 } catch (SAXException e) {
                     Log.e(LOG_TAG, "getResponseData exception", e);
