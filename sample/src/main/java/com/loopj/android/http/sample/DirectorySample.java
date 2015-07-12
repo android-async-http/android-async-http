@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
@@ -37,6 +38,7 @@ import java.io.File;
 public class DirectorySample extends SampleParentActivity {
     private static final String LOG_TAG = "DirectorySample";
     private FileAsyncHttpResponseHandler lastResponseHandler = null;
+    private CheckBox cbAppend, cbRename;
 
     @Override
     public int getSampleTitle() {
@@ -76,12 +78,20 @@ public class DirectorySample extends SampleParentActivity {
                 }
             }
         });
+        cbAppend = new CheckBox(this);
+        cbAppend.setText("Constructor \"append\" is true?");
+        cbAppend.setChecked(false);
+        cbRename = new CheckBox(this);
+        cbRename.setText("Constructor \"renameTargetFileIfExists\" is true?");
+        cbRename.setChecked(true);
         customFieldsLayout.addView(deleteTargetFile);
+        customFieldsLayout.addView(cbAppend);
+        customFieldsLayout.addView(cbRename);
     }
 
     @Override
     public ResponseHandlerInterface getResponseHandler() {
-        lastResponseHandler = new FileAsyncHttpResponseHandler(getCacheDir(), false, true) {
+        lastResponseHandler = new FileAsyncHttpResponseHandler(getCacheDir(), cbAppend.isChecked(), cbRename.isChecked()) {
             @Override
             public void onStart() {
                 clearOutputs();
