@@ -67,7 +67,7 @@ import java.net.URI;
  *     }
  *
  *     &#064;Override
- *     public void onProgress(int bytesWritten, int totalSize) {
+ *     public void onProgress(long bytesWritten, long totalSize) {
  *         // Progress notification
  *     }
  *
