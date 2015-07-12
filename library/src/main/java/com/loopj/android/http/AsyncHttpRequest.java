@@ -56,7 +56,7 @@ public class AsyncHttpRequest implements Runnable {
      * This method is called once by the system when the request is about to be
      * processed by the system. The library makes sure that a single request
      * is pre-processed only once.
-     * <p/>
+     * <p>&nbsp;</p>
      * Please note: pre-processing does NOT run on the main thread, and thus
      * any UI activities that you must perform should be properly dispatched to
      * the app's UI thread.
@@ -71,7 +71,7 @@ public class AsyncHttpRequest implements Runnable {
      * This method is called once by the system when the request has been fully
      * sent, handled and finished. The library makes sure that a single request
      * is post-processed only once.
-     * <p/>
+     * <p>&nbsp;</p>
      * Please note: post-processing does NOT run on the main thread, and thus
      * any UI activities that you must perform should be properly dispatched to
      * the app's UI thread.

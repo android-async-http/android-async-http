@@ -141,8 +141,10 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
     /**
      * Will return File instance for file representing last URL segment in given folder.
      * If file already exists and renameTargetFileIfExists was set as true, will try to find file
-     * which doesn't exist, naming template for such cases is "filename.ext" => "filename (%d).ext",
-     * or without extension "filename" => "filename (%d)"
+     * which doesn't exist, naming template for such cases is "filename.ext" =&gt; "filename (%d).ext",
+     * or without extension "filename" =&gt; "filename (%d)"
+     *
+     * @return File in given directory constructed by last segment of request URL
      */
     protected File getTargetFileByParsingURL() {
         Utils.asserts(getOriginalFile().isDirectory(), "Target file is not a directory, cannot proceed");
