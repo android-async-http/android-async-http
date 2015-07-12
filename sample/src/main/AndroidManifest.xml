@@ -29,6 +29,7 @@
         <activity android:name=".JsonSample" />
         <activity android:name=".JsonStreamerSample" />
         <activity android:name=".FileSample" />
+        <activity android:name=".DirectorySample" />
         <activity android:name=".BinarySample" />
         <activity android:name=".GzipSample" />
         <activity android:name=".Redirect302Sample" />

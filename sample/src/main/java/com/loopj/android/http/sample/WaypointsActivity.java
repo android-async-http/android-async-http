@@ -25,8 +25,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.loopj.android.http.RequestParams;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +40,7 @@ public class WaypointsActivity extends ListActivity {
             new SampleConfig(R.string.title_json_streamer_sample, JsonStreamerSample.class),
             new SampleConfig(R.string.title_sax_example, SaxSample.class),
             new SampleConfig(R.string.title_file_sample, FileSample.class),
+            new SampleConfig(R.string.title_directory_sample, DirectorySample.class),
             new SampleConfig(R.string.title_binary_sample, BinarySample.class),
             new SampleConfig(R.string.title_gzip_sample, GzipSample.class),
             new SampleConfig(R.string.title_redirect_302, Redirect302Sample.class),
@@ -67,11 +66,11 @@ public class WaypointsActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, getTitlesList()));
+        setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, getTitlesList()));
     }
 
     private List<String> getTitlesList() {
-        List<String> titles = new ArrayList<String>();
+        List<String> titles = new ArrayList<>();
         for (SampleConfig config : samplesConfig) {
             titles.add(getString(config.titleId));
         }
