@@ -140,7 +140,7 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
                     foundAllowedContentType = true;
                 }
             } catch (PatternSyntaxException e) {
-                Log.e("BinaryHttpResponseHandler", "Given pattern is not valid: " + anAllowedContentType, e);
+                Log.e(LOG_TAG, "Given pattern is not valid: " + anAllowedContentType, e);
             }
         }
         if (!foundAllowedContentType) {
