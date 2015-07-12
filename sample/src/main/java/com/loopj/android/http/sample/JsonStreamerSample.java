@@ -18,6 +18,7 @@
 
 package com.loopj.android.http.sample;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -87,7 +88,7 @@ public class JsonStreamerSample extends PostSample {
 
     protected JSONObject getBodyTextAsJSON() {
         String bodyText = getBodyText();
-        if (bodyText != null && !bodyText.isEmpty()) {
+        if (bodyText != null && TextUtils.isEmpty(bodyText)) {
             try {
                 return new JSONObject(bodyText);
             } catch (JSONException e) {
