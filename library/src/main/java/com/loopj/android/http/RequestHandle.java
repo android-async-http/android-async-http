@@ -40,7 +40,8 @@ public class RequestHandle {
      * thread executing this request should be interrupted in an attempt to stop the request.
      * <p>&nbsp;</p> After this method returns, subsequent calls to isDone() will always return
      * true. Subsequent calls to isCancelled() will always return true if this method returned
-     * true.
+     * true. Subsequent calls to isDone() will return true either if the request got cancelled by
+     * this method, or if the request completed normally
      *
      * @param mayInterruptIfRunning true if the thread executing this request should be interrupted;
      *                              otherwise, in-progress requests are allowed to complete
@@ -57,8 +58,11 @@ public class RequestHandle {
                         _request.cancel(mayInterruptIfRunning);
                     }
                 }).start();
+                // Cannot reliably tell if the request got immediately canceled at this point
+                // we'll assume it got cancelled
+                return true;
             } else {
-                _request.cancel(mayInterruptIfRunning);
+                return _request.cancel(mayInterruptIfRunning);
             }
         }
         return false;
