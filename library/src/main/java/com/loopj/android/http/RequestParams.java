@@ -68,10 +68,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * List&lt;String&gt; list = new ArrayList&lt;String&gt;(); // Ordered collection
  * list.add("Java");
  * list.add("C");
- * params.put("languages", list); // url params: "languages[]=Java&amp;languages[]=C"
+ * params.put("languages", list); // url params: "languages[0]=Java&amp;languages[1]=C"
  *
  * String[] colors = { "blue", "yellow" }; // Ordered collection
- * params.put("colors", colors); // url params: "colors[]=blue&amp;colors[]=yellow"
+ * params.put("colors", colors); // url params: "colors[0]=blue&amp;colors[1]=yellow"
  *
  * File[] files = { new File("pic.jpg"), new File("pic1.jpg") }; // Ordered collection
  * params.put("files", files); // url params: "files[]=pic.jpg&amp;files[]=pic1.jpg"
@@ -228,11 +228,11 @@ public class RequestParams implements Serializable {
 
         if (key != null) {
             List<FileWrapper> fileWrappers = new ArrayList<FileWrapper>();
-            for (int i = 0; i < files.length; i++) {
-                if (files[i] == null || !files[i].exists()) {
+            for (File file : files) {
+                if (file == null || !file.exists()) {
                     throw new FileNotFoundException();
                 }
-                fileWrappers.add(new FileWrapper(files[i], contentType, customFileName));
+                fileWrappers.add(new FileWrapper(file, contentType, customFileName));
             }
             fileArrayParams.put(key, fileWrappers);
         }
@@ -460,7 +460,7 @@ public class RequestParams implements Serializable {
 
             result.append(entry.getKey());
             result.append("=");
-            result.append("FILE");
+            result.append("FILES(SIZE=").append(entry.getValue().size()).append(")");
         }
 
         List<BasicNameValuePair> params = getParamsList(null, urlParamsWithObjects);
