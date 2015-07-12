@@ -25,6 +25,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.loopj.android.http.RequestParams;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +60,8 @@ public class WaypointsActivity extends ListActivity {
             new SampleConfig(R.string.title_content_type_http_entity, ContentTypeForHttpEntitySample.class),
             new SampleConfig(R.string.title_resume_download, ResumeDownloadSample.class),
             new SampleConfig(R.string.title_digest_auth, DigestAuthSample.class),
-            new SampleConfig(R.string.title_use_pool_thread, UsePoolThreadSample.class)
+            new SampleConfig(R.string.title_use_pool_thread, UsePoolThreadSample.class),
+            new SampleConfig(R.string.title_request_params_debug, RequestParamsDebug.class)
     };
 
     @Override
