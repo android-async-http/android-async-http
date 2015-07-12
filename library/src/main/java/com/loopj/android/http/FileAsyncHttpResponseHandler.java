@@ -33,6 +33,8 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
 
     protected final File file;
     protected final boolean append;
+    protected final boolean renameIfExists;
+    protected File frontendFile;
     private static final String LOG_TAG = "FileAsyncHttpRH";
 
     /**
@@ -51,14 +53,30 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
      * @param append whether data should be appended to existing file
      */
     public FileAsyncHttpResponseHandler(File file, boolean append) {
+        this(file, append, false);
+    }
+
+    /**
+     * Obtains new FileAsyncHttpResponseHandler and stores response in passed file
+     *
+     * @param file                     File to store response within, must not be null
+     * @param append                   whether data should be appended to existing file
+     * @param renameTargetFileIfExists whether target file should be renamed if it already exists
+     */
+    public FileAsyncHttpResponseHandler(File file, boolean append, boolean renameTargetFileIfExists) {
         super();
         Utils.asserts(file != null, "File passed into FileAsyncHttpResponseHandler constructor must not be null");
-        Utils.asserts(!file.isDirectory(), "File passed into FileAsyncHttpResponseHandler constructor must not point to directory");
-        if (!file.getParentFile().isDirectory()) {
+        if (!file.isDirectory() && !file.getParentFile().isDirectory()) {
             Utils.asserts(file.getParentFile().mkdirs(), "Cannot create parent directories for requested File location");
+        }
+        if (file.isDirectory()) {
+            if (!file.mkdirs()) {
+                Log.d(LOG_TAG, "Cannot create directories for requested Directory location, might not be a problem");
+            }
         }
         this.file = file;
         this.append = append;
+        this.renameIfExists = renameTargetFileIfExists;
     }
 
     /**
@@ -70,6 +88,7 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
         super();
         this.file = getTemporaryFile(context);
         this.append = false;
+        this.renameIfExists = false;
     }
 
     /**
@@ -90,8 +109,6 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
     protected File getTemporaryFile(Context context) {
         Utils.asserts(context != null, "Tried creating temporary file without having Context");
         try {
-            // not effective in release mode
-            assert context != null;
             return File.createTempFile("temp_", "_handled", context.getCacheDir());
         } catch (IOException e) {
             Log.e(LOG_TAG, "Cannot create temporary file", e);
@@ -102,11 +119,53 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
     /**
      * Retrieves File object in which the response is stored
      *
-     * @return File file in which the response is stored
+     * @return File file in which the response was to be stored
      */
-    protected File getTargetFile() {
-        assert (file != null);
+    protected File getOriginalFile() {
+        Utils.asserts(file != null, "Target file is null, fatal!");
         return file;
+    }
+
+    /**
+     * Retrieves File which represents response final location after possible renaming
+     *
+     * @return File final target file
+     */
+    public File getTargetFile() {
+        if (frontendFile == null) {
+            frontendFile = getOriginalFile().isDirectory() ? getTargetFileByParsingURL() : getOriginalFile();
+        }
+        return frontendFile;
+    }
+
+    /**
+     * Will return File instance for file representing last URL segment in given folder.
+     * If file already exists and renameTargetFileIfExists was set as true, will try to find file
+     * which doesn't exist, naming template for such cases is "filename.ext" => "filename (%d).ext",
+     * or without extension "filename" => "filename (%d)"
+     */
+    protected File getTargetFileByParsingURL() {
+        Utils.asserts(getOriginalFile().isDirectory(), "Target file is not a directory, cannot proceed");
+        Utils.asserts(getRequestURI() != null, "RequestURI is null, cannot proceed");
+        String requestURL = getRequestURI().toString();
+        String filename = requestURL.substring(requestURL.lastIndexOf('/') + 1, requestURL.length());
+        File targetFileRtn = new File(getOriginalFile(), filename);
+        if (targetFileRtn.exists() && renameIfExists) {
+            String format;
+            if (!filename.contains(".")) {
+                format = filename + " (%d)";
+            } else {
+                format = filename.substring(0, filename.lastIndexOf('.')) + " (%d)" + filename.substring(filename.lastIndexOf('.'), filename.length());
+            }
+            int index = 0;
+            while (true) {
+                targetFileRtn = new File(getOriginalFile(), String.format(format, index));
+                if (!targetFileRtn.exists())
+                    return targetFileRtn;
+                index++;
+            }
+        }
+        return targetFileRtn;
     }
 
     @Override
