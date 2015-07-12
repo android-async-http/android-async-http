@@ -1,56 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.loopj.android.http.sample"
-          android:versionCode="3"
-          android:versionName="1.4.7">
+    package="com.loopj.android.http.sample"
+    android:versionCode="3"
+    android:versionName="1.4.7">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".SampleApplication"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
         <activity android:name=".WaypointsActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".GetSample"/>
-        <activity android:name=".PostSample"/>
-        <activity android:name=".DeleteSample"/>
-        <activity android:name=".PutSample"/>
-        <activity android:name=".PatchSample"/>
-        <activity android:name=".JsonSample"/>
-        <activity android:name=".JsonStreamerSample"/>
-        <activity android:name=".FileSample"/>
-        <activity android:name=".BinarySample"/>
-        <activity android:name=".GzipSample"/>
-        <activity android:name=".Redirect302Sample"/>
-        <activity android:name=".ThreadingTimeoutSample"/>
-        <activity android:name=".CancelAllRequestsSample"/>
-        <activity android:name=".CancelRequestHandleSample"/>
-        <activity android:name=".SynchronousClientSample"/>
-        <activity android:name=".IntentServiceSample"/>
+        <activity android:name=".GetSample" />
+        <activity android:name=".PostSample" />
+        <activity android:name=".DeleteSample" />
+        <activity android:name=".PutSample" />
+        <activity android:name=".PatchSample" />
+        <activity android:name=".JsonSample" />
+        <activity android:name=".JsonStreamerSample" />
+        <activity android:name=".FileSample" />
+        <activity android:name=".BinarySample" />
+        <activity android:name=".GzipSample" />
+        <activity android:name=".Redirect302Sample" />
+        <activity android:name=".ThreadingTimeoutSample" />
+        <activity android:name=".CancelAllRequestsSample" />
+        <activity android:name=".CancelRequestHandleSample" />
+        <activity android:name=".SynchronousClientSample" />
+        <activity android:name=".IntentServiceSample" />
 
-        <activity android:name=".SaxSample"/>
-        <activity android:name=".FilesSample"/>
-        <activity android:name=".PersistentCookiesSample"/>
-        <activity android:name=".CustomCASample"/>
-        <activity android:name=".RetryRequestSample"/>
-        <activity android:name=".RangeResponseSample"/>
-        <activity android:name=".Http401AuthSample"/>
-        <activity android:name=".AsyncBackgroundThreadSample"/>
-        <activity android:name=".ContentTypeForHttpEntitySample"/>
-        <activity android:name=".ResumeDownloadSample"/>
-        <activity android:name=".PrePostProcessingSample"/>
-        <activity android:name=".DigestAuthSample"/>
-        <activity android:name=".UsePoolThreadSample"/>
+        <activity android:name=".SaxSample" />
+        <activity android:name=".FilesSample" />
+        <activity android:name=".PersistentCookiesSample" />
+        <activity android:name=".CustomCASample" />
+        <activity android:name=".RetryRequestSample" />
+        <activity android:name=".RangeResponseSample" />
+        <activity android:name=".Http401AuthSample" />
+        <activity android:name=".AsyncBackgroundThreadSample" />
+        <activity android:name=".ContentTypeForHttpEntitySample" />
+        <activity android:name=".ResumeDownloadSample" />
+        <activity android:name=".PrePostProcessingSample" />
+        <activity android:name=".DigestAuthSample" />
+        <activity android:name=".UsePoolThreadSample" />
 
-        <service android:name=".services.ExampleIntentService"/>
+        <service android:name=".services.ExampleIntentService" />
 
     </application>
 
