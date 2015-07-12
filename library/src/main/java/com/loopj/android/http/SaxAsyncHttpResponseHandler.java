@@ -144,6 +144,6 @@ public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> exte
     @Override
     public void onFailure(int statusCode, Header[] headers,
                           byte[] responseBody, Throwable error) {
-        onSuccess(statusCode, headers, handler);
+        onFailure(statusCode, headers, handler);
     }
 }
