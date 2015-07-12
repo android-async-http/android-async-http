@@ -1,6 +1,20 @@
 # CHANGELOG
 
+## 1.4.8 (future release)
+
+  - New constructor for BinaryHttpResponseHandler which takes Looper as argument (thanks to @ScottFrank)
+  - SaxAsyncHttpResponseHandler can be now provided with custom charset, instead of just using default one
+  - Library LogCat tags now use shorter form (forced through Lint checks), appendix "ResponseHandler" shortened to "RH"
+  - Updated documentation on `RequestHandle.cancel(boolean)` and returning correct response according to handle state
+  - SaxAsyncHttpResponseHandler onFailure(int, Header[], byte[], Throwable) used wrong fallback to onSuccess(int, Header[], T), fixed to onFailure(int, Header[], T), where T extends SAX DefaultHandler
+  - Regression fix on onProgress(int,int) documentation
+  - Sample application now can be built with LeakCanary, use i.e. `gradle :sample:installWithLeakCanaryDebug` to use it
+  - Updated RequestParams documentation on handling arrays, sets and maps, along with new RequestParamsDebug sample
+
 ## 1.4.7 (released 9. 5. 2015)
+
+Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.7](https://github.com/loopj/android-async-http/commits/1.4.7)  
+List of closed issues is here [https://github.com/loopj/android-async-http/issues?milestone=6&state=closed](https://github.com/loopj/android-async-http/issues?milestone=6&state=closed)
 
   - Fixed crash when canceling through RequestHandle from UI Thread (NetworkOnMainThreadException)
   - Fixed URL encoding feature, that was breaking whole URL, not just path and query parts
