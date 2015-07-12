@@ -18,6 +18,7 @@
 
 package com.loopj.android.http;
 
+import android.os.Looper;
 import android.util.Log;
 
 import org.apache.http.Header;
@@ -85,6 +86,22 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
      */
     public BinaryHttpResponseHandler(String[] allowedContentTypes) {
         super();
+        if (allowedContentTypes != null) {
+            mAllowedContentTypes = allowedContentTypes;
+        } else {
+            Log.e(LOG_TAG, "Constructor passed allowedContentTypes was null !");
+        }
+    }
+    
+    /**
+     * Creates a new BinaryHttpResponseHandler with a user-supplied looper, and overrides the default allowed content types with
+     * passed String array (hopefully) of content types.
+     *
+     * @param allowedContentTypes content types array, eg. 'image/jpeg' or pattern '.*'
+     * @param looper The looper to work with
+     */
+    public BinaryHttpResponseHandler(String[] allowedContentTypes, Looper looper) {
+        super(looper);
         if (allowedContentTypes != null) {
             mAllowedContentTypes = allowedContentTypes;
         } else {

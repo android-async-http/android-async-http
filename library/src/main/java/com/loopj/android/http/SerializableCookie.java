@@ -61,9 +61,9 @@ public class SerializableCookie implements Serializable {
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        String name = (String) in.readObject();
+        String key = (String) in.readObject();
         String value = (String) in.readObject();
-        clientCookie = new BasicClientCookie(name, value);
+        clientCookie = new BasicClientCookie(key, value);
         clientCookie.setComment((String) in.readObject());
         clientCookie.setDomain((String) in.readObject());
         clientCookie.setExpiryDate((Date) in.readObject());
