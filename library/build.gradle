@@ -14,8 +14,7 @@ android {
         warningsAsErrors true
         quiet false
         showAll true
-        disable 'OldTargetApi', 'LongLogTag'
-        // TODO: long log tag should be fixed instead of ignored
+        disable 'OldTargetApi'
     }
 
     compileOptions {
