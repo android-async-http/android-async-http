@@ -124,7 +124,7 @@ extends <a href="../../../../com/loopj/android/http/AsyncHttpResponseHandler.htm
  <pre>
  AsyncHttpClient client = new AsyncHttpClient();
  String[] allowedTypes = new String[] { "image/png" };
- client.get("http://www.example.com/image.png", new BinaryHttpResponseHandler(allowedTypes) {
+ client.get("https://www.example.com/image.png", new BinaryHttpResponseHandler(allowedTypes) {
      &#064;Override
      public void onSuccess(byte[] imageData) {
          // Successfully got a response

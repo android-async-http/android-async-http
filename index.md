@@ -4,14 +4,14 @@ title: Android Asynchronous Http Client
 tagline: A Callback-Based Http Client Library for Android
 version: 1.4.7
 github_repo: android-async-http
-download_url: http://search.maven.org/remotecontent?filepath=com/loopj/android/android-async-http/1.4.7/android-async-http-1.4.7.jar
+download_url: https://search.maven.org/remotecontent?filepath=com/loopj/android/android-async-http/1.4.7/android-async-http-1.4.7.jar
 ---
 
 
 Overview
 --------
 An asynchronous callback-based Http client for Android built on top of Apache's
-[HttpClient](http://hc.apache.org/httpcomponents-client-ga/) libraries.
+[HttpClient](https://hc.apache.org/httpcomponents-client-ga/) libraries.
 All requests are made outside of your app's main UI thread, but any callback
 logic will be executed on the same thread as the callback was created using
 Android's Handler message passing. You can also use it in Service or background thread,
@@ -55,7 +55,7 @@ Used in Production By Top Apps and Developers
 [Pose](https://market.android.com/details?id=com.pose)
 :   Pose is the #1 fashion app for sharing and discovering new styles
 
-[Thousands more apps...](http://www.appbrain.com/stats/libraries/details/loopj_asynchttpclient/android-asynchronous-http-client)
+[Thousands more apps...](https://www.appbrain.com/stats/libraries/details/loopj_asynchttpclient/android-asynchronous-http-client)
 :   Async HTTP is used in production by thousands of top apps.
 
 
@@ -78,7 +78,7 @@ import com.loopj.android.http.*;
 Create a new `AsyncHttpClient` instance and make a request:
 {% highlight java %}
 AsyncHttpClient client = new AsyncHttpClient();
-client.get("http://www.google.com", new AsyncHttpResponseHandler() {
+client.get("https://www.google.com", new AsyncHttpResponseHandler() {
 
     @Override
     public void onStart() {
@@ -112,7 +112,7 @@ it easy to communicate with Twitter's API.
 import com.loopj.android.http.*;
 
 public class TwitterRestClient {
-  private static final String BASE_URL = "http://api.twitter.com/1/";
+  private static final String BASE_URL = "https://api.twitter.com/1/";
 
   private static AsyncHttpClient client = new AsyncHttpClient();
 
@@ -158,9 +158,9 @@ class TwitterRestClientUsage {
 {% endhighlight %}
 
 Check out the
-[AsyncHttpClient](http://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpClient.html),
-[RequestParams](http://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html) and
-[AsyncHttpResponseHandler](http://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpResponseHandler.html)
+[AsyncHttpClient](https://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpClient.html),
+[RequestParams](https://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html) and
+[AsyncHttpResponseHandler](https://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpResponseHandler.html)
 Javadocs for more details.
 
 
@@ -201,7 +201,7 @@ newCookie.setPath("/");
 myCookieStore.addCookie(newCookie);
 {% endhighlight %}
 
-See the [PersistentCookieStore Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/PersistentCookieStore.html)
+See the [PersistentCookieStore Javadoc](https://loopj.com/android-async-http/doc/com/loopj/android/http/PersistentCookieStore.html)
 for more information.
 
 
@@ -229,7 +229,7 @@ paramMap.put("key", "value");
 RequestParams params = new RequestParams(paramMap);
 {% endhighlight %}
 
-See the [RequestParams Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html)
+See the [RequestParams Javadoc](https://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html)
 for more information.
 
 Uploading Files with `RequestParams`
@@ -260,7 +260,7 @@ RequestParams params = new RequestParams();
 params.put("soundtrack", new ByteArrayInputStream(myByteArray), "she-wolf.mp3");
 {% endhighlight %}
 
-See the [RequestParams Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html)
+See the [RequestParams Javadoc](https://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html)
 for more information.
 
 Downloading Binary Data with `FileAsyncHttpResponseHandler`
@@ -270,7 +270,7 @@ as images and other files. For example:
 
 {% highlight java %}
 AsyncHttpClient client = new AsyncHttpClient();
-client.get("http://example.com/file.png", new FileAsyncHttpResponseHandler(/* Context */ this) {
+client.get("https://example.com/file.png", new FileAsyncHttpResponseHandler(/* Context */ this) {
     @Override
     public void onSuccess(int statusCode, Header[] headers, File response) {
         // Do something with the file `response`
@@ -278,7 +278,7 @@ client.get("http://example.com/file.png", new FileAsyncHttpResponseHandler(/* Co
 });
 {% endhighlight %}
 
-See the [FileAsyncHttpResponseHandler Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/FileAsyncHttpResponseHandler.html)
+See the [FileAsyncHttpResponseHandler Javadoc](https://loopj.com/android-async-http/doc/com/loopj/android/http/FileAsyncHttpResponseHandler.html)
 for more information.
 
 Adding HTTP Basic Auth credentials
@@ -292,17 +292,17 @@ By default the Authentication Scope is for any host, port and realm.
 {% highlight java %}
 AsyncHttpClient client = new AsyncHttpClient();
 client.setBasicAuth("username","password/token");
-client.get("http://example.com");
+client.get("https://example.com");
 {% endhighlight %}
 
 You can also provide a more specific Authentication Scope (recommended) 
 {% highlight java %}
 AsyncHttpClient client = new AsyncHttpClient();
 client.setBasicAuth("username","password", new AuthScope("example.com", 80, AuthScope.ANY_REALM));
-client.get("http://example.com");
+client.get("https://example.com");
 {% endhighlight %}
 
-See the [RequestParams Javadoc](http://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpClient.html)
+See the [RequestParams Javadoc](https://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpClient.html)
 for more information.
 
 Testing on device
@@ -344,10 +344,10 @@ project here:
 
 Credits & Contributors
 ----------------------
-James Smith (<http://github.com/loopj>)
+James Smith (<https://github.com/loopj>)
 :   Creator and Maintainer
 
-Marek Sebera (<http://github.com/smarek>)
+Marek Sebera (<https://github.com/smarek>)
 :   Maintainer since 1.4.4 release
 
 Noor Dawod (<https://github.com/fineswap>)
@@ -359,19 +359,19 @@ Luciano Vitti (<https://github.com/xAnubiSx>)
 Jason Choy (<https://github.com/jjwchoy>)
 :	Added support for RequestHandle feature
 
-Micah Fivecoate (<http://github.com/m5>)
+Micah Fivecoate (<https://github.com/m5>)
 :   Major Contributor, including the original `RequestParams`
 
 The Droid Fu Project (<https://github.com/kaeppler/droid-fu>)
 :   Inspiration and code for better http retries
 
-Rafael Sanches (<http://blog.rafaelsanches.com>)
+Rafael Sanches (<https://blog.rafaelsanches.com>)
 :   Original `SimpleMultipartEntity` code
 
-Anthony Persaud (<http://github.com/apersaud>)
+Anthony Persaud (<https://github.com/apersaud>)
 :   Added support for HTTP Basic Authentication requests.
 
-Linden Darling (<http://github.com/coreform>)
+Linden Darling (<https://github.com/coreform>)
 :   Added support for binary/image responses
 
 And many others, contributions are listed in each file in license header.
@@ -383,4 +383,4 @@ License
 The Android Asynchronous Http Client is released under the Android-friendly
 Apache License, Version 2.0. Read the full license here:
 
-<http://www.apache.org/licenses/LICENSE-2.0>
+<https://www.apache.org/licenses/LICENSE-2.0>

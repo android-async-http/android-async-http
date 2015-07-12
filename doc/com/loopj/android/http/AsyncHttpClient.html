@@ -117,7 +117,7 @@ extends java.lang.Object</pre>
  your Android applications. Requests can be made with additional parameters by passing a <a href="../../../../com/loopj/android/http/RequestParams.html" title="class in com.loopj.android.http"><code>RequestParams</code></a> instance, and responses can be handled by passing an anonymously overridden <a href="../../../../com/loopj/android/http/ResponseHandlerInterface.html" title="interface in com.loopj.android.http"><code>ResponseHandlerInterface</code></a> instance. <p>&nbsp;</p> For example: <p>&nbsp;</p>
  <pre>
  AsyncHttpClient client = new AsyncHttpClient();
- client.get("http://www.google.com", new AsyncHttpResponseHandler() {
+ client.get("https://www.google.com", new AsyncHttpResponseHandler() {
      &#064;Override
      public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
           System.out.println(response);
@@ -1349,7 +1349,7 @@ extends java.lang.Object</pre>
 <h4>setUserAgent</h4>
 <pre>public&nbsp;void&nbsp;setUserAgent(java.lang.String&nbsp;userAgent)</pre>
 <div class="block">Sets the User-Agent header to be sent with each request. By default, "Android Asynchronous
- Http Client/VERSION (http://loopj.com/android-async-http/)" is used.</div>
+ Http Client/VERSION (https://loopj.com/android-async-http/)" is used.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>userAgent</code> - the string to use in the User-Agent header.</dd>
