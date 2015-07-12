@@ -13,3 +13,4 @@ script:
   - echo "nexusUsername=dummy" >> library/gradle.properties
   - echo "nexusPassword=dummy" >> library/gradle.properties
   - ./gradlew clean assemble check
+  - ./gradlew :library:androidJavadocs
