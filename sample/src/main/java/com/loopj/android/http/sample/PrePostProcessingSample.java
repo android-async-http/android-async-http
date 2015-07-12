@@ -126,8 +126,8 @@ public class PrePostProcessingSample extends SampleParentActivity {
 
     private class PrePostProcessRequest extends AsyncHttpRequest {
 
-        public PrePostProcessRequest(AbstractHttpClient client, HttpContext context, HttpUriRequest request, ResponseHandlerInterface responseHandler) {
-            super(client, context, request, responseHandler);
+        public PrePostProcessRequest(AbstractHttpClient client, HttpContext httpContext, HttpUriRequest request, ResponseHandlerInterface responseHandler) {
+            super(client, httpContext, request, responseHandler);
         }
 
         @Override
