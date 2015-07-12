@@ -29,7 +29,7 @@ import java.io.InputStream;
 
 @SuppressWarnings("ALL")
 public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
-    private static final String LOG_TAG = "DataAsyncHttpResponseHandler";
+    private static final String LOG_TAG = "DataAsyncHttpRH";
 
     protected static final int PROGRESS_DATA_MESSAGE = 7;
 

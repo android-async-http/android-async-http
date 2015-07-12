@@ -64,7 +64,7 @@ public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> exte
      * Generic Type of handler
      */
     private T handler = null;
-    private final static String LOG_TAG = "SaxAsyncHttpResponseHandler";
+    private final static String LOG_TAG = "SaxAsyncHttpRH";
 
     /**
      * Constructs new SaxAsyncHttpResponseHandler with given handler instance

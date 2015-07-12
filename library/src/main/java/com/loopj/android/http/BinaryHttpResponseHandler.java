@@ -52,7 +52,7 @@ import java.util.regex.PatternSyntaxException;
  */
 public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler {
 
-    private static final String LOG_TAG = "BinaryHttpResponseHandler";
+    private static final String LOG_TAG = "BinaryHttpRH";
 
     private String[] mAllowedContentTypes = new String[]{
             RequestParams.APPLICATION_OCTET_STREAM,

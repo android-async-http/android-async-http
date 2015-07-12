@@ -33,7 +33,7 @@ import org.apache.http.HttpStatus;
  * @param <JSON_TYPE> Generic type meant to be returned in callback
  */
 public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpResponseHandler {
-    private static final String LOG_TAG = "BaseJsonHttpResponseHandler";
+    private static final String LOG_TAG = "BaseJsonHttpRH";
 
     /**
      * Creates a new JsonHttpResponseHandler with default charset "UTF-8"

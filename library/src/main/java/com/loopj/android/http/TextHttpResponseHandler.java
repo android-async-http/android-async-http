@@ -57,7 +57,7 @@ import java.io.UnsupportedEncodingException;
  */
 public abstract class TextHttpResponseHandler extends AsyncHttpResponseHandler {
 
-    private static final String LOG_TAG = "TextHttpResponseHandler";
+    private static final String LOG_TAG = "TextHttpRH";
 
     /**
      * Creates new instance with default UTF-8 encoding

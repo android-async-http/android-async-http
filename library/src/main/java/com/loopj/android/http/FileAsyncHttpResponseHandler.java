@@ -33,7 +33,7 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
 
     protected final File file;
     protected final boolean append;
-    private static final String LOG_TAG = "FileAsyncHttpResponseHandler";
+    private static final String LOG_TAG = "FileAsyncHttpRH";
 
     /**
      * Obtains new FileAsyncHttpResponseHandler and stores response in passed file

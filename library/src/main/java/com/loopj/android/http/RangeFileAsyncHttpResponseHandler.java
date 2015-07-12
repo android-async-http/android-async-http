@@ -35,7 +35,7 @@ import java.io.InputStream;
 
 
 public abstract class RangeFileAsyncHttpResponseHandler extends FileAsyncHttpResponseHandler {
-    private static final String LOG_TAG = "RangeFileAsyncHttpResponseHandler";
+    private static final String LOG_TAG = "RangeFileAsyncHttpRH";
 
     private long current = 0;
     private boolean append = false;

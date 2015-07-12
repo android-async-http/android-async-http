@@ -81,7 +81,7 @@ import java.net.URI;
 @SuppressWarnings("ALL")
 public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterface {
 
-    private static final String LOG_TAG = "AsyncHttpResponseHandler";
+    private static final String LOG_TAG = "AsyncHttpRH";
 
     protected static final int SUCCESS_MESSAGE = 0;
     protected static final int FAILURE_MESSAGE = 1;

@@ -37,7 +37,7 @@ import org.json.JSONTokener;
  */
 public class JsonHttpResponseHandler extends TextHttpResponseHandler {
 
-    private static final String LOG_TAG = "JsonHttpResponseHandler";
+    private static final String LOG_TAG = "JsonHttpRH";
 
 
     private boolean useRFC5179CompatibilityMode = true;

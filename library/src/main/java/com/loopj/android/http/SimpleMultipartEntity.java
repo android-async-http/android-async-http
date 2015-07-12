@@ -142,8 +142,6 @@ class SimpleMultipartEntity implements HttpEntity {
 
         out.write(CR_LF);
         out.flush();
-
-        AsyncHttpClient.silentCloseOutputStream(out);
     }
 
     private String normalizeContentType(String type) {
