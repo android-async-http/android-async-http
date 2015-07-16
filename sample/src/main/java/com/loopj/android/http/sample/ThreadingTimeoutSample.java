@@ -31,8 +31,8 @@ import org.apache.http.HttpEntity;
 public class ThreadingTimeoutSample extends SampleParentActivity {
 
     private static final String LOG_TAG = "ThreadingTimeoutSample";
-    private final SparseArray<String> states = new SparseArray<String>();
-    private int counter = 0;
+    protected final SparseArray<String> states = new SparseArray<String>();
+    protected int counter = 0;
 
     @Override
     public int getSampleTitle() {
@@ -59,7 +59,7 @@ public class ThreadingTimeoutSample extends SampleParentActivity {
         return PROTOCOL + "httpbin.org/delay/6";
     }
 
-    private synchronized void setStatus(int id, String status) {
+    protected synchronized void setStatus(int id, String status) {
         String current = states.get(id, null);
         states.put(id, current == null ? status : current + "," + status);
         clearOutputs();

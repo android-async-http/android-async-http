@@ -21,6 +21,7 @@ package com.loopj.android.http.sample;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 
@@ -41,6 +42,39 @@ public class CancelRequestByTagSample extends ThreadingTimeoutSample {
     public void onCancelButtonPressed() {
         Log.d(LOG_TAG, "Canceling requests by TAG: " + REQUEST_TAG);
         getAsyncHttpClient().cancelRequestsByTAG(REQUEST_TAG, false);
+    }
+
+    @Override
+    public ResponseHandlerInterface getResponseHandler() {
+        return new AsyncHttpResponseHandler() {
+
+            private final int id = counter++;
+
+            @Override
+            public void onStart() {
+                setStatus(id, "TAG:" + getTag() + ", START");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                setStatus(id, "SUCCESS");
+            }
+
+            @Override
+            public void onFinish() {
+                setStatus(id, "FINISH");
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                setStatus(id, "FAILURE");
+            }
+
+            @Override
+            public void onCancel() {
+                setStatus(id, "CANCEL");
+            }
+        };
     }
 
     @Override
