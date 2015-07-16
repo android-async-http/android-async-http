@@ -236,7 +236,7 @@ public class JsonStreamerEntity implements HttpEntity {
                 os.write((elapsedTime + "").getBytes());
             }
 
-            Log.i(LOG_TAG, "Uploaded JSON in " + Math.floor(elapsedTime / 1000) + " seconds");
+            AsyncHttpClient.log.i(LOG_TAG, "Uploaded JSON in " + Math.floor(elapsedTime / 1000) + " seconds");
         }
 
         // Close the JSON object.

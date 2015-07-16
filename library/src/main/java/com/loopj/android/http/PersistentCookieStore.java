@@ -187,7 +187,7 @@ public class PersistentCookieStore implements CookieStore {
             ObjectOutputStream outputStream = new ObjectOutputStream(os);
             outputStream.writeObject(cookie);
         } catch (IOException e) {
-            Log.d(LOG_TAG, "IOException in encodeCookie", e);
+            AsyncHttpClient.log.d(LOG_TAG, "IOException in encodeCookie", e);
             return null;
         }
 
@@ -208,9 +208,9 @@ public class PersistentCookieStore implements CookieStore {
             ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
             cookie = ((SerializableCookie) objectInputStream.readObject()).getCookie();
         } catch (IOException e) {
-            Log.d(LOG_TAG, "IOException in decodeCookie", e);
+            AsyncHttpClient.log.d(LOG_TAG, "IOException in decodeCookie", e);
         } catch (ClassNotFoundException e) {
-            Log.d(LOG_TAG, "ClassNotFoundException in decodeCookie", e);
+            AsyncHttpClient.log.d(LOG_TAG, "ClassNotFoundException in decodeCookie", e);
         }
 
         return cookie;

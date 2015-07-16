@@ -46,7 +46,7 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
      * @param responseBody response body received so far
      */
     public void onProgressData(byte[] responseBody) {
-        Log.d(LOG_TAG, "onProgressData(byte[]) was not overriden, but callback was received");
+        AsyncHttpClient.log.d(LOG_TAG, "onProgressData(byte[]) was not overriden, but callback was received");
     }
 
 
@@ -67,10 +67,10 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
                     try {
                         onProgressData((byte[]) response[0]);
                     } catch (Throwable t) {
-                        Log.e(LOG_TAG, "custom onProgressData contains an error", t);
+                        AsyncHttpClient.log.e(LOG_TAG, "custom onProgressData contains an error", t);
                     }
                 } else {
-                    Log.e(LOG_TAG, "PROGRESS_DATA_MESSAGE didn't got enough params");
+                    AsyncHttpClient.log.e(LOG_TAG, "PROGRESS_DATA_MESSAGE didn't got enough params");
                 }
                 break;
         }

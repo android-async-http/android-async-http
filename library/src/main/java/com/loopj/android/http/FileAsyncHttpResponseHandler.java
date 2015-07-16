@@ -71,7 +71,7 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
         }
         if (file.isDirectory()) {
             if (!file.mkdirs()) {
-                Log.d(LOG_TAG, "Cannot create directories for requested Directory location, might not be a problem");
+                AsyncHttpClient.log.d(LOG_TAG, "Cannot create directories for requested Directory location, might not be a problem");
             }
         }
         this.file = file;
@@ -111,7 +111,7 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
         try {
             return File.createTempFile("temp_", "_handled", context.getCacheDir());
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Cannot create temporary file", e);
+            AsyncHttpClient.log.e(LOG_TAG, "Cannot create temporary file", e);
         }
         return null;
     }

@@ -141,6 +141,8 @@ public class AsyncHttpClient {
     private final Map<String, String> clientHeaderMap;
     private boolean isUrlEncodingEnabled = true;
 
+    public static LogInterface log = new LogHandler();
+
     /**
      * Creates a new AsyncHttpClient with default constructor arguments values
      */
@@ -187,17 +189,17 @@ public class AsyncHttpClient {
      */
     private static SchemeRegistry getDefaultSchemeRegistry(boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
         if (fixNoHttpResponseException) {
-            Log.d(LOG_TAG, "Beware! Using the fix is insecure, as it doesn't verify SSL certificates.");
+            log.d(LOG_TAG, "Beware! Using the fix is insecure, as it doesn't verify SSL certificates.");
         }
 
         if (httpPort < 1) {
             httpPort = 80;
-            Log.d(LOG_TAG, "Invalid HTTP port number specified, defaulting to 80");
+            log.d(LOG_TAG, "Invalid HTTP port number specified, defaulting to 80");
         }
 
         if (httpsPort < 1) {
             httpsPort = 443;
-            Log.d(LOG_TAG, "Invalid HTTPS port number specified, defaulting to 443");
+            log.d(LOG_TAG, "Invalid HTTPS port number specified, defaulting to 443");
         }
 
         // Fix to SSL flaw in API < ICS
@@ -254,7 +256,7 @@ public class AsyncHttpClient {
                 for (String header : clientHeaderMap.keySet()) {
                     if (request.containsHeader(header)) {
                         Header overwritten = request.getFirstHeader(header);
-                        Log.d(LOG_TAG,
+                        log.d(LOG_TAG,
                                 String.format("Headers were overwritten! (%s | %s) overwrites (%s | %s)",
                                         header, clientHeaderMap.get(header),
                                         overwritten.getName(), overwritten.getValue())
@@ -340,6 +342,67 @@ public class AsyncHttpClient {
      */
     public HttpContext getHttpContext() {
         return this.httpContext;
+    }
+
+    /**
+     * Will set logging enabled flag on underlying LogInterface instance.
+     * Default setting is logging enabled.
+     *
+     * @param loggingEnabled whether the logging should be enabled or not
+     */
+    public void setLoggingEnabled(boolean loggingEnabled) {
+        log.setLoggingEnabled(loggingEnabled);
+    }
+
+    /**
+     * Returns logging enabled flag from underlying LogInterface instance
+     * Default setting is logging enabled.
+     *
+     * @return boolean whether is logging across the library currently enabled
+     */
+    public boolean isLoggingEnabled() {
+        return log.isLoggingEnabled();
+    }
+
+    /**
+     * Sets log level to be used across all library default implementation
+     * Default setting is VERBOSE log level.
+     *
+     * @param logLevel int log level, either from LogInterface interface or from {@link android.util.Log}
+     */
+    public void setLoggingLevel(int logLevel) {
+        log.setLoggingLevel(logLevel);
+    }
+
+    /**
+     * Retrieves current log level from underlying LogInterface instance.
+     * Default setting is VERBOSE log level.
+     *
+     * @return int log level currently in effect
+     */
+    public int getLoggingLevel() {
+        return log.getLoggingLevel();
+    }
+
+    /**
+     * Will return current LogInterface used in AsyncHttpClient instance
+     *
+     * @return LogInterface currently used by AsyncHttpClient instance
+     */
+    public LogInterface getLogInterface() {
+        return log;
+    }
+
+    /**
+     * Sets default LogInterface (similar to std Android Log util class) instance,
+     * to be used in AsyncHttpClient instance
+     *
+     * @param logInterfaceInstance LogInterface instance, if null, nothing is done
+     */
+    public void setLogInterface(LogInterface logInterfaceInstance) {
+        if (logInterfaceInstance != null) {
+            log = logInterfaceInstance;
+        }
     }
 
     /**
@@ -669,7 +732,7 @@ public class AsyncHttpClient {
 
     public void setCredentials(AuthScope authScope, Credentials credentials) {
         if (credentials == null) {
-            Log.d(LOG_TAG, "Provided credentials are null, not setting");
+            log.d(LOG_TAG, "Provided credentials are null, not setting");
             return;
         }
         this.httpClient.getCredentialsProvider().setCredentials(authScope == null ? AuthScope.ANY : authScope, credentials);
@@ -718,7 +781,7 @@ public class AsyncHttpClient {
      */
     public void cancelRequests(final Context context, final boolean mayInterruptIfRunning) {
         if (context == null) {
-            Log.e(LOG_TAG, "Passed null Context to cancelRequests");
+            log.e(LOG_TAG, "Passed null Context to cancelRequests");
             return;
         }
 
@@ -1304,10 +1367,10 @@ public class AsyncHttpClient {
         if (responseHandler.getUseSynchronousMode() && !responseHandler.getUsePoolThread()) {
             throw new IllegalArgumentException("Synchronous ResponseHandler used in AsyncHttpClient. You should create your response handler in a looper thread or use SyncHttpClient instead.");
         }
-        
+
         if (contentType != null) {
             if (uriRequest instanceof HttpEntityEnclosingRequestBase && ((HttpEntityEnclosingRequestBase) uriRequest).getEntity() != null && uriRequest.containsHeader(HEADER_CONTENT_TYPE)) {
-                Log.w(LOG_TAG, "Passed contentType will be ignored because HttpEntity sets content type");
+                log.w(LOG_TAG, "Passed contentType will be ignored because HttpEntity sets content type");
             } else {
                 uriRequest.setHeader(HEADER_CONTENT_TYPE, contentType);
             }
@@ -1384,7 +1447,7 @@ public class AsyncHttpClient {
                 url = _uri.toASCIIString();
             } catch (Exception ex) {
                 // Should not really happen, added just for sake of validity
-                Log.e(LOG_TAG, "getUrlWithQueryString encoding URL", ex);
+                log.e(LOG_TAG, "getUrlWithQueryString encoding URL", ex);
             }
         }
 
@@ -1433,7 +1496,7 @@ public class AsyncHttpClient {
                 is.close();
             }
         } catch (IOException e) {
-            Log.w(LOG_TAG, "Cannot close input stream", e);
+            log.w(LOG_TAG, "Cannot close input stream", e);
         }
     }
 
@@ -1448,7 +1511,7 @@ public class AsyncHttpClient {
                 os.close();
             }
         } catch (IOException e) {
-            Log.w(LOG_TAG, "Cannot close output stream", e);
+            log.w(LOG_TAG, "Cannot close output stream", e);
         }
     }
 
@@ -1521,7 +1584,7 @@ public class AsyncHttpClient {
                     }
                 }
             } catch (Throwable t) {
-                Log.e(LOG_TAG, "wrappedEntity consume", t);
+                log.e(LOG_TAG, "wrappedEntity consume", t);
             }
         }
     }

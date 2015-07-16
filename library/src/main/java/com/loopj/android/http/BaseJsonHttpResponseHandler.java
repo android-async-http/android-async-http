@@ -87,7 +87,7 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
                             }
                         });
                     } catch (final Throwable t) {
-                        Log.d(LOG_TAG, "parseResponse thrown an problem", t);
+                        AsyncHttpClient.log.d(LOG_TAG, "parseResponse thrown an problem", t);
                         postRunnable(new Runnable() {
                             @Override
                             public void run() {
@@ -123,7 +123,7 @@ public abstract class BaseJsonHttpResponseHandler<JSON_TYPE> extends TextHttpRes
                             }
                         });
                     } catch (Throwable t) {
-                        Log.d(LOG_TAG, "parseResponse thrown an problem", t);
+                        AsyncHttpClient.log.d(LOG_TAG, "parseResponse thrown an problem", t);
                         postRunnable(new Runnable() {
                             @Override
                             public void run() {

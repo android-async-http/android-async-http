@@ -88,7 +88,7 @@ public class JsonStreamerSample extends PostSample {
 
     protected JSONObject getBodyTextAsJSON() {
         String bodyText = getBodyText();
-        if (bodyText != null && TextUtils.isEmpty(bodyText)) {
+        if (bodyText != null && !TextUtils.isEmpty(bodyText)) {
             try {
                 return new JSONObject(bodyText);
             } catch (JSONException e) {

@@ -123,7 +123,7 @@ public class RequestParams implements Serializable {
         if (encoding != null) {
             this.contentEncoding = encoding;
         } else {
-            Log.d(LOG_TAG, "setContentEncoding called with null attribute");
+            AsyncHttpClient.log.d(LOG_TAG, "setContentEncoding called with null attribute");
         }
     }
 
@@ -567,7 +567,7 @@ public class RequestParams implements Serializable {
         try {
             return new UrlEncodedFormEntity(getParamsList(), contentEncoding);
         } catch (UnsupportedEncodingException e) {
-            Log.e(LOG_TAG, "createFormEntity failed", e);
+            AsyncHttpClient.log.e(LOG_TAG, "createFormEntity failed", e);
             return null; // Can happen, if the 'contentEncoding' won't be HTTP.UTF_8
         }
     }

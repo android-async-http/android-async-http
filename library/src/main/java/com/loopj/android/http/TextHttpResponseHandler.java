@@ -120,7 +120,7 @@ public abstract class TextHttpResponseHandler extends AsyncHttpResponseHandler {
             }
             return toReturn;
         } catch (UnsupportedEncodingException e) {
-            Log.e(LOG_TAG, "Encoding response into string failed", e);
+            AsyncHttpClient.log.e(LOG_TAG, "Encoding response into string failed", e);
             return null;
         }
     }

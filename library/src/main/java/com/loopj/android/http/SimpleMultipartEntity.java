@@ -97,7 +97,7 @@ class SimpleMultipartEntity implements HttpEntity {
             out.write(CR_LF);
         } catch (final IOException e) {
             // Shall not happen on ByteArrayOutputStream
-            Log.e(LOG_TAG, "addPart ByteArrayOutputStream exception", e);
+            AsyncHttpClient.log.e(LOG_TAG, "addPart ByteArrayOutputStream exception", e);
         }
     }
 
@@ -197,7 +197,7 @@ class SimpleMultipartEntity implements HttpEntity {
                 headerStream.write(CR_LF);
             } catch (IOException e) {
                 // Can't happen on ByteArrayOutputStream
-                Log.e(LOG_TAG, "createHeader ByteArrayOutputStream exception", e);
+                AsyncHttpClient.log.e(LOG_TAG, "createHeader ByteArrayOutputStream exception", e);
             }
             return headerStream.toByteArray();
         }

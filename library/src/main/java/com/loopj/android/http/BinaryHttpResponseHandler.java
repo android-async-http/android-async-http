@@ -89,7 +89,7 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
         if (allowedContentTypes != null) {
             mAllowedContentTypes = allowedContentTypes;
         } else {
-            Log.e(LOG_TAG, "Constructor passed allowedContentTypes was null !");
+            AsyncHttpClient.log.e(LOG_TAG, "Constructor passed allowedContentTypes was null !");
         }
     }
     
@@ -105,7 +105,7 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
         if (allowedContentTypes != null) {
             mAllowedContentTypes = allowedContentTypes;
         } else {
-            Log.e(LOG_TAG, "Constructor passed allowedContentTypes was null !");
+            AsyncHttpClient.log.e(LOG_TAG, "Constructor passed allowedContentTypes was null !");
         }
     }
 
@@ -140,7 +140,7 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
                     foundAllowedContentType = true;
                 }
             } catch (PatternSyntaxException e) {
-                Log.e(LOG_TAG, "Given pattern is not valid: " + anAllowedContentType, e);
+                AsyncHttpClient.log.e(LOG_TAG, "Given pattern is not valid: " + anAllowedContentType, e);
             }
         }
         if (!foundAllowedContentType) {

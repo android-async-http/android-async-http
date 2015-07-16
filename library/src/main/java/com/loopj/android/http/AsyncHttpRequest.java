@@ -110,7 +110,7 @@ public class AsyncHttpRequest implements Runnable {
             if (!isCancelled()) {
                 responseHandler.sendFailureMessage(0, null, null, e);
             } else {
-                Log.e("AsyncHttpRequest", "makeRequestWithRetries returned error", e);
+                AsyncHttpClient.log.e("AsyncHttpRequest", "makeRequestWithRetries returned error", e);
             }
         }
 
@@ -204,7 +204,7 @@ public class AsyncHttpRequest implements Runnable {
             }
         } catch (Exception e) {
             // catch anything else to ensure failure message is propagated
-            Log.e("AsyncHttpRequest", "Unhandled exception origin cause", e);
+            AsyncHttpClient.log.e("AsyncHttpRequest", "Unhandled exception origin cause", e);
             cause = new IOException("Unhandled exception: " + e.getMessage());
         }
 
