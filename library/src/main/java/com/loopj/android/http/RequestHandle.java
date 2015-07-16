@@ -27,7 +27,7 @@ import java.lang.ref.WeakReference;
  */
 public class RequestHandle {
     private final WeakReference<AsyncHttpRequest> request;
-    private WeakReference<Object> TAG = null;
+    private WeakReference<Object> TAG = new WeakReference<Object>(null);
 
     public RequestHandle(AsyncHttpRequest request) {
         this.request = new WeakReference<AsyncHttpRequest>(request);
