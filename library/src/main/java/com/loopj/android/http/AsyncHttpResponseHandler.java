@@ -31,6 +31,7 @@ import org.apache.http.util.ByteArrayBuffer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.net.URI;
 
 /**
@@ -102,6 +103,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     private URI requestURI = null;
     private Header[] requestHeaders = null;
     private Looper looper = null;
+    private WeakReference<Object> TAG = new WeakReference<Object>(null);
 
     /**
      * Creates a new AsyncHttpResponseHandler
@@ -145,6 +147,16 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
             // Use asynchronous mode by default.
             setUseSynchronousMode(false);
         }
+    }
+
+    @Override
+    public void setTag(Object TAG) {
+        this.TAG = new WeakReference<Object>(TAG);
+    }
+
+    @Override
+    public Object getTag() {
+        return this.TAG.get();
     }
 
     @Override
@@ -399,7 +411,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                     onCancel();
                     break;
             }
-        } catch(Throwable error) {
+        } catch (Throwable error) {
             onUserException(error);
         }
     }

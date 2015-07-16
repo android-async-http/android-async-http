@@ -171,4 +171,19 @@ public interface ResponseHandlerInterface {
      * @param response The response to post-process
      */
     void onPostProcessResponse(ResponseHandlerInterface instance, HttpResponse response);
+
+    /**
+     * Will set TAG to ResponseHandlerInterface implementation, which can be then obtained
+     * in implemented methods, such as onSuccess, onFailure, ...
+     *
+     * @param TAG Object to be set as TAG, will be placed in WeakReference
+     */
+    void setTag(Object TAG);
+
+    /**
+     * Will retrieve TAG Object if it's not already freed from memory
+     *
+     * @return Object TAG or null if it's been garbage collected
+     */
+    Object getTag();
 }

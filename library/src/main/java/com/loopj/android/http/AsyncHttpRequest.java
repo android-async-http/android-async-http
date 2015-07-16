@@ -234,4 +234,24 @@ public class AsyncHttpRequest implements Runnable {
         request.abort();
         return isCancelled();
     }
+
+    /**
+     * Will set Object as TAG to this request, wrapped by WeakReference
+     *
+     * @param TAG Object used as TAG to this RequestHandle
+     * @return this AsyncHttpRequest to allow fluid syntax
+     */
+    public AsyncHttpRequest setRequestTag(Object TAG) {
+        this.responseHandler.setTag(TAG);
+        return this;
+    }
+
+    /**
+     * Will return TAG of this AsyncHttpRequest
+     *
+     * @return Object TAG, can be null, if it's been already garbage collected
+     */
+    public Object getTag() {
+        return this.responseHandler.getTag();
+    }
 }
