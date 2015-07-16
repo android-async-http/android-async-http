@@ -534,17 +534,6 @@ public class AsyncHttpClient {
     }
 
     /**
-     * Returns current socket timeout limit (milliseconds). By default, this is
-     * set to 10 seconds.
-     *
-     * @return Socket Timeout limit in milliseconds
-     * @deprecated Use either {@link #getConnectTimeout()} or {@link #getResponseTimeout()}
-     */
-    public int getTimeout() {
-        return connectTimeout;
-    }
-
-    /**
      * Set both the connection and socket timeouts. By default, both are set to
      * 10 seconds.
      *
@@ -749,16 +738,6 @@ public class AsyncHttpClient {
         } else {
             httpClient.removeRequestInterceptorByClass(PreemptiveAuthorizationHttpRequestInterceptor.class);
         }
-    }
-
-    /**
-     * Removes previously set basic auth credentials
-     *
-     * @deprecated
-     */
-    @Deprecated
-    public void clearBasicAuth() {
-        clearCredentialsProvider();
     }
 
     /**

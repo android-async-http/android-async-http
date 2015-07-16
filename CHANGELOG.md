@@ -13,6 +13,8 @@
   - Added BlackholeHttpResponseHandler implementation, which discards all response contents and silents all various log messages (see #416)
   - Added LogInterface, it's default implementation and interface option to disable/enable logging library-wide and set logging verbosity
   - Added option to TAG RequestHandle and cancel all requests matching specified TAG through `AsyncHttpClient.cancelRequestsByTAG(Object TAG)`
+  - Removed deprecated `getTimeout()` replaced by `getConnectTimeout()` and `getResponseTimeout()` respectively
+  - Removed deprecated `clearBasicAuth()` replaced by `clearCredentialsProvider()`
 
 ## 1.4.7 (released 9. 5. 2015)
 
