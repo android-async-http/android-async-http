@@ -18,8 +18,6 @@
 
 package com.loopj.android.http;
 
-import android.util.Log;
-
 import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 

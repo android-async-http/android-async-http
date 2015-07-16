@@ -19,7 +19,6 @@
 package com.loopj.android.http;
 
 import android.os.Looper;
-import android.util.Log;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;

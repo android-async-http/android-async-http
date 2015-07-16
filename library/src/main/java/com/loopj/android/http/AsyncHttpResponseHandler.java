@@ -21,7 +21,6 @@ package com.loopj.android.http;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;

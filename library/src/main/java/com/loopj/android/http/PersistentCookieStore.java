@@ -21,7 +21,6 @@ package com.loopj.android.http;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-import android.util.Log;
 
 import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;

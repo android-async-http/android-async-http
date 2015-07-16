@@ -18,8 +18,6 @@
 
 package com.loopj.android.http;
 
-import android.util.Log;
-
 import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
@@ -148,7 +146,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                             public void run() {
                                 // In RFC5179 a null value is not a valid JSON
                                 if (!useRFC5179CompatibilityMode && jsonResponse == null) {
-                                    onSuccess(statusCode, headers, (String) jsonResponse);
+                                    onSuccess(statusCode, headers, (String) null);
                                 } else if (jsonResponse instanceof JSONObject) {
                                     onSuccess(statusCode, headers, (JSONObject) jsonResponse);
                                 } else if (jsonResponse instanceof JSONArray) {
@@ -199,7 +197,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                             public void run() {
                                 // In RFC5179 a null value is not a valid JSON
                                 if (!useRFC5179CompatibilityMode && jsonResponse == null) {
-                                    onFailure(statusCode, headers, (String) jsonResponse, throwable);
+                                    onFailure(statusCode, headers, (String) null, throwable);
                                 } else if (jsonResponse instanceof JSONObject) {
                                     onFailure(statusCode, headers, throwable, (JSONObject) jsonResponse);
                                 } else if (jsonResponse instanceof JSONArray) {

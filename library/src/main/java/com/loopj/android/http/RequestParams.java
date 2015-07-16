@@ -18,8 +18,6 @@
 
 package com.loopj.android.http;
 
-import android.util.Log;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.utils.URLEncodedUtils;

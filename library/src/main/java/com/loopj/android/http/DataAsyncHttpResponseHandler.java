@@ -19,7 +19,6 @@
 package com.loopj.android.http;
 
 import android.os.Message;
-import android.util.Log;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.util.ByteArrayBuffer;

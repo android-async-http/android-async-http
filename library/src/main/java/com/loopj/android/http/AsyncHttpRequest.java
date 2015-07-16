@@ -18,8 +18,6 @@
 
 package com.loopj.android.http;
 
-import android.util.Log;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpUriRequest;

@@ -19,7 +19,6 @@
 package com.loopj.android.http;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -374,7 +373,7 @@ public class JsonStreamerEntity implements HttpEntity {
                     break;
                 default:
                     // Reference: http://www.unicode.org/versions/Unicode5.1.0/
-                    if ((ch >= '\u0000' && ch <= '\u001F') || (ch >= '\u007F' && ch <= '\u009F') || (ch >= '\u2000' && ch <= '\u20FF')) {
+                    if ((ch <= '\u001F') || (ch >= '\u007F' && ch <= '\u009F') || (ch >= '\u2000' && ch <= '\u20FF')) {
                         String intString = Integer.toHexString(ch);
                         sb.append("\\u");
                         int intLength = 4 - intString.length();
