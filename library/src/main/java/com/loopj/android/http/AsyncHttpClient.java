@@ -20,7 +20,6 @@ package com.loopj.android.http;
 
 import android.content.Context;
 import android.os.Looper;
-import android.util.Log;
 
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
@@ -827,6 +826,30 @@ public class AsyncHttpClient {
             }
         }
         requestMap.clear();
+    }
+
+    /**
+     * Allows you to cancel all requests currently in queue or running, by set TAG,
+     * if passed TAG is null, will not attempt to cancel any requests, if TAG is null
+     * on RequestHandle, it cannot be canceled by this call
+     *
+     * @param TAG                   TAG to be matched in RequestHandle
+     * @param mayInterruptIfRunning specifies if active requests should be cancelled along with
+     *                              pending requests.
+     */
+    public void cancelRequestsByTAG(Object TAG, boolean mayInterruptIfRunning) {
+        if (TAG == null) {
+            log.d(LOG_TAG, "cancelRequestsByTAG, passed TAG is null, cannot proceed");
+            return;
+        }
+        for (List<RequestHandle> requestList : requestMap.values()) {
+            if (requestList != null) {
+                for (RequestHandle requestHandle : requestList) {
+                    if (TAG.equals(requestHandle.getTag()))
+                        requestHandle.cancel(mayInterruptIfRunning);
+                }
+            }
+        }
     }
 
     // [+] HTTP HEAD

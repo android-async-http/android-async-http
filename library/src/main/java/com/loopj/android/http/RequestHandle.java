@@ -27,6 +27,7 @@ import java.lang.ref.WeakReference;
  */
 public class RequestHandle {
     private final WeakReference<AsyncHttpRequest> request;
+    private WeakReference<Object> TAG = null;
 
     public RequestHandle(AsyncHttpRequest request) {
         this.request = new WeakReference<AsyncHttpRequest>(request);
@@ -94,5 +95,24 @@ public class RequestHandle {
         if (should)
             request.clear();
         return should;
+    }
+
+    /**
+     * Will set Object as TAG to this request, wrapped by WeakReference
+     *
+     * @param tag Object used as TAG to this RequestHandle
+     */
+    public RequestHandle setTag(Object tag) {
+        TAG = new WeakReference<Object>(tag);
+        return this;
+    }
+
+    /**
+     * Will return TAG of this RequestHandle
+     *
+     * @return Object TAG, can be null
+     */
+    public Object getTag() {
+        return TAG.get();
     }
 }
