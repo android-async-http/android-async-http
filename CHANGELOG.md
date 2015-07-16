@@ -11,6 +11,7 @@
   - Sample application now can be built with LeakCanary, use i.e. `gradle :sample:installWithLeakCanaryDebug` to use it
   - Updated RequestParams documentation on handling arrays, sets and maps, along with new RequestParamsDebug sample
   - Added BlackholeHttpResponseHandler implementation, which discards all response contents and silents all various log messages (see #416)
+  - Added LogInterface, it's default implementation and interface option to disable/enable logging library-wide and set logging verbosity
 
 ## 1.4.7 (released 9. 5. 2015)
 

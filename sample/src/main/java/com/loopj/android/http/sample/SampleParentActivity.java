@@ -20,7 +20,9 @@ package com.loopj.android.http.sample;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -75,8 +77,11 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
     private static final int MENU_USE_HTTPS = 0;
     private static final int MENU_CLEAR_VIEW = 1;
+    private static final int MENU_LOGGING_VERBOSITY = 2;
+    private static final int MENU_ENABLE_LOGGING = 3;
 
     private boolean useHttps = true;
+    private boolean enableLogging = true;
 
     protected static final String PROTOCOL_HTTP = "http://";
     protected static final String PROTOCOL_HTTPS = "https://";
@@ -128,6 +133,10 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         if (useHttpsMenuItem != null) {
             useHttpsMenuItem.setChecked(useHttps);
         }
+        MenuItem enableLoggingMenuItem = menu.findItem(MENU_ENABLE_LOGGING);
+        if (enableLoggingMenuItem != null) {
+            enableLoggingMenuItem.setChecked(enableLogging);
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -135,6 +144,8 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(Menu.NONE, MENU_USE_HTTPS, Menu.NONE, R.string.menu_use_https).setCheckable(true);
         menu.add(Menu.NONE, MENU_CLEAR_VIEW, Menu.NONE, R.string.menu_clear_view);
+        menu.add(Menu.NONE, MENU_ENABLE_LOGGING, Menu.NONE, "Enable Logging").setCheckable(true);
+        menu.add(Menu.NONE, MENU_LOGGING_VERBOSITY, Menu.NONE, "Set Logging Verbosity");
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -145,6 +156,13 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
                 useHttps = !useHttps;
                 PROTOCOL = useHttps ? PROTOCOL_HTTPS : PROTOCOL_HTTP;
                 urlEditText.setText(getDefaultURL());
+                return true;
+            case MENU_ENABLE_LOGGING:
+                enableLogging = !enableLogging;
+                getAsyncHttpClient().setLoggingEnabled(enableLogging);
+                return true;
+            case MENU_LOGGING_VERBOSITY:
+                showLoggingVerbosityDialog();
                 return true;
             case MENU_CLEAR_VIEW:
                 clearOutputs();
@@ -170,6 +188,29 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         if (null != handle) {
             requestHandles.add(handle);
         }
+    }
+
+    private void showLoggingVerbosityDialog() {
+        AlertDialog ad = new AlertDialog.Builder(this)
+                .setTitle("Set Logging Verbosity")
+                .setSingleChoiceItems(new String[]{
+                        "VERBOSE",
+                        "DEBUG",
+                        "INFO",
+                        "WARN",
+                        "ERROR",
+                        "WTF"
+                }, getAsyncHttpClient().getLoggingLevel() - 2, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getAsyncHttpClient().setLoggingLevel(which + 2);
+                        dialog.dismiss();
+                    }
+                })
+                .setCancelable(true)
+                .setNeutralButton("Cancel", null)
+                .create();
+        ad.show();
     }
 
     public void onRunButtonPressed() {

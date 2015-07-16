@@ -33,23 +33,27 @@ public class Redirect302Sample extends GetSample {
     private boolean enableRelativeRedirects = true;
     private boolean enableCircularRedirects = true;
 
+    private static final int MENU_ENABLE_REDIRECTS = 10;
+    private static final int MENU_ENABLE_CIRCULAR_REDIRECTS = 11;
+    private static final int MENU_ENABLE_RELATIVE_REDIRECTs = 12;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, 0, Menu.NONE, "Enable redirects").setCheckable(true);
-        menu.add(Menu.NONE, 1, Menu.NONE, "Enable relative redirects").setCheckable(true);
-        menu.add(Menu.NONE, 2, Menu.NONE, "Enable circular redirects").setCheckable(true);
+        menu.add(Menu.NONE, MENU_ENABLE_REDIRECTS, Menu.NONE, "Enable redirects").setCheckable(true);
+        menu.add(Menu.NONE, MENU_ENABLE_RELATIVE_REDIRECTs, Menu.NONE, "Enable relative redirects").setCheckable(true);
+        menu.add(Menu.NONE, MENU_ENABLE_CIRCULAR_REDIRECTS, Menu.NONE, "Enable circular redirects").setCheckable(true);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem menuItemEnableRedirects = menu.findItem(0);
+        MenuItem menuItemEnableRedirects = menu.findItem(MENU_ENABLE_REDIRECTS);
         if (menuItemEnableRedirects != null)
             menuItemEnableRedirects.setChecked(enableRedirects);
-        MenuItem menuItemEnableRelativeRedirects = menu.findItem(1);
+        MenuItem menuItemEnableRelativeRedirects = menu.findItem(MENU_ENABLE_RELATIVE_REDIRECTs);
         if (menuItemEnableRelativeRedirects != null)
             menuItemEnableRelativeRedirects.setChecked(enableRelativeRedirects);
-        MenuItem menuItemEnableCircularRedirects = menu.findItem(2);
+        MenuItem menuItemEnableCircularRedirects = menu.findItem(MENU_ENABLE_CIRCULAR_REDIRECTS);
         if (menuItemEnableCircularRedirects != null)
             menuItemEnableCircularRedirects.setChecked(enableCircularRedirects);
         return super.onPrepareOptionsMenu(menu);
@@ -59,11 +63,11 @@ public class Redirect302Sample extends GetSample {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.isCheckable()) {
             item.setChecked(!item.isChecked());
-            if (item.getItemId() == 0) {
+            if (item.getItemId() == MENU_ENABLE_REDIRECTS) {
                 enableRedirects = item.isChecked();
-            } else if (item.getItemId() == 1) {
+            } else if (item.getItemId() == MENU_ENABLE_RELATIVE_REDIRECTs) {
                 enableRelativeRedirects = item.isChecked();
-            } else if (item.getItemId() == 2) {
+            } else if (item.getItemId() == MENU_ENABLE_CIRCULAR_REDIRECTS) {
                 enableCircularRedirects = item.isChecked();
             }
         }
