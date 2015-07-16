@@ -101,6 +101,7 @@ public class RequestHandle {
      * Will set Object as TAG to this request, wrapped by WeakReference
      *
      * @param tag Object used as TAG to this RequestHandle
+     * @return this RequestHandle to allow fluid syntax
      */
     public RequestHandle setTag(Object tag) {
         TAG = new WeakReference<Object>(tag);
