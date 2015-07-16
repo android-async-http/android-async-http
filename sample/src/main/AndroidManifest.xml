@@ -35,6 +35,7 @@
         <activity android:name=".Redirect302Sample" />
         <activity android:name=".ThreadingTimeoutSample" />
         <activity android:name=".CancelAllRequestsSample" />
+        <activity android:name=".CancelRequestByTagSample" />
         <activity android:name=".CancelRequestHandleSample" />
         <activity android:name=".SynchronousClientSample" />
         <activity android:name=".IntentServiceSample" />

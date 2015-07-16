@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class FilesSample extends PostSample {
 
-    public static final String LOG_TAG = "PostFilesSample";
+    public static final String LOG_TAG = "FilesSample";
 
     @Override
     public int getSampleTitle() {

@@ -20,29 +20,31 @@ package com.loopj.android.http.sample;
 
 import android.util.Log;
 
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestHandle;
+import com.loopj.android.http.ResponseHandlerInterface;
 
-public class CancelRequestHandleSample extends ThreadingTimeoutSample {
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 
-    private static final String LOG_TAG = "CancelRequestHandleSample";
+public class CancelRequestByTagSample extends ThreadingTimeoutSample {
+
+    private static final String LOG_TAG = "CancelRequestByTagSample";
+    private static final Integer REQUEST_TAG = 132435;
 
     @Override
     public int getSampleTitle() {
-        return R.string.title_cancel_handle;
+        return R.string.title_cancel_tag;
     }
 
     @Override
     public void onCancelButtonPressed() {
-        Log.d(LOG_TAG, String.format("Number of handles found: %d", getRequestHandles().size()));
-        int counter = 0;
-        for (RequestHandle handle : getRequestHandles()) {
-            if (!handle.isCancelled() && !handle.isFinished()) {
-                Log.d(LOG_TAG, String.format("Cancelling handle %d", counter));
-                Log.d(LOG_TAG, String.format("Handle %d cancel", counter) + (handle.cancel(true) ? " succeeded" : " failed"));
-            } else {
-                Log.d(LOG_TAG, String.format("Handle %d already non-cancellable", counter));
-            }
-            counter++;
-        }
+        Log.d(LOG_TAG, "Canceling requests by TAG: " + REQUEST_TAG);
+        getAsyncHttpClient().cancelRequestsByTAG(REQUEST_TAG, false);
+    }
+
+    @Override
+    public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {
+        return client.get(this, URL, headers, null, responseHandler).setTag(REQUEST_TAG);
     }
 }

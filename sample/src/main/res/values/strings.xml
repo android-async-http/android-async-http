@@ -30,6 +30,7 @@
     <string name="title_cancel_all">Cancel all requests</string>
     <string name="title_sax_example">SAX Example</string>
     <string name="title_cancel_handle">Cancel request handle</string>
+    <string name="title_cancel_tag">Cancel by TAG</string>
     <string name="title_synchronous">Synchronous GET request</string>
     <string name="title_threading_timeout">Threading timeouts</string>
     <string name="title_gzip_sample">GET Gzipped JSON and parse it</string>

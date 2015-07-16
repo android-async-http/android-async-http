@@ -50,7 +50,7 @@ import java.util.Locale;
  */
 public class Http401AuthSample extends GetSample {
 
-    private static final String LOG_TAG = "Http401Auth";
+    private static final String LOG_TAG = "Http401AuthSample";
     private static final String HEADER_WWW_AUTHENTICATE = "WWW-Authenticate";
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String HEADER_REALM_PREFIX = "realm=";

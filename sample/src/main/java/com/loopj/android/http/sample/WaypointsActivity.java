@@ -47,6 +47,7 @@ public class WaypointsActivity extends ListActivity {
             new SampleConfig(R.string.title_threading_timeout, ThreadingTimeoutSample.class),
             new SampleConfig(R.string.title_cancel_all, CancelAllRequestsSample.class),
             new SampleConfig(R.string.title_cancel_handle, CancelRequestHandleSample.class),
+            new SampleConfig(R.string.title_cancel_tag, CancelRequestByTagSample.class),
             new SampleConfig(R.string.title_synchronous, SynchronousClientSample.class),
             new SampleConfig(R.string.title_intent_service_sample, IntentServiceSample.class),
             new SampleConfig(R.string.title_post_files, FilesSample.class),
