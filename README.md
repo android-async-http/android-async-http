@@ -7,14 +7,14 @@ An asynchronous, callback-based Http client for Android built on top of Apache's
 Changelog
 ---------
 
-See what is new in version 1.4.7 released on 9th May 2015
+See what is new in version 1.4.8 released on 17th July 2015
 
-https://github.com/loopj/android-async-http/blob/1.4.7/CHANGELOG.md
+https://github.com/loopj/android-async-http/blob/1.4.8/CHANGELOG.md
 
 Javadoc
 -------
 
-Latest Javadoc for 1.4.7 release are available here (also included in Maven repository):
+Latest Javadoc for 1.4.8 release are available here (also included in Maven repository):
 
 http://loopj.com/android-async-http/doc/
 
@@ -35,7 +35,7 @@ Examples
 --------
 
 For inspiration and testing on device we've provided Sample Application.  
-See individual samples [here on Github](https://github.com/loopj/android-async-http/tree/1.4.7/sample/src/main/java/com/loopj/android/http/sample)  
+See individual samples [here on Github](https://github.com/loopj/android-async-http/tree/1.4.8/sample/src/main/java/com/loopj/android/http/sample)  
 To run Sample application, simply clone the repository and run this command, to install it on connected device  
 
 ```java
@@ -53,10 +53,10 @@ http://central.maven.org/maven2/com/loopj/android/android-async-http/
 Maven URL: http://repo1.maven.org/maven2/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
-Version: 1.4.7
+Version: 1.4.8
 Packaging: JAR or AAR
 ```
-Gradle: `com.loopj.android:android-async-http:1.4.7`
+Gradle: `com.loopj.android:android-async-http:1.4.8`
 
 **development snapshots**
 
@@ -65,17 +65,14 @@ https://oss.sonatype.org/content/repositories/snapshots/com/loopj/android/androi
 Maven URL: https://oss.sonatype.org/content/repositories/snapshots/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
-Version: 1.4.8-SNAPSHOT
+Version: 1.4.9-SNAPSHOT
 Packaging: JAR or AAR
 ```
-Gradle: `com.loopj.android:android-async-http:1.4.8-SNAPSHOT`
+Gradle: `com.loopj.android:android-async-http:1.4.9-SNAPSHOT`
 
 Documentation, Features and Examples
 ------------------------------------
 Full details and documentation can be found on the project page here:
 
 http://loopj.com/android-async-http/
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/loopj/android-async-http/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 

@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## 1.4.8 (future release)
+## 1.4.8 (released 17. 7. 2015)
+
+Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.8](https://github.com/loopj/android-async-http/commits/1.4.8)  
+List of closed issues is here [https://github.com/loopj/android-async-http/issues?milestone=7&state=closed](https://github.com/loopj/android-async-http/issues?milestone=7&state=closed)
 
   - New constructor for BinaryHttpResponseHandler which takes Looper as argument (thanks to @ScottFrank)
   - SaxAsyncHttpResponseHandler can be now provided with custom charset, instead of just using default one
@@ -18,7 +21,7 @@
 
 ## 1.4.7 (released 9. 5. 2015)
 
-Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.7](https://github.com/loopj/android-async-http/commits/1.4.7)  
+Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.7](https://github.com/loopj/android-async-http/commits1.4.7)  
 List of closed issues is here [https://github.com/loopj/android-async-http/issues?milestone=6&state=closed](https://github.com/loopj/android-async-http/issues?milestone=6&state=closed)
 
   - Fixed crash when canceling through RequestHandle from UI Thread (NetworkOnMainThreadException)
