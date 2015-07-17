@@ -1,13 +1,13 @@
 /*
     Android Asynchronous Http Client
     Copyright (c) 2011 James Smith <james@loopj.com>
-    http://loopj.com
+    https://loopj.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+        https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -52,7 +52,7 @@ import javax.net.ssl.X509TrustManager;
 
 /**
  * This file is introduced to fix HTTPS Post bug on API &lt; ICS see
- * http://code.google.com/p/android/issues/detail?id=13117#c14 <p>&nbsp;</p> Warning! This omits SSL
+ * https://code.google.com/p/android/issues/detail?id=13117#c14 <p>&nbsp;</p> Warning! This omits SSL
  * certificate validation on every device, use with caution
  */
 public class MySSLSocketFactory extends SSLSocketFactory {

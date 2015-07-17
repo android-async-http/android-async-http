@@ -1,13 +1,13 @@
 /*
     Android Asynchronous Http Client Sample
     Copyright (c) 2014 Marek Sebera <marek.sebera@gmail.com>
-    http://loopj.com
+    https://loopj.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+        https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -88,7 +88,7 @@ public class RangeResponseSample extends GetSample {
 
     @Override
     public String getDefaultURL() {
-        return "http://upload.wikimedia.org/wikipedia/commons/f/fa/Geysers_on_Mars.jpg";
+        return "https://upload.wikimedia.org/wikipedia/commons/f/fa/Geysers_on_Mars.jpg";
     }
 
     @Override

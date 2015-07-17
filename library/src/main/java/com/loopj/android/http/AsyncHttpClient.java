@@ -1,13 +1,13 @@
 /*
     Android Asynchronous Http Client
     Copyright (c) 2011 James Smith <james@loopj.com>
-    http://loopj.com
+    https://loopj.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+        https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -94,7 +94,7 @@ import java.util.zip.GZIPInputStream;
  * ResponseHandlerInterface} instance. <p>&nbsp;</p> For example: <p>&nbsp;</p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
- * client.get("http://www.google.com", new AsyncHttpResponseHandler() {
+ * client.get("https://www.google.com", new AsyncHttpResponseHandler() {
  *     &#064;Override
  *     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
  *          System.out.println(response);
@@ -502,7 +502,7 @@ public class AsyncHttpClient {
 
     /**
      * Sets the User-Agent header to be sent with each request. By default, "Android Asynchronous
-     * Http Client/VERSION (http://loopj.com/android-async-http/)" is used.
+     * Http Client/VERSION (https://loopj.com/android-async-http/)" is used.
      *
      * @param userAgent the string to use in the User-Agent header.
      */

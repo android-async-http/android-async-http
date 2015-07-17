@@ -130,7 +130,7 @@ List of closed issues is here [https://github.com/loopj/android-async-http/issue
     - Is returned for each call (`.post(...)`, `.get(...)`, `.head(...)`, `.put(...)`, etc..)
   - Added BaseJsonHttpResponseHandler to simplify integration with Jackson JSON, Gson and other JSON parsing libraries
   - Added Sample application to demonstrate functions and usage
-    - Using [http://httpbin.org/](http://httpbin.org/) to test methods
+    - Using [https://httpbin.org/](https://httpbin.org/) to test methods
   - Enforcing INTERNET permission
   - Support for Gradle buildscript
   - Support for Travis CI (Continuous Integration) testing

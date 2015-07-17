@@ -2,7 +2,7 @@ Asynchronous Http Client for Android
 ====================================
 [![Build Status](https://travis-ci.org/loopj/android-async-http.png?branch=master)](https://travis-ci.org/loopj/android-async-http)
 
-An asynchronous, callback-based Http client for Android built on top of Apache's [HttpClient](http://hc.apache.org/httpcomponents-client-ga/) libraries.
+An asynchronous, callback-based Http client for Android built on top of Apache's [HttpClient](https://hc.apache.org/httpcomponents-client-ga/) libraries.
 
 Changelog
 ---------
@@ -16,7 +16,7 @@ Javadoc
 
 Latest Javadoc for 1.4.8 release are available here (also included in Maven repository):
 
-http://loopj.com/android-async-http/doc/
+https://loopj.com/android-async-http/doc/
 
 Features
 --------
@@ -48,9 +48,9 @@ You can now integrate this library in your project via Maven. There are availabl
 
 **releases, maven central**
 
-http://central.maven.org/maven2/com/loopj/android/android-async-http/
+https://repo1.maven.org/maven2/com/loopj/android/android-async-http/
 ```
-Maven URL: http://repo1.maven.org/maven2/
+Maven URL: https://repo1.maven.org/maven2/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
 Version: 1.4.8
@@ -74,5 +74,5 @@ Documentation, Features and Examples
 ------------------------------------
 Full details and documentation can be found on the project page here:
 
-http://loopj.com/android-async-http/
+https://loopj.com/android-async-http/
 

@@ -1,13 +1,13 @@
 /*
     Android Asynchronous Http Client
     Copyright (c) 2011 James Smith <james@loopj.com>
-    http://loopj.com
+    https://loopj.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+        https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -43,7 +43,7 @@ import java.net.URI;
  * <p>&nbsp;</p> For example: <p>&nbsp;</p>
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
- * client.get("http://www.google.com", new AsyncHttpResponseHandler() {
+ * client.get("https://www.google.com", new AsyncHttpResponseHandler() {
  *     &#064;Override
  *     public void onStart() {
  *         // Initiated the request
@@ -242,7 +242,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * Sets the charset for the response string. If not set, the default is UTF-8.
      *
      * @param charset to be used for the response string.
-     * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Charset</a>
+     * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Charset</a>
      */
     public void setCharset(final String charset) {
         this.responseCharset = charset;

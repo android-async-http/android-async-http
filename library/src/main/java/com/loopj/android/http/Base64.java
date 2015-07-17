@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,7 +20,7 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * Utilities for encoding and decoding the Base64 representation of binary data.  See RFCs <a
- * href="http://www.ietf.org/rfc/rfc2045.txt">2045</a> and <a href="http://www.ietf.org/rfc/rfc3548.txt">3548</a>.
+ * href="https://www.ietf.org/rfc/rfc2045.txt">2045</a> and <a href="https://www.ietf.org/rfc/rfc3548.txt">3548</a>.
  */
 public class Base64 {
     /**
@@ -520,7 +520,7 @@ public class Base64 {
     /* package */ static class Encoder extends Coder {
         /**
          * Emit a new line every this many output tuples.  Corresponds to a 76-character line length
-         * (the maximum allowable according to <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC
+         * (the maximum allowable according to <a href="https://www.ietf.org/rfc/rfc2045.txt">RFC
          * 2045</a>).
          */
         public static final int LINE_GROUPS = 19;

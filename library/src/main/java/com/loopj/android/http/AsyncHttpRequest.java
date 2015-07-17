@@ -1,13 +1,13 @@
 /*
     Android Asynchronous Http Client
     Copyright (c) 2011 James Smith <james@loopj.com>
-    http://loopj.com
+    https://loopj.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+        https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -185,7 +185,7 @@ public class AsyncHttpRequest implements Runnable {
                 } catch (NullPointerException e) {
                     // there's a bug in HttpClient 4.0.x that on some occasions causes
                     // DefaultRequestExecutor to throw an NPE, see
-                    // http://code.google.com/p/android/issues/detail?id=5255
+                    // https://code.google.com/p/android/issues/detail?id=5255
                     cause = new IOException("NPE in HttpClient: " + e.getMessage());
                     retry = retryHandler.retryRequest(cause, ++executionCount, context);
                 } catch (IOException e) {

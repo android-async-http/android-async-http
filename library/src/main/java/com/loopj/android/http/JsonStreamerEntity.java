@@ -1,13 +1,13 @@
 /*
     Android Asynchronous Http Client
     Copyright (c) 2011 James Smith <james@loopj.com>
-    http://loopj.com
+    https://loopj.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+        https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -332,7 +332,7 @@ public class JsonStreamerEntity implements HttpEntity {
         os.write('"');
     }
 
-    // Curtosy of Simple-JSON: http://goo.gl/XoW8RF
+    // Curtosy of Simple-JSON: https://goo.gl/XoW8RF
     // Changed a bit to suit our needs in this class.
     static byte[] escape(String string) {
         // If it's null, just return prematurely.
@@ -372,7 +372,7 @@ public class JsonStreamerEntity implements HttpEntity {
                     sb.append("\\t");
                     break;
                 default:
-                    // Reference: http://www.unicode.org/versions/Unicode5.1.0/
+                    // Reference: https://www.unicode.org/versions/Unicode5.1.0/
                     if ((ch <= '\u001F') || (ch >= '\u007F' && ch <= '\u009F') || (ch >= '\u2000' && ch <= '\u20FF')) {
                         String intString = Integer.toHexString(ch);
                         sb.append("\\u");

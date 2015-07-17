@@ -1,13 +1,13 @@
 /*
     Android Asynchronous Http Client
     Copyright (c) 2011 James Smith <james@loopj.com>
-    http://loopj.com
+    https://loopj.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+        https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,7 +36,7 @@ import java.util.regex.PatternSyntaxException;
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
  * String[] allowedTypes = new String[] { "image/png" };
- * client.get("http://www.example.com/image.png", new BinaryHttpResponseHandler(allowedTypes) {
+ * client.get("https://www.example.com/image.png", new BinaryHttpResponseHandler(allowedTypes) {
  *     &#064;Override
  *     public void onSuccess(byte[] imageData) {
  *         // Successfully got a response
