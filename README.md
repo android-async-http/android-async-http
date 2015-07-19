@@ -58,7 +58,14 @@ Packaging: JAR or AAR
 ```
 Gradle
 ```groovy
-compile 'com.loopj.android:android-async-http:1.4.8'
+repositories {
+  maven {
+    mavenCentral()
+  }
+}
+dependencies {
+  compile 'com.loopj.android:android-async-http:1.4.8'
+}
 ```
 
 **development snapshots**
@@ -71,9 +78,16 @@ ArtifactId: android-async-http
 Version: 1.4.9-SNAPSHOT
 Packaging: JAR or AAR
 ```
-Gradle`
+Gradle
 ```groovy
-compile 'com.loopj.android:android-async-http:1.4.9-SNAPSHOT'
+repositories {
+  maven {
+    url 'https://oss.sonatype.org/content/repositories/snapshots/'
+  }
+}
+dependencies {
+  compile 'com.loopj.android:android-async-http:1.4.9-SNAPSHOT'
+}
 ```
 
 Documentation, Features and Examples
