@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 public class AsyncBackgroundThreadSample extends SampleParentActivity {
     private static final String LOG_TAG = "AsyncBackgroundThreadSample";
 
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
     public void onStop()

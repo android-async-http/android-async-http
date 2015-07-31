@@ -225,7 +225,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         asyncHttpClient.cancelRequests(SampleParentActivity.this, true);
     }
 
-    protected View.OnClickListener onClickListener = new View.OnClickListener() {
+    protected final View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {

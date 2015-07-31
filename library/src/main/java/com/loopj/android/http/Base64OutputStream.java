@@ -27,7 +27,7 @@ public class Base64OutputStream extends FilterOutputStream {
     private byte[] buffer = null;
     private int bpos = 0;
 
-    private static byte[] EMPTY = new byte[0];
+    private static final byte[] EMPTY = new byte[0];
 
     /**
      * Performs Base64 encoding on the data written to the stream, writing the encoded data to

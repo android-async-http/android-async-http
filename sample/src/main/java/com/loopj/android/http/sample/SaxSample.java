@@ -40,7 +40,7 @@ public class SaxSample extends SampleParentActivity {
         return saxAsyncHttpResponseHandler;
     }
 
-    private SaxAsyncHttpResponseHandler saxAsyncHttpResponseHandler = new SaxAsyncHttpResponseHandler<SAXTreeStructure>(new SAXTreeStructure()) {
+    private final SaxAsyncHttpResponseHandler saxAsyncHttpResponseHandler = new SaxAsyncHttpResponseHandler<SAXTreeStructure>(new SAXTreeStructure()) {
         @Override
         public void onStart() {
             clearOutputs();
@@ -93,8 +93,8 @@ public class SaxSample extends SampleParentActivity {
     }
 
     private class Tuple {
-        public Integer color;
-        public String text;
+        public final Integer color;
+        public final String text;
 
         public Tuple(int _color, String _text) {
             this.color = _color;
@@ -104,7 +104,7 @@ public class SaxSample extends SampleParentActivity {
 
     private class SAXTreeStructure extends DefaultHandler {
 
-        public List<Tuple> responseViews = new ArrayList<Tuple>();
+        public final List<Tuple> responseViews = new ArrayList<Tuple>();
 
         public void startElement(String namespaceURI, String localName,
                                  String rawName, Attributes atts) {

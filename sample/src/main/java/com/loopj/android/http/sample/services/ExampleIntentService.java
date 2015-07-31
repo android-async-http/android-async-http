@@ -21,7 +21,7 @@ public class ExampleIntentService extends IntentService {
     public static final String INTENT_DATA = "INTENT_DATA";
     public static final String INTENT_THROWABLE = "INTENT_THROWABLE";
 
-    private AsyncHttpClient aClient = new SyncHttpClient();
+    private final AsyncHttpClient aClient = new SyncHttpClient();
 
     public ExampleIntentService() {
         super("ExampleIntentService");
