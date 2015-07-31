@@ -38,7 +38,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.security.SecureRandom;
+import java.util.Random;
 
 /**
  * Simplified multipart entity mainly used for sending one or more files.
@@ -74,7 +74,7 @@ class SimpleMultipartEntity implements HttpEntity {
 
     public SimpleMultipartEntity(ResponseHandlerInterface progressHandler) {
         final StringBuilder buf = new StringBuilder();
-        final SecureRandom rand = new SecureRandom();
+        final Random rand = new Random();
         for (int i = 0; i < 30; i++) {
             buf.append(MULTIPART_CHARS[rand.nextInt(MULTIPART_CHARS.length)]);
         }
