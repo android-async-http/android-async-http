@@ -1608,7 +1608,8 @@ public class AsyncHttpClient {
         public InputStream getContent() throws IOException {
             wrappedStream = wrappedEntity.getContent();
             pushbackStream = new PushbackInputStream(wrappedStream, 2);
-            if (isInputStreamGZIPCompressed(pushbackStream)) {
+            Header enc = wrappedEntity.getContentEncoding();
+            if ((enc != null && "gzip".equalsIgnoreCase(enc.getValue())) || isInputStreamGZIPCompressed(pushbackStream)) {
                 gzippedStream = new GZIPInputStream(pushbackStream);
                 return gzippedStream;
             } else {
