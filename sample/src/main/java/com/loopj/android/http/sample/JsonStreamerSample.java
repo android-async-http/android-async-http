@@ -26,17 +26,18 @@ import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.ResponseHandlerInterface;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+
 /**
  * This sample demonstrates how to upload JSON data using streams, resulting
  * in a low-memory footprint even with extremely large data.
- *
+ * <p/>
  * Please note: You must prepare a server-side end-point to consume the uploaded
  * data. This is because the data is uploaded using "application/json" content
  * type and regular methods, expecting a multi-form content type, will fail to

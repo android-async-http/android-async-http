@@ -23,8 +23,8 @@ import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
 
 public class BinarySample extends SampleParentActivity {
     private static final String LOG_TAG = "BinarySample";

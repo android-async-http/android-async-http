@@ -27,19 +27,19 @@ import com.loopj.android.http.RangeFileAsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.HttpUriRequest;
-
 import java.io.File;
 import java.io.IOException;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
 
 /**
  * This sample demonstrates use of {@link RangeFileAsyncHttpResponseHandler} to
  * download a remote file in multiple requests. While this response handler
  * class handles file storage, it's up to the app itself to request all chunks
  * of the file.
- *
+ * <p/>
  * Also demonstrated a method to query the remote file's size prior to sending
  * the actual GET requests. This ensures that the remote server is actually
  * capable of supporting the "Range" header, necessary to make this sample work.

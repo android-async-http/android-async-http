@@ -36,12 +36,12 @@ import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.sample.util.SampleJSON;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.message.BasicHeader;
-
 import java.util.List;
 import java.util.Locale;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
 
 /**
  * This sample demonstrates how to implement HTTP 401 Basic Authentication.

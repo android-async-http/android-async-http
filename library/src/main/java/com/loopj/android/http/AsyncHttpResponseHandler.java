@@ -22,23 +22,23 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.util.ByteArrayBuffer;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.StatusLine;
+import cz.msebera.android.httpclient.client.HttpResponseException;
+import cz.msebera.android.httpclient.util.ByteArrayBuffer;
+
 /**
  * Used to intercept and handle the responses from requests made using {@link AsyncHttpClient}. The
- * {@link #onSuccess(int, org.apache.http.Header[], byte[])} method is designed to be anonymously
+ * {@link #onSuccess(int, cz.msebera.android.httpclient.Header[], byte[])} method is designed to be anonymously
  * overridden with your own response handling code. <p>&nbsp;</p> Additionally, you can override the
- * {@link #onFailure(int, org.apache.http.Header[], byte[], Throwable)}, {@link #onStart()}, {@link
+ * {@link #onFailure(int, cz.msebera.android.httpclient.Header[], byte[], Throwable)}, {@link #onStart()}, {@link
  * #onFinish()}, {@link #onRetry(int)} and {@link #onProgress(long, long)} methods as required.
  * <p>&nbsp;</p> For example: <p>&nbsp;</p>
  * <pre>
@@ -81,8 +81,8 @@ import java.net.URI;
 @SuppressWarnings("ALL")
 public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterface {
 
-    private static final String LOG_TAG = "AsyncHttpRH";
-
+    public static final String DEFAULT_CHARSET = "UTF-8";
+    public static final String UTF8_BOM = "\uFEFF";
     protected static final int SUCCESS_MESSAGE = 0;
     protected static final int FAILURE_MESSAGE = 1;
     protected static final int START_MESSAGE = 2;
@@ -90,11 +90,8 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     protected static final int PROGRESS_MESSAGE = 4;
     protected static final int RETRY_MESSAGE = 5;
     protected static final int CANCEL_MESSAGE = 6;
-
     protected static final int BUFFER_SIZE = 4096;
-
-    public static final String DEFAULT_CHARSET = "UTF-8";
-    public static final String UTF8_BOM = "\uFEFF";
+    private static final String LOG_TAG = "AsyncHttpRH";
     private String responseCharset = DEFAULT_CHARSET;
     private Handler handler;
     private boolean useSynchronousMode;
@@ -150,13 +147,13 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     @Override
-    public void setTag(Object TAG) {
-        this.TAG = new WeakReference<Object>(TAG);
+    public Object getTag() {
+        return this.TAG.get();
     }
 
     @Override
-    public Object getTag() {
-        return this.TAG.get();
+    public void setTag(Object TAG) {
+        this.TAG = new WeakReference<Object>(TAG);
     }
 
     @Override
@@ -165,35 +162,18 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     @Override
-    public Header[] getRequestHeaders() {
-        return this.requestHeaders;
-    }
-
-    @Override
     public void setRequestURI(URI requestURI) {
         this.requestURI = requestURI;
     }
 
     @Override
-    public void setRequestHeaders(Header[] requestHeaders) {
-        this.requestHeaders = requestHeaders;
+    public Header[] getRequestHeaders() {
+        return this.requestHeaders;
     }
 
-    /**
-     * Avoid leaks by using a non-anonymous handler class.
-     */
-    private static class ResponderHandler extends Handler {
-        private final AsyncHttpResponseHandler mResponder;
-
-        ResponderHandler(AsyncHttpResponseHandler mResponder, Looper looper) {
-            super(looper);
-            this.mResponder = mResponder;
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            mResponder.handleMessage(msg);
-        }
+    @Override
+    public void setRequestHeaders(Header[] requestHeaders) {
+        this.requestHeaders = requestHeaders;
     }
 
     @Override
@@ -238,6 +218,10 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         usePoolThread = pool;
     }
 
+    public String getCharset() {
+        return this.responseCharset == null ? DEFAULT_CHARSET : this.responseCharset;
+    }
+
     /**
      * Sets the charset for the response string. If not set, the default is UTF-8.
      *
@@ -246,10 +230,6 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      */
     public void setCharset(final String charset) {
         this.responseCharset = charset;
-    }
-
-    public String getCharset() {
-        return this.responseCharset == null ? DEFAULT_CHARSET : this.responseCharset;
     }
 
     /**
@@ -512,5 +492,22 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
             }
         }
         return responseBody;
+    }
+
+    /**
+     * Avoid leaks by using a non-anonymous handler class.
+     */
+    private static class ResponderHandler extends Handler {
+        private final AsyncHttpResponseHandler mResponder;
+
+        ResponderHandler(AsyncHttpResponseHandler mResponder, Looper looper) {
+            super(looper);
+            this.mResponder = mResponder;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            mResponder.handleMessage(msg);
+        }
     }
 }

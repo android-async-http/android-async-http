@@ -7,16 +7,16 @@ import com.loopj.android.http.RangeFileAsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-
 import java.io.File;
 import java.io.IOException;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+
 public class ResumeDownloadSample extends SampleParentActivity {
 
-    private File downloadTarget;
     private static final String LOG_TAG = "ResumeDownloadSample";
+    private File downloadTarget;
 
     private File getDownloadTarget() {
         try {

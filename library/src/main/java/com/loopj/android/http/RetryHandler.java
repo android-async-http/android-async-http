@@ -25,12 +25,6 @@ package com.loopj.android.http;
 
 import android.os.SystemClock;
 
-import org.apache.http.NoHttpResponseException;
-import org.apache.http.client.HttpRequestRetryHandler;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpContext;
-
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.SocketException;
@@ -38,6 +32,12 @@ import java.net.UnknownHostException;
 import java.util.HashSet;
 
 import javax.net.ssl.SSLException;
+
+import cz.msebera.android.httpclient.NoHttpResponseException;
+import cz.msebera.android.httpclient.client.HttpRequestRetryHandler;
+import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
+import cz.msebera.android.httpclient.protocol.ExecutionContext;
+import cz.msebera.android.httpclient.protocol.HttpContext;
 
 class RetryHandler implements HttpRequestRetryHandler {
     private final static HashSet<Class<?>> exceptionWhitelist = new HashSet<Class<?>>();
@@ -63,6 +63,14 @@ class RetryHandler implements HttpRequestRetryHandler {
     public RetryHandler(int maxRetries, int retrySleepTimeMS) {
         this.maxRetries = maxRetries;
         this.retrySleepTimeMS = retrySleepTimeMS;
+    }
+
+    static void addClassToWhitelist(Class<?> cls) {
+        exceptionWhitelist.add(cls);
+    }
+
+    static void addClassToBlacklist(Class<?> cls) {
+        exceptionBlacklist.add(cls);
     }
 
     @Override
@@ -101,14 +109,6 @@ class RetryHandler implements HttpRequestRetryHandler {
         }
 
         return retry;
-    }
-
-    static void addClassToWhitelist(Class<?> cls) {
-        exceptionWhitelist.add(cls);
-    }
-
-    static void addClassToBlacklist(Class<?> cls) {
-        exceptionBlacklist.add(cls);
     }
 
     protected boolean isInList(HashSet<Class<?>> list, Throwable error) {

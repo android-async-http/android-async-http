@@ -10,7 +10,7 @@ import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.sample.IntentServiceSample;
 import com.loopj.android.http.sample.util.IntentUtil;
 
-import org.apache.http.Header;
+import cz.msebera.android.httpclient.Header;
 
 public class ExampleIntentService extends IntentService {
 

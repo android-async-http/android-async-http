@@ -28,14 +28,14 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
 
 public class AsyncBackgroundThreadSample extends SampleParentActivity {
     private static final String LOG_TAG = "AsyncBackgroundThreadSample";
@@ -43,8 +43,7 @@ public class AsyncBackgroundThreadSample extends SampleParentActivity {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
     }
 

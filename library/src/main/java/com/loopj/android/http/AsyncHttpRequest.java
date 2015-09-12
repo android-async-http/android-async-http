@@ -18,16 +18,16 @@
 
 package com.loopj.android.http;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpRequestRetryHandler;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.AbstractHttpClient;
-import org.apache.http.protocol.HttpContext;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.client.HttpRequestRetryHandler;
+import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
+import cz.msebera.android.httpclient.impl.client.AbstractHttpClient;
+import cz.msebera.android.httpclient.protocol.HttpContext;
 
 /**
  * Internal class, representing the HttpRequest, done in asynchronous manner
@@ -37,8 +37,8 @@ public class AsyncHttpRequest implements Runnable {
     private final HttpContext context;
     private final HttpUriRequest request;
     private final ResponseHandlerInterface responseHandler;
-    private int executionCount;
     private final AtomicBoolean isCancelled = new AtomicBoolean();
+    private int executionCount;
     private boolean cancelIsNotified;
     private volatile boolean isFinished;
     private boolean isRequestPreProcessed;

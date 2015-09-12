@@ -23,8 +23,6 @@ import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 
-import org.apache.http.conn.ssl.SSLSocketFactory;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +46,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
+import cz.msebera.android.httpclient.conn.ssl.SSLSocketFactory;
 
 /**
  * A class to authenticate a secured connection against a custom CA using a BKS store.
@@ -168,10 +168,10 @@ public class SecureSocketFactory extends SSLSocketFactory {
 
         injectHostname(socket, host);
         Socket sslSocket = sslCtx.getSocketFactory().createSocket(socket, host, port, autoClose);
-        
+
         // throw an exception if the hostname does not match the certificate
         getHostnameVerifier().verify(host, (SSLSocket) sslSocket);
-        
+
         return sslSocket;
     }
 

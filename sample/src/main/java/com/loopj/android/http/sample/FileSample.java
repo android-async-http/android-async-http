@@ -26,10 +26,10 @@ import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.sample.util.FileUtil;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-
 import java.io.File;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
 
 public class FileSample extends SampleParentActivity {
     private static final String LOG_TAG = "FileSample";

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:fillViewport="true">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true">
 
     <LinearLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
-        <requestFocus/>
+        <requestFocus />
 
         <LinearLayout
             android:id="@+id/layout_url"
@@ -24,20 +24,20 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:inputType="textUri"/>
+                android:inputType="textUri" />
 
             <Button
                 android:id="@+id/button_run"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/button_run"/>
+                android:text="@string/button_run" />
 
             <Button
                 android:id="@+id/button_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:text="@string/button_cancel"/>
+                android:text="@string/button_cancel"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -49,7 +49,7 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/label_headers"/>
+                android:text="@string/label_headers" />
 
             <EditText
                 android:id="@+id/edit_headers"
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
                 android:minLines="3"
-                android:singleLine="false"/>
+                android:singleLine="false" />
 
         </LinearLayout>
 
@@ -70,7 +70,7 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/label_req_body"/>
+                android:text="@string/label_req_body" />
 
             <EditText
                 android:id="@+id/edit_body"
@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
                 android:minLines="3"
-                android:singleLine="false"/>
+                android:singleLine="false" />
 
         </LinearLayout>
 
@@ -86,14 +86,13 @@
             android:id="@+id/layout_custom"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-        </LinearLayout>
+            android:orientation="vertical"></LinearLayout>
 
         <LinearLayout
             android:id="@+id/layout_response"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"/>
+            android:orientation="vertical" />
 
     </LinearLayout>
 </ScrollView>

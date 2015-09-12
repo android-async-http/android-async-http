@@ -18,19 +18,6 @@
 
 package com.loopj.android.http;
 
-import org.apache.http.HttpVersion;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.HTTP;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,6 +36,19 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
+import cz.msebera.android.httpclient.HttpVersion;
+import cz.msebera.android.httpclient.conn.ClientConnectionManager;
+import cz.msebera.android.httpclient.conn.scheme.PlainSocketFactory;
+import cz.msebera.android.httpclient.conn.scheme.Scheme;
+import cz.msebera.android.httpclient.conn.scheme.SchemeRegistry;
+import cz.msebera.android.httpclient.conn.ssl.SSLSocketFactory;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
+import cz.msebera.android.httpclient.impl.conn.tsccm.ThreadSafeClientConnManager;
+import cz.msebera.android.httpclient.params.BasicHttpParams;
+import cz.msebera.android.httpclient.params.HttpParams;
+import cz.msebera.android.httpclient.params.HttpProtocolParams;
+import cz.msebera.android.httpclient.protocol.HTTP;
 
 /**
  * This file is introduced to fix HTTPS Post bug on API &lt; ICS see
@@ -83,23 +83,6 @@ public class MySSLSocketFactory extends SSLSocketFactory {
         };
 
         sslContext.init(null, new TrustManager[]{tm}, null);
-    }
-
-    @Override
-    public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException {
-        return sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
-    }
-
-    @Override
-    public Socket createSocket() throws IOException {
-        return sslContext.getSocketFactory().createSocket();
-    }
-
-    /**
-     * Makes HttpsURLConnection trusts a set of certificates specified by the KeyStore
-     */
-    public void fixHttpsURLConnection() {
-        HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
     }
 
     /**
@@ -199,6 +182,23 @@ public class MySSLSocketFactory extends SSLSocketFactory {
         } catch (Exception e) {
             return new DefaultHttpClient();
         }
+    }
+
+    @Override
+    public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException {
+        return sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
+    }
+
+    @Override
+    public Socket createSocket() throws IOException {
+        return sslContext.getSocketFactory().createSocket();
+    }
+
+    /**
+     * Makes HttpsURLConnection trusts a set of certificates specified by the KeyStore
+     */
+    public void fixHttpsURLConnection() {
+        HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
     }
 
 }

@@ -23,18 +23,15 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.sample.util.SampleJSON;
 import com.loopj.android.http.sample.util.SecureSocketFactory;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,6 +41,9 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
 
 /**
  * This sample demonstrates the implementation of self-signed CA's and connection to servers with
@@ -190,12 +190,12 @@ public class CustomCASample extends SampleParentActivity {
         builder.setTitle(R.string.title_custom_ca);
         builder.setMessage(getReadmeText());
         builder.setNeutralButton(android.R.string.cancel,
-            new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
                 }
-            }
         );
         builder.show();
     }

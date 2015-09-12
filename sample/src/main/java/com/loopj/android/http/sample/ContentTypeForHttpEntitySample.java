@@ -8,11 +8,11 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.TextHttpResponseHandler;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-
 import java.io.File;
 import java.io.IOException;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
 
 public class ContentTypeForHttpEntitySample extends SampleParentActivity {
     private static final String LOG_TAG = "ContentTypeForHttpEntitySample";

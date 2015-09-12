@@ -21,27 +21,28 @@ package com.loopj.android.http.sample;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpRequest;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
+
 import java.util.Locale;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.AbstractHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HttpContext;
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
+import cz.msebera.android.httpclient.impl.client.AbstractHttpClient;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
+import cz.msebera.android.httpclient.protocol.HttpContext;
 
 public class PrePostProcessingSample extends SampleParentActivity {
 
-    private static final String LOG_TAG = "PrePostProcessingSample";
-
     protected static final int LIGHTGREY = Color.parseColor("#E0E0E0");
     protected static final int DARKGREY = Color.parseColor("#888888");
+    private static final String LOG_TAG = "PrePostProcessingSample";
 
     @Override
     public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {
@@ -80,13 +81,13 @@ public class PrePostProcessingSample extends SampleParentActivity {
             @Override
             public void onPreProcessResponse(ResponseHandlerInterface instance, HttpResponse response) {
                 debugProcessing(LOG_TAG, "Pre",
-                    "Response is about to be pre-processed", LIGHTGREY);
+                        "Response is about to be pre-processed", LIGHTGREY);
             }
 
-          @Override
+            @Override
             public void onPostProcessResponse(ResponseHandlerInterface instance, HttpResponse response) {
                 debugProcessing(LOG_TAG, "Post",
-                    "Response is about to be post-processed", DARKGREY);
+                        "Response is about to be post-processed", DARKGREY);
             }
 
             @Override
@@ -119,7 +120,7 @@ public class PrePostProcessingSample extends SampleParentActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-              addView(getColoredView(color, debugMessage));
+                addView(getColoredView(color, debugMessage));
             }
         });
     }
@@ -133,13 +134,13 @@ public class PrePostProcessingSample extends SampleParentActivity {
         @Override
         public void onPreProcessRequest(AsyncHttpRequest request) {
             debugProcessing(LOG_TAG, "Pre",
-                "Request is about to be pre-processed", LIGHTGREY);
+                    "Request is about to be pre-processed", LIGHTGREY);
         }
 
         @Override
         public void onPostProcessRequest(AsyncHttpRequest request) {
             debugProcessing(LOG_TAG, "Post",
-                "Request is about to be post-processed", DARKGREY);
+                    "Request is about to be post-processed", DARKGREY);
         }
     }
 }

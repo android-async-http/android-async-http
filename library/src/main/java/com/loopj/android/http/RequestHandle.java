@@ -97,6 +97,16 @@ public class RequestHandle {
     }
 
     /**
+     * Will return TAG of underlying AsyncHttpRequest if it's not already GCed
+     *
+     * @return Object TAG, can be null
+     */
+    public Object getTag() {
+        AsyncHttpRequest _request = request.get();
+        return _request == null ? null : _request.getTag();
+    }
+
+    /**
      * Will set Object as TAG to underlying AsyncHttpRequest
      *
      * @param tag Object used as TAG to underlying AsyncHttpRequest
@@ -107,15 +117,5 @@ public class RequestHandle {
         if (_request != null)
             _request.setRequestTag(tag);
         return this;
-    }
-
-    /**
-     * Will return TAG of underlying AsyncHttpRequest if it's not already GCed
-     *
-     * @return Object TAG, can be null
-     */
-    public Object getTag() {
-        AsyncHttpRequest _request = request.get();
-        return _request == null ? null : _request.getTag();
     }
 }

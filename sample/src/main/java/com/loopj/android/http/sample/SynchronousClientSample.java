@@ -27,8 +27,8 @@ import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.SyncHttpClient;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
 
 public class SynchronousClientSample extends GetSample {
     private static final String LOG_TAG = "SyncSample";

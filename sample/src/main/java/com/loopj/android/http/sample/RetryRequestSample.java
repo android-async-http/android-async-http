@@ -22,12 +22,13 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
+
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.conn.ConnectionPoolTimeoutException;
+import cz.msebera.android.httpclient.conn.ConnectTimeoutException;
+import cz.msebera.android.httpclient.conn.ConnectionPoolTimeoutException;
 
 /**
  * This sample demonstrates use of
@@ -62,12 +63,12 @@ public class RetryRequestSample extends GetSample {
     protected void onResume() {
         super.onResume();
 
-        if(!wasToastShown) {
+        if (!wasToastShown) {
             wasToastShown = true;
             Toast.makeText(
-                this,
-                "Exceptions' whitelist and blacklist updated\nSee RetryRequestSample.java for details",
-                Toast.LENGTH_LONG
+                    this,
+                    "Exceptions' whitelist and blacklist updated\nSee RetryRequestSample.java for details",
+                    Toast.LENGTH_LONG
             ).show();
         }
     }

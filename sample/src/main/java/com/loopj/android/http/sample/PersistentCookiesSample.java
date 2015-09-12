@@ -22,7 +22,6 @@ import android.os.Bundle;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.PersistentCookieStore;
@@ -30,9 +29,9 @@ import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.sample.util.SampleJSON;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.CookieStore;
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.client.CookieStore;
 
 public class PersistentCookiesSample extends SampleParentActivity {
 
@@ -72,7 +71,7 @@ public class PersistentCookiesSample extends SampleParentActivity {
         String url = PROTOCOL + "httpbin.org/cookies";
 
         // If the cookie store is empty, suggest a cookie.
-        if(cookieStore.getCookies().isEmpty()) {
+        if (cookieStore.getCookies().isEmpty()) {
             url += "/set?time=" + System.currentTimeMillis();
         }
 

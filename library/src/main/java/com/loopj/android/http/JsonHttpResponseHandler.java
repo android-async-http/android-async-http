@@ -18,19 +18,20 @@
 
 package com.loopj.android.http;
 
-import org.apache.http.Header;
-import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpStatus;
+
 /**
  * Used to intercept and handle the responses from requests made using {@link AsyncHttpClient}, with
  * automatic parsing into a {@link JSONObject} or {@link JSONArray}. <p>&nbsp;</p> This class is
  * designed to be passed to get, post, put and delete requests with the {@link #onSuccess(int,
- * org.apache.http.Header[], org.json.JSONArray)} or {@link #onSuccess(int,
- * org.apache.http.Header[], org.json.JSONObject)} methods anonymously overridden. <p>&nbsp;</p>
+ * cz.msebera.android.httpclient.Header[], org.json.JSONArray)} or {@link #onSuccess(int,
+ * cz.msebera.android.httpclient.Header[], org.json.JSONObject)} methods anonymously overridden. <p>&nbsp;</p>
  * Additionally, you can override the other event methods from the parent class.
  */
 public class JsonHttpResponseHandler extends TextHttpResponseHandler {

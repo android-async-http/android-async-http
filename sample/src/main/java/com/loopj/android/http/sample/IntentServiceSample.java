@@ -11,8 +11,8 @@ import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.sample.services.ExampleIntentService;
 import com.loopj.android.http.sample.util.IntentUtil;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
 
 public class IntentServiceSample extends SampleParentActivity {
 
@@ -31,18 +31,18 @@ public class IntentServiceSample extends SampleParentActivity {
             String action = intent.getAction();
 
             // switch() doesn't support strings in older JDK.
-            if(ACTION_START.equals(action)) {
+            if (ACTION_START.equals(action)) {
                 clearOutputs();
                 addView(getColoredView(LIGHTBLUE, "Request started"));
-            } else if(ACTION_FINISH.equals(action)) {
+            } else if (ACTION_FINISH.equals(action)) {
                 addView(getColoredView(LIGHTBLUE, "Request finished"));
-            } else if(ACTION_CANCEL.equals(action)) {
+            } else if (ACTION_CANCEL.equals(action)) {
                 addView(getColoredView(LIGHTBLUE, "Request cancelled"));
-            } else if(ACTION_RETRY.equals(action)) {
+            } else if (ACTION_RETRY.equals(action)) {
                 addView(getColoredView(LIGHTBLUE, "Request retried"));
-            } else if(ACTION_FAILURE.equals(action) || ACTION_SUCCESS.equals(action)) {
+            } else if (ACTION_FAILURE.equals(action) || ACTION_SUCCESS.equals(action)) {
                 debugThrowable(LOG_TAG, (Throwable) intent.getSerializableExtra(ExampleIntentService.INTENT_THROWABLE));
-                if(ACTION_SUCCESS.equals(action)) {
+                if (ACTION_SUCCESS.equals(action)) {
                     debugStatusCode(LOG_TAG, intent.getIntExtra(ExampleIntentService.INTENT_STATUS_CODE, 0));
                     debugHeaders(LOG_TAG, IntentUtil.deserializeHeaders(intent.getStringArrayExtra(ExampleIntentService.INTENT_HEADERS)));
                     byte[] returnedBytes = intent.getByteArrayExtra(ExampleIntentService.INTENT_DATA);

@@ -10,9 +10,6 @@ import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.loopj.android.http.sample.util.API8Util;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,10 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+
 public class RequestParamsDebug extends SampleParentActivity {
 
     public static final String LOG_TAG = "RequestParamsDebug";
-    private EditText customParams;
     private static final String DEMO_RP_CONTENT = "array=java\n" +
             "array=C\n" +
             "list=blue\n" +
@@ -32,6 +31,7 @@ public class RequestParamsDebug extends SampleParentActivity {
             "set=art\n" +
             "map=first_name\n" +
             "map=last_name\n";
+    private EditText customParams;
 
     @Override
     public ResponseHandlerInterface getResponseHandler() {

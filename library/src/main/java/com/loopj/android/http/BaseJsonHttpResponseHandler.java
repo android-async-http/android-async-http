@@ -18,14 +18,14 @@
 
 package com.loopj.android.http;
 
-import org.apache.http.Header;
-import org.apache.http.HttpStatus;
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpStatus;
 
 /**
  * Class meant to be used with custom JSON parser (such as GSON or Jackson JSON) <p>&nbsp;</p>
  * {@link #parseResponse(String, boolean)} should be overriden and must return type of generic param
  * class, response will be then handled to implementation of abstract methods {@link #onSuccess(int,
- * org.apache.http.Header[], String, Object)} or {@link #onFailure(int, org.apache.http.Header[],
+ * cz.msebera.android.httpclient.Header[], String, Object)} or {@link #onFailure(int, cz.msebera.android.httpclient.Header[],
  * Throwable, String, Object)}, depending of response HTTP status line (result http code)
  *
  * @param <JSON_TYPE> Generic type meant to be returned in callback

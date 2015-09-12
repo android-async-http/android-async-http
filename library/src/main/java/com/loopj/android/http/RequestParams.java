@@ -18,12 +18,6 @@
 
 package com.loopj.android.http;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,6 +34,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.client.entity.UrlEncodedFormEntity;
+import cz.msebera.android.httpclient.client.utils.URLEncodedUtils;
+import cz.msebera.android.httpclient.message.BasicNameValuePair;
+import cz.msebera.android.httpclient.protocol.HTTP;
 
 /**
  * A collection of string request parameters or files to send along with requests made from an
@@ -99,43 +99,17 @@ public class RequestParams implements Serializable {
             "application/json";
 
     protected final static String LOG_TAG = "RequestParams";
-    protected boolean isRepeatable;
-    protected boolean forceMultipartEntity = false;
-    protected boolean useJsonStreamer;
-    protected String elapsedFieldInJsonStreamer = "_elapsed";
-    protected boolean autoCloseInputStreams;
     protected final ConcurrentHashMap<String, String> urlParams = new ConcurrentHashMap<String, String>();
     protected final ConcurrentHashMap<String, StreamWrapper> streamParams = new ConcurrentHashMap<String, StreamWrapper>();
     protected final ConcurrentHashMap<String, FileWrapper> fileParams = new ConcurrentHashMap<String, FileWrapper>();
     protected final ConcurrentHashMap<String, List<FileWrapper>> fileArrayParams = new ConcurrentHashMap<String, List<FileWrapper>>();
     protected final ConcurrentHashMap<String, Object> urlParamsWithObjects = new ConcurrentHashMap<String, Object>();
+    protected boolean isRepeatable;
+    protected boolean forceMultipartEntity = false;
+    protected boolean useJsonStreamer;
+    protected String elapsedFieldInJsonStreamer = "_elapsed";
+    protected boolean autoCloseInputStreams;
     protected String contentEncoding = HTTP.UTF_8;
-
-    /**
-     * Sets content encoding for return value of {@link #getParamString()} and {@link
-     * #createFormEntity()} <p>&nbsp;</p> Default encoding is "UTF-8"
-     *
-     * @param encoding String constant from {@link HTTP}
-     */
-    public void setContentEncoding(final String encoding) {
-        if (encoding != null) {
-            this.contentEncoding = encoding;
-        } else {
-            AsyncHttpClient.log.d(LOG_TAG, "setContentEncoding called with null attribute");
-        }
-    }
-
-    /**
-     * If set to true will force Content-Type header to `multipart/form-data`
-     * even if there are not Files or Streams to be send
-     * <p>&nbsp;</p>
-     * Default value is false
-     *
-     * @param force boolean, should declare content-type multipart/form-data even without files or streams present
-     */
-    public void setForceMultipartEntityContentType(boolean force) {
-        this.forceMultipartEntity = force;
-    }
 
     /**
      * Constructs a new empty {@code RequestParams} instance.
@@ -188,6 +162,32 @@ public class RequestParams implements Serializable {
             String val = String.valueOf(keysAndValues[i + 1]);
             put(key, val);
         }
+    }
+
+    /**
+     * Sets content encoding for return value of {@link #getParamString()} and {@link
+     * #createFormEntity()} <p>&nbsp;</p> Default encoding is "UTF-8"
+     *
+     * @param encoding String constant from {@link HTTP}
+     */
+    public void setContentEncoding(final String encoding) {
+        if (encoding != null) {
+            this.contentEncoding = encoding;
+        } else {
+            AsyncHttpClient.log.d(LOG_TAG, "setContentEncoding called with null attribute");
+        }
+    }
+
+    /**
+     * If set to true will force Content-Type header to `multipart/form-data`
+     * even if there are not Files or Streams to be send
+     * <p>&nbsp;</p>
+     * Default value is false
+     *
+     * @param force boolean, should declare content-type multipart/form-data even without files or streams present
+     */
+    public void setForceMultipartEntityContentType(boolean force) {
+        this.forceMultipartEntity = force;
     }
 
     /**
@@ -510,7 +510,7 @@ public class RequestParams implements Serializable {
      *
      * @param progressHandler HttpResponseHandler for reporting progress on entity submit
      * @return HttpEntity resulting HttpEntity to be included along with {@link
-     * org.apache.http.client.methods.HttpEntityEnclosingRequestBase}
+     * cz.msebera.android.httpclient.client.methods.HttpEntityEnclosingRequestBase}
      * @throws IOException if one of the streams cannot be read
      */
     public HttpEntity getEntity(ResponseHandlerInterface progressHandler) throws IOException {

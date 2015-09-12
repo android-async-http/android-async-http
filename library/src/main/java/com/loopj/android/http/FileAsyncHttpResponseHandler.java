@@ -20,21 +20,21 @@ package com.loopj.android.http;
 
 import android.content.Context;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+
 public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
 
+    private static final String LOG_TAG = "FileAsyncHttpRH";
     protected final File file;
     protected final boolean append;
     protected final boolean renameIfExists;
     protected File frontendFile;
-    private static final String LOG_TAG = "FileAsyncHttpRH";
 
     /**
      * Obtains new FileAsyncHttpResponseHandler and stores response in passed file

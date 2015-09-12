@@ -19,10 +19,10 @@ package com.loopj.android.http;
 
 import android.content.Context;
 
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HttpContext;
+import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
+import cz.msebera.android.httpclient.conn.scheme.SchemeRegistry;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
+import cz.msebera.android.httpclient.protocol.HttpContext;
 
 /**
  * Processes http requests in synchronous mode, so your caller thread will be blocked on each

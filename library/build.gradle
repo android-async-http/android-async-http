@@ -2,8 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.0'
-    useLibrary 'org.apache.http.legacy'
+    buildToolsVersion '23.0.1'
 
     defaultConfig {
         minSdkVersion 3
@@ -22,6 +21,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_6
         targetCompatibility JavaVersion.VERSION_1_6
     }
+}
+
+dependencies {
+    compile 'cz.msebera.android:httpclient:4.3.3'
 }
 
 android.libraryVariants.all { variant ->

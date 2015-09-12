@@ -1,7 +1,7 @@
 package com.loopj.android.http;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpResponse;
 
 /**
  * Blank implementation of ResponseHandlerInterface, which ignores all contents returned by

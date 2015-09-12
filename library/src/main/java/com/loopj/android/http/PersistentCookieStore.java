@@ -22,9 +22,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import org.apache.http.client.CookieStore;
-import org.apache.http.cookie.Cookie;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,6 +32,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
+
+import cz.msebera.android.httpclient.client.CookieStore;
+import cz.msebera.android.httpclient.cookie.Cookie;
 
 /**
  * A persistent cookie store which implements the Apache HttpClient {@link CookieStore} interface.
@@ -48,10 +48,9 @@ public class PersistentCookieStore implements CookieStore {
     private static final String COOKIE_PREFS = "CookiePrefsFile";
     private static final String COOKIE_NAME_STORE = "names";
     private static final String COOKIE_NAME_PREFIX = "cookie_";
-    private boolean omitNonPersistentCookies = false;
-
     private final ConcurrentHashMap<String, Cookie> cookies;
     private final SharedPreferences cookiePrefs;
+    private boolean omitNonPersistentCookies = false;
 
     /**
      * Construct a persistent cookie store.

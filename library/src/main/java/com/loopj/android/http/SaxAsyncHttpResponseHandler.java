@@ -18,8 +18,6 @@
 
 package com.loopj.android.http;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -32,6 +30,9 @@ import java.io.InputStreamReader;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
 
 /**
  * Provides interface to deserialize SAX responses, using AsyncHttpResponseHandler. Can be used like
@@ -58,11 +59,11 @@ import javax.xml.parsers.SAXParserFactory;
  */
 public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> extends AsyncHttpResponseHandler {
 
+    private final static String LOG_TAG = "SaxAsyncHttpRH";
     /**
      * Generic Type of handler
      */
     private T handler = null;
-    private final static String LOG_TAG = "SaxAsyncHttpRH";
 
     /**
      * Constructs new SaxAsyncHttpResponseHandler with given handler instance
@@ -84,7 +85,7 @@ public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> exte
      * @param entity returned HttpEntity
      * @return deconstructed response
      * @throws java.io.IOException if there is problem assembling SAX response from stream
-     * @see org.apache.http.HttpEntity
+     * @see cz.msebera.android.httpclient.HttpEntity
      */
     @Override
     protected byte[] getResponseData(HttpEntity entity) throws IOException {

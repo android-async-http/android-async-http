@@ -1,45 +1,45 @@
 package com.loopj.android.http.sample;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+
 public class PatchSample extends SampleParentActivity {
 
-	private static final String LOG_TAG = "PatchSample";
-	 
-	@Override
-	public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {
-		return client.patch(this, URL, entity, null, responseHandler);
-	}
+    private static final String LOG_TAG = "PatchSample";
 
-	@Override
-	public int getSampleTitle() {
-		return R.string.title_patch_sample;
-	}
+    @Override
+    public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {
+        return client.patch(this, URL, entity, null, responseHandler);
+    }
 
-	@Override
-	public boolean isRequestBodyAllowed() {
-		return false;
-	}
+    @Override
+    public int getSampleTitle() {
+        return R.string.title_patch_sample;
+    }
 
-	@Override
-	public boolean isRequestHeadersAllowed() {
-		return false;
-	}
+    @Override
+    public boolean isRequestBodyAllowed() {
+        return false;
+    }
 
-	@Override
-	public String getDefaultURL() {
-		return PROTOCOL + "httpbin.org/patch";
-	}
-	
-	@Override
-	public ResponseHandlerInterface getResponseHandler() {
-		return new AsyncHttpResponseHandler() {
+    @Override
+    public boolean isRequestHeadersAllowed() {
+        return false;
+    }
+
+    @Override
+    public String getDefaultURL() {
+        return PROTOCOL + "httpbin.org/patch";
+    }
+
+    @Override
+    public ResponseHandlerInterface getResponseHandler() {
+        return new AsyncHttpResponseHandler() {
             @Override
             public void onStart() {
                 clearOutputs();
@@ -62,7 +62,7 @@ public class PatchSample extends SampleParentActivity {
                 }
             }
         };
-	}
+    }
 
 
 }

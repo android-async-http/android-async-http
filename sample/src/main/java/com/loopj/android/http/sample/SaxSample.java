@@ -23,23 +23,18 @@ import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.SaxAsyncHttpResponseHandler;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+
 public class SaxSample extends SampleParentActivity {
 
     private static final String LOG_TAG = "SaxSample";
-
-    @Override
-    public ResponseHandlerInterface getResponseHandler() {
-        return saxAsyncHttpResponseHandler;
-    }
-
     private final SaxAsyncHttpResponseHandler saxAsyncHttpResponseHandler = new SaxAsyncHttpResponseHandler<SAXTreeStructure>(new SAXTreeStructure()) {
         @Override
         public void onStart() {
@@ -66,6 +61,11 @@ public class SaxSample extends SampleParentActivity {
             }
         }
     };
+
+    @Override
+    public ResponseHandlerInterface getResponseHandler() {
+        return saxAsyncHttpResponseHandler;
+    }
 
     @Override
     public String getDefaultURL() {

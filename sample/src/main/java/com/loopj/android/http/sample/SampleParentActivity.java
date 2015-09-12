@@ -41,14 +41,6 @@ import com.loopj.android.http.AsyncHttpRequest;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HttpContext;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -57,8 +49,30 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.protocol.HttpContext;
+
 public abstract class SampleParentActivity extends Activity implements SampleInterface {
 
+    protected static final String PROTOCOL_HTTP = "http://";
+    protected static final String PROTOCOL_HTTPS = "https://";
+    protected static final int LIGHTGREEN = Color.parseColor("#00FF66");
+    protected static final int LIGHTRED = Color.parseColor("#FF3300");
+    protected static final int YELLOW = Color.parseColor("#FFFF00");
+    protected static final int LIGHTBLUE = Color.parseColor("#99CCFF");
+    private static final String LOG_TAG = "SampleParentActivity";
+    private static final int MENU_USE_HTTPS = 0;
+    private static final int MENU_CLEAR_VIEW = 1;
+    private static final int MENU_LOGGING_VERBOSITY = 2;
+    private static final int MENU_ENABLE_LOGGING = 3;
+    protected static String PROTOCOL = PROTOCOL_HTTPS;
+    private final List<RequestHandle> requestHandles = new LinkedList<RequestHandle>();
+    public LinearLayout customFieldsLayout;
     private AsyncHttpClient asyncHttpClient = new AsyncHttpClient() {
 
         @Override
@@ -70,27 +84,36 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         }
     };
     private EditText urlEditText, headersEditText, bodyEditText;
+    protected final View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.button_run:
+                    onRunButtonPressed();
+                    break;
+                case R.id.button_cancel:
+                    onCancelButtonPressed();
+                    break;
+            }
+        }
+    };
     private LinearLayout responseLayout;
-    public LinearLayout customFieldsLayout;
-    private final List<RequestHandle> requestHandles = new LinkedList<RequestHandle>();
-    private static final String LOG_TAG = "SampleParentActivity";
-
-    private static final int MENU_USE_HTTPS = 0;
-    private static final int MENU_CLEAR_VIEW = 1;
-    private static final int MENU_LOGGING_VERBOSITY = 2;
-    private static final int MENU_ENABLE_LOGGING = 3;
-
     private boolean useHttps = true;
     private boolean enableLogging = true;
 
-    protected static final String PROTOCOL_HTTP = "http://";
-    protected static final String PROTOCOL_HTTPS = "https://";
+    protected static String throwableToString(Throwable t) {
+        if (t == null)
+            return null;
 
-    protected static String PROTOCOL = PROTOCOL_HTTPS;
-    protected static final int LIGHTGREEN = Color.parseColor("#00FF66");
-    protected static final int LIGHTRED = Color.parseColor("#FF3300");
-    protected static final int YELLOW = Color.parseColor("#FFFF00");
-    protected static final int LIGHTBLUE = Color.parseColor("#99CCFF");
+        StringWriter sw = new StringWriter();
+        t.printStackTrace(new PrintWriter(sw));
+        return sw.toString();
+    }
+
+    public static int getContrastColor(int color) {
+        double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000;
+        return y >= 128 ? Color.BLACK : Color.WHITE;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,20 +248,6 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         asyncHttpClient.cancelRequests(SampleParentActivity.this, true);
     }
 
-    protected final View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.button_run:
-                    onRunButtonPressed();
-                    break;
-                case R.id.button_cancel:
-                    onCancelButtonPressed();
-                    break;
-            }
-        }
-    };
-
     public List<Header> getRequestHeadersList() {
         List<Header> headers = new ArrayList<Header>();
         String headersRaw = headersEditText.getText() == null ? null : headersEditText.getText().toString();
@@ -326,15 +335,6 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         }
     }
 
-    protected static String throwableToString(Throwable t) {
-        if (t == null)
-            return null;
-
-        StringWriter sw = new StringWriter();
-        t.printStackTrace(new PrintWriter(sw));
-        return sw.toString();
-    }
-
     protected final void debugThrowable(String TAG, Throwable t) {
         if (t != null) {
             Log.e(TAG, "AsyncHttpClient returned error", t);
@@ -354,11 +354,6 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         String msg = String.format(Locale.US, "Return Status Code: %d", statusCode);
         Log.d(TAG, msg);
         addView(getColoredView(LIGHTBLUE, msg));
-    }
-
-    public static int getContrastColor(int color) {
-        double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000;
-        return y >= 128 ? Color.BLACK : Color.WHITE;
     }
 
     protected View getColoredView(int bgColor, String msg) {

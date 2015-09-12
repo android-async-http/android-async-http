@@ -5,9 +5,9 @@ import android.util.Log;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.ResponseHandlerInterface;
 
-import org.apache.http.Header;
-
 import java.io.File;
+
+import cz.msebera.android.httpclient.Header;
 
 public class UsePoolThreadSample extends GetSample {
 

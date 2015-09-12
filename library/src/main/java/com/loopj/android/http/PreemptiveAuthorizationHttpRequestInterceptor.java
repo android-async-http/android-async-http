@@ -18,20 +18,20 @@
 
 package com.loopj.android.http;
 
-import org.apache.http.HttpException;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.AuthState;
-import org.apache.http.auth.Credentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpContext;
-
 import java.io.IOException;
+
+import cz.msebera.android.httpclient.HttpException;
+import cz.msebera.android.httpclient.HttpHost;
+import cz.msebera.android.httpclient.HttpRequest;
+import cz.msebera.android.httpclient.HttpRequestInterceptor;
+import cz.msebera.android.httpclient.auth.AuthScope;
+import cz.msebera.android.httpclient.auth.AuthState;
+import cz.msebera.android.httpclient.auth.Credentials;
+import cz.msebera.android.httpclient.client.CredentialsProvider;
+import cz.msebera.android.httpclient.client.protocol.ClientContext;
+import cz.msebera.android.httpclient.impl.auth.BasicScheme;
+import cz.msebera.android.httpclient.protocol.ExecutionContext;
+import cz.msebera.android.httpclient.protocol.HttpContext;
 
 public class PreemptiveAuthorizationHttpRequestInterceptor implements HttpRequestInterceptor {
 

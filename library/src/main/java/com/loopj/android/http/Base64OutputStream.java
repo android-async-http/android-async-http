@@ -21,13 +21,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class Base64OutputStream extends FilterOutputStream {
+    private static final byte[] EMPTY = new byte[0];
     private final Base64.Coder coder;
     private final int flags;
-
     private byte[] buffer = null;
     private int bpos = 0;
-
-    private static final byte[] EMPTY = new byte[0];
 
     /**
      * Performs Base64 encoding on the data written to the stream, writing the encoded data to

@@ -25,11 +25,6 @@ package com.loopj.android.http;
 
 import android.text.TextUtils;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,6 +34,11 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.protocol.HTTP;
 
 /**
  * Simplified multipart entity mainly used for sending one or more files.
@@ -58,16 +58,12 @@ class SimpleMultipartEntity implements HttpEntity {
     private final String boundary;
     private final byte[] boundaryLine;
     private final byte[] boundaryEnd;
-    private boolean isRepeatable;
-
     private final List<FilePart> fileParts = new ArrayList<FilePart>();
-
     // The buffer we use for building the message excluding files and the last
     // boundary
     private final ByteArrayOutputStream out = new ByteArrayOutputStream();
-
     private final ResponseHandlerInterface progressHandler;
-
+    private boolean isRepeatable;
     private long bytesWritten;
 
     private long totalSize;
@@ -170,62 +166,6 @@ class SimpleMultipartEntity implements HttpEntity {
         progressHandler.sendProgressMessage(bytesWritten, totalSize);
     }
 
-    private class FilePart {
-        public final File file;
-        public final byte[] header;
-
-        public FilePart(String key, File file, String type, String customFileName) {
-            header = createHeader(key, TextUtils.isEmpty(customFileName) ? file.getName() : customFileName, type);
-            this.file = file;
-        }
-
-        public FilePart(String key, File file, String type) {
-            header = createHeader(key, file.getName(), type);
-            this.file = file;
-        }
-
-        private byte[] createHeader(String key, String filename, String type) {
-            ByteArrayOutputStream headerStream = new ByteArrayOutputStream();
-            try {
-                headerStream.write(boundaryLine);
-
-                // Headers
-                headerStream.write(createContentDisposition(key, filename));
-                headerStream.write(createContentType(type));
-                headerStream.write(TRANSFER_ENCODING_BINARY);
-                headerStream.write(CR_LF);
-            } catch (IOException e) {
-                // Can't happen on ByteArrayOutputStream
-                AsyncHttpClient.log.e(LOG_TAG, "createHeader ByteArrayOutputStream exception", e);
-            }
-            return headerStream.toByteArray();
-        }
-
-        public long getTotalLength() {
-            long streamLength = file.length() + CR_LF.length;
-            return header.length + streamLength;
-        }
-
-        public void writeTo(OutputStream out) throws IOException {
-            out.write(header);
-            updateProgress(header.length);
-
-            FileInputStream inputStream = new FileInputStream(file);
-            final byte[] tmp = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(tmp)) != -1) {
-                out.write(tmp, 0, bytesRead);
-                updateProgress(bytesRead);
-            }
-            out.write(CR_LF);
-            updateProgress(CR_LF.length);
-            out.flush();
-            AsyncHttpClient.silentCloseInputStream(inputStream);
-        }
-    }
-
-    // The following methods are from the HttpEntity interface
-
     @Override
     public long getContentLength() {
         long contentLen = out.size();
@@ -239,6 +179,8 @@ class SimpleMultipartEntity implements HttpEntity {
         contentLen += boundaryEnd.length;
         return contentLen;
     }
+
+    // The following methods are from the HttpEntity interface
 
     @Override
     public Header getContentType() {
@@ -297,5 +239,59 @@ class SimpleMultipartEntity implements HttpEntity {
     public InputStream getContent() throws IOException, UnsupportedOperationException {
         throw new UnsupportedOperationException(
                 "getContent() is not supported. Use writeTo() instead.");
+    }
+
+    private class FilePart {
+        public final File file;
+        public final byte[] header;
+
+        public FilePart(String key, File file, String type, String customFileName) {
+            header = createHeader(key, TextUtils.isEmpty(customFileName) ? file.getName() : customFileName, type);
+            this.file = file;
+        }
+
+        public FilePart(String key, File file, String type) {
+            header = createHeader(key, file.getName(), type);
+            this.file = file;
+        }
+
+        private byte[] createHeader(String key, String filename, String type) {
+            ByteArrayOutputStream headerStream = new ByteArrayOutputStream();
+            try {
+                headerStream.write(boundaryLine);
+
+                // Headers
+                headerStream.write(createContentDisposition(key, filename));
+                headerStream.write(createContentType(type));
+                headerStream.write(TRANSFER_ENCODING_BINARY);
+                headerStream.write(CR_LF);
+            } catch (IOException e) {
+                // Can't happen on ByteArrayOutputStream
+                AsyncHttpClient.log.e(LOG_TAG, "createHeader ByteArrayOutputStream exception", e);
+            }
+            return headerStream.toByteArray();
+        }
+
+        public long getTotalLength() {
+            long streamLength = file.length() + CR_LF.length;
+            return header.length + streamLength;
+        }
+
+        public void writeTo(OutputStream out) throws IOException {
+            out.write(header);
+            updateProgress(header.length);
+
+            FileInputStream inputStream = new FileInputStream(file);
+            final byte[] tmp = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(tmp)) != -1) {
+                out.write(tmp, 0, bytesRead);
+                updateProgress(bytesRead);
+            }
+            out.write(CR_LF);
+            updateProgress(CR_LF.length);
+            out.flush();
+            AsyncHttpClient.silentCloseInputStream(inputStream);
+        }
     }
 }

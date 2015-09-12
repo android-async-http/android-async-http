@@ -24,18 +24,17 @@ import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
+import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
 public class Redirect302Sample extends GetSample {
-
-    private boolean enableRedirects = true;
-    private boolean enableRelativeRedirects = true;
-    private boolean enableCircularRedirects = true;
 
     private static final int MENU_ENABLE_REDIRECTS = 10;
     private static final int MENU_ENABLE_CIRCULAR_REDIRECTS = 11;
     private static final int MENU_ENABLE_RELATIVE_REDIRECTs = 12;
+    private boolean enableRedirects = true;
+    private boolean enableRelativeRedirects = true;
+    private boolean enableCircularRedirects = true;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

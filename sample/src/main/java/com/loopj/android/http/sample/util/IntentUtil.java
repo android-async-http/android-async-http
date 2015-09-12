@@ -1,7 +1,7 @@
 package com.loopj.android.http.sample.util;
 
-import org.apache.http.Header;
-import org.apache.http.message.BasicHeader;
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.message.BasicHeader;
 
 public class IntentUtil {
 
