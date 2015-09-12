@@ -60,6 +60,7 @@ import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.RedirectHandler;
 import cz.msebera.android.httpclient.client.methods.HttpEntityEnclosingRequestBase;
 import cz.msebera.android.httpclient.client.methods.HttpHead;
+import cz.msebera.android.httpclient.client.methods.HttpPatch;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
 import cz.msebera.android.httpclient.client.methods.HttpPut;
 import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
@@ -371,10 +372,18 @@ public class AsyncHttpClient {
             return false;
 
         byte[] signature = new byte[2];
-        int readStatus = inputStream.read(signature);
-        inputStream.unread(signature);
+        int count = 0;
+        try {
+            while (count < 2) {
+                int readCount = inputStream.read(signature, count, 2 - count);
+                if (readCount < 0) return false;
+                count = count + readCount;
+            }
+        } finally {
+            inputStream.unread(signature, 0, count);
+        }
         int streamHeader = ((int) signature[0] & 0xff) | ((signature[1] << 8) & 0xff00);
-        return readStatus == 2 && GZIPInputStream.GZIP_MAGIC == streamHeader;
+        return GZIPInputStream.GZIP_MAGIC == streamHeader;
     }
 
     /**
@@ -1595,6 +1604,7 @@ public class AsyncHttpClient {
         InputStream wrappedStream;
         PushbackInputStream pushbackStream;
         GZIPInputStream gzippedStream;
+
         public InflatingEntity(HttpEntity wrapped) {
             super(wrapped);
         }
@@ -1603,8 +1613,7 @@ public class AsyncHttpClient {
         public InputStream getContent() throws IOException {
             wrappedStream = wrappedEntity.getContent();
             pushbackStream = new PushbackInputStream(wrappedStream, 2);
-            Header enc = wrappedEntity.getContentEncoding();
-            if ((enc != null && "gzip".equalsIgnoreCase(enc.getValue())) || isInputStreamGZIPCompressed(pushbackStream)) {
+            if (isInputStreamGZIPCompressed(pushbackStream)) {
                 gzippedStream = new GZIPInputStream(pushbackStream);
                 return gzippedStream;
             } else {
