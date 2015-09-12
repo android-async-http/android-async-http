@@ -36,6 +36,7 @@ public class WaypointsActivity extends ListActivity {
             new SampleConfig(R.string.title_delete_sample, DeleteSample.class),
             new SampleConfig(R.string.title_put_sample, PutSample.class),
             new SampleConfig(R.string.title_patch_sample, PatchSample.class),
+            new SampleConfig(R.string.title_head_sample, HeadSample.class),
             new SampleConfig(R.string.title_json_sample, JsonSample.class),
             new SampleConfig(R.string.title_json_streamer_sample, JsonStreamerSample.class),
             new SampleConfig(R.string.title_sax_example, SaxSample.class),

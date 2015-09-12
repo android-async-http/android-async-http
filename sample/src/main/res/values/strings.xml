@@ -23,6 +23,7 @@
     <string name="title_post_sample">POST</string>
     <string name="title_put_sample">PUT</string>
     <string name="title_patch_sample">PATCH</string>
+    <string name="title_head_sample">HEAD</string>
     <string name="title_delete_sample">DELETE</string>
     <string name="title_file_sample">GET to File</string>
     <string name="title_directory_sample">GET to Directory</string>

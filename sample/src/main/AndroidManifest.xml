@@ -25,6 +25,7 @@
         <activity android:name=".GetSample" />
         <activity android:name=".PostSample" />
         <activity android:name=".DeleteSample" />
+        <activity android:name=".HeadSample" />
         <activity android:name=".PutSample" />
         <activity android:name=".PatchSample" />
         <activity android:name=".JsonSample" />
