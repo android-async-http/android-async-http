@@ -36,3 +36,11 @@ android.libraryVariants.all { variant ->
 }
 
 apply from: '../maven_push.gradle'
+
+afterEvaluate { project ->
+    android.libraryVariants.all { variant ->
+        tasks.androidJavadocs.doFirst {
+            classpath += files(variant.javaCompile.classpath.files)
+        }
+    }
+}
