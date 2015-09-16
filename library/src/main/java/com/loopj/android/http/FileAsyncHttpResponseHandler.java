@@ -63,7 +63,20 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
      * @param renameTargetFileIfExists whether target file should be renamed if it already exists
      */
     public FileAsyncHttpResponseHandler(File file, boolean append, boolean renameTargetFileIfExists) {
-        super();
+        this(file,append,renameTargetFileIfExists,false);
+    }
+
+
+    /**
+     * Obtains new FileAsyncHttpResponseHandler and stores response in passed file
+     *
+     * @param file                     File to store response within, must not be null
+     * @param append                   whether data should be appended to existing file
+     * @param renameTargetFileIfExists whether target file should be renamed if it already exists
+     * @param usePoolThread Whether to use the pool's thread to fire callbacks
+     */
+    public FileAsyncHttpResponseHandler(File file, boolean append, boolean renameTargetFileIfExists,boolean usePoolThread) {
+        super(usePoolThread);
         Utils.asserts(file != null, "File passed into FileAsyncHttpResponseHandler constructor must not be null");
         if (!file.isDirectory() && !file.getParentFile().isDirectory()) {
             Utils.asserts(file.getParentFile().mkdirs(), "Cannot create parent directories for requested File location");
