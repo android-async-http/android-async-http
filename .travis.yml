@@ -1,4 +1,5 @@
 language: android
+sudo: false
 jdk: openjdk7
 android:
   components:
