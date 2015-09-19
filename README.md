@@ -7,14 +7,14 @@ An asynchronous, callback-based Http client for Android built on top of Apache's
 Changelog
 ---------
 
-See what is new in version 1.4.8 released on 17th July 2015
+See what is new in version 1.4.9 released on 19th September 2015
 
-https://github.com/loopj/android-async-http/blob/1.4.8/CHANGELOG.md
+https://github.com/loopj/android-async-http/blob/1.4.9/CHANGELOG.md
 
 Javadoc
 -------
 
-Latest Javadoc for 1.4.8 release are available here (also included in Maven repository):
+Latest Javadoc for 1.4.9 release are available here (also included in Maven repository):
 
 https://loopj.com/android-async-http/doc/
 
@@ -35,7 +35,7 @@ Examples
 --------
 
 For inspiration and testing on device we've provided Sample Application.  
-See individual samples [here on Github](https://github.com/loopj/android-async-http/tree/1.4.8/sample/src/main/java/com/loopj/android/http/sample)  
+See individual samples [here on Github](https://github.com/loopj/android-async-http/tree/1.4.9/sample/src/main/java/com/loopj/android/http/sample)  
 To run Sample application, simply clone the repository and run this command, to install it on connected device  
 
 ```java
@@ -53,7 +53,7 @@ https://repo1.maven.org/maven2/com/loopj/android/android-async-http/
 Maven URL: https://repo1.maven.org/maven2/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
-Version: 1.4.8
+Version: 1.4.9
 Packaging: JAR or AAR
 ```
 Gradle
@@ -64,7 +64,7 @@ repositories {
   }
 }
 dependencies {
-  compile 'com.loopj.android:android-async-http:1.4.8'
+  compile 'com.loopj.android:android-async-http:1.4.9'
 }
 ```
 
@@ -75,7 +75,7 @@ https://oss.sonatype.org/content/repositories/snapshots/com/loopj/android/androi
 Maven URL: https://oss.sonatype.org/content/repositories/snapshots/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
-Version: 1.4.9-SNAPSHOT
+Version: 1.5.0-SNAPSHOT
 Packaging: JAR or AAR
 ```
 Gradle
@@ -86,7 +86,7 @@ repositories {
   }
 }
 dependencies {
-  compile 'com.loopj.android:android-async-http:1.4.9-SNAPSHOT'
+  compile 'com.loopj.android:android-async-http:1.5.0-SNAPSHOT'
 }
 ```
 

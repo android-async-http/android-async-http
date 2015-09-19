@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 1.5.0 (future release)
+
+## 1.4.9 (released 19. 9. 2015)
+
+Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.9](https://github.com/loopj/android-async-http/commits/1.4.9)  
+List of closed issues is here [https://github.com/loopj/android-async-http/issues?milestone=8&state=closed](https://github.com/loopj/android-async-http/issues?milestone=8&state=closed)
+
+  - **IMPORTANT**, We've switched library from using `org.apache.http` to use `cz.msebera.android.httpclient`, you have to update all your code
+  - Library is from now on using upstream version of HttpClient libraries, provided by repackaging project https://github.com/smarek/httpclient-android/
+  - Achieved API23 Compatibility, see #830 for more info
+  - Added HeadSample into sample application, to verify Head request works as it should
+  - FileAsyncHttpResponseHandler now has constructor with `usePoolThread` param, which causes callbacks to be fired from ThreadPool instead of main looper
+
 ## 1.4.8 (released 17. 7. 2015)
 
 Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.8](https://github.com/loopj/android-async-http/commits/1.4.8)  
