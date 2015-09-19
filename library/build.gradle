@@ -24,7 +24,7 @@ android {
 }
 
 dependencies {
-    compile 'cz.msebera.android:httpclient:4.3.3'
+    compile 'cz.msebera.android:httpclient:4.3.6'
 }
 
 android.libraryVariants.all { variant ->
