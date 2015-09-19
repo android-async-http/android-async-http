@@ -2,9 +2,9 @@
 layout: project
 title: Android Asynchronous Http Client
 tagline: A Callback-Based Http Client Library for Android
-version: 1.4.8
+version: 1.4.9
 github_repo: android-async-http
-download_url: https://search.maven.org/remotecontent?filepath=com/loopj/android/android-async-http/1.4.8/android-async-http-1.4.8.jar
+download_url: https://search.maven.org/remotecontent?filepath=com/loopj/android/android-async-http/1.4.9/android-async-http-1.4.9.jar
 ---
 
 
@@ -20,6 +20,8 @@ library will automatically recognize in which context is ran.
 
 Features
 --------
+- Using upstream HttpClient of version 4.3.6 instead of Android provided DefaultHttpClient
+- Compatible with Android **API 23** and higher
 - Make **asynchronous** HTTP requests, handle responses in **anonymous callbacks**
 - HTTP requests happen **outside the UI thread**
 - Requests use a **threadpool** to cap concurrent resource usage
@@ -65,7 +67,7 @@ Add maven dependency using Gradle buildscript in format
 
 {% highlight groovy %}
 dependencies {
-  compile 'com.loopj.android:android-async-http:1.4.8'
+  compile 'com.loopj.android:android-async-http:1.4.9'
 }
 {% endhighlight %}
 
@@ -332,7 +334,7 @@ Android SDK and Gradle buildscript, then just run:
 gradle :library:jarRelease
 {% endhighlight %}
 
-This will generate a file in path `{repository_root}/library/build/libs/library-1.4.8.jar`.
+This will generate a file in path `{repository_root}/library/build/libs/library-1.4.9.jar`.
 
 Reporting Bugs or Feature Requests
 ----------------------------------
