@@ -2,8 +2,8 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.loopj.android.http.sample"
-    android:versionCode="6"
-    android:versionName="1.4.9">
+    android:versionCode="7"
+    android:versionName="1.5.0-SNAPSHOT">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
