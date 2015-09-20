@@ -21,9 +21,10 @@ package com.loopj.android.http.sample;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestHandle;
-import com.loopj.android.http.ResponseHandlerInterface;
+import com.loopj.android.http.RequestFactory;
+import com.loopj.android.http.handlers.AsyncHttpResponseHandler;
+import com.loopj.android.http.interfaces.ResponseHandlerInterface;
+import com.loopj.android.http.utils.RequestHandle;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
@@ -33,7 +34,7 @@ public class GetSample extends SampleParentActivity {
 
     @Override
     public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {
-        return client.get(this, URL, headers, null, responseHandler);
+        return client.sendRequest(RequestFactory.get(this, URL, headers), responseHandler);
     }
 
     @Override

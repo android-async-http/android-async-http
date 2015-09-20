@@ -38,8 +38,8 @@ import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpRequest;
-import com.loopj.android.http.RequestHandle;
-import com.loopj.android.http.ResponseHandlerInterface;
+import com.loopj.android.http.interfaces.ResponseHandlerInterface;
+import com.loopj.android.http.utils.RequestHandle;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -53,7 +53,7 @@ import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
 import cz.msebera.android.httpclient.entity.StringEntity;
-import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
+import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
 import cz.msebera.android.httpclient.message.BasicHeader;
 import cz.msebera.android.httpclient.protocol.HttpContext;
 
@@ -71,18 +71,9 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     private static final int MENU_LOGGING_VERBOSITY = 2;
     private static final int MENU_ENABLE_LOGGING = 3;
     protected static String PROTOCOL = PROTOCOL_HTTPS;
-    private final List<RequestHandle> requestHandles = new LinkedList<RequestHandle>();
+    private final List<RequestHandle> requestHandles = new LinkedList<>();
     public LinearLayout customFieldsLayout;
-    private AsyncHttpClient asyncHttpClient = new AsyncHttpClient() {
-
-        @Override
-        protected AsyncHttpRequest newAsyncHttpRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, ResponseHandlerInterface responseHandler, Context context) {
-            AsyncHttpRequest httpRequest = getHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context);
-            return httpRequest == null
-                    ? super.newAsyncHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context)
-                    : httpRequest;
-        }
-    };
+    private AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
     private EditText urlEditText, headersEditText, bodyEditText;
     protected final View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
@@ -198,7 +189,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     }
 
     @Override
-    public AsyncHttpRequest getHttpRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, ResponseHandlerInterface responseHandler, Context context) {
+    public AsyncHttpRequest getHttpRequest(CloseableHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, ResponseHandlerInterface responseHandler, Context context) {
         return null;
     }
 
@@ -245,7 +236,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     }
 
     public void onCancelButtonPressed() {
-        asyncHttpClient.cancelRequests(SampleParentActivity.this, true);
+//        asyncHttpClient.cancelRequests(SampleParentActivity.this, true);
     }
 
     public List<Header> getRequestHeadersList() {
