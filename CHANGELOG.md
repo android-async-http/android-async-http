@@ -34,7 +34,7 @@ List of closed issues is here [https://github.com/loopj/android-async-http/issue
 
 ## 1.4.7 (released 9. 5. 2015)
 
-Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.7](https://github.com/loopj/android-async-http/commits1.4.7)  
+Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.7](https://github.com/loopj/android-async-http/commits/1.4.7)  
 List of closed issues is here [https://github.com/loopj/android-async-http/issues?milestone=6&state=closed](https://github.com/loopj/android-async-http/issues?milestone=6&state=closed)
 
   - Fixed crash when canceling through RequestHandle from UI Thread (NetworkOnMainThreadException)
