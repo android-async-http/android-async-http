@@ -1414,9 +1414,9 @@ public class AsyncHttpClient {
      * @param params          additional DELETE parameters or files to send with the request.
      * @param responseHandler the response handler instance that should handle the response.
      */
-    public void delete(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+    public RequestHandle delete(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         final HttpDelete delete = new HttpDelete(getUrlWithQueryString(isUrlEncodingEnabled, url, params));
-        sendRequest(httpClient, httpContext, delete, null, responseHandler, null);
+        return sendRequest(httpClient, httpContext, delete, null, responseHandler, null);
     }
 
     /**
