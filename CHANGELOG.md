@@ -12,6 +12,7 @@ List of closed issues is here [https://github.com/loopj/android-async-http/issue
   - Achieved API23 Compatibility, see #830 for more info
   - Added HeadSample into sample application, to verify Head request works as it should
   - FileAsyncHttpResponseHandler now has constructor with `usePoolThread` param, which causes callbacks to be fired from ThreadPool instead of main looper
+  - **IMPORTANT**, Add `-keep class com.loopj.android.http.HttpGet { *; }` to your proguard file
 
 ## 1.4.8 (released 17. 7. 2015)
 
