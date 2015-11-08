@@ -117,13 +117,8 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @param looper The looper to work with
      */
     public AsyncHttpResponseHandler(Looper looper) {
-        this.looper = looper == null ? Looper.myLooper() : looper;
-
-        // Use asynchronous mode by default.
-        setUseSynchronousMode(false);
-
         // Do not use the pool's thread to fire callbacks by default.
-        setUsePoolThread(false);
+        this(looper == null ? Looper.myLooper() : looper, false);
     }
 
     /**
@@ -133,17 +128,24 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @param usePoolThread Whether to use the pool's thread to fire callbacks
      */
     public AsyncHttpResponseHandler(boolean usePoolThread) {
-        // Whether to use the pool's thread to fire callbacks.
-        setUsePoolThread(usePoolThread);
+        this(usePoolThread ? null : Looper.myLooper(), usePoolThread);
+    }
 
-        // When using the pool's thread, there's no sense in having a looper.
-        if (!getUsePoolThread()) {
-            // Use the current thread's looper.
-            this.looper = Looper.myLooper();
-
-            // Use asynchronous mode by default.
-            setUseSynchronousMode(false);
+    private AsyncHttpResponseHandler(Looper looper, boolean usePoolThread) {
+        if (!usePoolThread) {
+            Utils.asserts(looper != null, "use looper thread, must call Looper.prepare() first!");
+            this.looper = looper;
+            // Create a handler on current thread to submit tasks
+            this.handler = new ResponderHandler(this, looper);
+        } else {
+            Utils.asserts(looper == null, "use pool thread, looper should be null!");
+            // If pool thread is to be used, there's no point in keeping a reference
+            // to the looper and handler.
+            this.looper = null;
+            this.handler = null;
         }
+
+        this.usePoolThread = usePoolThread;
     }
 
     @Override
