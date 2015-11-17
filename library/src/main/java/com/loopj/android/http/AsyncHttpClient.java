@@ -16,7 +16,6 @@ package com.loopj.android.http;
 */
 
 import android.content.Context;
-import android.media.session.MediaSession;
 import android.os.Looper;
 
 import java.io.IOException;
@@ -75,7 +74,6 @@ import cz.msebera.android.httpclient.conn.scheme.SchemeRegistry;
 import cz.msebera.android.httpclient.conn.ssl.SSLSocketFactory;
 import cz.msebera.android.httpclient.entity.HttpEntityWrapper;
 import cz.msebera.android.httpclient.impl.auth.BasicScheme;
-import cz.msebera.android.httpclient.impl.client.BasicCredentialsProvider;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 import cz.msebera.android.httpclient.impl.conn.tsccm.ThreadSafeClientConnManager;
 import cz.msebera.android.httpclient.params.BasicHttpParams;
@@ -264,11 +262,10 @@ public class AsyncHttpClient {
                 if (authState.getAuthScheme() == null) {
                     AuthScope authScope = new AuthScope(targetHost.getHostName(), targetHost.getPort());
                     Credentials creds = credsProvider.getCredentials(authScope);
-                    if(creds instanceof TokenCredentials) {
+                    if (creds instanceof TokenCredentials) {
                         authState.setAuthScheme(new BearerAuthSchemeFactory.BearerAuthScheme());
                         authState.setCredentials(creds);
-                    }
-                    else if (creds != null) {
+                    } else if (creds != null) {
                         authState.setAuthScheme(new BasicScheme());
                         authState.setCredentials(creds);
                     }
@@ -803,6 +800,7 @@ public class AsyncHttpClient {
     /**
      * Sets bearer authentication for the request. Uses AuthScope.ANY. This is the same as
      * setBearerAuth('token',AuthScope.ANY, false)
+     *
      * @param token Bearer Token
      */
     public void setBearerAuth(String token) {
@@ -813,8 +811,9 @@ public class AsyncHttpClient {
     /**
      * Sets bearer authentication for the request. You should pass in your AuthScope for security. It
      * should be like this setBearerAuth("token", new AuthScope("host",port,AuthScope.ANY_REALM), false)
-     * @param token Bearer Token
-     * @param scope an AuthScope object
+     *
+     * @param token      Bearer Token
+     * @param scope      an AuthScope object
      * @param preemptive sets authorization in preemptive manner
      */
     public void setBearerAuth(String token, AuthScope scope, boolean preemptive) {

@@ -78,7 +78,7 @@ import cz.msebera.android.httpclient.util.ByteArrayBuffer;
  * });
  * </pre>
  */
-@SuppressWarnings("ALL")
+@SuppressWarnings("DesignForExtension")
 public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterface {
 
     public static final String DEFAULT_CHARSET = "UTF-8";
