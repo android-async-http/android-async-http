@@ -58,6 +58,7 @@ import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.RedirectHandler;
 import cz.msebera.android.httpclient.client.methods.HttpEntityEnclosingRequestBase;
 import cz.msebera.android.httpclient.client.methods.HttpHead;
+import cz.msebera.android.httpclient.client.methods.HttpOptions;
 import cz.msebera.android.httpclient.client.methods.HttpPatch;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
 import cz.msebera.android.httpclient.client.methods.HttpPut;
@@ -988,6 +989,24 @@ public class AsyncHttpClient {
     }
 
     // [-] HTTP HEAD
+    // [+] HTTP OPTIONS
+
+    /**
+     * Perform a HTTP OPTIONS request, without any parameters.
+     *
+     * @param url             the URL to send the request to.
+     * @param responseHandler the response handler instance that should handle the response.
+     * @return RequestHandle of future request process
+     */
+    public RequestHandle options(String url, ResponseHandlerInterface responseHandler) {
+        return options(null, url, null, responseHandler);
+    }
+
+    public RequestHandle options(Context context, String url, RequestParams params, ResponseHandlerInterface responseHandler) {
+        return sendRequest(httpClient, httpContext, new HttpOptions(getUrlWithQueryString(isUrlEncodingEnabled(), url, params)), null, responseHandler, context);
+    }
+
+    // [-] HTTP OPTIONS
     // [+] HTTP GET
 
     /**
