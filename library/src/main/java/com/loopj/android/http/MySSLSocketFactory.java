@@ -38,7 +38,6 @@ import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import android.util.Log;
 
 import cz.msebera.android.httpclient.HttpVersion;
 import cz.msebera.android.httpclient.conn.ClientConnectionManager;
@@ -218,5 +217,4 @@ public class MySSLSocketFactory extends SSLSocketFactory {
     public void fixHttpsURLConnection() {
         HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
     }
-
 }
