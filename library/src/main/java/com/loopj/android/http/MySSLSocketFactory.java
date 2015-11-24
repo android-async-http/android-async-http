@@ -59,7 +59,7 @@ import cz.msebera.android.httpclient.protocol.HTTP;
  * certificate validation on every device, use with caution
  */
 public class MySSLSocketFactory extends SSLSocketFactory {
-    SSLContext sslContext;
+    final SSLContext sslContext = SSLContext.getInstance("TLS");
 
     /**
      * Creates a new SSL Socket Factory with the given KeyStore.
@@ -72,18 +72,6 @@ public class MySSLSocketFactory extends SSLSocketFactory {
      */
     public MySSLSocketFactory(KeyStore truststore) throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException, UnrecoverableKeyException {
         super(truststore);
-        
-        // Define sslContext
-        try {
-            sslContext = SSLContext.getInstance("TLSv1.2");
-        	Log.w("SSLSocketFactory", "TLSv1.2 is supported");
-        } catch (NoSuchAlgorithmException e) {
-            // TODO fallback v1.1 if needed
-        	Log.w("SSLSocketFactory", "TLSv1.2 is not supported in this device; falling through TLSv1.0");
-        	sslContext = SSLContext.getInstance("TLSv1");
-        	// should be available in any device; see reference of supported protocols in 
-        	// http://developer.android.com/reference/javax/net/ssl/SSLSocket.html
-        }
 
         X509TrustManager tm = new X509TrustManager() {
             public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
@@ -212,28 +200,17 @@ public class MySSLSocketFactory extends SSLSocketFactory {
         enableSecureProtocols(socket);
         return socket;
     }
-    
+
     /**
      * Activate supported protocols on the socket.
-     * 
+     *
      * @param socket    The socket on which to activate secure protocols.
      */
     private void enableSecureProtocols(Socket socket) {
-        // get supported params
+        // set all supported protocols
         SSLParameters params = sslContext.getSupportedSSLParameters();
-        String [] supportedProtocols = params.getProtocols();
-       
-        // activate supported protocols on the socket
-        try {
-            Socket localSocket = sslContext.getSocketFactory().createSocket();
-            ((SSLSocket) localSocket).setEnabledProtocols(supportedProtocols);
-        }catch (Exception e)
-        {
-
-        }
-
-    	//((SSLSocket) socket).setEnabledProtocols(new String[] {"TLSv1.2"} );
-     }
+        ((SSLSocket) socket).setEnabledProtocols(params.getProtocols());
+    }
 
     /**
      * Makes HttpsURLConnection trusts a set of certificates specified by the KeyStore
