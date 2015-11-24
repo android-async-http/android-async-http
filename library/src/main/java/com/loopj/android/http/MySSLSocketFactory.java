@@ -36,6 +36,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import android.util.Log;
 
 import cz.msebera.android.httpclient.HttpVersion;
 import cz.msebera.android.httpclient.conn.ClientConnectionManager;
