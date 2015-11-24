@@ -34,6 +34,8 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import android.util.Log;
@@ -199,9 +201,9 @@ public class MySSLSocketFactory extends SSLSocketFactory {
 
     @Override
     public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException {
-        Socket socket = sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
-        enableSecureProtocols(socket);
-        return socket;
+        Socket localSocket = sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
+        enableSecureProtocols(localSocket);
+        return localSocket;
     }
 
     @Override
@@ -222,8 +224,14 @@ public class MySSLSocketFactory extends SSLSocketFactory {
         String [] supportedProtocols = params.getProtocols();
        
         // activate supported protocols on the socket
-        Socket socket = sslContext.getSocketFactory().createSocket();
-    	((SSLSocket) socket).setEnabledProtocols(supportedProtocols);
+        try {
+            Socket localSocket = sslContext.getSocketFactory().createSocket();
+            ((SSLSocket) localSocket).setEnabledProtocols(supportedProtocols);
+        }catch (Exception e)
+        {
+
+        }
+
     	//((SSLSocket) socket).setEnabledProtocols(new String[] {"TLSv1.2"} );
      }
 
