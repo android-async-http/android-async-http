@@ -59,17 +59,6 @@ import cz.msebera.android.httpclient.protocol.HTTP;
 public class MySSLSocketFactory extends SSLSocketFactory {
     SSLContext sslContext;
 
-    try {
-    	sslContext = SSLContext.getInstance("TLSv1.2");
-    	Log.w("SSLSocketFactory", "TLSv1.2 is supported");
-    } catch (NoSuchAlgorithmException e) {
-        // TODO fallback v1.1 if needed
-    	Log.w("SSLSocketFactory", "TLSv1.2 is not supported in this device; falling through TLSv1.0");
-    	sslContext = SSLContext.getInstance("TLSv1");
-    	// should be available in any device; see reference of supported protocols in 
-    	// http://developer.android.com/reference/javax/net/ssl/SSLSocket.html
-    }
-
     /**
      * Creates a new SSL Socket Factory with the given KeyStore.
      *
@@ -81,6 +70,18 @@ public class MySSLSocketFactory extends SSLSocketFactory {
      */
     public MySSLSocketFactory(KeyStore truststore) throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException, UnrecoverableKeyException {
         super(truststore);
+        
+        // Define sslContext
+        try {
+            sslContext = SSLContext.getInstance("TLSv1.2");
+        	Log.w("SSLSocketFactory", "TLSv1.2 is supported");
+        } catch (NoSuchAlgorithmException e) {
+            // TODO fallback v1.1 if needed
+        	Log.w("SSLSocketFactory", "TLSv1.2 is not supported in this device; falling through TLSv1.0");
+        	sslContext = SSLContext.getInstance("TLSv1");
+        	// should be available in any device; see reference of supported protocols in 
+        	// http://developer.android.com/reference/javax/net/ssl/SSLSocket.html
+        }
 
         X509TrustManager tm = new X509TrustManager() {
             public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
