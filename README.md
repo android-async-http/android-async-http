@@ -59,10 +59,9 @@ Packaging: JAR or AAR
 Gradle
 ```groovy
 repositories {
-  maven {
-    mavenCentral()
-  }
+  mavenCentral()
 }
+
 dependencies {
   compile 'com.loopj.android:android-async-http:1.4.9'
 }
