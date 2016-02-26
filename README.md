@@ -95,4 +95,3 @@ Documentation, Features and Examples
 Full details and documentation can be found on the project page here:
 
 https://loopj.com/android-async-http/
-
