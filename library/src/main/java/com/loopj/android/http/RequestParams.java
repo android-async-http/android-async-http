@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipHashMap;
 
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.client.entity.UrlEncodedFormEntity;
@@ -99,11 +99,11 @@ public class RequestParams implements Serializable {
             "application/json";
 
     protected final static String LOG_TAG = "RequestParams";
-    protected final ConcurrentHashMap<String, String> urlParams = new ConcurrentHashMap<String, String>();
-    protected final ConcurrentHashMap<String, StreamWrapper> streamParams = new ConcurrentHashMap<String, StreamWrapper>();
-    protected final ConcurrentHashMap<String, FileWrapper> fileParams = new ConcurrentHashMap<String, FileWrapper>();
-    protected final ConcurrentHashMap<String, List<FileWrapper>> fileArrayParams = new ConcurrentHashMap<String, List<FileWrapper>>();
-    protected final ConcurrentHashMap<String, Object> urlParamsWithObjects = new ConcurrentHashMap<String, Object>();
+    protected final ConcurrentSkipHashMap<String, String> urlParams = new ConcurrentSkipHashMap<String, String>();
+    protected final ConcurrentSkipHashMap<String, StreamWrapper> streamParams = new ConcurrentSkipHashMap<String, StreamWrapper>();
+    protected final ConcurrentSkipHashMap<String, FileWrapper> fileParams = new ConcurrentSkipHashMap<String, FileWrapper>();
+    protected final ConcurrentSkipHashMap<String, List<FileWrapper>> fileArrayParams = new ConcurrentSkipHashMap<String, List<FileWrapper>>();
+    protected final ConcurrentSkipHashMap<String, Object> urlParamsWithObjects = new ConcurrentSkipHashMap<String, Object>();
     protected boolean isRepeatable;
     protected boolean forceMultipartEntity = false;
     protected boolean useJsonStreamer;
@@ -425,7 +425,7 @@ public class RequestParams implements Serializable {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
+        for (ConcurrentSkipHashMap.Entry<String, String> entry : urlParams.entrySet()) {
             if (result.length() > 0)
                 result.append("&");
 
@@ -434,7 +434,7 @@ public class RequestParams implements Serializable {
             result.append(entry.getValue());
         }
 
-        for (ConcurrentHashMap.Entry<String, StreamWrapper> entry : streamParams.entrySet()) {
+        for (ConcurrentSkipHashMap.Entry<String, StreamWrapper> entry : streamParams.entrySet()) {
             if (result.length() > 0)
                 result.append("&");
 
@@ -443,7 +443,7 @@ public class RequestParams implements Serializable {
             result.append("STREAM");
         }
 
-        for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
+        for (ConcurrentSkipHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
             if (result.length() > 0)
                 result.append("&");
 
@@ -452,7 +452,7 @@ public class RequestParams implements Serializable {
             result.append("FILE");
         }
 
-        for (ConcurrentHashMap.Entry<String, List<FileWrapper>> entry : fileArrayParams.entrySet()) {
+        for (ConcurrentSkipHashMap.Entry<String, List<FileWrapper>> entry : fileArrayParams.entrySet()) {
             if (result.length() > 0)
                 result.append("&");
 
@@ -530,22 +530,22 @@ public class RequestParams implements Serializable {
                 elapsedFieldInJsonStreamer);
 
         // Add string params
-        for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
+        for (ConcurrentSkipHashMap.Entry<String, String> entry : urlParams.entrySet()) {
             entity.addPart(entry.getKey(), entry.getValue());
         }
 
         // Add non-string params
-        for (ConcurrentHashMap.Entry<String, Object> entry : urlParamsWithObjects.entrySet()) {
+        for (ConcurrentSkipHashMap.Entry<String, Object> entry : urlParamsWithObjects.entrySet()) {
             entity.addPart(entry.getKey(), entry.getValue());
         }
 
         // Add file params
-        for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
+        for (ConcurrentSkipHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
             entity.addPart(entry.getKey(), entry.getValue());
         }
 
         // Add stream params
-        for (ConcurrentHashMap.Entry<String, StreamWrapper> entry : streamParams.entrySet()) {
+        for (ConcurrentSkipHashMap.Entry<String, StreamWrapper> entry : streamParams.entrySet()) {
             StreamWrapper stream = entry.getValue();
             if (stream.inputStream != null) {
                 entity.addPart(entry.getKey(),
@@ -575,7 +575,7 @@ public class RequestParams implements Serializable {
         entity.setIsRepeatable(isRepeatable);
 
         // Add string params
-        for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
+        for (ConcurrentSkipHashMap.Entry<String, String> entry : urlParams.entrySet()) {
             entity.addPartWithCharset(entry.getKey(), entry.getValue(), contentEncoding);
         }
 
@@ -586,7 +586,7 @@ public class RequestParams implements Serializable {
         }
 
         // Add stream params
-        for (ConcurrentHashMap.Entry<String, StreamWrapper> entry : streamParams.entrySet()) {
+        for (ConcurrentSkipHashMap.Entry<String, StreamWrapper> entry : streamParams.entrySet()) {
             StreamWrapper stream = entry.getValue();
             if (stream.inputStream != null) {
                 entity.addPart(entry.getKey(), stream.name, stream.inputStream,
@@ -595,13 +595,13 @@ public class RequestParams implements Serializable {
         }
 
         // Add file params
-        for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
+        for (ConcurrentSkipHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
             FileWrapper fileWrapper = entry.getValue();
             entity.addPart(entry.getKey(), fileWrapper.file, fileWrapper.contentType, fileWrapper.customFileName);
         }
 
         // Add file collection
-        for (ConcurrentHashMap.Entry<String, List<FileWrapper>> entry : fileArrayParams.entrySet()) {
+        for (ConcurrentSkipHashMap.Entry<String, List<FileWrapper>> entry : fileArrayParams.entrySet()) {
             List<FileWrapper> fileWrapper = entry.getValue();
             for (FileWrapper fw : fileWrapper) {
                 entity.addPart(entry.getKey(), fw.file, fw.contentType, fw.customFileName);
@@ -614,7 +614,7 @@ public class RequestParams implements Serializable {
     protected List<BasicNameValuePair> getParamsList() {
         List<BasicNameValuePair> lparams = new LinkedList<BasicNameValuePair>();
 
-        for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
+        for (ConcurrentSkipHashMap.Entry<String, String> entry : urlParams.entrySet()) {
             lparams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
         }
 
