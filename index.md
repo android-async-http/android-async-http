@@ -17,6 +17,8 @@ logic will be executed on the same thread as the callback was created using
 Android's Handler message passing. You can also use it in Service or background thread,
 library will automatically recognize in which context is ran.
 
+*If you are also looking for a great [android crash reporting](https://bugsnag.com/platforms/android) service, I'd also recommend checking out my company, [Bugsnag](https://bugsnag.com).*
+
 
 Features
 --------
