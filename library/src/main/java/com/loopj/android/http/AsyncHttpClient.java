@@ -938,8 +938,10 @@ public class AsyncHttpClient {
 
     private void cancelRequests(final List<RequestHandle> requestList, final boolean mayInterruptIfRunning) {
         if (requestList != null) {
-            for (RequestHandle requestHandle : requestList) {
-                requestHandle.cancel(mayInterruptIfRunning);
+            synchronized (requestList) {
+                for (RequestHandle requestHandle : requestList) {
+                    requestHandle.cancel(mayInterruptIfRunning);
+                }
             }
         }
     }
@@ -956,8 +958,10 @@ public class AsyncHttpClient {
     public void cancelAllRequests(boolean mayInterruptIfRunning) {
         for (List<RequestHandle> requestList : requestMap.values()) {
             if (requestList != null) {
-                for (RequestHandle requestHandle : requestList) {
-                    requestHandle.cancel(mayInterruptIfRunning);
+                synchronized (requestList) {
+                    for (RequestHandle requestHandle : requestList) {
+                        requestHandle.cancel(mayInterruptIfRunning);
+                    }
                 }
             }
         }
@@ -980,9 +984,11 @@ public class AsyncHttpClient {
         }
         for (List<RequestHandle> requestList : requestMap.values()) {
             if (requestList != null) {
-                for (RequestHandle requestHandle : requestList) {
-                    if (TAG.equals(requestHandle.getTag()))
-                        requestHandle.cancel(mayInterruptIfRunning);
+                synchronized (requestList) {
+                    for (RequestHandle requestHandle : requestList) {
+                        if (TAG.equals(requestHandle.getTag()))
+                            requestHandle.cancel(mayInterruptIfRunning);
+                    }
                 }
             }
         }
@@ -1572,10 +1578,12 @@ public class AsyncHttpClient {
 
             requestList.add(requestHandle);
 
-            Iterator<RequestHandle> iterator = requestList.iterator();
-            while (iterator.hasNext()) {
-                if (iterator.next().shouldBeGarbageCollected()) {
-                    iterator.remove();
+            synchronized (requestList) {
+                Iterator<RequestHandle> iterator = requestList.iterator();
+                while (iterator.hasNext()) {
+                    if (iterator.next().shouldBeGarbageCollected()) {
+                        iterator.remove();
+                    }
                 }
             }
         }
