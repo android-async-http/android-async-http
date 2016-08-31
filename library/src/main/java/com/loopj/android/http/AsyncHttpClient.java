@@ -797,6 +797,14 @@ public class AsyncHttpClient {
     public void removeHeader(String header) {
         clientHeaderMap.remove(header);
     }
+	
+	/**
+     * Remove headers from all requests this client makes (before sending).
+     *
+     */
+	public void removeHeaders() {
+		clientHeaderMap.clear();
+	}
 
     /**
      * Sets bearer authentication for the request. Uses AuthScope.ANY. This is the same as
