@@ -143,7 +143,7 @@ public class AsyncHttpClient {
      * Creates a new AsyncHttpClient with default constructor arguments values
      */
     public AsyncHttpClient() {
-        this(false, 80, 443);
+        this(80, 443);
     }
 
     /**
@@ -152,7 +152,7 @@ public class AsyncHttpClient {
      * @param httpPort non-standard HTTP-only port
      */
     public AsyncHttpClient(int httpPort) {
-        this(false, httpPort, 443);
+        this(httpPort, 443);
     }
 
     /**
@@ -162,18 +162,7 @@ public class AsyncHttpClient {
      * @param httpsPort non-standard HTTPS-only port
      */
     public AsyncHttpClient(int httpPort, int httpsPort) {
-        this(false, httpPort, httpsPort);
-    }
-
-    /**
-     * Creates new AsyncHttpClient using given params
-     *
-     * @param fixNoHttpResponseException Whether to fix issue or not, by omitting SSL verification
-     * @param httpPort                   HTTP port to be used, must be greater than 0
-     * @param httpsPort                  HTTPS port to be used, must be greater than 0
-     */
-    public AsyncHttpClient(boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
-        this(getDefaultSchemeRegistry(fixNoHttpResponseException, httpPort, httpsPort));
+        this(getDefaultSchemeRegistry(httpPort, httpsPort));
     }
 
     /**
@@ -280,14 +269,10 @@ public class AsyncHttpClient {
     /**
      * Returns default instance of SchemeRegistry
      *
-     * @param fixNoHttpResponseException Whether to fix issue or not, by omitting SSL verification
      * @param httpPort                   HTTP port to be used, must be greater than 0
      * @param httpsPort                  HTTPS port to be used, must be greater than 0
      */
-    private static SchemeRegistry getDefaultSchemeRegistry(boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
-        if (fixNoHttpResponseException) {
-            log.d(LOG_TAG, "Beware! Using the fix is insecure, as it doesn't verify SSL certificates.");
-        }
+    private static SchemeRegistry getDefaultSchemeRegistry(int httpPort, int httpsPort) {
 
         if (httpPort < 1) {
             httpPort = 80;
@@ -299,15 +284,7 @@ public class AsyncHttpClient {
             log.d(LOG_TAG, "Invalid HTTPS port number specified, defaulting to 443");
         }
 
-        // Fix to SSL flaw in API < ICS
-        // See https://code.google.com/p/android/issues/detail?id=13117
-        SSLSocketFactory sslSocketFactory;
-        if (fixNoHttpResponseException) {
-            sslSocketFactory = MySSLSocketFactory.getFixedSocketFactory();
-        } else {
-            sslSocketFactory = SSLSocketFactory.getSocketFactory();
-        }
-
+        SSLSocketFactory sslSocketFactory = SSLSocketFactory.getSocketFactory();
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), httpPort));
         schemeRegistry.register(new Scheme("https", sslSocketFactory, httpsPort));
@@ -578,7 +555,7 @@ public class AsyncHttpClient {
     /**
      * Provided so it is easier for developers to provide custom ThreadSafeClientConnManager implementation
      *
-     * @param schemeRegistry SchemeRegistry, usually provided by {@link #getDefaultSchemeRegistry(boolean, int, int)}
+     * @param schemeRegistry SchemeRegistry, usually provided by {@link #getDefaultSchemeRegistry(int, int)}
      * @param httpParams     BasicHttpParams
      * @return ClientConnectionManager instance
      */
