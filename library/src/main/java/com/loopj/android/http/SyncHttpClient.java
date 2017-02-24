@@ -36,7 +36,7 @@ public class SyncHttpClient extends AsyncHttpClient {
      * Creates a new SyncHttpClient with default constructor arguments values
      */
     public SyncHttpClient() {
-        super(false, 80, 443);
+        super(80, 443);
     }
 
     /**
@@ -45,7 +45,7 @@ public class SyncHttpClient extends AsyncHttpClient {
      * @param httpPort non-standard HTTP-only port
      */
     public SyncHttpClient(int httpPort) {
-        super(false, httpPort, 443);
+        super(httpPort, 443);
     }
 
     /**
@@ -55,7 +55,7 @@ public class SyncHttpClient extends AsyncHttpClient {
      * @param httpsPort non-standard HTTPS-only port
      */
     public SyncHttpClient(int httpPort, int httpsPort) {
-        super(false, httpPort, httpsPort);
+        super(httpPort, httpsPort);
     }
 
     /**
@@ -66,7 +66,7 @@ public class SyncHttpClient extends AsyncHttpClient {
      * @param httpsPort                  HTTPS port to be used, must be greater than 0
      */
     public SyncHttpClient(boolean fixNoHttpResponseException, int httpPort, int httpsPort) {
-        super(fixNoHttpResponseException, httpPort, httpsPort);
+        super(httpPort, httpsPort);
     }
 
     /**
