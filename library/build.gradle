@@ -2,10 +2,10 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.1'
+    buildToolsVersion '23.0.3'
 
     defaultConfig {
-        minSdkVersion 3
+        minSdkVersion 9
         targetSdkVersion 23
         consumerProguardFiles 'proguard.txt'
     }
