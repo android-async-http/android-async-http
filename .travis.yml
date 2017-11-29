@@ -3,10 +3,13 @@ sudo: false
 jdk: openjdk7
 android:
   components:
-    - build-tools-23.0.1
-    - extra-android-support
-    - extra-android-m2repository
+    - platform-tools
+    - tools
+    - build-tools-23.0.3
     - android-23
+    - extra-android-m2repository
+    - extra-google-m2repository
+
   licenses:
     - '.+'
 script:

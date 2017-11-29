@@ -72,9 +72,19 @@ public class MySSLSocketFactory extends SSLSocketFactory {
 
         X509TrustManager tm = new X509TrustManager() {
             public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                try {
+                    chain[0].checkValidity();
+                } catch (Exception e) {
+                    throw new CertificateException("Certificate not valid or trusted.");
+                }
             }
 
             public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                try {
+                    chain[0].checkValidity();
+                } catch (Exception e) {
+                    throw new CertificateException("Certificate not valid or trusted.");
+                }
             }
 
             public X509Certificate[] getAcceptedIssuers() {

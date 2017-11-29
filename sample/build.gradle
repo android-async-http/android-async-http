@@ -9,10 +9,10 @@ repositories {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.1'
+    buildToolsVersion '23.0.3'
 
     defaultConfig {
-        minSdkVersion 3
+        minSdkVersion 9
         targetSdkVersion 23
     }
 
@@ -20,7 +20,7 @@ android {
         standard {
         }
         withLeakCanary {
-            minSdkVersion 8
+            minSdkVersion 9
             targetSdkVersion 23
         }
     }
