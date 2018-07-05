@@ -216,6 +216,8 @@ public class Base64 {
                 case 2:
                     output_len += 3;
                     break;
+                default:
+                    break;
             }
         }
 
@@ -467,6 +469,11 @@ public class Base64 {
                             return false;
                         }
                         break;
+                        
+                    default:
+                        //Unknown case
+                        this.state = 6;
+                        break;
                 }
             }
 
@@ -510,6 +517,11 @@ public class Base64 {
                     // Read all the padding '='s we expected and no more.
                     // Fine.
                     break;
+                    
+                default:
+                    //Unknown state
+                    this.state = 6;
+                    return false;
             }
 
             this.state = state;
@@ -613,6 +625,9 @@ public class Base64 {
                                 (input[p++] & 0xff);
                         tailLen = 0;
                     }
+                    break;
+                default:
+                    //unknown tailLen
                     break;
             }
 
