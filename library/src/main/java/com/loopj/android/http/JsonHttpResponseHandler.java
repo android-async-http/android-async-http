@@ -101,6 +101,14 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
     }
 
     /**
+     * Returns when request succeeds
+     *
+     * @param responseObject parsed response
+     */
+    public void onSuccess(AAHResponseObject responseObject) {
+        AsyncHttpClient.log.w(LOG_TAG, "onSuccess(AAHResponseObject responseObject) was not overriden, but callback was received");
+    }
+    /**
      * Returns when request failed
      *
      * @param statusCode    http response status line
@@ -112,6 +120,14 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
         AsyncHttpClient.log.w(LOG_TAG, "onFailure(int, Header[], Throwable, JSONObject) was not overriden, but callback was received", throwable);
     }
 
+    /**
+     * Returns when request failed
+     *
+     * @param errorObject parsed response
+     */
+    public void onFailure(AAHErrorObject errorObject){
+        AsyncHttpClient.log.w(LOG_TAG, "onFailure(AAHErrorObject errorObject) was not overriden, but callback was received");
+    }
     /**
      * Returns when request failed
      *
@@ -140,6 +156,13 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
             Runnable parser = new Runnable() {
                 @Override
                 public void run() {
+                    final AAHResponseObject aahResponseObject = new AAHResponseObject();
+                    aahResponseObject.setHeaders(headers);
+                    aahResponseObject.setStatusCode(statusCode);
+
+                    final AAHErrorObject errorObject = new AAHErrorObject();
+                    errorObject.setHeaders(headers);
+                    errorObject.setStatusCode(statusCode);
                     try {
                         final Object jsonResponse = parseResponse(responseBytes);
                         postRunnable(new Runnable() {
@@ -147,20 +170,32 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                             public void run() {
                                 // In RFC5179 a null value is not a valid JSON
                                 if (!useRFC5179CompatibilityMode && jsonResponse == null) {
+                                    aahResponseObject.setResponseString((String) null);
                                     onSuccess(statusCode, headers, (String) null);
+                                    onSuccess(aahResponseObject);
                                 } else if (jsonResponse instanceof JSONObject) {
                                     onSuccess(statusCode, headers, (JSONObject) jsonResponse);
+                                    aahResponseObject.setJsonResponseObject((JSONObject) jsonResponse);
+                                    onSuccess(aahResponseObject);
                                 } else if (jsonResponse instanceof JSONArray) {
                                     onSuccess(statusCode, headers, (JSONArray) jsonResponse);
+                                    aahResponseObject.setJsonResponseArray((JSONArray) jsonResponse);
+                                    onSuccess(aahResponseObject);
                                 } else if (jsonResponse instanceof String) {
                                     // In RFC5179 a simple string value is not a valid JSON
                                     if (useRFC5179CompatibilityMode) {
                                         onFailure(statusCode, headers, (String) jsonResponse, new JSONException("Response cannot be parsed as JSON data"));
+                                        errorObject.setJsonException(new JSONException("Response cannot be parsed as JSON data"));
+                                        onFailure(errorObject);
                                     } else {
                                         onSuccess(statusCode, headers, (String) jsonResponse);
+                                        aahResponseObject.setResponseString((String) jsonResponse);
+                                        onSuccess(aahResponseObject);
                                     }
                                 } else {
                                     onFailure(statusCode, headers, new JSONException("Unexpected response type " + jsonResponse.getClass().getName()), (JSONObject) null);
+                                    errorObject.setJsonException(new JSONException("Unexpected response type " + jsonResponse.getClass().getName()));
+                                    onFailure(errorObject);
                                 }
                             }
                         });
@@ -169,6 +204,7 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                             @Override
                             public void run() {
                                 onFailure(statusCode, headers, ex, (JSONObject) null);
+                                onFailure(errorObject);
                             }
                         });
                     }
@@ -182,6 +218,10 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
             }
         } else {
             onSuccess(statusCode, headers, new JSONObject());
+            final AAHResponseObject aahResponseObject = new AAHResponseObject();
+            aahResponseObject.setHeaders(headers);
+            aahResponseObject.setStatusCode(statusCode);
+            onSuccess(aahResponseObject);
         }
     }
 
@@ -191,6 +231,9 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
             Runnable parser = new Runnable() {
                 @Override
                 public void run() {
+                    final AAHErrorObject errorObject = new AAHErrorObject();
+                    errorObject.setHeaders(headers);
+                    errorObject.setStatusCode(statusCode);
                     try {
                         final Object jsonResponse = parseResponse(responseBytes);
                         postRunnable(new Runnable() {
@@ -199,14 +242,24 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                                 // In RFC5179 a null value is not a valid JSON
                                 if (!useRFC5179CompatibilityMode && jsonResponse == null) {
                                     onFailure(statusCode, headers, (String) null, throwable);
+                                    errorObject.setError(throwable);
+                                    onFailure(errorObject);
                                 } else if (jsonResponse instanceof JSONObject) {
                                     onFailure(statusCode, headers, throwable, (JSONObject) jsonResponse);
+                                    errorObject.setJsonResponseObject( (JSONObject) jsonResponse);
+                                    onFailure(errorObject);
                                 } else if (jsonResponse instanceof JSONArray) {
                                     onFailure(statusCode, headers, throwable, (JSONArray) jsonResponse);
+                                    errorObject.setJsonResponseArray( (JSONArray) jsonResponse);
+                                    onFailure(errorObject);
                                 } else if (jsonResponse instanceof String) {
                                     onFailure(statusCode, headers, (String) jsonResponse, throwable);
+                                    errorObject.setResponseString((String) jsonResponse);
+                                    onFailure(errorObject);
                                 } else {
                                     onFailure(statusCode, headers, new JSONException("Unexpected response type " + jsonResponse.getClass().getName()), (JSONObject) null);
+                                    errorObject.setJsonException(new JSONException("Unexpected response type " + jsonResponse.getClass().getName()));
+                                    onFailure(errorObject);
                                 }
                             }
                         });
@@ -216,6 +269,8 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
                             @Override
                             public void run() {
                                 onFailure(statusCode, headers, ex, (JSONObject) null);
+                                errorObject.setJsonException(ex);
+                                onFailure(errorObject);
                             }
                         });
 
@@ -231,6 +286,11 @@ public class JsonHttpResponseHandler extends TextHttpResponseHandler {
         } else {
             AsyncHttpClient.log.v(LOG_TAG, "response body is null, calling onFailure(Throwable, JSONObject)");
             onFailure(statusCode, headers, throwable, (JSONObject) null);
+            final AAHErrorObject errorObject = new AAHErrorObject();
+            errorObject.setHeaders(headers);
+            errorObject.setStatusCode(statusCode);
+            errorObject.setError(throwable);
+            onFailure(errorObject);
         }
     }
 
