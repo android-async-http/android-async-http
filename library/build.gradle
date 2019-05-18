@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.1'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion 3
-        targetSdkVersion 23
+        targetSdkVersion 28
     }
 
     lintOptions {
@@ -24,23 +24,5 @@ android {
 }
 
 dependencies {
-    compile 'cz.msebera.android:httpclient:4.4.1.1'
-}
-
-android.libraryVariants.all { variant ->
-    def name = variant.buildType.name
-    def task = project.tasks.create "jar${name.capitalize()}", Jar
-    task.dependsOn variant.javaCompile
-    task.from variant.javaCompile.destinationDir
-    artifacts.add('archives', task);
-}
-
-apply from: '../maven_push.gradle'
-
-afterEvaluate { project ->
-    android.libraryVariants.all { variant ->
-        tasks.androidJavadocs.doFirst {
-            classpath += files(variant.javaCompile.classpath.files)
-        }
-    }
+    api 'cz.msebera.android:httpclient:4.5.8'
 }

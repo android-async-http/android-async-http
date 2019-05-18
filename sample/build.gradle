@@ -1,25 +1,21 @@
 apply plugin: 'com.android.application'
 
-repositories {
-    mavenCentral()
-    maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots/"
-    }
-}
-
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.1'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion 3
-        targetSdkVersion 23
+        targetSdkVersion 28
     }
 
+    flavorDimensions "version"
     productFlavors {
         standard {
+            dimension "version"
         }
         withLeakCanary {
+            dimension "version"
             minSdkVersion 8
             targetSdkVersion 23
         }
@@ -46,8 +42,8 @@ android {
 }
 
 dependencies {
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
-    compile project(':library')
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
+    implementation project(':library')
     // LeakCanary
-    withLeakCanaryCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
+    withLeakCanaryImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-1'
 }
