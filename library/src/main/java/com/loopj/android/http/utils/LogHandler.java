@@ -56,7 +56,7 @@ public class LogHandler implements LogInterface {
                     Log.d(tag, msg, t);
                     break;
                 case WTF:
-                    if (Integer.valueOf(Build.VERSION.SDK) > 8) {
+                    if (Build.VERSION.SDK_INT > 8) {
                         checkedWtf(tag, msg, t);
                     } else {
                         Log.e(tag, msg, t);

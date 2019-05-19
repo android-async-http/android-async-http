@@ -36,8 +36,8 @@ import javax.net.ssl.SSLException;
 import cz.msebera.android.httpclient.NoHttpResponseException;
 import cz.msebera.android.httpclient.client.HttpRequestRetryHandler;
 import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
-import cz.msebera.android.httpclient.protocol.ExecutionContext;
 import cz.msebera.android.httpclient.protocol.HttpContext;
+import cz.msebera.android.httpclient.protocol.HttpCoreContext;
 
 public final class RetryHandler implements HttpRequestRetryHandler {
     private final static HashSet<Class<?>> exceptionWhitelist = new HashSet<Class<?>>();
@@ -77,9 +77,10 @@ public final class RetryHandler implements HttpRequestRetryHandler {
     public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
         boolean retry = true;
 
-        Boolean b = (Boolean) context.getAttribute(ExecutionContext.HTTP_REQ_SENT);
+        Boolean b = (Boolean) context.getAttribute(HttpCoreContext.HTTP_REQ_SENT);
         boolean sent = (b != null && b);
 
+        // todo inspect logic seems flawed
         if (executionCount > maxRetries) {
             // Do not retry if over max retry count
             retry = false;
@@ -96,7 +97,7 @@ public final class RetryHandler implements HttpRequestRetryHandler {
 
         if (retry) {
             // resend all idempotent requests
-            HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
+            HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(HttpCoreContext.HTTP_REQUEST);
             if (currentReq == null) {
                 return false;
             }
