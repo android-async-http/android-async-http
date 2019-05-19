@@ -18,25 +18,20 @@
 
 package com.loopj.android.http.sample;
 
-import android.widget.Toast;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestFactory;
-import com.loopj.android.http.handlers.AsyncHttpResponseHandler;
 import com.loopj.android.http.interfaces.ResponseHandlerInterface;
 import com.loopj.android.http.utils.RequestHandle;
-
-import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
 
 public class GetSample extends SampleParentActivity {
-    private static final String LOG_TAG = "GetSample";
+    protected String LOG_TAG = "GetSample";
 
     @Override
     public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {
-        return client.sendRequest(RequestFactory.get(this, URL, headers), responseHandler);
+        return client.sendRequest(RequestFactory.get(URL, headers), responseHandler);
     }
 
     @Override
@@ -61,37 +56,6 @@ public class GetSample extends SampleParentActivity {
 
     @Override
     public ResponseHandlerInterface getResponseHandler() {
-        return new AsyncHttpResponseHandler() {
-
-            @Override
-            public void onStart() {
-                clearOutputs();
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                debugHeaders(LOG_TAG, headers);
-                debugStatusCode(LOG_TAG, statusCode);
-                debugResponse(LOG_TAG, new String(responseBody));
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                debugHeaders(LOG_TAG, headers);
-                debugStatusCode(LOG_TAG, statusCode);
-                debugThrowable(LOG_TAG, error);
-                if (responseBody != null) {
-                    debugResponse(LOG_TAG, new String(responseBody));
-                }
-            }
-
-            @Override
-            public void onRetry(int retryNo) {
-                Toast.makeText(GetSample.this,
-                        String.format(Locale.getDefault(), "Request is retried, retry no. %d", retryNo),
-                        Toast.LENGTH_SHORT)
-                        .show();
-            }
-        };
+        return defaultResponseHandler;
     }
 }

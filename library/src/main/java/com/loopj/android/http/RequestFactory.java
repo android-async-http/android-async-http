@@ -15,9 +15,8 @@
 */
 package com.loopj.android.http;
 
-import android.content.Context;
-
 import com.loopj.android.http.interfaces.RequestInterface;
+import com.loopj.android.http.requests.DeleteRequest;
 import com.loopj.android.http.requests.GetRequest;
 import com.loopj.android.http.requests.PostRequest;
 
@@ -26,12 +25,16 @@ import cz.msebera.android.httpclient.HttpEntity;
 
 public final class RequestFactory {
 
-    public static RequestInterface get(Context context, String URL, Header[] headers) {
-        return new GetRequest(false, context, URL, headers, null);
+    public static RequestInterface get(String URL, Header[] headers) {
+        return new GetRequest(false, URL, headers, null);
     }
 
-    public static RequestInterface post(Context context, String URL, Header[] headers, HttpEntity postEntity) {
-        return new PostRequest(false, context, URL, headers, postEntity, null);
+    public static RequestInterface post(String URL, Header[] headers, HttpEntity postEntity) {
+        return new PostRequest(false, URL, headers, postEntity, null);
+    }
+
+    public static RequestInterface delete(String URL, Header[] headers) {
+        return new DeleteRequest(false, URL, headers, null);
     }
 
 }

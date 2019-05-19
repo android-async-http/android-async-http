@@ -15,15 +15,13 @@
 */
 package com.loopj.android.http.requests;
 
-import android.content.Context;
-
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.client.methods.HttpGet;
 import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
 
 public final class GetRequest extends BaseRequest {
 
-    public GetRequest(boolean synchronous, Context context, String URL, Header[] headers, Object TAG) {
+    public GetRequest(boolean synchronous, String URL, Header[] headers, Object TAG) {
         super(synchronous, URL, headers, TAG);
     }
 

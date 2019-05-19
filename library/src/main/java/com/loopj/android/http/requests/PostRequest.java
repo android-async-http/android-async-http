@@ -15,8 +15,6 @@
 */
 package com.loopj.android.http.requests;
 
-import android.content.Context;
-
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
@@ -24,7 +22,7 @@ import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
 
 public class PostRequest extends BaseRequestWithEntity {
 
-    public PostRequest(boolean synchronous, Context context, String url, Header[] headers, HttpEntity entity, Object TAG) {
+    public PostRequest(boolean synchronous, String url, Header[] headers, HttpEntity entity, Object TAG) {
         super(synchronous, url, headers, entity, TAG);
     }
 

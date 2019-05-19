@@ -8,8 +8,8 @@ import com.loopj.android.http.utils.RequestHandle;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
 
-public class PostSample extends SampleParentActivity {
-    protected String LOG_TAG = "PostSample";
+public class DeleteSample extends SampleParentActivity {
+    protected String LOG_TAG = "DeleteSample";
 
     @Override
     public ResponseHandlerInterface getResponseHandler() {
@@ -18,7 +18,7 @@ public class PostSample extends SampleParentActivity {
 
     @Override
     public String getDefaultURL() {
-        return "https://httpbin.org/post";
+        return "https://httpbin.org/delete";
     }
 
     @Override
@@ -33,11 +33,11 @@ public class PostSample extends SampleParentActivity {
 
     @Override
     public int getSampleTitle() {
-        return R.string.title_post_sample;
+        return R.string.title_delete_sample;
     }
 
     @Override
     public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {
-        return client.sendRequest(RequestFactory.post(URL, headers, entity), responseHandler);
+        return client.sendRequest(RequestFactory.delete(URL, headers), responseHandler);
     }
 }

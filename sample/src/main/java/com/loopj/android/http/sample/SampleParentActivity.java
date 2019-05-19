@@ -36,6 +36,7 @@ import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpRequest;
+import com.loopj.android.http.handlers.AsyncHttpResponseHandler;
 import com.loopj.android.http.interfaces.ResponseHandlerInterface;
 import com.loopj.android.http.utils.RequestHandle;
 
@@ -65,7 +66,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     protected static final int LIGHTRED = Color.parseColor("#FF3300");
     protected static final int YELLOW = Color.parseColor("#FFFF00");
     protected static final int LIGHTBLUE = Color.parseColor("#99CCFF");
-    private static final String LOG_TAG = "SampleParentActivity";
+    protected String LOG_TAG = "SampleParentActivity";
     private static final int MENU_USE_HTTPS = 0;
     private static final int MENU_CLEAR_VIEW = 1;
     private static final int MENU_LOGGING_VERBOSITY = 2;
@@ -91,6 +92,30 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     private LinearLayout responseLayout;
     private boolean useHttps = true;
     private boolean enableLogging = true;
+    protected final ResponseHandlerInterface defaultResponseHandler = new AsyncHttpResponseHandler() {
+
+        @Override
+        public void onStart() {
+            clearOutputs();
+        }
+
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+            debugHeaders(LOG_TAG, headers);
+            debugStatusCode(LOG_TAG, statusCode);
+            debugResponse(LOG_TAG, new String(responseBody));
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+            debugHeaders(LOG_TAG, headers);
+            debugStatusCode(LOG_TAG, statusCode);
+            debugThrowable(LOG_TAG, error);
+            if (responseBody != null) {
+                debugResponse(LOG_TAG, new String(responseBody));
+            }
+        }
+    };
 
     protected static String throwableToString(Throwable t) {
         if (t == null)
