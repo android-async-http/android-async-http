@@ -19,6 +19,7 @@ import com.loopj.android.http.interfaces.RequestInterface;
 import com.loopj.android.http.requests.DeleteRequest;
 import com.loopj.android.http.requests.GetRequest;
 import com.loopj.android.http.requests.HeadRequest;
+import com.loopj.android.http.requests.OptionsRequest;
 import com.loopj.android.http.requests.PatchRequest;
 import com.loopj.android.http.requests.PostRequest;
 import com.loopj.android.http.requests.PutRequest;
@@ -50,5 +51,9 @@ public final class RequestFactory {
 
     public static RequestInterface head(String URL, Header[] headers) {
         return new HeadRequest(false, URL, headers, null);
+    }
+
+    public static RequestInterface options(String URL, Header[] headers) {
+        return new OptionsRequest(false, URL, headers, null);
     }
 }

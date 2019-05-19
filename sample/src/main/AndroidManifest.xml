@@ -28,6 +28,7 @@
         <activity android:name=".HeadSample" />
         <activity android:name=".PutSample" />
         <activity android:name=".PatchSample" />
+        <activity android:name=".OptionsSample" />
         <activity android:name=".JsonSample" />
         <activity android:name=".JsonStreamerSample" />
         <activity android:name=".FileSample" />
