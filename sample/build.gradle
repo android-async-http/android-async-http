@@ -14,11 +14,6 @@ android {
         standard {
             dimension "version"
         }
-        withLeakCanary {
-            dimension "version"
-            minSdkVersion 8
-            targetSdkVersion 23
-        }
     }
 
     compileOptions {
@@ -44,6 +39,4 @@ android {
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
     implementation project(':library')
-    // LeakCanary
-    withLeakCanaryImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-1'
 }
