@@ -9,7 +9,11 @@ import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
 
 public class PostSample extends SampleParentActivity {
-    protected String LOG_TAG = "PostSample";
+
+    @Override
+    public String getLogTag() {
+        return "PostSample";
+    }
 
     @Override
     public ResponseHandlerInterface getResponseHandler() {

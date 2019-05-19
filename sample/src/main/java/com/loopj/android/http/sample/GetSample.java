@@ -27,7 +27,11 @@ import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
 
 public class GetSample extends SampleParentActivity {
-    protected String LOG_TAG = "GetSample";
+
+    @Override
+    public String getLogTag() {
+        return "GetSample";
+    }
 
     @Override
     public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {

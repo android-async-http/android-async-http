@@ -18,6 +18,7 @@ package com.loopj.android.http;
 import com.loopj.android.http.interfaces.RequestInterface;
 import com.loopj.android.http.requests.DeleteRequest;
 import com.loopj.android.http.requests.GetRequest;
+import com.loopj.android.http.requests.PatchRequest;
 import com.loopj.android.http.requests.PostRequest;
 
 import cz.msebera.android.httpclient.Header;
@@ -37,4 +38,7 @@ public final class RequestFactory {
         return new DeleteRequest(false, URL, headers, null);
     }
 
+    public static RequestInterface patch(String URL, Header[] headers, HttpEntity patchEntity) {
+        return new PatchRequest(false, URL, headers, patchEntity, null);
+    }
 }

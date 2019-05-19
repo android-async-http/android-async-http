@@ -66,7 +66,6 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     protected static final int LIGHTRED = Color.parseColor("#FF3300");
     protected static final int YELLOW = Color.parseColor("#FFFF00");
     protected static final int LIGHTBLUE = Color.parseColor("#99CCFF");
-    protected String LOG_TAG = "SampleParentActivity";
     private static final int MENU_USE_HTTPS = 0;
     private static final int MENU_CLEAR_VIEW = 1;
     private static final int MENU_LOGGING_VERBOSITY = 2;
@@ -74,6 +73,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     protected static String PROTOCOL = PROTOCOL_HTTPS;
     private final List<RequestHandle> requestHandles = new LinkedList<>();
     public LinearLayout customFieldsLayout;
+    private String LOGTAG;
     private AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
     private EditText urlEditText, headersEditText, bodyEditText;
     protected final View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -90,8 +90,6 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         }
     };
     private LinearLayout responseLayout;
-    private boolean useHttps = true;
-    private boolean enableLogging = true;
     protected final ResponseHandlerInterface defaultResponseHandler = new AsyncHttpResponseHandler() {
 
         @Override
@@ -101,21 +99,23 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
         @Override
         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-            debugHeaders(LOG_TAG, headers);
-            debugStatusCode(LOG_TAG, statusCode);
-            debugResponse(LOG_TAG, new String(responseBody));
+            debugHeaders(getLogTag(), headers);
+            debugStatusCode(getLogTag(), statusCode);
+            debugResponse(getLogTag(), new String(responseBody));
         }
 
         @Override
         public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-            debugHeaders(LOG_TAG, headers);
-            debugStatusCode(LOG_TAG, statusCode);
-            debugThrowable(LOG_TAG, error);
+            debugHeaders(getLogTag(), headers);
+            debugStatusCode(getLogTag(), statusCode);
+            debugThrowable(getLogTag(), error);
             if (responseBody != null) {
-                debugResponse(LOG_TAG, new String(responseBody));
+                debugResponse(getLogTag(), new String(responseBody));
             }
         }
     };
+    private boolean useHttps = true;
+    private boolean enableLogging = true;
 
     protected static String throwableToString(Throwable t) {
         if (t == null)
@@ -129,6 +129,10 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     public static int getContrastColor(int color) {
         double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000.0;
         return y >= 128 ? Color.BLACK : Color.WHITE;
+    }
+
+    public String getLogTag() {
+        return this.LOGTAG;
     }
 
     @Override
@@ -279,11 +283,11 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
                     String headerName = line.substring(0, equalSignPos).trim();
                     String headerValue = line.substring(1 + equalSignPos).trim();
-                    Log.d(LOG_TAG, String.format("Added header: [%s:%s]", headerName, headerValue));
+                    Log.d(getLogTag(), String.format("Added header: [%s:%s]", headerName, headerValue));
 
                     headers.add(new BasicHeader(headerName, headerValue));
                 } catch (Throwable t) {
-                    Log.e(LOG_TAG, "Not a valid header line: " + line, t);
+                    Log.e(getLogTag(), "Not a valid header line: " + line, t);
                 }
             }
         }
@@ -301,7 +305,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
             try {
                 return new StringEntity(bodyText);
             } catch (UnsupportedEncodingException e) {
-                Log.e(LOG_TAG, "cannot create String entity", e);
+                Log.e(getLogTag(), "cannot create String entity", e);
             }
         }
         return null;

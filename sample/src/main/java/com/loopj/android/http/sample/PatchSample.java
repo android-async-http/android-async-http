@@ -8,10 +8,11 @@ import com.loopj.android.http.utils.RequestHandle;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
 
-public class DeleteSample extends SampleParentActivity {
+public class PatchSample extends SampleParentActivity {
+
     @Override
     public String getLogTag() {
-        return "DeleteSample";
+        return "PatchSample";
     }
 
     @Override
@@ -21,7 +22,7 @@ public class DeleteSample extends SampleParentActivity {
 
     @Override
     public String getDefaultURL() {
-        return "https://httpbin.org/delete";
+        return "https://httpbin.org/patch";
     }
 
     @Override
@@ -36,11 +37,11 @@ public class DeleteSample extends SampleParentActivity {
 
     @Override
     public int getSampleTitle() {
-        return R.string.title_delete_sample;
+        return R.string.title_patch_sample;
     }
 
     @Override
     public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {
-        return client.sendRequest(RequestFactory.delete(URL, headers), responseHandler);
+        return client.sendRequest(RequestFactory.patch(URL, headers, entity), responseHandler);
     }
 }
