@@ -20,7 +20,9 @@ import cz.msebera.android.httpclient.entity.ContentType;
 public interface RequestParamInterface<T> {
 
     String getName();
+
     T getValue();
+
     ContentType getContentType();
 
 }

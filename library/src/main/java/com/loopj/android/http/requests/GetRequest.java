@@ -17,10 +17,7 @@ package com.loopj.android.http.requests;
 
 import android.content.Context;
 
-import java.net.MalformedURLException;
-
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.client.methods.HttpGet;
 import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
 

@@ -19,7 +19,6 @@ import com.loopj.android.http.interfaces.RequestParamInterface;
 
 import cz.msebera.android.httpclient.entity.ContentType;
 
-@SuppressWarnings("DesignForExtension")
 public class BaseParam<T> implements RequestParamInterface<T> {
 
     private T value;

@@ -22,7 +22,6 @@ import java.net.URI;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
 
-@SuppressWarnings("DesignForExtension")
 public abstract class BaseRequest implements RequestInterface {
 
     protected Header[] headers;

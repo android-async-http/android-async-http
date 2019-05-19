@@ -18,8 +18,6 @@
 
 package com.loopj.android.http.utils;
 
-import com.loopj.android.http.utils.PersistentCookieStore;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

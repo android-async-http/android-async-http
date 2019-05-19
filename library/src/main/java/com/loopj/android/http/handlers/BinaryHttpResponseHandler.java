@@ -21,7 +21,6 @@ package com.loopj.android.http.handlers;
 import android.os.Looper;
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.RequestParams;
 
 import java.io.IOException;
 import java.util.regex.Pattern;

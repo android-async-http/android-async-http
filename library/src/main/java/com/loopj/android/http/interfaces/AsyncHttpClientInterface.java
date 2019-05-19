@@ -33,6 +33,7 @@ public interface AsyncHttpClientInterface {
     ExecutorService getThreadPool();
 
     RequestHandle sendRequest(CloseableHttpClient httpClient, HttpUriRequest request, ResponseHandlerInterface responseHandler);
+
     RequestHandle sendRequest(RequestInterface request, ResponseHandlerInterface responseHandler);
 
     boolean isLoggingEnabled();

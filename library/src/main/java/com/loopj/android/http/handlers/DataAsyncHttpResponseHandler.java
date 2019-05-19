@@ -27,8 +27,8 @@ import java.io.InputStream;
 
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.util.ByteArrayBuffer;
+import cz.msebera.android.httpclient.util.EntityUtils;
 
-@SuppressWarnings("ALL")
 public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
     protected static final int PROGRESS_DATA_MESSAGE = 7;
     private static final String LOG_TAG = "DataAsyncHttpRH";
@@ -89,19 +89,17 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
         super.handleMessage(message);
         Object[] response;
 
-        switch (message.what) {
-            case PROGRESS_DATA_MESSAGE:
-                response = (Object[]) message.obj;
-                if (response != null && response.length >= 1) {
-                    try {
-                        onProgressData((byte[]) response[0]);
-                    } catch (Throwable t) {
-                        AsyncHttpClient.log.e(LOG_TAG, "custom onProgressData contains an error", t);
-                    }
-                } else {
-                    AsyncHttpClient.log.e(LOG_TAG, "PROGRESS_DATA_MESSAGE didn't got enough params");
+        if (message.what == PROGRESS_DATA_MESSAGE) {
+            response = (Object[]) message.obj;
+            if (response != null && response.length >= 1) {
+                try {
+                    onProgressData((byte[]) response[0]);
+                } catch (Throwable t) {
+                    AsyncHttpClient.log.e(LOG_TAG, "custom onProgressData contains an error", t);
                 }
-                break;
+            } else {
+                AsyncHttpClient.log.e(LOG_TAG, "PROGRESS_DATA_MESSAGE didn't got enough params");
+            }
         }
     }
 
@@ -138,7 +136,7 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
                             sendProgressMessage(count, contentLength);
                         }
                     } finally {
-//                        AsyncHttpClient.silentCloseInputStream(instream);
+                        EntityUtils.consumeQuietly(entity);
                     }
                     responseBody = buffer.toByteArray();
                 } catch (OutOfMemoryError e) {

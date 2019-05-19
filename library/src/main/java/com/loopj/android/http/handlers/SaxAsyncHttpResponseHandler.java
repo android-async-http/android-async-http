@@ -35,6 +35,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.util.EntityUtils;
 
 /**
  * Provides interface to deserialize SAX responses, using AsyncHttpResponseHandler. Can be used like
@@ -65,7 +66,7 @@ public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> exte
     /**
      * Generic Type of handler
      */
-    private T handler = null;
+    private T handler;
 
     /**
      * Constructs new SaxAsyncHttpResponseHandler with given handler instance
@@ -107,12 +108,12 @@ public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> exte
                 } catch (ParserConfigurationException e) {
                     AsyncHttpClient.log.e(LOG_TAG, "getResponseData exception", e);
                 } finally {
-//                    AsyncHttpClient.silentCloseInputStream(instream);
                     if (inputStreamReader != null) {
                         try {
                             inputStreamReader.close();
                         } catch (IOException e) { /*ignore*/ }
                     }
+                    EntityUtils.consumeQuietly(entity);
                 }
             }
         }

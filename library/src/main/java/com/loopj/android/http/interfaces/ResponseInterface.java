@@ -20,9 +20,13 @@ import cz.msebera.android.httpclient.Header;
 public interface ResponseInterface<T> {
 
     boolean isSuccess();
+
     int getStatusCode();
+
     Header[] getHeaders();
+
     T getResponse();
+
     Throwable getThrowable();
 
 }

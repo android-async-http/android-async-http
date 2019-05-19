@@ -33,31 +33,31 @@ public class Base64 {
     /**
      * Encoder flag bit to omit the padding '=' characters at the end of the output (if any).
      */
-    public static final int NO_PADDING = 1;
+    private static final int NO_PADDING = 1;
 
     /**
      * Encoder flag bit to omit all line terminators (i.e., the output will be on one long line).
      */
-    public static final int NO_WRAP = 2;
+    private static final int NO_WRAP = 2;
 
     /**
      * Encoder flag bit to indicate lines should be terminated with a CRLF pair instead of just an
      * LF.  Has no effect if {@code NO_WRAP} is specified as well.
      */
-    public static final int CRLF = 4;
+    private static final int CRLF = 4;
 
     /**
      * Encoder/decoder flag bit to indicate using the "URL and filename safe" variant of Base64 (see
      * RFC 3548 section 4) where {@code -} and {@code _} are used in place of {@code +} and {@code
      * /}.
      */
-    public static final int URL_SAFE = 8;
+    private static final int URL_SAFE = 8;
 
     /**
      * Flag to pass to {@link Base64OutputStream} to indicate that it should not close the output
      * stream it is wrapping when it itself is closed.
      */
-    public static final int NO_CLOSE = 16;
+    static final int NO_CLOSE = 16;
 
     //  --------------------------------------------------------
     //  shared code
@@ -80,7 +80,7 @@ public class Base64 {
      * @param flags controls certain features of the decoded output. Pass {@code DEFAULT} to decode
      *              standard Base64.
      * @return decoded bytes
-     * @throws IllegalArgumentException if the input contains incorrect padding
+     * @throws java.lang.IllegalArgumentException if the input contains incorrect padding
      */
     public static byte[] decode(String str, int flags) {
         return decode(str.getBytes(), flags);
@@ -95,10 +95,10 @@ public class Base64 {
      * @param flags controls certain features of the decoded output. Pass {@code DEFAULT} to decode
      *              standard Base64.
      * @return decoded bytes
-     * @throws IllegalArgumentException if the input contains incorrect padding
+     * @throws java.lang.IllegalArgumentException if the input contains incorrect padding
      */
-    public static byte[] decode(byte[] input, int flags) {
-        return decode(input, 0, input.length, flags);
+    private static byte[] decode(byte[] input, int flags) {
+        return decode(input, input.length, flags);
     }
 
     /**
@@ -106,20 +106,19 @@ public class Base64 {
      * <p>&nbsp;</p> <p>The padding '=' characters at the end are considered optional, but if any
      * are present, there must be the correct number of them.
      *
-     * @param input  the data to decode
-     * @param offset the position within the input array at which to start
-     * @param len    the number of bytes of input to decode
-     * @param flags  controls certain features of the decoded output. Pass {@code DEFAULT} to decode
-     *               standard Base64.
+     * @param input the data to decode
+     * @param len   the number of bytes of input to decode
+     * @param flags controls certain features of the decoded output. Pass {@code DEFAULT} to decode
+     *              standard Base64.
      * @return decoded bytes for given offset and length
-     * @throws IllegalArgumentException if the input contains incorrect padding
+     * @throws java.lang.IllegalArgumentException if the input contains incorrect padding
      */
-    public static byte[] decode(byte[] input, int offset, int len, int flags) {
+    private static byte[] decode(byte[] input, int len, int flags) {
         // Allocate space for the most data the input could represent.
         // (It could contain less if it contains whitespace, etc.)
         Decoder decoder = new Decoder(flags, new byte[len * 3 / 4]);
 
-        if (!decoder.process(input, offset, len, true)) {
+        if (!decoder.process(input, 0, len, true)) {
             throw new IllegalArgumentException("bad base-64");
         }
 
@@ -183,7 +182,7 @@ public class Base64 {
      *              in output that adheres to RFC 2045.
      * @return base64 encoded input as bytes
      */
-    public static byte[] encode(byte[] input, int flags) {
+    private static byte[] encode(byte[] input, int flags) {
         return encode(input, 0, input.length, flags);
     }
 
@@ -197,7 +196,7 @@ public class Base64 {
      *               results in output that adheres to RFC 2045.
      * @return base64 encoded input as bytes
      */
-    public static byte[] encode(byte[] input, int offset, int len, int flags) {
+    private static byte[] encode(byte[] input, int offset, int len, int flags) {
         Encoder encoder = new Encoder(flags, null);
 
         // Compute the exact length of the array we will produce.
@@ -238,8 +237,8 @@ public class Base64 {
     }
 
     /* package */ static abstract class Coder {
-        public byte[] output;
-        public int op;
+        byte[] output;
+        int op;
 
         /**
          * Encode/decode another block of input data.  this.output is provided by the caller, and
@@ -264,7 +263,7 @@ public class Base64 {
         /**
          * Lookup table for turning bytes into their position in the Base64 alphabet.
          */
-        private static final int DECODE[] = {
+        private static final int[] DECODE = {
                 -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                 -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                 -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63,
@@ -287,7 +286,7 @@ public class Base64 {
          * Decode lookup table for the "web safe" variant (RFC 3548 sec. 4) where - and _ replace +
          * and /.
          */
-        private static final int DECODE_WEBSAFE[] = {
+        private static final int[] DECODE_WEBSAFE = {
                 -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                 -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                 -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1,
@@ -321,7 +320,7 @@ public class Base64 {
         private int state;   // state number (0 to 6)
         private int value;
 
-        public Decoder(int flags, byte[] output) {
+        Decoder(int flags, byte[] output) {
             this.output = output;
 
             alphabet = ((flags & URL_SAFE) == 0) ? DECODE : DECODE_WEBSAFE;
@@ -526,12 +525,12 @@ public class Base64 {
          * (the maximum allowable according to <a href="https://www.ietf.org/rfc/rfc2045.txt">RFC
          * 2045</a>).
          */
-        public static final int LINE_GROUPS = 19;
+        static final int LINE_GROUPS = 19;
 
         /**
          * Lookup table for turning Base64 alphabet positions (6 bits) into output bytes.
          */
-        private static final byte ENCODE[] = {
+        private static final byte[] ENCODE = {
                 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
                 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
                 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
@@ -541,21 +540,21 @@ public class Base64 {
         /**
          * Lookup table for turning Base64 alphabet positions (6 bits) into output bytes.
          */
-        private static final byte ENCODE_WEBSAFE[] = {
+        private static final byte[] ENCODE_WEBSAFE = {
                 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
                 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
                 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
                 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_',
         };
-        final public boolean do_padding;
-        final public boolean do_newline;
-        final public boolean do_cr;
+        final boolean do_padding;
+        final boolean do_newline;
+        final boolean do_cr;
         final private byte[] tail;
         final private byte[] alphabet;
         /* package */ int tailLen;
         private int count;
 
-        public Encoder(int flags, byte[] output) {
+        Encoder(int flags, byte[] output) {
             this.output = output;
 
             do_padding = (flags & NO_PADDING) == 0;

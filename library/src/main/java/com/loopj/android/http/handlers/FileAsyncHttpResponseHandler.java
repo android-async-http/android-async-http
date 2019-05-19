@@ -30,6 +30,7 @@ import java.io.InputStream;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.util.EntityUtils;
 
 public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
 
@@ -165,14 +166,14 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
         Utils.asserts(getOriginalFile().isDirectory(), "Target file is not a directory, cannot proceed");
         Utils.asserts(getRequestURI() != null, "RequestURI is null, cannot proceed");
         String requestURL = getRequestURI().toString();
-        String filename = requestURL.substring(requestURL.lastIndexOf('/') + 1, requestURL.length());
+        String filename = requestURL.substring(requestURL.lastIndexOf('/') + 1);
         File targetFileRtn = new File(getOriginalFile(), filename);
         if (targetFileRtn.exists() && renameIfExists) {
             String format;
             if (!filename.contains(".")) {
                 format = filename + " (%d)";
             } else {
-                format = filename.substring(0, filename.lastIndexOf('.')) + " (%d)" + filename.substring(filename.lastIndexOf('.'), filename.length());
+                format = filename.substring(0, filename.lastIndexOf('.')) + " (%d)" + filename.substring(filename.lastIndexOf('.'));
             }
             int index = 0;
             while (true) {
@@ -232,9 +233,8 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
                         sendProgressMessage(count, contentLength);
                     }
                 } finally {
-//                    AsyncHttpClient.silentCloseInputStream(instream);
                     buffer.flush();
-//                    AsyncHttpClient.silentCloseOutputStream(buffer);
+                    EntityUtils.consumeQuietly(entity);
                 }
             }
         }

@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URI;
+import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
@@ -37,6 +38,7 @@ import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.StatusLine;
 import cz.msebera.android.httpclient.client.HttpResponseException;
 import cz.msebera.android.httpclient.util.ByteArrayBuffer;
+import cz.msebera.android.httpclient.util.EntityUtils;
 
 /**
  * Used to intercept and handle the responses from requests made using {@link AsyncHttpClient}. The
@@ -82,7 +84,6 @@ import cz.msebera.android.httpclient.util.ByteArrayBuffer;
  * });
  * </pre>
  */
-@SuppressWarnings("ALL")
 public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterface {
 
     public static final String DEFAULT_CHARSET = "UTF-8";
@@ -243,7 +244,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @param totalSize    total size of file
      */
     public void onProgress(long bytesWritten, long totalSize) {
-        AsyncHttpClient.log.v(LOG_TAG, String.format("Progress %d from %d (%2.0f%%)", bytesWritten, totalSize, (totalSize > 0) ? (bytesWritten * 1.0 / totalSize) * 100 : -1));
+        AsyncHttpClient.log.v(LOG_TAG, String.format(Locale.getDefault(), "Progress %d from %d (%2.0f%%)", bytesWritten, totalSize, (totalSize > 0) ? (bytesWritten * 1.0 / totalSize) * 100 : -1));
     }
 
     /**
@@ -296,7 +297,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @param retryNo number of retry
      */
     public void onRetry(int retryNo) {
-        AsyncHttpClient.log.d(LOG_TAG, String.format("Request retry no. %d", retryNo));
+        AsyncHttpClient.log.d(LOG_TAG, String.format(Locale.getDefault(), "Request retry no. %d", retryNo));
     }
 
     public void onCancel() {
@@ -485,8 +486,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                             sendProgressMessage(count, (contentLength <= 0 ? 1 : contentLength));
                         }
                     } finally {
-//                        AsyncHttpClient.silentCloseInputStream(instream);
-//                        AsyncHttpClient.endEntityViaReflection(entity);
+                        EntityUtils.consumeQuietly(entity);
                     }
                     responseBody = buffer.toByteArray();
                 } catch (OutOfMemoryError e) {
