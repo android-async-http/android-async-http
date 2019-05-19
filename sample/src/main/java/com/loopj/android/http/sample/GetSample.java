@@ -69,19 +69,19 @@ public class GetSample extends SampleParentActivity {
             }
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 debugHeaders(LOG_TAG, headers);
                 debugStatusCode(LOG_TAG, statusCode);
-                debugResponse(LOG_TAG, new String(response));
+                debugResponse(LOG_TAG, new String(responseBody));
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 debugHeaders(LOG_TAG, headers);
                 debugStatusCode(LOG_TAG, statusCode);
-                debugThrowable(LOG_TAG, e);
-                if (errorResponse != null) {
-                    debugResponse(LOG_TAG, new String(errorResponse));
+                debugThrowable(LOG_TAG, error);
+                if (responseBody != null) {
+                    debugResponse(LOG_TAG, new String(responseBody));
                 }
             }
 

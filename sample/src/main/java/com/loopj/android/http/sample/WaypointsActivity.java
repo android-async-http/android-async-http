@@ -32,6 +32,7 @@ public class WaypointsActivity extends ListActivity {
 
     private static final SampleConfig[] samplesConfig = new SampleConfig[]{
             new SampleConfig(R.string.title_get_sample, GetSample.class),
+            new SampleConfig(R.string.title_post_sample, PostSample.class)
     };
 
     @Override
