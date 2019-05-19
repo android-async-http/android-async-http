@@ -20,6 +20,7 @@ import com.loopj.android.http.requests.DeleteRequest;
 import com.loopj.android.http.requests.GetRequest;
 import com.loopj.android.http.requests.PatchRequest;
 import com.loopj.android.http.requests.PostRequest;
+import com.loopj.android.http.requests.PutRequest;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
@@ -40,5 +41,9 @@ public final class RequestFactory {
 
     public static RequestInterface patch(String URL, Header[] headers, HttpEntity patchEntity) {
         return new PatchRequest(false, URL, headers, patchEntity, null);
+    }
+
+    public static RequestInterface put(String URL, Header[] headers, HttpEntity putEntity) {
+        return new PutRequest(false, URL, headers, putEntity, null);
     }
 }
