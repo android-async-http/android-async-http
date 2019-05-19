@@ -16,6 +16,7 @@
     <string name="label_headers">Headers (key=val, one per line)</string>
     <string name="label_req_body">Request body</string>
     <string name="label_credentials">Server requests authentication.\nTo gain access, enter:\n\nUsername: %1$s\nPassword: %2$s</string>
+    <string name="label_url_address">https://httpbin.org/headers</string>
 
     <string name="title_get_sample">GET</string>
     <string name="title_json_sample">GET JSON and parse it</string>

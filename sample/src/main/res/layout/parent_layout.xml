@@ -24,7 +24,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:inputType="textUri" />
+                android:hint="@string/label_url_address"
+                android:inputType="textUri"
+                android:importantForAutofill="no" />
 
             <Button
                 android:id="@+id/button_run"
@@ -49,15 +51,18 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:labelFor="@id/edit_headers"
                 android:text="@string/label_headers" />
 
             <EditText
                 android:id="@+id/edit_headers"
+                android:hint="@string/label_headers"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
                 android:minLines="3"
-                android:singleLine="false" />
+                android:singleLine="false"
+                android:importantForAutofill="no" />
 
         </LinearLayout>
 
@@ -78,7 +83,9 @@
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
                 android:minLines="3"
-                android:singleLine="false" />
+                android:hint="@string/label_req_body"
+                android:singleLine="false"
+                android:importantForAutofill="no" />
 
         </LinearLayout>
 
@@ -86,7 +93,7 @@
             android:id="@+id/layout_custom"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical" />
 
         <LinearLayout
             android:id="@+id/layout_response"

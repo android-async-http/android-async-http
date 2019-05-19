@@ -17,6 +17,8 @@
             android:id="@+id/edit_url"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/label_url_address"
+            android:importantForAutofill="no"
             android:inputType="textUri" />
 
         <LinearLayout
@@ -51,12 +53,15 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:labelFor="@id/edit_headers"
                 android:text="@string/label_headers" />
 
             <EditText
                 android:id="@+id/edit_headers"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/label_headers"
+                android:importantForAutofill="no"
                 android:inputType="textMultiLine"
                 android:minLines="3"
                 android:singleLine="false" />
@@ -72,12 +77,15 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:labelFor="@id/edit_body"
                 android:text="@string/label_req_body" />
 
             <EditText
                 android:id="@+id/edit_body"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/label_req_body"
+                android:importantForAutofill="no"
                 android:inputType="textMultiLine"
                 android:minLines="3"
                 android:singleLine="false" />
@@ -88,7 +96,7 @@
             android:id="@+id/layout_custom"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical" />
 
         <LinearLayout
             android:id="@+id/layout_response"

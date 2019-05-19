@@ -18,13 +18,11 @@
 
 package com.loopj.android.http.sample;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -56,6 +54,8 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
 import cz.msebera.android.httpclient.message.BasicHeader;
 import cz.msebera.android.httpclient.protocol.HttpContext;
+
+import static android.os.Build.VERSION.SDK_INT;
 
 public abstract class SampleParentActivity extends Activity implements SampleInterface {
 
@@ -102,7 +102,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     }
 
     public static int getContrastColor(int color) {
-        double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000;
+        double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000.0;
         return y >= 128 ? Color.BLACK : Color.WHITE;
     }
 
@@ -114,15 +114,15 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
         setHomeAsUpEnabled();
 
-        urlEditText = (EditText) findViewById(R.id.edit_url);
-        headersEditText = (EditText) findViewById(R.id.edit_headers);
-        bodyEditText = (EditText) findViewById(R.id.edit_body);
-        customFieldsLayout = (LinearLayout) findViewById(R.id.layout_custom);
-        Button runButton = (Button) findViewById(R.id.button_run);
-        Button cancelButton = (Button) findViewById(R.id.button_cancel);
-        LinearLayout headersLayout = (LinearLayout) findViewById(R.id.layout_headers);
-        LinearLayout bodyLayout = (LinearLayout) findViewById(R.id.layout_body);
-        responseLayout = (LinearLayout) findViewById(R.id.layout_response);
+        urlEditText = findViewById(R.id.edit_url);
+        headersEditText = findViewById(R.id.edit_headers);
+        bodyEditText = findViewById(R.id.edit_body);
+        customFieldsLayout = findViewById(R.id.layout_custom);
+        Button runButton = findViewById(R.id.button_run);
+        Button cancelButton = findViewById(R.id.button_cancel);
+        LinearLayout headersLayout = findViewById(R.id.layout_headers);
+        LinearLayout bodyLayout = findViewById(R.id.layout_body);
+        responseLayout = findViewById(R.id.layout_response);
 
         urlEditText.setText(getDefaultURL());
         headersEditText.setText(getDefaultHeaders());
@@ -240,7 +240,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     }
 
     public List<Header> getRequestHeadersList() {
-        List<Header> headers = new ArrayList<Header>();
+        List<Header> headers = new ArrayList<>();
         String headersRaw = headersEditText.getText() == null ? null : headersEditText.getText().toString();
 
         if (headersRaw != null && headersRaw.length() > 3) {
@@ -267,7 +267,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
     public Header[] getRequestHeaders() {
         List<Header> headers = getRequestHeadersList();
-        return headers.toArray(new Header[headers.size()]);
+        return headers.toArray(new Header[0]);
     }
 
     public HttpEntity getRequestEntity() {
@@ -383,9 +383,8 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         this.asyncHttpClient = client;
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void setHomeAsUpEnabled() {
-        if (Integer.valueOf(Build.VERSION.SDK) >= 11) {
+        if (SDK_INT >= 11) {
             if (getActionBar() != null)
                 getActionBar().setDisplayHomeAsUpEnabled(true);
         }
