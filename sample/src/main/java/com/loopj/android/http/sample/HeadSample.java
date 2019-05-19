@@ -8,13 +8,7 @@ import com.loopj.android.http.utils.RequestHandle;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
 
-public class PostSample extends SampleParentActivity {
-
-    @Override
-    public String getLogTag() {
-        return "PostSample";
-    }
-
+public class HeadSample extends SampleParentActivity {
     @Override
     public ResponseHandlerInterface getResponseHandler() {
         return defaultResponseHandler;
@@ -22,7 +16,7 @@ public class PostSample extends SampleParentActivity {
 
     @Override
     public String getDefaultURL() {
-        return PROTOCOL+"httpbin.org/post";
+        return "https://httpbin.org";
     }
 
     @Override
@@ -32,16 +26,16 @@ public class PostSample extends SampleParentActivity {
 
     @Override
     public boolean isRequestBodyAllowed() {
-        return true;
+        return false;
     }
 
     @Override
     public int getSampleTitle() {
-        return R.string.title_post_sample;
+        return R.string.title_head_sample;
     }
 
     @Override
     public RequestHandle executeSample(AsyncHttpClient client, String URL, Header[] headers, HttpEntity entity, ResponseHandlerInterface responseHandler) {
-        return client.sendRequest(RequestFactory.post(URL, headers, entity), responseHandler);
+        return client.sendRequest(RequestFactory.head(URL, headers), responseHandler);
     }
 }

@@ -101,7 +101,9 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
             debugHeaders(getLogTag(), headers);
             debugStatusCode(getLogTag(), statusCode);
-            debugResponse(getLogTag(), new String(responseBody));
+            if (responseBody != null) {
+                debugResponse(getLogTag(), new String(responseBody));
+            }
         }
 
         @Override

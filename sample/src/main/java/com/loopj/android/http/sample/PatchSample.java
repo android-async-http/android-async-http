@@ -22,7 +22,7 @@ public class PatchSample extends SampleParentActivity {
 
     @Override
     public String getDefaultURL() {
-        return "https://httpbin.org/patch";
+        return PROTOCOL+"httpbin.org/patch";
     }
 
     @Override
