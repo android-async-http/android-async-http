@@ -2,10 +2,13 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath 'com.vanniktech:gradle-android-javadoc-plugin:0.4.0-SNAPSHOT'
+        classpath 'digital.wup:android-maven-publish:3.6.2'
     }
 }
 
@@ -31,3 +34,4 @@ allprojects {
 }
 
 apply plugin: 'android-reporting'
+apply plugin: 'com.vanniktech.android.javadoc'

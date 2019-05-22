@@ -1,7 +1,5 @@
 package com.loopj.android.http.utils;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.util.Log;
 
 import com.loopj.android.http.interfaces.LogInterface;
@@ -56,22 +54,13 @@ public class LogHandler implements LogInterface {
                     Log.d(tag, msg, t);
                     break;
                 case WTF:
-                    if (Build.VERSION.SDK_INT > 8) {
-                        checkedWtf(tag, msg, t);
-                    } else {
-                        Log.e(tag, msg, t);
-                    }
+                    Log.wtf(tag, msg, t);
                     break;
                 case INFO:
                     Log.i(tag, msg, t);
                     break;
             }
         }
-    }
-
-    @TargetApi(Build.VERSION_CODES.FROYO)
-    private void checkedWtf(String tag, String msg, Throwable t) {
-        Log.wtf(tag, msg, t);
     }
 
     @Override

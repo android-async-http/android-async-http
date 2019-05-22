@@ -1,11 +1,13 @@
 apply plugin: 'com.android.library'
+apply plugin: 'digital.wup.android-maven-publish'
+apply plugin: 'signing'
 
 android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
 
     defaultConfig {
-        minSdkVersion 3
+        minSdkVersion 14
         targetSdkVersion 28
     }
 
@@ -26,3 +28,78 @@ android {
 dependencies {
     api 'cz.msebera.android:httpclient:4.5.8'
 }
+
+project.afterEvaluate { project ->
+
+    android.libraryVariants.all { variant ->
+        def name = variant.buildType.name
+        def task = project.tasks.create "jar${name.capitalize()}", Jar
+        task.dependsOn variant.javaCompileProvider.get()
+        task.from variant.javaCompileProvider.get().destinationDir
+    }
+
+    task sourcesJar(type: Jar) {
+        from android.sourceSets.main.java.srcDirs
+        archiveClassifier = 'sources'
+    }
+
+    task javadocJar(type: Jar, dependsOn: tasks.findAll { task -> task.name.contains('Javadoc') }) {
+        archiveClassifier = 'javadoc'
+        from 'build/docs/javadoc/release/'
+    }
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                artifactId = POM_ARTIFACT_ID
+                artifact javadocJar
+                artifact sourcesJar
+                artifact jarRelease
+                from components.android
+
+                pom {
+                    name = POM_NAME
+                    description = POM_DESCRIPTION
+                    packaging = POM_PACKAGING
+                    url = POM_URL
+
+                    scm {
+                        connection = POM_SCM_CONNECTION
+                        developerConnection = POM_SCM_DEV_CONNECTION
+                        url = POM_SCM_URL
+                    }
+
+                    licenses {
+                        license {
+                            name = POM_LICENCE_NAME
+                            url = POM_LICENCE_URL
+                            distribution = POM_LICENCE_DIST
+                        }
+                    }
+                }
+
+                pom.name = POM_NAME
+                pom.description = POM_DESCRIPTION
+                pom.url = POM_URL
+                pom.packaging = POM_PACKAGING
+            }
+        }
+        repositories {
+            maven {
+                def releaseUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                def snapshotUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+                url = version.endsWith('SNAPSHOT') ? snapshotUrl : releaseUrl
+                credentials {
+                    username NEXUS_USERNAME
+                    password NEXUS_PASSWORD
+                }
+            }
+        }
+    }
+
+    signing {
+        sign publishing.publications.maven
+    }
+}
+
+

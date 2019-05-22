@@ -5,7 +5,7 @@ android {
     buildToolsVersion '28.0.3'
 
     defaultConfig {
-        minSdkVersion 3
+        minSdkVersion 14
         targetSdkVersion 28
     }
 
@@ -39,5 +39,5 @@ android {
 
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
-    implementation project(':library')
+    implementation project(':android-async-http')
 }

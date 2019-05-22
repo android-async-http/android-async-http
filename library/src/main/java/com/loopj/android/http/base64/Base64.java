@@ -16,8 +16,6 @@
 
 package com.loopj.android.http.base64;
 
-import com.loopj.android.http.BuildConfig;
-
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -229,7 +227,7 @@ public class Base64 {
         encoder.output = new byte[output_len];
         encoder.process(input, offset, len, true);
 
-        if (BuildConfig.DEBUG && encoder.op != output_len) {
+        if (encoder.op != output_len) {
             throw new AssertionError();
         }
 
@@ -691,7 +689,7 @@ public class Base64 {
                     output[op++] = '\n';
                 }
 
-                if (BuildConfig.DEBUG && (tailLen != 0 || p != len)) {
+                if ((tailLen != 0 || p != len)) {
                     throw new AssertionError();
                 }
             } else {
