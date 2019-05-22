@@ -13,33 +13,35 @@
 
         <requestFocus />
 
+        <EditText
+            android:id="@+id/edit_url"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/label_url_address"
+            android:importantForAutofill="no"
+            android:inputType="textUri" />
+
         <LinearLayout
             android:id="@+id/layout_url"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/edit_url"
-                android:layout_width="0dp"
+            <Button
+                android:id="@+id/button_cancel"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="@string/label_url_address"
-                android:inputType="textUri"
-                android:importantForAutofill="no" />
+                android:text="@string/button_cancel" />
 
             <Button
                 android:id="@+id/button_run"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/button_run" />
-
-            <Button
-                android:id="@+id/button_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/button_cancel"
-                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -56,13 +58,13 @@
 
             <EditText
                 android:id="@+id/edit_headers"
-                android:hint="@string/label_headers"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/label_headers"
+                android:importantForAutofill="no"
                 android:inputType="textMultiLine"
                 android:minLines="3"
-                android:singleLine="false"
-                android:importantForAutofill="no" />
+                android:singleLine="false" />
 
         </LinearLayout>
 
@@ -75,17 +77,18 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:labelFor="@id/edit_body"
                 android:text="@string/label_req_body" />
 
             <EditText
                 android:id="@+id/edit_body"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/label_req_body"
+                android:importantForAutofill="no"
                 android:inputType="textMultiLine"
                 android:minLines="3"
-                android:hint="@string/label_req_body"
-                android:singleLine="false"
-                android:importantForAutofill="no" />
+                android:singleLine="false" />
 
         </LinearLayout>
 

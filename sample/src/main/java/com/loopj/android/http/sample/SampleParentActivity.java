@@ -56,8 +56,6 @@ import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
 import cz.msebera.android.httpclient.message.BasicHeader;
 import cz.msebera.android.httpclient.protocol.HttpContext;
 
-import static android.os.Build.VERSION.SDK_INT;
-
 public abstract class SampleParentActivity extends Activity implements SampleInterface {
 
     protected static final String PROTOCOL_HTTP = "http://";
@@ -415,9 +413,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
     }
 
     private void setHomeAsUpEnabled() {
-        if (SDK_INT >= 11) {
-            if (getActionBar() != null)
-                getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        if (getActionBar() != null)
+            getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }
