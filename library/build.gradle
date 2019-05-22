@@ -90,8 +90,10 @@ project.afterEvaluate { project ->
                 def snapshotUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
                 url = version.endsWith('SNAPSHOT') ? snapshotUrl : releaseUrl
                 credentials {
-                    username NEXUS_USERNAME
-                    password NEXUS_PASSWORD
+                    def NexusUsername = project.hasProperty('NEXUS_USERNAME') ? NEXUS_USERNAME : ''
+                    def NexusPassword = project.hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : ''
+                    username NexusUsername
+                    password NexusPassword
                 }
             }
         }
