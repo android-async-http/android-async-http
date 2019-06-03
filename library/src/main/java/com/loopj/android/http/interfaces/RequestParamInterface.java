@@ -15,13 +15,14 @@
 */
 package com.loopj.android.http.interfaces;
 
+import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.entity.ContentType;
 
-public interface RequestParamInterface<T> {
+public interface RequestParamInterface<T> extends NameValuePair {
 
     String getName();
 
-    T getValue();
+    T getRawValue();
 
     ContentType getContentType();
 

@@ -20,10 +20,17 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import cz.msebera.android.httpclient.entity.ContentType;
 
 public interface RequestParamsInterface extends Serializable {
+
+    /**
+     * @deprecated
+     */
+    String APPLICATION_OCTET_STREAM = ContentType.APPLICATION_OCTET_STREAM.getMimeType();
 
     RequestParamsInterface putFile(String key, File file, ContentType contentType, String customFileName) throws FileNotFoundException;
 
@@ -34,5 +41,7 @@ public interface RequestParamsInterface extends Serializable {
     RequestParamsInterface putStreamArray(String key, List<InputStream> files, ContentType contentType, List<String> customStreamNames);
 
     RequestParamsInterface putParam(RequestParamInterface param);
+
+    Set<Map.Entry<String, RequestParamInterface>> getParams();
 
 }

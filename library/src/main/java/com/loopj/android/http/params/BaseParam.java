@@ -15,6 +15,7 @@
 */
 package com.loopj.android.http.params;
 
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.interfaces.RequestParamInterface;
 
 import cz.msebera.android.httpclient.entity.ContentType;
@@ -37,7 +38,13 @@ public class BaseParam<T> implements RequestParamInterface<T> {
     }
 
     @Override
-    public T getValue() {
+    public String getValue() {
+        AsyncHttpClient.log.w("BaseParam", "Calling toString() on unchecked type " + (this.value.getClass().getName()));
+        return this.value == null ? null : this.value.toString();
+    }
+
+    @Override
+    public T getRawValue() {
         return this.value;
     }
 

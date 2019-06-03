@@ -1,0 +1,16 @@
+This is not issue of the library.
+
+Such issues, unless you've got any hint it's issue of library, should be discussed on stackoverflow.com
+
+Missing debug info, code looks OK to me. If you provide more debug info, feel free to re-open this ticket.
+
+Too vague, provide more info and re-open if you wish.
+
+Too vague, provide more info and re-open if you still struggle with this.
+
+1.4.x will not be probably updated, as I focus on getting 1.5.x to work and to resolve related issues.
+
+Thank you for the report, SSL/TLS related issue will be tracked in #1029. Closing this as duplicate
+
+Best coding practices should be discussed on stackoverflow.com
+Issues in this project are meant to track bugs and feature requests, not general programming questions.

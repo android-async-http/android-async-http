@@ -21,11 +21,18 @@ import cz.msebera.android.httpclient.entity.ContentType;
 
 public class FileParam extends BaseParam<File> {
 
+    private String customFileName;
+
     public FileParam(String name, File source) {
         super(name, source, ContentType.APPLICATION_OCTET_STREAM);
     }
 
     public FileParam(String name, File source, ContentType contentType) {
         super(name, source, contentType);
+    }
+
+    public FileParam(String name, File source, ContentType contentType, String fileName) {
+        super(name, source, contentType);
+        customFileName = fileName;
     }
 }

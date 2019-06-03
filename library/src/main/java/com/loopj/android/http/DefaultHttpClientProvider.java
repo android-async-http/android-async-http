@@ -23,9 +23,13 @@ import java.util.Collection;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpHost;
 import cz.msebera.android.httpclient.client.CookieStore;
+import cz.msebera.android.httpclient.client.CredentialsProvider;
 import cz.msebera.android.httpclient.client.HttpRequestRetryHandler;
+import cz.msebera.android.httpclient.client.config.RequestConfig;
 import cz.msebera.android.httpclient.conn.HttpClientConnectionManager;
+import cz.msebera.android.httpclient.impl.client.BasicCredentialsProvider;
 import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
+import cz.msebera.android.httpclient.impl.client.HttpClientBuilder;
 import cz.msebera.android.httpclient.impl.client.HttpClients;
 import cz.msebera.android.httpclient.impl.conn.PoolingHttpClientConnectionManager;
 
@@ -33,19 +37,46 @@ public class DefaultHttpClientProvider implements HttpClientProviderInterface {
 
     protected HttpHost proxy;
     protected CookieStore cookieStore;
+    protected CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
     protected final Collection<? extends Header> commonHeaders = new ArrayList<Header>();
     protected HttpRequestRetryHandler retryHandler;
+    protected boolean enableRedirects = false, enableRelativeRedirects = false, enableCircularRedirects = false;
+
+    public DefaultHttpClientProvider() {
+    }
+
+    /**
+     * Simple interface method, to enable or disable redirects. If you set manually RedirectHandler
+     * on underlying HttpClient, effects of this method will be canceled. <p>&nbsp;</p> Default
+     * setting is to disallow redirects.
+     *
+     * @param enableRedirects         boolean
+     * @param enableRelativeRedirects boolean
+     * @param enableCircularRedirects boolean
+     * @deprecated
+     */
+    public void setEnableRedirects(final boolean enableRedirects, final boolean enableRelativeRedirects, final boolean enableCircularRedirects) {
+        this.enableRedirects = enableRedirects;
+        this.enableCircularRedirects = enableCircularRedirects;
+        this.enableRelativeRedirects = enableRelativeRedirects;
+    }
 
     @Override
     public final CloseableHttpClient provide() {
-        return HttpClients.custom()
+        HttpClientBuilder builder = HttpClients.custom()
                 .setConnectionManager(getConnectionManager())
                 .setProxy(getProxy())
                 .setDefaultCookieStore(getCookieStore())
                 .setUserAgent(getUserAgent())
                 .setDefaultHeaders(getHeaders())
+                .setDefaultCredentialsProvider(getCredentialsProvider())
                 .setRetryHandler(getRetryHandler())
-                .build();
+                .setDefaultCookieStore(getCookieStore());
+
+        RequestConfig requestConfig = RequestConfig.custom().setCircularRedirectsAllowed(enableCircularRedirects).setRelativeRedirectsAllowed(enableRelativeRedirects).setRedirectsEnabled(enableRedirects).build();
+        builder.setDefaultRequestConfig(requestConfig);
+
+        return builder.build();
     }
 
     private HttpRequestRetryHandler getRetryHandler() {
@@ -68,8 +99,17 @@ public class DefaultHttpClientProvider implements HttpClientProviderInterface {
         return cookieStore;
     }
 
+    public void setCookieStore(CookieStore store) {
+        cookieStore = store;
+    }
+
     public Collection<? extends Header> getHeaders() {
         return commonHeaders;
     }
+
+    public CredentialsProvider getCredentialsProvider() {
+        return credentialsProvider;
+    }
+
 
 }
