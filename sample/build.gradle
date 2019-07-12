@@ -15,10 +15,16 @@ android {
         targetSdkVersion 23
     }
 
+    flavorDimensions "version"
     productFlavors {
         standard {
+            dimension "version"
+            minSdkVersion 9
+            targetSdkVersion 23
+
         }
         withLeakCanary {
+            dimension "version"
             minSdkVersion 9
             targetSdkVersion 23
         }
