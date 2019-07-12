@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.3'
 
     defaultConfig {
         minSdkVersion 9
@@ -16,11 +15,6 @@ android {
         quiet false
         showAll true
         disable 'OldTargetApi'
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
-        targetCompatibility JavaVersion.VERSION_1_6
     }
 }
 
