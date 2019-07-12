@@ -34,6 +34,8 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
@@ -72,9 +74,19 @@ public class MySSLSocketFactory extends SSLSocketFactory {
 
         X509TrustManager tm = new X509TrustManager() {
             public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                try {
+                    chain[0].checkValidity();
+                } catch (Exception e) {
+                    throw new CertificateException("Certificate not valid or trusted.");
+                }
             }
 
             public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                try {
+                    chain[0].checkValidity();
+                } catch (Exception e) {
+                    throw new CertificateException("Certificate not valid or trusted.");
+                }
             }
 
             public X509Certificate[] getAcceptedIssuers() {
@@ -186,12 +198,27 @@ public class MySSLSocketFactory extends SSLSocketFactory {
 
     @Override
     public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException {
-        return sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
+        Socket localSocket = sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
+        enableSecureProtocols(localSocket);
+        return localSocket;
     }
 
     @Override
     public Socket createSocket() throws IOException {
-        return sslContext.getSocketFactory().createSocket();
+        Socket socket = sslContext.getSocketFactory().createSocket();
+        enableSecureProtocols(socket);
+        return socket;
+    }
+
+    /**
+     * Activate supported protocols on the socket.
+     *
+     * @param socket    The socket on which to activate secure protocols.
+     */
+    private void enableSecureProtocols(Socket socket) {
+        // set all supported protocols
+        SSLParameters params = sslContext.getSupportedSSLParameters();
+        ((SSLSocket) socket).setEnabledProtocols(params.getProtocols());
     }
 
     /**
@@ -200,5 +227,4 @@ public class MySSLSocketFactory extends SSLSocketFactory {
     public void fixHttpsURLConnection() {
         HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
     }
-
 }
