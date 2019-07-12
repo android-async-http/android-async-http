@@ -9,7 +9,6 @@ repositories {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.3'
 
     defaultConfig {
         minSdkVersion 9
@@ -25,10 +24,10 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
+//    compileOptions {
+//        sourceCompatibility 'JavaVersion.VERSION_1_7'
+//        targetCompatibility 'JavaVersion.VERSION_1_7'
+//    }
 
     lintOptions {
         xmlReport false
