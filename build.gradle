@@ -23,7 +23,7 @@ allprojects {
         mavenLocal()
         mavenCentral()
         google()
-
+        jcenter()
     }
 
     tasks.withType(JavaCompile) {

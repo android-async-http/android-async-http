@@ -32,6 +32,8 @@ import com.loopj.android.http.sample.util.FileUtil;
 
 import java.io.File;
 
+import java.util.Locale;
+
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
 
@@ -71,8 +73,8 @@ public class DirectorySample extends SampleParentActivity {
                 clearOutputs();
                 if (lastResponseHandler != null) {
                     File toBeDeleted = lastResponseHandler.getTargetFile();
-                    debugResponse(LOG_TAG, String.format("File was deleted? %b", toBeDeleted.delete()));
-                    debugResponse(LOG_TAG, String.format("Delete file path: %s", toBeDeleted.getAbsolutePath()));
+                    debugResponse(LOG_TAG, String.format(Locale.US, "File was deleted? %b", toBeDeleted.delete()));
+                    debugResponse(LOG_TAG, String.format(Locale.US, "Delete file path: %s", toBeDeleted.getAbsolutePath()));
                 } else {
                     debugThrowable(LOG_TAG, new Error("You have to Run example first"));
                 }

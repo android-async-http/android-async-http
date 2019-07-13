@@ -8,11 +8,11 @@ repositories {
 }
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 23
+        targetSdkVersion 28
     }
 
     flavorDimensions "version"
@@ -20,27 +20,22 @@ android {
         standard {
             dimension "version"
             minSdkVersion 9
-            targetSdkVersion 23
+            targetSdkVersion 28
 
         }
         withLeakCanary {
             dimension "version"
             minSdkVersion 9
-            targetSdkVersion 23
+            targetSdkVersion 28
         }
     }
-
-//    compileOptions {
-//        sourceCompatibility 'JavaVersion.VERSION_1_7'
-//        targetCompatibility 'JavaVersion.VERSION_1_7'
-//    }
 
     lintOptions {
         xmlReport false
         warningsAsErrors true
         quiet false
         showAll true
-        disable 'OldTargetApi', 'UnusedAttribute', 'LongLogTag'
+        disable 'OldTargetApi', 'UnusedAttribute', 'LongLogTag', 'TrustAllX509TrustManager', 'GoogleAppIndexingWarning', 'Autofill', 'LabelFor', 'SetTextI18n'
     }
 
     packagingOptions {
