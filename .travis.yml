@@ -1,6 +1,6 @@
 language: android
 sudo: false
-jdk: openjdk7
+jdk: openjdk8
 android:
   components:
     - platform-tools
@@ -9,7 +9,6 @@ android:
     - android-23
     - extra-android-m2repository
     - extra-google-m2repository
-
   licenses:
     - '.+'
 script:
