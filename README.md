@@ -74,7 +74,7 @@ https://oss.sonatype.org/content/repositories/snapshots/com/loopj/android/androi
 Maven URL: https://oss.sonatype.org/content/repositories/snapshots/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
-Version: 1.5.0-SNAPSHOT
+Version: 1.4.10-SNAPSHOT
 Packaging: JAR or AAR
 ```
 Gradle
@@ -85,7 +85,7 @@ repositories {
   }
 }
 dependencies {
-  compile 'com.loopj.android:android-async-http:1.5.0-SNAPSHOT'
+  compile 'com.loopj.android:android-async-http:1.4.10-SNAPSHOT'
 }
 ```
 

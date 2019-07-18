@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## 1.5.0 (future release)
+## 1.4.10
+
+  - Fixed IP/name resolution errors #998
+  - Fixed SNI compatibility
 
 ## 1.4.9 (released 19. 9. 2015)
 
