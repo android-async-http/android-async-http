@@ -33,6 +33,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
+import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
@@ -109,7 +110,7 @@ public class AsyncBackgroundThreadSample extends SampleParentActivity {
 
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                        Log.d(LOG_TAG, String.format("onSuccess executing on main thread : %B", Looper.myLooper() == Looper.getMainLooper()));
+                        Log.d(LOG_TAG, String.format(Locale.US, "onSuccess executing on main thread : %B", Looper.myLooper() == Looper.getMainLooper()));
                         debugHeaders(LOG_TAG, headers);
                         debugStatusCode(LOG_TAG, statusCode);
                         debugResponse(LOG_TAG, new String(response));
@@ -117,7 +118,7 @@ public class AsyncBackgroundThreadSample extends SampleParentActivity {
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                        Log.d(LOG_TAG, String.format("onFailure executing on main thread : %B", Looper.myLooper() == Looper.getMainLooper()));
+                        Log.d(LOG_TAG, String.format(Locale.US, "onFailure executing on main thread : %B", Looper.myLooper() == Looper.getMainLooper()));
                         debugHeaders(LOG_TAG, headers);
                         debugStatusCode(LOG_TAG, statusCode);
                         debugThrowable(LOG_TAG, e);
@@ -129,7 +130,7 @@ public class AsyncBackgroundThreadSample extends SampleParentActivity {
                     @Override
                     public void onRetry(int retryNo) {
                         Toast.makeText(AsyncBackgroundThreadSample.this,
-                                String.format("Request is retried, retry no. %d", retryNo),
+                                String.format(Locale.US, "Request is retried, retry no. %d", retryNo),
                                 Toast.LENGTH_SHORT)
                                 .show();
                     }

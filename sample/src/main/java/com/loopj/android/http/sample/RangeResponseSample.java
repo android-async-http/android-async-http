@@ -30,6 +30,8 @@ import com.loopj.android.http.ResponseHandlerInterface;
 import java.io.File;
 import java.io.IOException;
 
+import java.util.Locale;
+
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
@@ -75,7 +77,7 @@ public class RangeResponseSample extends GetSample {
         // Remove temporary file.
         if (file != null) {
             if (!file.delete()) {
-                Log.e(LOG_TAG, String.format("Couldn't remove temporary file in path: %s", file.getAbsolutePath()));
+                Log.e(LOG_TAG, String.format(Locale.US, "Couldn't remove temporary file in path: %s", file.getAbsolutePath()));
             }
             file = null;
         }

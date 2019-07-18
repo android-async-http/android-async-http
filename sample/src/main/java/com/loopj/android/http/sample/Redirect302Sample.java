@@ -27,6 +27,8 @@ import com.loopj.android.http.AsyncHttpClient;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
+import java.util.Locale;
+
 public class Redirect302Sample extends GetSample {
 
     private static final int MENU_ENABLE_REDIRECTS = 10;
@@ -89,7 +91,7 @@ public class Redirect302Sample extends GetSample {
         HttpClient client = ahc.getHttpClient();
         if (client instanceof DefaultHttpClient) {
             Toast.makeText(this,
-                    String.format("redirects: %b\nrelative redirects: %b\ncircular redirects: %b",
+                    String.format(Locale.US, "redirects: %b\nrelative redirects: %b\ncircular redirects: %b",
                             enableRedirects, enableRelativeRedirects, enableCircularRedirects),
                     Toast.LENGTH_SHORT
             ).show();

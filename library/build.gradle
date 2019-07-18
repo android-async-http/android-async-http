@@ -1,11 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 23
+        targetSdkVersion 28
         consumerProguardFiles 'proguard.txt'
     }
 
@@ -19,7 +19,7 @@ android {
 }
 
 dependencies {
-    compile 'cz.msebera.android:httpclient:4.5.8'
+    api 'cz.msebera.android:httpclient:4.5.8'
 }
 
 android.libraryVariants.all { variant ->
@@ -27,7 +27,7 @@ android.libraryVariants.all { variant ->
     def task = project.tasks.create "jar${name.capitalize()}", Jar
     task.dependsOn variant.javaCompile
     task.from variant.javaCompile.destinationDir
-    artifacts.add('archives', task);
+    artifacts.add('archives', task)
 }
 
 apply from: '../maven_push.gradle'

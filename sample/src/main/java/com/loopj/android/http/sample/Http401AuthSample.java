@@ -188,7 +188,7 @@ public class Http401AuthSample extends GetSample {
             String prefaceText = preface.getText().toString();
 
             // Substitute placeholders, and re-set the value.
-            preface.setText(String.format(prefaceText, SECRET_USERNAME, SECRET_PASSWORD));
+            preface.setText(String.format(Locale.US, prefaceText, SECRET_USERNAME, SECRET_PASSWORD));
         }
 
         @Override

@@ -25,6 +25,8 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 
+import java.util.Locale;
+
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
 
@@ -64,7 +66,7 @@ public class ThreadingTimeoutSample extends SampleParentActivity {
         states.put(id, current == null ? status : current + "," + status);
         clearOutputs();
         for (int i = 0; i < states.size(); i++) {
-            debugResponse(LOG_TAG, String.format("%d (from %d): %s", states.keyAt(i), getCounter(), states.get(states.keyAt(i))));
+            debugResponse(LOG_TAG, String.format(Locale.US, "%d (from %d): %s", states.keyAt(i), getCounter(), states.get(states.keyAt(i))));
         }
     }
 

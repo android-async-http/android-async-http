@@ -23,6 +23,8 @@ import com.loopj.android.http.ResponseHandlerInterface;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
 
+import java.util.Locale;
+
 public class HeadSample extends FileSample {
 
     private static final String LOG_TAG = "HeadSample";
@@ -34,12 +36,12 @@ public class HeadSample extends FileSample {
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 debugStatusCode(LOG_TAG, statusCode);
                 debugHeaders(LOG_TAG, headers);
-                debugResponse(LOG_TAG, String.format("Response of size: %d", responseBody == null ? 0 : responseBody.length));
+                debugResponse(LOG_TAG, String.format(Locale.US, "Response of size: %d", responseBody == null ? 0 : responseBody.length));
             }
 
             @Override
             public void onProgress(long bytesWritten, long totalSize) {
-                addView(getColoredView(LIGHTRED, String.format("Progress %d from %d", bytesWritten, totalSize)));
+                addView(getColoredView(LIGHTRED, String.format(Locale.US, "Progress %d from %d", bytesWritten, totalSize)));
             }
 
             @Override
@@ -47,7 +49,7 @@ public class HeadSample extends FileSample {
                 debugStatusCode(LOG_TAG, statusCode);
                 debugHeaders(LOG_TAG, headers);
                 debugThrowable(LOG_TAG, throwable);
-                debugResponse(LOG_TAG, String.format("Response of size: %d", responseBody == null ? 0 : responseBody.length));
+                debugResponse(LOG_TAG, String.format(Locale.US, "Response of size: %d", responseBody == null ? 0 : responseBody.length));
             }
         };
     }

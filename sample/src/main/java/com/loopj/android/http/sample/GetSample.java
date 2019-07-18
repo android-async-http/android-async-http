@@ -25,6 +25,8 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.ResponseHandlerInterface;
 
+import java.util.Locale;
+
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
 
@@ -85,7 +87,7 @@ public class GetSample extends SampleParentActivity {
             @Override
             public void onRetry(int retryNo) {
                 Toast.makeText(GetSample.this,
-                        String.format("Request is retried, retry no. %d", retryNo),
+                        String.format(Locale.US, "Request is retried, retry no. %d", retryNo),
                         Toast.LENGTH_SHORT)
                         .show();
             }

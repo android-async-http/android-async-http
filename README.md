@@ -1,6 +1,6 @@
 Asynchronous Http Client for Android
 ====================================
-[![Build Status](https://travis-ci.org/loopj/android-async-http.png?branch=master)](https://travis-ci.org/loopj/android-async-http)
+[![Build Status](https://travis-ci.org/android-async-http/android-async-http.png?branch=master)](https://travis-ci.org/android-async-http/android-async-http)
 
 An asynchronous, callback-based Http client for Android built on top of Apache's [HttpClient](https://hc.apache.org/httpcomponents-client-ga/) libraries.
 
@@ -9,14 +9,14 @@ Changelog
 
 See what is new in version 1.4.9 released on 19th September 2015
 
-https://github.com/loopj/android-async-http/blob/1.4.9/CHANGELOG.md
+https://github.com/android-async-http/android-async-http/blob/1.4.9/CHANGELOG.md
 
 Javadoc
 -------
 
 Latest Javadoc for 1.4.9 release are available here (also included in Maven repository):
 
-https://loopj.com/android-async-http/doc/
+https://android-async-http.github.io/android-async-http/doc/
 
 Features
 --------
@@ -35,7 +35,7 @@ Examples
 --------
 
 For inspiration and testing on device we've provided Sample Application.  
-See individual samples [here on Github](https://github.com/loopj/android-async-http/tree/1.4.9/sample/src/main/java/com/loopj/android/http/sample)  
+See individual samples [here on Github](https://github.com/android-async-http/android-async-http/tree/1.4.9/sample/src/main/java/com/loopj/android/http/sample)  
 To run Sample application, simply clone the repository and run this command, to install it on connected device  
 
 ```java
@@ -93,5 +93,5 @@ Documentation, Features and Examples
 ------------------------------------
 Full details and documentation can be found on the project page here:
 
-https://loopj.com/android-async-http/
+https://android-async-http.github.io/android-async-http/
 

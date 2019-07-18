@@ -10,6 +10,8 @@ import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.sample.IntentServiceSample;
 import com.loopj.android.http.sample.util.IntentUtil;
 
+import java.util.Locale;
+
 import cz.msebera.android.httpclient.Header;
 
 public class ExampleIntentService extends IntentService {
@@ -73,7 +75,7 @@ public class ExampleIntentService extends IntentService {
                 @Override
                 public void onRetry(int retryNo) {
                     sendBroadcast(new Intent(IntentServiceSample.ACTION_RETRY));
-                    Log.d(LOG_TAG, String.format("onRetry: %d", retryNo));
+                    Log.d(LOG_TAG, String.format(Locale.US, "onRetry: %d", retryNo));
                 }
 
                 @Override

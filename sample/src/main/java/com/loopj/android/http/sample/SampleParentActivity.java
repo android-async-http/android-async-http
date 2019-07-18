@@ -263,7 +263,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
                     String headerName = line.substring(0, equalSignPos).trim();
                     String headerValue = line.substring(1 + equalSignPos).trim();
-                    Log.d(LOG_TAG, String.format("Added header: [%s:%s]", headerName, headerValue));
+                    Log.d(LOG_TAG, String.format(Locale.US, "Added header: [%s:%s]", headerName, headerValue));
 
                     headers.add(new BasicHeader(headerName, headerValue));
                 } catch (Throwable t) {
