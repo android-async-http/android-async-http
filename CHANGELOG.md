@@ -4,6 +4,7 @@
 
   - Fixed IP/name resolution errors #998
   - Fixed SNI compatibility
+  - Upgraded library HttpClient 4.5.8 from 4.3.6
 
 ## 1.4.9 (released 19. 9. 2015)
 
