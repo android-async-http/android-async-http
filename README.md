@@ -53,7 +53,7 @@ https://repo1.maven.org/maven2/com/loopj/android/android-async-http/
 Maven URL: https://repo1.maven.org/maven2/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
-Version: 1.4.9
+Version: 1.4.10
 Packaging: JAR or AAR
 ```
 Gradle
@@ -63,7 +63,7 @@ repositories {
 }
 
 dependencies {
-  compile 'com.loopj.android:android-async-http:1.4.9'
+  compile 'com.loopj.android:android-async-http:1.4.10'
 }
 ```
 
@@ -74,7 +74,7 @@ https://oss.sonatype.org/content/repositories/snapshots/com/loopj/android/androi
 Maven URL: https://oss.sonatype.org/content/repositories/snapshots/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
-Version: 1.4.10-SNAPSHOT
+Version: 1.4.11-SNAPSHOT
 Packaging: JAR or AAR
 ```
 Gradle
@@ -85,7 +85,7 @@ repositories {
   }
 }
 dependencies {
-  compile 'com.loopj.android:android-async-http:1.4.10-SNAPSHOT'
+  compile 'com.loopj.android:android-async-http:1.4.11-SNAPSHOT'
 }
 ```
 
