@@ -357,16 +357,13 @@ Marek Sebera (<https://github.com/smarek>)
 Noor Dawod (<https://github.com/fineswap>)
 :	Maintainer since 1.4.5 release
 
-Luciano Vitti (<https://github.com/xAnubiSx>)
-:	Collaborated on Sample Application
-
 Jason Choy (<https://github.com/jjwchoy>)
 :	Added support for RequestHandle feature
 
 Micah Fivecoate (<https://github.com/m5>)
 :   Major Contributor, including the original `RequestParams`
 
-The Droid Fu Project (<https://github.com/kaeppler/droid-fu>)
+The Droid Fu Project (<https://github.com/mttkay/droid-fu>)
 :   Inspiration and code for better http retries
 
 Rafael Sanches (<https://blog.rafaelsanches.com>)
