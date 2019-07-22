@@ -1,0 +1,14 @@
+---
+layout: default
+---
+
+<div id="header">
+  <h1>{{ page.title }}</h1>
+  <h2>Posted {{ page.date | date: "%B %d, %Y" }}</h2>
+</div>
+
+<div id="post">
+  {{ content }}
+
+  {% include about_me.html %}
+</div>

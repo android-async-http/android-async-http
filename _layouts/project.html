@@ -1,0 +1,42 @@
+---
+layout: default
+---
+
+<div id="header">
+  <h1>{{ page.title }}</h1>
+  <h2>{{ page.tagline }}</h2>
+</div>
+
+<div id="share">
+  {% if page.github_repo %}
+  <iframe src="http://ghbtns.com/github-btn.html?user=loopj&repo={{ page.github_repo }}&type=fork&count=true"
+    allowtransparency="true" frameborder="0" scrolling="0" width="95px" height="20px"></iframe>
+  {% endif %}
+
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="loopj">Tweet</a>
+</div>
+
+<div id="project">
+  {% if page.download_url %}
+  <div id="download">
+    <div class="download-button">
+      <a href="{{ page.download_url }}">
+        Download
+        {% if page.version %}
+        <em>version {{ page.version }} (latest)</em>
+        {% else %}
+        <em>latest version</em>
+        {% endif %}
+      </a>
+    </div>
+
+    {% if page.github_repo %}
+    <p id="github">or <a href="https://github.com/loopj/{{ page.github_repo }}" target="_blank">fork me on github</a></p>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {{ content }}
+
+  {% include about_me.html %}
+</div>
