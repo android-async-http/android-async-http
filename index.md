@@ -162,9 +162,9 @@ class TwitterRestClientUsage {
 {% endhighlight %}
 
 Check out the
-[AsyncHttpClient](https://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpClient.html),
-[RequestParams](https://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html) and
-[AsyncHttpResponseHandler](https://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpResponseHandler.html)
+[AsyncHttpClient](https://android-async-http.github.io/android-async-http/doc/com/loopj/android/http/AsyncHttpClient.html),
+[RequestParams](https://android-async-http.github.io/android-async-http/doc/com/loopj/android/http/RequestParams.html) and
+[AsyncHttpResponseHandler](https://android-async-http.github.io/android-async-http/doc/com/loopj/android/http/AsyncHttpResponseHandler.html)
 Javadocs for more details.
 
 
@@ -205,7 +205,7 @@ newCookie.setPath("/");
 myCookieStore.addCookie(newCookie);
 {% endhighlight %}
 
-See the [PersistentCookieStore Javadoc](https://loopj.com/android-async-http/doc/com/loopj/android/http/PersistentCookieStore.html)
+See the [PersistentCookieStore Javadoc](https://android-async-http.github.io/android-async-http/doc/com/loopj/android/http/PersistentCookieStore.html)
 for more information.
 
 
@@ -233,7 +233,7 @@ paramMap.put("key", "value");
 RequestParams params = new RequestParams(paramMap);
 {% endhighlight %}
 
-See the [RequestParams Javadoc](https://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html)
+See the [RequestParams Javadoc](https://android-async-http.github.io/android-async-http/doc/com/loopj/android/http/RequestParams.html)
 for more information.
 
 Uploading Files with `RequestParams`
@@ -264,7 +264,7 @@ RequestParams params = new RequestParams();
 params.put("soundtrack", new ByteArrayInputStream(myByteArray), "she-wolf.mp3");
 {% endhighlight %}
 
-See the [RequestParams Javadoc](https://loopj.com/android-async-http/doc/com/loopj/android/http/RequestParams.html)
+See the [RequestParams Javadoc](https://android-async-http.github.io/android-async-http/doc/com/loopj/android/http/RequestParams.html)
 for more information.
 
 Downloading Binary Data with `FileAsyncHttpResponseHandler`
@@ -282,7 +282,7 @@ client.get("https://example.com/file.png", new FileAsyncHttpResponseHandler(/* C
 });
 {% endhighlight %}
 
-See the [FileAsyncHttpResponseHandler Javadoc](https://loopj.com/android-async-http/doc/com/loopj/android/http/FileAsyncHttpResponseHandler.html)
+See the [FileAsyncHttpResponseHandler Javadoc](https://android-async-http.github.io/android-async-http/doc/com/loopj/android/http/FileAsyncHttpResponseHandler.html)
 for more information.
 
 Adding HTTP Basic Auth credentials
@@ -306,7 +306,7 @@ client.setBasicAuth("username","password", new AuthScope("example.com", 80, Auth
 client.get("https://example.com");
 {% endhighlight %}
 
-See the [RequestParams Javadoc](https://loopj.com/android-async-http/doc/com/loopj/android/http/AsyncHttpClient.html)
+See the [RequestParams Javadoc](https://android-async-http.github.io/android-async-http/doc/com/loopj/android/http/AsyncHttpClient.html)
 for more information.
 
 Testing on device
@@ -315,7 +315,7 @@ Testing on device
 You can test the library on real device or emulator using provided Sample Application.
 Sample application implements all important functions of library, you can use it as source of inspiration.
 
-Source code of sample application: <https://github.com/loopj/android-async-http/tree/master/sample>
+Source code of sample application: <https://github.com/android-async-http/android-async-http/tree/master/sample>
 
 To run sample application, clone the android-async-http github repository and run command in it's root:
 
@@ -324,7 +324,7 @@ gradle :sample:installDebug
 {% endhighlight %}
 
 Which will install Sample application on connected device, all examples do work immediately, if not
-please file bug report on <https://github.com/loopj/android-async-http/issues>
+please file bug report on <https://github.com/android-async-http/android-async-http/issues>
 
 Building from Source
 --------------------
@@ -380,7 +380,7 @@ Linden Darling (<https://github.com/coreform>)
 
 And many others, contributions are listed in each file in license header.
 You can also find contributors by looking on project commits, issues and pull-requests 
-on [Github](https://github.com/loopj/android-async-http/commits/master)
+on [Github](https://github.com/android-async-http/android-async-http/commits/master)
 
 License
 -------
