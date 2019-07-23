@@ -1,2 +1,6 @@
 include ':library'
 include ':sample'
+
+rootProject.name = 'android-async-http-project'
+project(':library').name = 'android-async-http'
+project(':sample').name = 'android-async-http-sample'
