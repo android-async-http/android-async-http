@@ -9,7 +9,7 @@ Changelog
 
 See what is new in version 1.4.10 released on 20th July 2019
 
-https://github.com/android-async-http/android-async-http/blob/1.4.10/CHANGELOG.md
+https://github.com/android-async-http/android-async-http/blob/v1.4.10/CHANGELOG.md
 
 Javadoc
 -------
@@ -35,7 +35,7 @@ Examples
 --------
 
 For inspiration and testing on device we've provided Sample Application.  
-See individual samples [here on Github](https://github.com/android-async-http/android-async-http/tree/1.4.10/sample/src/main/java/com/loopj/android/http/sample)  
+See individual samples [here on Github](https://github.com/android-async-http/android-async-http/tree/v1.4.10/sample/src/main/java/com/loopj/android/http/sample)  
 To run Sample application, simply clone the repository and run this command, to install it on connected device  
 
 ```java
