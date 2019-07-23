@@ -35,7 +35,7 @@ Examples
 --------
 
 For inspiration and testing on device we've provided Sample Application.  
-See individual samples [here on Github](https://github.com/android-async-http/android-async-http/tree/1.4.10/sample/src/main/java/com/loopj/android/http/sample)  
+See individual samples [here on Github](https://github.com/android-async-http/android-async-http/tree/v1.4.10/sample/src/main/java/com/loopj/android/http/sample)  
 To run Sample application, simply clone the repository and run this command, to install it on connected device  
 
 ```java
