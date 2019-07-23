@@ -9,7 +9,7 @@ Changelog
 
 See what is new in version 1.4.10 released on 20th July 2019
 
-https://github.com/android-async-http/android-async-http/blob/1.4.10/CHANGELOG.md
+https://github.com/android-async-http/android-async-http/blob/v1.4.10/CHANGELOG.md
 
 Javadoc
 -------
