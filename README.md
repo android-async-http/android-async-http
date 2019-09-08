@@ -63,7 +63,7 @@ repositories {
 }
 
 dependencies {
-  compile 'com.loopj.android:android-async-http:1.4.10'
+  implementation 'com.loopj.android:android-async-http:1.4.10'
 }
 ```
 
@@ -85,7 +85,7 @@ repositories {
   }
 }
 dependencies {
-  compile 'com.loopj.android:android-async-http:1.4.11-SNAPSHOT'
+  implementation 'com.loopj.android:android-async-http:1.4.11-SNAPSHOT'
 }
 ```
 
