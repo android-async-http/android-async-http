@@ -47,6 +47,7 @@ import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.auth.AuthScope;
 import cz.msebera.android.httpclient.auth.Credentials;
 import cz.msebera.android.httpclient.client.CookieStore;
+import cz.msebera.android.httpclient.client.RedirectStrategy;
 import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
 import cz.msebera.android.httpclient.config.Registry;
 import cz.msebera.android.httpclient.conn.HttpClientConnectionManager;
@@ -345,6 +346,18 @@ public class AsyncHttpClient implements AsyncHttpClientInterface {
     public void setCookieStore(CookieStore cookieStore) {
         if (getHttpClientProvider() instanceof DefaultHttpClientProvider) {
             ((DefaultHttpClientProvider) getHttpClientProvider()).setCookieStore(cookieStore);
+        }
+    }
+
+    /**
+     * Sets an optional RedirectStrategy to use when making requests
+     *
+     * @param redirectStrategy The RedirectStrategy implementation to use, usually an instance of {@link
+     *                    RedirectStrategy}
+     */
+    public void setRedirectStrategy(RedirectStrategy redirectStrategy){
+        if (getHttpClientProvider() instanceof DefaultHttpClientProvider) {
+            ((DefaultHttpClientProvider) getHttpClientProvider()).setRedirectStrategy(redirectStrategy);
         }
     }
 
