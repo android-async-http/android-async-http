@@ -25,6 +25,7 @@ import cz.msebera.android.httpclient.HttpHost;
 import cz.msebera.android.httpclient.client.CookieStore;
 import cz.msebera.android.httpclient.client.CredentialsProvider;
 import cz.msebera.android.httpclient.client.HttpRequestRetryHandler;
+import cz.msebera.android.httpclient.client.RedirectStrategy;
 import cz.msebera.android.httpclient.client.config.RequestConfig;
 import cz.msebera.android.httpclient.conn.HttpClientConnectionManager;
 import cz.msebera.android.httpclient.impl.client.BasicCredentialsProvider;
@@ -41,6 +42,7 @@ public class DefaultHttpClientProvider implements HttpClientProviderInterface {
     protected final Collection<? extends Header> commonHeaders = new ArrayList<Header>();
     protected HttpRequestRetryHandler retryHandler;
     protected boolean enableRedirects = false, enableRelativeRedirects = false, enableCircularRedirects = false;
+    protected RedirectStrategy redirectStrategy;
 
     public DefaultHttpClientProvider() {
     }
@@ -71,7 +73,8 @@ public class DefaultHttpClientProvider implements HttpClientProviderInterface {
                 .setDefaultHeaders(getHeaders())
                 .setDefaultCredentialsProvider(getCredentialsProvider())
                 .setRetryHandler(getRetryHandler())
-                .setDefaultCookieStore(getCookieStore());
+                .setDefaultCookieStore(getCookieStore())
+                .setRedirectStrategy(getRedirectStrategy());
 
         RequestConfig requestConfig = RequestConfig.custom().setCircularRedirectsAllowed(enableCircularRedirects).setRelativeRedirectsAllowed(enableRelativeRedirects).setRedirectsEnabled(enableRedirects).build();
         builder.setDefaultRequestConfig(requestConfig);
@@ -111,5 +114,11 @@ public class DefaultHttpClientProvider implements HttpClientProviderInterface {
         return credentialsProvider;
     }
 
+    public RedirectStrategy getRedirectStrategy() {
+        return redirectStrategy;
+    }
 
+    public void setRedirectStrategy(RedirectStrategy redirectStrategy) {
+        this.redirectStrategy = redirectStrategy;
+    }
 }
