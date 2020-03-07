@@ -1,3 +1,34 @@
+# This project is no longer maintained, and is currently deprecated and insecure to use
+
+Since there were no active maintainers for this project for a long time, and issues got stale, 
+security issues pile up and it's not viable to maintain this project further, given there are 
+quality replacements, this project is closing down.
+
+This library has many issues handling modern TLS/SSL security protocols using and problems with validating 
+chain-of-trust of remote services, it communicates with. It also suffers from high-memory-usage issues,
+when handling large upstream or downstream jobs.
+
+It is not suitable for modern projects, and thus, unless someone takes over the maintenance and invests big time
+into making it performance and secure again, it is not recommended to use the library further.
+
+For issues with using this library or migrating to different one, use appropriate forum, for example
+[https://stackoverflow.com/questions/tagged/android-async-http](https://stackoverflow.com/questions/tagged/android-async-http)
+
+## Use these alternatives, as replacement in your app please:
+
+  - [OkHttp](https://square.github.io/okhttp/) https://square.github.io/okhttp/
+  - [Volley](https://developer.android.com/training/volley) https://developer.android.com/training/volley
+  - [RetroFit](https://square.github.io/retrofit/) https://square.github.io/retrofit/
+
+*or don't, i'm not a cop*
+
+---
+---
+---
+---
+
+
+
 Asynchronous Http Client for Android
 ====================================
 [![Build Status](https://travis-ci.org/android-async-http/android-async-http.png?branch=master)](https://travis-ci.org/android-async-http/android-async-http)
