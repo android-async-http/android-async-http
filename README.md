@@ -1,4 +1,4 @@
-# This project is no longer maintained, and is currently deprecated and insecure to use
+# This project under develop, and is currently insecure to use
 
 Since there were no active maintainers for this project for a long time, and issues got stale, 
 security issues pile up and it's not viable to maintain this project further, given there are 
