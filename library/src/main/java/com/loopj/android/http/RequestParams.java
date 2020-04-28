@@ -18,7 +18,6 @@
 
 package com.loopj.android.http;
 
-import com.loopj.android.http.entities.FormEntityFactory;
 import com.loopj.android.http.interfaces.RequestParamInterface;
 import com.loopj.android.http.interfaces.RequestParamsInterface;
 import com.loopj.android.http.interfaces.ResponseHandlerInterface;
@@ -169,7 +168,7 @@ public final class RequestParams implements RequestParamsInterface {
         if (useJsonStreamer) {
 
         } else if (!hasFiles() && !hasStreams()) {
-            return FormEntityFactory.getFormEntity(this);
+            return HttpEntityFactory.getFormEntity(this);
         }
         return null;
     }

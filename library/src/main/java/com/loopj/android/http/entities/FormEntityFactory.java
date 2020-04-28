@@ -13,6 +13,9 @@ import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.client.entity.UrlEncodedFormEntity;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
+/**
+ * @deprecated
+ */
 public class FormEntityFactory {
 
     public static HttpEntity getFormEntity(RequestParamsInterface params) {
