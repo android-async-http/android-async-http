@@ -310,10 +310,7 @@ public class AsyncHttpClient implements AsyncHttpClientInterface {
      * @deprecated
      */
     public void setEnableRedirects(final boolean enableRedirects, final boolean enableRelativeRedirects, final boolean enableCircularRedirects) throws IllegalAccessException {
-        if (getHttpClientProvider() instanceof DefaultHttpClientProvider) {
-            ((DefaultHttpClientProvider) getHttpClientProvider()).setEnableRedirects(enableRedirects, enableRelativeRedirects, enableCircularRedirects);
-        }
-        throw new IllegalAccessException("This method shall not be used with non-default credentials provider set");
+        setEnableRedirectStrategy(enableRedirects);
     }
 
     /**
@@ -325,7 +322,7 @@ public class AsyncHttpClient implements AsyncHttpClientInterface {
      * @deprecated
      */
     public void setEnableRedirects(final boolean enableRedirects, final boolean enableRelativeRedirects) throws IllegalAccessException {
-        setEnableRedirects(enableRedirects, enableRelativeRedirects, true);
+        setEnableRedirectStrategy(enableRedirects);
     }
 
     /**
@@ -334,7 +331,7 @@ public class AsyncHttpClient implements AsyncHttpClientInterface {
      * @deprecated
      */
     public void setEnableRedirects(final boolean enableRedirects) throws IllegalAccessException {
-        setEnableRedirects(enableRedirects, enableRedirects, enableRedirects);
+        setEnableRedirectStrategy(enableRedirects);
     }
 
     /**
@@ -358,6 +355,18 @@ public class AsyncHttpClient implements AsyncHttpClientInterface {
     public void setRedirectStrategy(RedirectStrategy redirectStrategy){
         if (getHttpClientProvider() instanceof DefaultHttpClientProvider) {
             ((DefaultHttpClientProvider) getHttpClientProvider()).setRedirectStrategy(redirectStrategy);
+            setEnableRedirectStrategy(true);
+        }
+    }
+
+    /**
+     * Sets enable to use {@link RedirectStrategy} when making requests
+     *
+     * @param isEnable
+     */
+    public void setEnableRedirectStrategy(boolean isEnable){
+        if (getHttpClientProvider() instanceof DefaultHttpClientProvider) {
+            ((DefaultHttpClientProvider) getHttpClientProvider()).setEnableRedirectStrategy(isEnable);
         }
     }
 

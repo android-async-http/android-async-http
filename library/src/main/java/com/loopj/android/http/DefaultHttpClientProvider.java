@@ -43,6 +43,7 @@ public class DefaultHttpClientProvider implements HttpClientProviderInterface {
     protected HttpRequestRetryHandler retryHandler;
     protected boolean enableRedirects = false, enableRelativeRedirects = false, enableCircularRedirects = false;
     protected RedirectStrategy redirectStrategy;
+    protected boolean enableRedirectStrategy = false;
 
     public DefaultHttpClientProvider() {
     }
@@ -76,8 +77,8 @@ public class DefaultHttpClientProvider implements HttpClientProviderInterface {
                 .setDefaultCookieStore(getCookieStore())
                 .setRedirectStrategy(getRedirectStrategy());
 
-        RequestConfig requestConfig = RequestConfig.custom().setCircularRedirectsAllowed(enableCircularRedirects).setRelativeRedirectsAllowed(enableRelativeRedirects).setRedirectsEnabled(enableRedirects).build();
-        builder.setDefaultRequestConfig(requestConfig);
+        if(!enableRedirectStrategy)
+            builder.disableRedirectHandling();
 
         return builder.build();
     }
@@ -115,10 +116,21 @@ public class DefaultHttpClientProvider implements HttpClientProviderInterface {
     }
 
     public RedirectStrategy getRedirectStrategy() {
-        return redirectStrategy;
+        if(enableRedirectStrategy)
+            return redirectStrategy;
+
+        return null;
     }
 
     public void setRedirectStrategy(RedirectStrategy redirectStrategy) {
         this.redirectStrategy = redirectStrategy;
+    }
+
+    public boolean isEnableRedirectStrategy() {
+        return enableRedirectStrategy;
+    }
+
+    public void setEnableRedirectStrategy(boolean enableRedirectStrategy) {
+        this.enableRedirectStrategy = enableRedirectStrategy;
     }
 }
