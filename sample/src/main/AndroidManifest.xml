@@ -30,6 +30,7 @@
         <activity android:name=".PatchSample" />
         <activity android:name=".OptionsSample" />
         <activity android:name=".JsonSample" />
+        <activity android:name=".RedirectSample" />
         <activity android:name=".JsonStreamerSample" />
         <activity android:name=".FileSample" />
         <activity android:name=".DirectorySample" />
