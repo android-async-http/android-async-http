@@ -52,4 +52,5 @@
     <string name="title_digest_auth">Digest Authentication</string>
     <string name="title_use_pool_thread">Use Pool Thread in Response</string>
     <string name="title_request_params_debug">Request Params debug</string>
+    <string name="title_redirect_sample">Redirect</string>
 </resources>
