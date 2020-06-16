@@ -38,7 +38,8 @@ public class WaypointsActivity extends ListActivity {
             new SampleConfig(R.string.title_put_sample, PutSample.class),
             new SampleConfig(R.string.title_head_sample, HeadSample.class),
             new SampleConfig(R.string.title_options_sample, OptionsSample.class),
-            new SampleConfig(R.string.title_json_sample, JsonSample.class)
+            new SampleConfig(R.string.title_json_sample, JsonSample.class),
+            new SampleConfig(R.string.title_redirect_sample, RedirectSample.class)
     };
 
     @Override
