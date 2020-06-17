@@ -531,4 +531,12 @@ public class AsyncHttpClient implements AsyncHttpClientInterface {
             }
         }
     }
+
+    /**
+     * Call this method if your app target android below 4.4
+     * This method enable sni in android below 4.4
+     */
+    public void useConscrypt(){
+        new ConscryptSSL().install();
+    }
 }
