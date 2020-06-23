@@ -1685,4 +1685,12 @@ public class AsyncHttpClient {
             super.consumeContent();
         }
     }
+
+    /**
+     * Call this method if your app target android below 4.4
+     * This method enable sni in android below 4.4
+     */
+    public void useConscryptSSLProvider(){
+        new ConscryptSSLProvider().install();
+    }
 }
