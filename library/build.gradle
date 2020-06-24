@@ -22,6 +22,7 @@ android {
 
 dependencies {
     api 'cz.msebera.android:httpclient:4.5.8'
+    compileOnly 'org.conscrypt:conscrypt-android:2.4.0'
 }
 
 project.afterEvaluate { project ->
