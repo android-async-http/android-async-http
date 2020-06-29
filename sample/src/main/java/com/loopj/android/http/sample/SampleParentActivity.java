@@ -394,7 +394,7 @@ public abstract class SampleParentActivity extends Activity implements SampleInt
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void setHomeAsUpEnabled() {
-        if (Integer.valueOf(Build.VERSION.SDK) >= 11) {
+        if (Build.VERSION.SDK_INT >= 11) {
             if (getActionBar() != null)
                 getActionBar().setDisplayHomeAsUpEnabled(true);
         }
