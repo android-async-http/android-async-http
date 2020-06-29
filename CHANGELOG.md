@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.4.11
+
+  - fix SNI issue on lower android device with Conscrypt
+
 ## 1.4.10
 
   - Fixed IP/name resolution errors #998

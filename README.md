@@ -38,14 +38,14 @@ An asynchronous, callback-based Http client for Android built on top of Apache's
 Changelog
 ---------
 
-See what is new in version 1.4.10 released on 20th July 2019
+See what is new in version 1.4.11 released on 29th June 2020
 
-https://github.com/android-async-http/android-async-http/blob/1.4.10/CHANGELOG.md
+https://github.com/android-async-http/android-async-http/blob/1.4.11/CHANGELOG.md
 
 Javadoc
 -------
 
-Latest Javadoc for 1.4.10 release are available here (also included in Maven repository):
+Latest Javadoc for 1.4.11 release are available here (also included in Maven repository):
 
 https://android-async-http.github.io/android-async-http/doc/
 
@@ -66,7 +66,7 @@ Examples
 --------
 
 For inspiration and testing on device we've provided Sample Application.  
-See individual samples [here on Github](https://github.com/android-async-http/android-async-http/tree/1.4.10/sample/src/main/java/com/loopj/android/http/sample)  
+See individual samples [here on Github](https://github.com/android-async-http/android-async-http/tree/1.4.11/sample/src/main/java/com/loopj/android/http/sample)  
 To run Sample application, simply clone the repository and run this command, to install it on connected device  
 
 ```java
@@ -84,7 +84,7 @@ https://repo1.maven.org/maven2/com/loopj/android/android-async-http/
 Maven URL: https://repo1.maven.org/maven2/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
-Version: 1.4.10
+Version: 1.4.11
 Packaging: JAR or AAR
 ```
 Gradle
@@ -94,18 +94,19 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.loopj.android:android-async-http:1.4.10'
+  implementation 'com.loopj.android:android-async-http:1.4.11'
 }
 ```
 
 **development snapshots**
+snapshot might not be published yet
 
 https://oss.sonatype.org/content/repositories/snapshots/com/loopj/android/android-async-http/
 ```
 Maven URL: https://oss.sonatype.org/content/repositories/snapshots/
 GroupId: com.loopj.android
 ArtifactId: android-async-http
-Version: 1.4.11-SNAPSHOT
+Version: 1.4.12-SNAPSHOT
 Packaging: JAR or AAR
 ```
 Gradle
