@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -367,6 +368,12 @@ public class AsyncHttpClient implements AsyncHttpClientInterface {
     public void setEnableRedirectStrategy(boolean isEnable){
         if (getHttpClientProvider() instanceof DefaultHttpClientProvider) {
             ((DefaultHttpClientProvider) getHttpClientProvider()).setEnableRedirectStrategy(isEnable);
+        }
+    }
+
+    public void setCustomHeaders(Collection<? extends Header> headers){
+        if (getHttpClientProvider() instanceof DefaultHttpClientProvider) {
+            ((DefaultHttpClientProvider) getHttpClientProvider()).setHeaders(headers);
         }
     }
 
