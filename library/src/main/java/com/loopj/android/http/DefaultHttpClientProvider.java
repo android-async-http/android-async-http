@@ -39,7 +39,7 @@ public class DefaultHttpClientProvider implements HttpClientProviderInterface {
     protected HttpHost proxy;
     protected CookieStore cookieStore;
     protected CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-    protected final Collection<? extends Header> commonHeaders = new ArrayList<Header>();
+    protected final Collection<Header> commonHeaders = new ArrayList<Header>();
     protected HttpRequestRetryHandler retryHandler;
     protected boolean enableRedirects = false, enableRelativeRedirects = false, enableCircularRedirects = false;
     protected RedirectStrategy redirectStrategy;
@@ -107,7 +107,7 @@ public class DefaultHttpClientProvider implements HttpClientProviderInterface {
         cookieStore = store;
     }
 
-    public Collection<? extends Header> getHeaders() {
+    public Collection<Header> getHeaders() {
         return commonHeaders;
     }
 
@@ -132,5 +132,9 @@ public class DefaultHttpClientProvider implements HttpClientProviderInterface {
 
     public void setEnableRedirectStrategy(boolean enableRedirectStrategy) {
         this.enableRedirectStrategy = enableRedirectStrategy;
+    }
+
+    public void setHeaders(Collection<? extends Header> headers){
+        commonHeaders.addAll(headers);
     }
 }
