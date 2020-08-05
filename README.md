@@ -30,7 +30,7 @@ Features
 - Automatic **gzip** response decoding support for super-fast requests
 - Optional built-in response parsing into **JSON** (JsonHttpResponseHandler)
 - Optional **persistent cookie store**, saves cookies into your app's SharedPreferences
-- Support sni with Conscrypt on older android device
+- Support sni with Conscrypt on older android device ([wiki](https://github.com/android-async-http/android-async-http/wiki/Support-SNI-on-lower-android-device))
 
 Examples
 --------
