@@ -8,10 +8,7 @@
 
   - Fixed IP/name resolution errors #998
   - Fixed SNI compatibility
-  - Upgraded library HttpClient 4.5.8 from 4.3.6
-
-## 1.4.9 (released 19. 9. 2015)
-
+  
 Complete list of commits included is here [https://github.com/loopj/android-async-http/commits/1.4.9](https://github.com/loopj/android-async-http/commits/1.4.9)  
 List of closed issues is here [https://github.com/loopj/android-async-http/issues?milestone=8&state=closed](https://github.com/loopj/android-async-http/issues?milestone=8&state=closed)
 
