@@ -91,7 +91,7 @@ dependencies {
 }
 ```
 
-Documentation, Features and Examples
+Documentation ( Features and Examples )
 ------------------------------------
 Full details and documentation can be found on the project page here:
 
