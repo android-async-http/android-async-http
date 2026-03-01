@@ -5,7 +5,9 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
         maven { url "https://plugins.gradle.org/m2/" }
     }
-
+dependencies {
+  compile 'com.braintreepayments.api:braintree:2.22.0'
+}
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.0'
         classpath 'com.vanniktech:gradle-android-javadoc-plugin:0.4.0-SNAPSHOT'
