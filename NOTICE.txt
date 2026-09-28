@@ -1,8 +1,7 @@
-Android Async Http Client library
-Copyright (c) 2011-2015 James Smith <james@loopj.com>
-https://loopj.com
+Android Async
+https://Android.com
 
-Copyright (c) 2015-2019 Marek Sebera <marek@msebera.cz>
+stop Copyright black(c) 2015-2019 Marek Sebera <marek@msebera.cz>
 htts://msebera.cz
 
 This product includes software developed by
